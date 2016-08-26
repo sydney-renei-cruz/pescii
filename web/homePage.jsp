@@ -102,7 +102,7 @@
         <c:if test="${accountType == 'CEO'}">
             <a href="addInvoice.jsp">Add Invoice</a><br>
             <a href="editInvoice.jsp">Edit Invoice</a><br>
-            <a href="getInvoice.jsp">View Invoice</a><br><br>
+            <a href="Servlets.getInvoiceServlet">View Invoice</a><br><br>
             
             <a href="addCustomer.jsp">Add Customer</a><br>
             <a href="editCustomer.jsp">Edit Customer</a><br>

@@ -19,8 +19,9 @@
     </head>
     <body>
         <h1>This is the Customer Details page!</h1>
-        
+        <br><br><br>
         <!--this is the table for the customer details-->
+        <h5>Customer Details</h5>
         <table border="1">
             <tr>
                 <th>PRC ID</th>
@@ -40,6 +41,7 @@
             <br><br><br>
             
         <!-- this is the table for the clinics-->
+        <h5>Clinics</h5>
         <table border="1">
             <tr>
                 <th>Clinic Name</th>

@@ -5,13 +5,16 @@
  */
 package Servlets;
 
+import Beans.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,8 +26,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author user
  */
-@WebServlet(name = "addCustomerServlet", urlPatterns = {"/addCustomerServlet"})
-public class addCustomerServlet extends HttpServlet {
+@WebServlet(name = "viewInvoiceServlet", urlPatterns = {"/viewInvoiceServlet"})
+public class getInvoiceServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,6 +42,80 @@ public class addCustomerServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
+        
+        
+        ServletContext context = request.getSession().getServletContext();
+        response.setContentType("text/html");
+        
+        try {
+         Class.forName(context.getInitParameter("jdbcDriver"));
+      } catch(ClassNotFoundException ex) {
+         ex.printStackTrace();
+         out.println("jdbc error: " + ex);
+      }
+        
+        Connection conn = null;
+        Statement stmt = null;
+        
+        try{
+        //Allocate a database Connection object
+         //This uses the pageContext servlet.  Look at Web.xml for the params!
+         //This means we don't need to recompile!
+         
+         conn = DriverManager.getConnection(context.getInitParameter("databaseUrl"), context.getInitParameter("databaseUser"), context.getInitParameter("databasePassword"));
+        
+         //Allocate a Statement object within the Connection
+         stmt = conn.createStatement();
+         
+         //---------------
+         //THIS IS WHERE YOU START CHANGING
+         String preparedSQL = "select * from Invoice";
+         PreparedStatement ps = conn.prepareStatement(preparedSQL);
+         
+         
+         
+         ResultSet dbData = ps.executeQuery();
+         ArrayList<invoiceBean> invoicesRetrieved = new ArrayList<invoiceBean>();
+         //retrieve the information.
+            while(dbData.next()){
+               invoiceBean ibean = new invoiceBean();
+                ibean.setInvoiceID(dbData.getInt("invoiceID"));
+                ibean.setPRCID(dbData.getString("PRCID"));
+                ibean.setClinicID(dbData.getInt("clinicID"));
+                ibean.setInvoiceDate(dbData.getString("invoiceDate"));
+                ibean.setDeliveryDate(dbData.getString("deliveryDate"));
+                ibean.setAdditionalAccessories(dbData.getString("additionalAccessories"));
+                ibean.setTermsOfPayment(dbData.getString("termsOfPayment"));
+                ibean.setDatePaid(dbData.getString("datePaid"));
+                ibean.setDateClosed(dbData.getString("dateClosed"));
+                ibean.setDatePaid(dbData.getString("datePaid"));
+                ibean.setStatus(dbData.getString("status"));
+                ibean.setOverdueFee(dbData.getFloat("overdueFee"));
+                invoicesRetrieved.add(ibean);
+            }
+         request.setAttribute("invoiceList", invoicesRetrieved);
+         
+         request.getRequestDispatcher("getInvoice.jsp").forward(request,response);
+            
+         
+        }
+        catch(SQLException ex){
+            ex.printStackTrace();
+            out.println("SQL error: " + ex);
+        }
+        finally {
+            out.close();  // Close the output writer
+            try {
+              //Close the resources
+              if (stmt != null) stmt.close();
+              if (conn != null) conn.close();
+            }
+            catch (SQLException ex) {
+                ex.printStackTrace();
+                out.println("Another SQL error: " + ex);
+            }
+     }
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -68,94 +145,6 @@ public class addCustomerServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-        //DO NOT CHANGE THESE
-        ServletContext context = request.getSession().getServletContext();
-        response.setContentType("text/html");
-        PrintWriter out = response.getWriter();
-        
-        try {
-         Class.forName(context.getInitParameter("jdbcDriver"));
-      } catch(ClassNotFoundException ex) {
-         ex.printStackTrace();
-         out.println("jdbc error: " + ex);
-      }
-        
-        Connection conn = null;
-        Statement stmt = null;
-        
-        try{
-        //Allocate a database Connection object
-         //This uses the pageContext servlet.  Look at Web.xml for the params!
-         //This means we don't need to recompile!
-         
-         conn = DriverManager.getConnection(context.getInitParameter("databaseUrl"), context.getInitParameter("databaseUser"), context.getInitParameter("databasePassword"));
-        
-         //Allocate a Statement object within the Connection
-         stmt = conn.createStatement();
-         
-         //---------------
-         //THIS IS WHERE YOU START CHANGING
-         
-         String preparedSQL = "insert into Customer(PRCID, customerName, customerMobileNumber, customerTelephoneNumber) values(?,?,?,?)";
-         String preparedSQL2 = "insert into Clinic(PRCID, clinicAddress, clinicPhoneNumber, clinicName) values(?,?,?,?)";
-         
-         //you don't change this
-         PreparedStatement ps = conn.prepareStatement(preparedSQL);
-         PreparedStatement ps2 = conn.prepareStatement(preparedSQL2);
-         
-         String inputPRCID = request.getParameter("customerIDInput");
-         String inputCustomerName = request.getParameter("customerNameInput");
-         String inputCustomerCelNum = request.getParameter("customerMobileNumberInput");
-         String inputTelNum = request.getParameter("customerTelephoneNumberInput");
-         
-         
-         ps.setString(1,inputPRCID);
-         ps.setString(2,inputCustomerName);
-         ps.setString(3,inputCustomerCelNum);
-         ps.setString(4,inputTelNum);
-         ps.executeUpdate();                   //at this point, you have already inserted into the database
-         
-         String inputClinicAddress = request.getParameter("clinicAddressInput");
-         String inputClinPhoneNum = request.getParameter("clinicPhoneNumInput");
-         String inputClinicName = request.getParameter("clinicNameInput");
-         
-         ps2.setString(1, inputPRCID);
-         ps2.setString(2, inputClinicAddress);
-         ps2.setString(3, inputClinPhoneNum);
-         ps2.setString(4, inputClinicName);
-         ps2.executeUpdate();
-         
-         
-         String message = "Customer successfully created!";
-         request.setAttribute("message", message);
-         String a = "hello";
-         request.getRequestDispatcher("homePage.jsp").forward(request,response);
-            
-         
-        }
-        catch(SQLException ex){
-            ex.printStackTrace();
-            out.println("SQL error: " + ex);
-        }
-        finally {
-            out.close();  // Close the output writer
-            try {
-              //Close the resources
-              if (stmt != null) stmt.close();
-              if (conn != null) conn.close();
-            }
-            catch (SQLException ex) {
-                ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
-            }
-     }
-        
-        
-        
-        
-        
-        
-        
     }
 
     /**

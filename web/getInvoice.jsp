@@ -4,7 +4,12 @@
     Author     : user
 --%>
 
+<%@page import="Beans.*,java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%
+    ArrayList<invoiceBean> invoiceList = (ArrayList<invoiceBean>)request.getAttribute("invoiceList");
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -13,6 +18,27 @@
     </head>
     <body>
         <h1>This is the View Invoice page!</h1>
+        <table border="1">
+            <tr>
+                <th>Invoice ID</th>
+                <th>PRC ID</th>
+                <th>Clinic ID</th>
+                <th>Invoice Date</th>
+                
+            </tr>
+        
+        <c:forEach items="${invoiceList}" var="inv" begin="0" step="1" varStatus="status">
+            <tr>
+                <td><a href="Servlets.viewInvoiceDetailsServlet?invID=<c:out value="${inv.getInvoiceID()}"/>">${inv.getInvoiceID()}</a></td>
+                <td>${inv.getPRCID()}</td>
+                <td>${inv.getClinicID()}</td>
+                <td>${inv.getInvoiceDate()}</td>
+            </tr>
+        </c:forEach>
+        </table>
+        
+
+
         
             <a href="homePage.jsp">Return to Home</a>
             <br><br>

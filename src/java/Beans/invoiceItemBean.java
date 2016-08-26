@@ -13,12 +13,12 @@ import java.io.Serializable;
  */
 public class invoiceItemBean implements Serializable{
     
-    public String invoiceItemID;
-    public String invoiceID;
-    public String productID;
+    public int invoiceItemID;
+    public int invoiceID;
+    public int productID;
     public int quantityPurchased;
     
-    public invoiceItemBean(String invitemid, String iid, String pid, int qp){
+    public invoiceItemBean(int invitemid, int iid, int pid, int qp){
         this.invoiceItemID=invitemid;
         this.invoiceID=iid;
         this.productID=pid;
@@ -27,14 +27,14 @@ public class invoiceItemBean implements Serializable{
     
     public invoiceItemBean(){}
     
-    public void setInvoiceItemID(String invitemid){this.invoiceItemID=invitemid;}
-    public void setInvoiceID(String iid){this.invoiceID=iid;}
-    public void setProductID(String pid){this.productID=pid;}
+    public void setInvoiceItemID(int invitemid){this.invoiceItemID=invitemid;}
+    public void setInvoiceID(int iid){this.invoiceID=iid;}
+    public void setProductID(int pid){this.productID=pid;}
     public void setQuantityPurchased(int qp){this.quantityPurchased=qp;}
     
-    public String getInvoiceItemID(){return this.invoiceItemID;}
-    public String getInvoiceID(){return this.invoiceID;}
-    public String getProductID(){return this.productID;}
+    public int getInvoiceItemID(){return this.invoiceItemID;}
+    public int getInvoiceID(){return this.invoiceID;}
+    public int getProductID(){return this.productID;}
     public int getQuantityPurchased(){return this.quantityPurchased;}
     
 }

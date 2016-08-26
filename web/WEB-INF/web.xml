@@ -40,8 +40,21 @@
         <servlet-class>Servlets.getCustomerServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>getInvoiceServlet</servlet-name>
+        <servlet-class>Servlets.getInvoiceServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>viewCustomerDetailsServlet</servlet-name>
         <servlet-class>Servlets.viewCustomerDetailsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>viewInvoiceDetailsServlet</servlet-name>
+        <servlet-class>Servlets.viewInvoiceDetailsServlet</servlet-class>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>createRestockOrderServlet</servlet-name>
+        <servlet-class>Servlets.createRestockOrderServlet</servlet-class>
     </servlet>
     
     <!-- Servlet Mapping-->
@@ -67,8 +80,21 @@
         <url-pattern>/Servlets.getCustomerServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>getInvoiceServlet</servlet-name>
+        <url-pattern>/Servlets.getInvoiceServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>viewCustomerDetailsServlet</servlet-name>
         <url-pattern>/Servlets.viewCustomerDetailsServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>viewInvoiceDetailsServlet</servlet-name>
+        <url-pattern>/Servlets.viewInvoiceDetailsServlet</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>createRestockOrderServlet</servlet-name>
+        <url-pattern>/Servlets.createRestockOrderServlet</url-pattern>
     </servlet-mapping>
     <!--Filters-->
     

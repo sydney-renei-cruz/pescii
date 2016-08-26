@@ -6,7 +6,6 @@
 package Beans;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  *
@@ -14,36 +13,46 @@ import java.util.Date;
  */
 public class restockOrderBean implements Serializable{
     
-    public String restockOrderID;
-    public Date restockDateCreated;
-    public Date restockArriveDate;
-    public Date restockCompletedDate;
-    public float restockCost;   //you get the price of each product from Product table, but there might be extra charge and whatnot, so yeah.
+    public int restockOrderID;
+    public int productID;
+    public int numberOfPiecesOrdered;
+    public int numberOfPiecesReceived;
     public String supplier;
+    public String purpose;
+    public String RODateCreated;
+    public String RODateDelivered;
     
-    public restockOrderBean(String roid, Date rdcreate, Date rad, Date rcd, float rcost, String supp){
+    public restockOrderBean(int roid, int pid, int nopo, int nopr, String sup, String purp, String rodc, String rodd){
         this.restockOrderID=roid;
-        this.restockDateCreated=rdcreate;
-        this.restockArriveDate=rad;
-        this.restockCompletedDate=rcd;
-        this.restockCost=rcost;
-        this.supplier=supp;
+        this.productID=pid;
+        this.numberOfPiecesOrdered=nopo;
+        this.numberOfPiecesReceived=nopr;
+        this.supplier=sup;
+        this.purpose=purp;
+        this.RODateCreated=rodc;
+        this.RODateDelivered=rodd;
+        
     }
     
     public restockOrderBean(){}
     
-    public void setRestockOrderID(String roid){this.restockOrderID=roid;}
-    public void setRestockDateCreated(Date rdcreate){this.restockDateCreated=rdcreate;}
-    public void setRestockArriveDate(Date rad){this.restockArriveDate=rad;}
-    public void setRestockCompletedDate(Date rcd){this.restockCompletedDate=rcd;}
-    public void setRestockCost(float rcost){this.restockCost=rcost;}
-    public void setSupplier(String supp){this.supplier=supp;}
-    
-    public String getRestockOrderID(){return this.restockOrderID;}
-    public Date getRestockDateCreated(){return this.restockDateCreated;}
-    public Date getRestockArriveDate(){return this.restockArriveDate;}
-    public Date getRestockCompletedDate(){return this.restockCompletedDate;}
-    public float getRestockCost(){return this.restockCost;}
+    public void setRestockOrderID(int roid){this.restockOrderID=roid;}
+    public void setProductID(int pid){this.productID=pid;}
+    public void setNumberOfPiecesOrdered(int nopo){this.numberOfPiecesOrdered=nopo;}
+    public void setNumberOfPiecesReceived(int nopr){this.numberOfPiecesReceived=nopr;}
+    public void setSupplier(String sup){this.supplier=sup;}
+    public void setPurpose(String purp){this.purpose=purp;}
+    public void setRODateCreated(String rodc){this.RODateCreated=rodc;}
+    public void setRODateDelivered(String rodd){this.RODateDelivered=rodd;}
+
+    public int getRestockOrderID(){return this.restockOrderID;}
+    public int getProductID(){return this.productID;}
+    public int getNumberOfPiecesOrdered(){return this.numberOfPiecesOrdered;}
+    public int getNumberOfPiecesReceived(){return this.numberOfPiecesReceived;}
     public String getSupplier(){return this.supplier;}
-    
+    public String getPurpose(){return this.purpose;}
+    public String getRODateCreated(){return this.RODateCreated;}
+    public String getRODateDelivered(){return this.RODateDelivered;}
+        
+        
 }

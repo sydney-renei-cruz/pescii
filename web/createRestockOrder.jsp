@@ -13,6 +13,15 @@
     </head>
     <body>
         <h1>This is the Create Restock Order page!</h1>
+        <form action="Servlets.createRestockOrderServlet" method="post">
+            Enter Restock Date Created:<input type="text" name="restockDateCreatedInput"><br>
+            Enter Restock Arrive Date:<input type="text" name="restockArriveDateInput"><br>
+            Enter Restock Completed Date:<input type="text" name="restockCompletedDateInput"><br>
+            Enter Restock Cost:<input type="text" name="restockCost"><br>
+            Enter Supplier:<input type="text" name="supplier"><br>
+            <input type="Submit" value="Create Restock Order">
+        </form>
+        
         
             <a href="homePage.jsp">Return to Home</a>
             <br><br>

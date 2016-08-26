@@ -9,7 +9,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
     ArrayList<customerBean> customersList = (ArrayList<customerBean>)request.getAttribute("customersList");
-    //ArrayList<clinicBean> clinicsList = (ArrayList<clinicBean>)request.getAttribute("clinicsList");
 %>
 <!DOCTYPE html>
 <html>
@@ -25,9 +24,6 @@
                 <th>Customer Name</th>
                 <th>Mobile #</th>
                 <th>Telephone #</th>
-                <!--<th>Clinic Name</th>
-                <th>Clinic Address</th>
-                <th>Clinic Phone #</th>-->
             </tr>
         
         <c:forEach items="${customersList}" var="cust" begin="0" step="1" varStatus="status">
