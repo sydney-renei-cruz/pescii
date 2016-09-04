@@ -10,10 +10,7 @@
 <%
     customerBean customer = (customerBean)request.getAttribute("customer");
     ArrayList<clinicBean> clinicsList = (ArrayList<clinicBean>)request.getAttribute("clinicsList");
-<<<<<<< HEAD
     ArrayList<invoiceBean> invoicesList = (ArrayList<invoiceBean>)request.getAttribute("invoicesList");
-=======
->>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
 %>
 <!DOCTYPE html>
 <html>
@@ -26,11 +23,8 @@
         <br><br><br>
         <!--this is the table for the customer details-->
         <h5>Customer Details</h5>
-<<<<<<< HEAD
         
         
-=======
->>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
         <table border="1">
             <tr>
                 <th>PRC ID</th>
@@ -46,23 +40,15 @@
                 <td>${customer.getCustomerTelephoneNumber()}</td>
             </tr>
         </table>
-<<<<<<< HEAD
             
         <br><br>
             
-=======
-        
-            <br><br><br>
->>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
             
         <!-- this is the table for the clinics-->
         <h5>Clinics</h5>
         <table border="1">
             <tr>
-<<<<<<< HEAD
                 <th>Clinic ID</th>
-=======
->>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
                 <th>Clinic Name</th>
                 <th>Clinic Address</th>
                 <th>Clinic Phone #</th>
@@ -70,10 +56,7 @@
         
         <c:forEach items="${clinicsList}" var="clin" begin="0" step="1">
             <tr>
-<<<<<<< HEAD
                 <td>${clin.getClinicID()}</td>
-=======
->>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
                 <td>${clin.getClinicName()}</td>
                 <td>${clin.getClinicAddress()}</td>
                 <td>${clin.getClinicPhoneNumber()}</td>
@@ -82,7 +65,6 @@
         </table>
         
         <br><br>
-<<<<<<< HEAD
          <!-- this table is for the invoices-->
         <h5>Invoices</h5>
         <table border="1">
@@ -107,8 +89,6 @@
         </table>
         
         <br><br>
-=======
->>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
         <a href="Servlets.getCustomerServlet">Return to Customer List</a>
         <br><br>
         <a href="homePage.jsp">Return to Home</a>

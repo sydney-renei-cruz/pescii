@@ -46,7 +46,6 @@
         
         <!--this is the Accountant section
                 - the Accountant manages invoice information
-<<<<<<< HEAD
                 - once an invoice is created, there are some fields that can no longer be edited.
                     - see document to know what these are
         -->
@@ -54,15 +53,6 @@
             <a href="Servlets.getProductServlet?forInvoice=yes">Add Invoice</a><br>
             <a href="Servlets.getInvoiceServlet">Edit Invoice</a><br>
             <a href="Servlets.getInvoiceServlet">View Invoice</a><br><br>
-=======
-                - once an invoice is created, there are some fields that can no longer be editted.
-                    - see document to know what these are
-        -->
-        <c:if test="${accountType == 'Accountant'}">
-            <a href="addInvoice.jsp">Add Invoice</a><br>
-            <a href="editInvoice.jsp">Edit Invoice</a><br>
-            <a href="getInvoice.jsp">View Invoice</a><br><br>
->>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
             <a href="editAccount.jsp">Edit Account</a><br><br>
         </c:if>
         
@@ -110,13 +100,8 @@
                 - the CEO can do everything
         -->
         <c:if test="${accountType == 'CEO'}">
-<<<<<<< HEAD
             <a href="Servlets.getProductServlet?forInvoice=yes">Add Invoice</a><br>
             <a href="Servlets.getInvoiceServlet">Edit Invoice</a><br>
-=======
-            <a href="addInvoice.jsp">Add Invoice</a><br>
-            <a href="editInvoice.jsp">Edit Invoice</a><br>
->>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
             <a href="Servlets.getInvoiceServlet">View Invoice</a><br><br>
             
             <a href="addCustomer.jsp">Add Customer</a><br>
@@ -133,11 +118,7 @@
             <a href="getRestockOrder.jsp">View Restock Order</a><br><br>
         </c:if>
         
-<<<<<<< HEAD
         <a href="Servlets.getProductServlet">View Product</a><br>
-=======
-        <a href="getProduct.jsp">View Product</a><br>
->>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
         
     </body>
 </html>

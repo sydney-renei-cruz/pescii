@@ -70,14 +70,10 @@
             </tr>
         </c:forEach>
         </table>
-<<<<<<< HEAD
         <br><br>
         <a href="Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID=<c:out value="${invoice.getInvoiceID()}"/>">Edit Invoice</a>
         <br><br>
         <a href="Servlets.getInvoiceServlet">Return to list of Invoices</a>
-=======
-        
->>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
         <br><br>
         <a href="homePage.jsp">Return to Home</a>
         <br><br>

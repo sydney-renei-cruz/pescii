@@ -21,6 +21,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -43,7 +44,7 @@ public class getProductServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         
-        
+        HttpSession session = request.getSession();
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
         
@@ -90,12 +91,12 @@ public class getProductServlet extends HttpServlet {
                 pbean.setProductClass(dbData.getString("productClass"));
                 pbean.setColor(dbData.getString("color"));
                 productsRetrieved.add(pbean);
-                /* Is it .getInt (for int), .getFloat (for Float)*/
             }
          request.setAttribute("productsList", productsRetrieved);
-         if(request.getParameter("forInvoice")!=null){
+         String forInvoice = ""+ request.getParameter("forInvoice");
+         if(forInvoice.equals("yes") || session.getAttribute("cart")!=null){
              request.setAttribute("forInvoice", "yes");
-            context.log("forInvoice is equal to " + request.getParameter("forInvoice"));
+             context.log("forInvoice is equal to " + request.getParameter("forInvoice"));
          }
          request.getRequestDispatcher("getProduct.jsp").forward(request,response);
             

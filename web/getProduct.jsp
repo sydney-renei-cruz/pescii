@@ -1,5 +1,4 @@
 <%-- 
-<<<<<<< HEAD
     Document   : getCustomer
     Created on : 08 20, 16, 5:21:01 PM
     Author     : user
@@ -12,14 +11,6 @@
     ArrayList<productBean> productsList = (ArrayList<productBean>)request.getAttribute("productsList");
     String forInvoice = "" + request.getAttribute("forInvoice");
 %>
-=======
-    Document   : getProduct
-    Created on : 08 20, 16, 5:26:29 PM
-    Author     : user
---%>
-
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
->>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
 <!DOCTYPE html>
 <html>
     <head>
@@ -27,7 +18,6 @@
         <title>PESCII Get Product</title>
     </head>
     <body>
-<<<<<<< HEAD
         <h1>This is the Get Product page!</h1>
         <table border="1">
             <tr>
@@ -46,7 +36,16 @@
         <c:forEach items="${productsList}" var="prod" begin="0" step="1" varStatus="status">
             <tr>
                     <td>${prod.getProductID()}</td>
-                    <td>${prod.getProductName()}</td>
+                    <c:choose>
+                        <c:when test="${forInvoice ne 'yes'}">
+                            <td><a href="product.getDetails?prodID=<c:out value="${prod.getProductID()}"/>">${prod.getProductName()}</a></td>
+                        </c:when>
+                        <c:when test="${forInvoice eq 'yes'}">
+                            <td><a href="product.getDetails?forInvoice=yes&prodID=<c:out value="${prod.getProductID()}"/>">${prod.getProductName()}</a></td>
+                        </c:when>
+                    </c:choose>
+                    
+                    
                     <td>${prod.getProductDescription()}</td>
                     <td>${prod.getProductPrice()}</td>
                     <td>${prod.getRestockPrice()}</td>
@@ -74,13 +73,6 @@
         <a href="homePage.jsp">Return to Home</a>
         <br><br>
         <a href="Servlets.logoutServlet">logout</a>
-=======
-        <h1>This is the Get Product Page!</h1>
-        
-            <a href="homePage.jsp">Return to Home</a>
-            <br><br>
-            <a href="Servlets.logoutServlet">logout</a>
->>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
         
     </body>
 </html>

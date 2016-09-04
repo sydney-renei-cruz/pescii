@@ -4,7 +4,6 @@
     Author     : user
 --%>
 
-<<<<<<< HEAD
 <%@page import="Beans.*,java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -12,9 +11,6 @@
     customerBean customer = (customerBean)request.getAttribute("customer");
     ArrayList<clinicBean> clinicsList = (ArrayList<clinicBean>)request.getAttribute("clinicsList");
 %>
-=======
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
->>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
 <!DOCTYPE html>
 <html>
     <head>
@@ -22,7 +18,6 @@
         <title>Add Invoice</title>
     </head>
     <body>
-<<<<<<< HEAD
         <h1>This is the Add Invoice page!</h1>
         
             <table border="1">
@@ -66,18 +61,12 @@
             </select><br>
             <input type="submit" value="Add Invoice">
         </form>
-        
+        <br><br>
+        <a href="Servlets.getCustomerServlet">Return to Customer List</a>
+        <br><br>
         <a href="homePage.jsp">Return to Home</a>
         <br><br>
         <a href="Servlets.logoutServlet">logout</a>
 
-=======
-        <h1>This is the addInvoice page!</h1>
-        
-            <a href="homePage.jsp">Return to Home</a>
-            <br><br>
-            <a href="Servlets.logoutServlet">logout</a>
-        
->>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
     </body>
 </html>

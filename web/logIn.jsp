@@ -25,11 +25,7 @@
             <h2 class="login-header">Log In</h2>
         <form action="Servlets.logInServlet" method="post" orm class="login-container">
             <p>Enter username:<input type="text" name="usernameInput"></p><br>
-<<<<<<< HEAD
             <p>Enter password:<input type="password" name="passwordInput"></p><br>
-=======
-            <p>Enter password:<input type="text" name="passwordInput"></p><br>
->>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
             <input type="submit" value="Log in" >
         </form>    
     </div>

@@ -13,7 +13,6 @@
     </head>
     <body>
         <h1>This is the Add Product page!</h1>
-<<<<<<< HEAD
          <form action="Servlets.addProductServlet" method="post">
             <!-- Product ID self generated -->
             Enter Product Name:<input type="text" name="productNameInput"><br>
@@ -33,9 +32,6 @@
         </form>
         <br><br>
             
-=======
-        
->>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
         <a href="homePage.jsp">Return to Home</a>
         <br><br>
         <a href="Servlets.logoutServlet">logout</a>
