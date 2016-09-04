@@ -36,12 +36,28 @@
         <servlet-class>Servlets.addCustomerServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>addInvoiceServlet</servlet-name>
+        <servlet-class>Servlets.addInvoiceServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>addProductServlet</servlet-name>
+        <servlet-class>Servlets.addProductServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>addToCartServlet</servlet-name>
+        <servlet-class>Servlets.addToCartServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>getCustomerServlet</servlet-name>
         <servlet-class>Servlets.getCustomerServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>getInvoiceServlet</servlet-name>
         <servlet-class>Servlets.getInvoiceServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>getProductServlet</servlet-name>
+        <servlet-class>Servlets.getProductServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>viewCustomerDetailsServlet</servlet-name>
@@ -51,10 +67,13 @@
         <servlet-name>viewInvoiceDetailsServlet</servlet-name>
         <servlet-class>Servlets.viewInvoiceDetailsServlet</servlet-class>
     </servlet>
-    
     <servlet>
         <servlet-name>createRestockOrderServlet</servlet-name>
         <servlet-class>Servlets.createRestockOrderServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>editInvoiceServlet</servlet-name>
+        <servlet-class>Servlets.editInvoiceServlet</servlet-class>
     </servlet>
     
     <!-- Servlet Mapping-->
@@ -76,12 +95,28 @@
         <url-pattern>/Servlets.addCustomerServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>addInvoiceServlet</servlet-name>
+        <url-pattern>/invoice.add</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>addProductServlet</servlet-name>
+        <url-pattern>/Servlets.addProductServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>addToCartServlet</servlet-name>
+        <url-pattern>/addToCart</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>getCustomerServlet</servlet-name>
         <url-pattern>/Servlets.getCustomerServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>getInvoiceServlet</servlet-name>
         <url-pattern>/Servlets.getInvoiceServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getProductServlet</servlet-name>
+        <url-pattern>/Servlets.getProductServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>viewCustomerDetailsServlet</servlet-name>
@@ -91,11 +126,15 @@
         <servlet-name>viewInvoiceDetailsServlet</servlet-name>
         <url-pattern>/Servlets.viewInvoiceDetailsServlet</url-pattern>
     </servlet-mapping>
-    
     <servlet-mapping>
         <servlet-name>createRestockOrderServlet</servlet-name>
         <url-pattern>/Servlets.createRestockOrderServlet</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>editInvoiceServlet</servlet-name>
+        <url-pattern>/invoice.edit</url-pattern>
+    </servlet-mapping>
+    
     <!--Filters-->
     
     <filter>
@@ -107,6 +146,7 @@
         <url-pattern>/addInvoice.jsp</url-pattern>
         <url-pattern>/editInvoice.jsp</url-pattern>
         <url-pattern>/getInvoice.jsp</url-pattern>
+        <url-pattern>/getCustomer.jsp</url-pattern>
     </filter-mapping>
     <filter>
         <filter-name>secretaryFilter</filter-name>
@@ -117,6 +157,7 @@
         <url-pattern>/addCustomer.jsp</url-pattern>
         <url-pattern>/editCustomer.jsp</url-pattern>
         <url-pattern>/getCustomer.jsp</url-pattern>
+        <url-pattern>/getInvoice.jsp</url-pattern>
         <url-pattern>/createAccount.jsp</url-pattern>
     </filter-mapping>
     <filter>

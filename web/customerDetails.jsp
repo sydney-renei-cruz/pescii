@@ -10,6 +10,7 @@
 <%
     customerBean customer = (customerBean)request.getAttribute("customer");
     ArrayList<clinicBean> clinicsList = (ArrayList<clinicBean>)request.getAttribute("clinicsList");
+    ArrayList<invoiceBean> invoicesList = (ArrayList<invoiceBean>)request.getAttribute("invoicesList");
 %>
 <!DOCTYPE html>
 <html>
@@ -22,6 +23,8 @@
         <br><br><br>
         <!--this is the table for the customer details-->
         <h5>Customer Details</h5>
+        
+        
         <table border="1">
             <tr>
                 <th>PRC ID</th>
@@ -37,13 +40,15 @@
                 <td>${customer.getCustomerTelephoneNumber()}</td>
             </tr>
         </table>
-        
-            <br><br><br>
+            
+        <br><br>
+            
             
         <!-- this is the table for the clinics-->
         <h5>Clinics</h5>
         <table border="1">
             <tr>
+                <th>Clinic ID</th>
                 <th>Clinic Name</th>
                 <th>Clinic Address</th>
                 <th>Clinic Phone #</th>
@@ -51,9 +56,34 @@
         
         <c:forEach items="${clinicsList}" var="clin" begin="0" step="1">
             <tr>
+                <td>${clin.getClinicID()}</td>
                 <td>${clin.getClinicName()}</td>
                 <td>${clin.getClinicAddress()}</td>
                 <td>${clin.getClinicPhoneNumber()}</td>
+            </tr>
+        </c:forEach>
+        </table>
+        
+        <br><br>
+         <!-- this table is for the invoices-->
+        <h5>Invoices</h5>
+        <table border="1">
+            <tr>
+                <th>Invoice ID</th>
+                <th>Clinic ID</th>
+                <th>Payment Due Date</th>
+                <th>Date Paid</th>
+                <th>Status</th>
+            </tr>
+        
+        <c:forEach items="${invoicesList}" var="inv" begin="0" step="1">
+            <tr>
+                <td><a href="Servlets.viewInvoiceDetailsServlet?invID=<c:out value="${inv.getInvoiceID()}"/>">${inv.getInvoiceID()}</a></td>
+                <td>${inv.getClinicID()}</td>
+                <td>${inv.getPaymentDueDate()}</td>
+                <td>${inv.getDatePaid()}</td>
+                <td>${inv.getStatus()}</td>
+                <td><a href="Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID=<c:out value="${inv.getInvoiceID()}"/>">Edit Invoice</a></td>
             </tr>
         </c:forEach>
         </table>

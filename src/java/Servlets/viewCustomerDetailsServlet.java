@@ -5,8 +5,7 @@
  */
 package Servlets;
 
-import Beans.customerBean;
-import Beans.clinicBean;
+import Beans.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -22,6 +21,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -44,6 +44,7 @@ public class viewCustomerDetailsServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         
+        HttpSession session = request.getSession();
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
         
@@ -74,14 +75,15 @@ public class viewCustomerDetailsServlet extends HttpServlet {
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          ps.setString(1, inputPRCID);
          
-         ResultSet dbData = ps.executeQuery();
-         dbData.next();
          customerBean cbean = new customerBean();
+         ResultSet dbData = ps.executeQuery();
+         while(dbData.next()){
+         //customerBean cbean = new customerBean();
          cbean.setPRCID(dbData.getString("PRCID"));
          cbean.setCustomerName(dbData.getString("customerName"));
          cbean.setCustomerMobileNumber(dbData.getString("customerMobileNumber"));
          cbean.setCustomerTelephoneNumber(dbData.getString("customerTelephoneNumber"));
-         
+         }
          request.setAttribute("customer", cbean);
          
          //now get the clinic/s
@@ -91,23 +93,57 @@ public class viewCustomerDetailsServlet extends HttpServlet {
          
          ResultSet dbData2 = ps2.executeQuery();
          ArrayList<clinicBean> clinicsRetrieved = new ArrayList<clinicBean>();
-         //retrieve the information.
             while(dbData2.next()){
                 clinicBean clinbean = new clinicBean();
+                clinbean.setClinicID(dbData2.getString("clinicID"));
                 clinbean.setClinicAddress(dbData2.getString("clinicAddress"));
                 clinbean.setClinicPhoneNumber(dbData2.getString("clinicPhoneNumber"));
                 clinbean.setClinicName(dbData2.getString("clinicName"));
                 clinicsRetrieved.add(clinbean);
             }
-         request.setAttribute("clinicsList", clinicsRetrieved);
-         
-         request.getRequestDispatcher("customerDetails.jsp").forward(request,response);
             
+         request.setAttribute("clinicsList", clinicsRetrieved);
+         context.log("size of clinicsRetrieved is " + clinicsRetrieved.size());
          
+         //finally, get the invoices
+         String preparedSQL3 = "select * from Invoice where PRCID = ?";
+         PreparedStatement ps3 = conn.prepareStatement(preparedSQL3);
+         ps3.setString(1,inputPRCID);
+         
+         //later on, you'll just call the Servlets.viewInvoiceDetailsServlet to perform these
+         ResultSet dbData3 = ps3.executeQuery();
+         ArrayList<invoiceBean> invoicesRetrieved = new ArrayList<invoiceBean>();
+         while(dbData3.next()){
+             invoiceBean invBean = new invoiceBean();
+             invBean.setInvoiceID(dbData3.getInt("invoiceID"));
+             invBean.setPRCID(dbData3.getString("PRCID"));
+             invBean.setClinicID(dbData3.getInt("clinicID"));
+             invBean.setInvoiceDate(dbData3.getString("invoiceDate"));
+             invBean.setDeliveryDate(dbData3.getString("deliveryDate"));
+             invBean.setAdditionalAccessories(dbData3.getString("additionalAccessories"));
+             invBean.setTermsOfPayment(dbData3.getString("termsOfPayment"));
+             invBean.setPaymentDueDate(dbData3.getString("paymentDueDate"));
+             invBean.setDatePaid(dbData3.getString("datePaid"));
+             invBean.setDateClosed(dbData3.getString("dateClosed"));
+             invBean.setStatus(dbData3.getString("status"));
+             invBean.setOverdueFee(dbData3.getFloat("overdueFee"));
+             invoicesRetrieved.add(invBean);
+         }
+         
+         request.setAttribute("invoicesList", invoicesRetrieved);
+         context.log("size of invoicesRetrieved is " + invoicesRetrieved.size());
+         
+         
+         if(session.getAttribute("cart")!=null){
+             request.getRequestDispatcher("addInvoice.jsp").forward(request, response);
+         }
+         else{
+            request.getRequestDispatcher("customerDetails.jsp").forward(request,response);
+         }
         }
-        catch(SQLException ex){
+        catch(Exception ex){
             ex.printStackTrace();
-            out.println("SQL error: " + ex);
+            out.println("error: " + ex);
         }
         finally {
             out.close();  // Close the output writer

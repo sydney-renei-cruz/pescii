@@ -46,13 +46,13 @@
         
         <!--this is the Accountant section
                 - the Accountant manages invoice information
-                - once an invoice is created, there are some fields that can no longer be editted.
+                - once an invoice is created, there are some fields that can no longer be edited.
                     - see document to know what these are
         -->
         <c:if test="${accountType == 'Accountant'}">
-            <a href="addInvoice.jsp">Add Invoice</a><br>
-            <a href="editInvoice.jsp">Edit Invoice</a><br>
-            <a href="getInvoice.jsp">View Invoice</a><br><br>
+            <a href="Servlets.getProductServlet?forInvoice=yes">Add Invoice</a><br>
+            <a href="Servlets.getInvoiceServlet">Edit Invoice</a><br>
+            <a href="Servlets.getInvoiceServlet">View Invoice</a><br><br>
             <a href="editAccount.jsp">Edit Account</a><br><br>
         </c:if>
         
@@ -100,8 +100,8 @@
                 - the CEO can do everything
         -->
         <c:if test="${accountType == 'CEO'}">
-            <a href="addInvoice.jsp">Add Invoice</a><br>
-            <a href="editInvoice.jsp">Edit Invoice</a><br>
+            <a href="Servlets.getProductServlet?forInvoice=yes">Add Invoice</a><br>
+            <a href="Servlets.getInvoiceServlet">Edit Invoice</a><br>
             <a href="Servlets.getInvoiceServlet">View Invoice</a><br><br>
             
             <a href="addCustomer.jsp">Add Customer</a><br>
@@ -118,7 +118,7 @@
             <a href="getRestockOrder.jsp">View Restock Order</a><br><br>
         </c:if>
         
-        <a href="getProduct.jsp">View Product</a><br>
+        <a href="Servlets.getProductServlet">View Product</a><br>
         
     </body>
 </html>

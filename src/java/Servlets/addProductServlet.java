@@ -5,33 +5,26 @@
  */
 package Servlets;
 
-import Beans.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author user
  */
-@WebServlet(name = "createRestockOrderServlet", urlPatterns = {"/createRestockOrderServlet"})
-public class createRestockOrderServlet extends HttpServlet {
+@WebServlet(name = "addProductServlet", urlPatterns = {"/addProductServlet"})
+public class addProductServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -45,9 +38,7 @@ public class createRestockOrderServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-           
-        }
+        PrintWriter out = response.getWriter();
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -77,14 +68,14 @@ public class createRestockOrderServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-        
+        //DO NOT CHANGE THESE
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
         
         try {
          Class.forName(context.getInitParameter("jdbcDriver"));
-        } catch(ClassNotFoundException ex) {
+      } catch(ClassNotFoundException ex) {
          ex.printStackTrace();
          out.println("jdbc error: " + ex);
       }
@@ -93,7 +84,7 @@ public class createRestockOrderServlet extends HttpServlet {
         Statement stmt = null;
         
         try{
-            
+        
          conn = DriverManager.getConnection(context.getInitParameter("databaseUrl"), context.getInitParameter("databaseUser"), context.getInitParameter("databasePassword"));
         
          //Allocate a Statement object within the Connection
@@ -102,42 +93,41 @@ public class createRestockOrderServlet extends HttpServlet {
          //---------------
          //THIS IS WHERE YOU START CHANGING
          
-         String preparedSQL = "insert into RestockOrder(restockDateCreated, restockArriveDate, restockCompletedDate, restockCost, supplier) values(?,?,?,?,?)";
-
-             
-         //you don't change this
-         PreparedStatement rs = conn.prepareStatement(preparedSQL);
+         String preparedSQL = "insert into Product(productName, productDescription, productPrice, restockPrice,"
+                 + "stocksRemaining, lowStock, brand, productClass, color) values(?,?,?,?,?,?,?,?,?)";
          
-         java.util.Date myDate = new java.util.Date("10/10/2009");
-         java.sql.Date sqlDate = new java.sql.Date(myDate.getTime());
+         PreparedStatement ps = conn.prepareStatement(preparedSQL);
          
-         
-         String inputDateCreated = request.getParameter("restockDateCreatedInput");
-         String inputArriveDate = request.getParameter("restockDateArriveDateInput");
-         String inputCompletedDate = request.getParameter("restockCompletedDateInput");
-         Float inputCost = Float.parseFloat(request.getParameter("restockCostInput"));
-         String inputSupplier= request.getParameter("supplierInput");
+         String inputProductName = request.getParameter("productNameInput");
+         String inputProductDesc = request.getParameter("productDescInput");
+         float inputProductPrice = Float.parseFloat(request.getParameter("productPriceInput"));
+         float inputRestockPrice = Float.parseFloat(request.getParameter("restockPriceInput"));
+         int inputLowStock = Integer.parseInt(request.getParameter("lowStockInput"));
+         String inputBrand = request.getParameter("brandInput");
+         String inputProductClass = request.getParameter("productClassInput");
+         String inputColor = request.getParameter("colorInput");
          
          
-         rs.setString(1,inputDateCreated);
-         rs.setString(2,inputArriveDate);
-         rs.setString(3,inputCompletedDate);
-         rs.setFloat(4,inputCost);
-         rs.setString(5,inputSupplier);
-         rs.executeUpdate();                   //at this point, you have already inserted into the database
+         ps.setString(1,inputProductName);
+         ps.setString(2,inputProductDesc);
+         ps.setFloat(3,inputProductPrice);
+         ps.setFloat(4,inputRestockPrice);
+         ps.setInt(5,0);
+         ps.setInt(6,inputLowStock);
+         ps.setString(7,inputBrand);
+         ps.setString(8,inputProductClass);
+         ps.setString(9,inputColor);
          
-         String message = "Account successfully created!";
+         ps.executeUpdate();                   //at this point, you have already inserted into the database
+         
+         
+         String message = "Product successfully created!";
          request.setAttribute("message", message);
          request.getRequestDispatcher("homePage.jsp").forward(request,response);
-         
-         
-         
-         
-         
-        
+            
          
         }
-         catch(Exception ex){
+        catch(SQLException ex){
             ex.printStackTrace();
             out.println("SQL error: " + ex);
         }
@@ -153,10 +143,20 @@ public class createRestockOrderServlet extends HttpServlet {
                 out.println("Another SQL error: " + ex);
             }
      }
-    
-    
+        
+        
+        
+        
+        
+        
+        
     }
-    
+
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
     @Override
     public String getServletInfo() {
         return "Short description";

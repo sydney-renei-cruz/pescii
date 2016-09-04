@@ -110,8 +110,14 @@ public class viewInvoiceDetailsServlet extends HttpServlet {
                 invItemsRetrieved.add(invitembean);
             }
          request.setAttribute("invitemsList", invItemsRetrieved);
-         request.getRequestDispatcher("invoiceDetails.jsp").forward(request,response);
-            
+         String editInvoice = "" + request.getParameter("editInvoice");
+         context.log("-->Editting Invoice?"+editInvoice);
+         if(editInvoice.equals("yes")){
+            request.getRequestDispatcher("editInvoice.jsp").forward(request, response);
+         }
+         else{
+            request.getRequestDispatcher("invoiceDetails.jsp").forward(request,response);
+         }   
          
         }
         catch(SQLException ex){

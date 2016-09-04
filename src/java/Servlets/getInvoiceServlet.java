@@ -69,7 +69,13 @@ public class getInvoiceServlet extends HttpServlet {
          
          //---------------
          //THIS IS WHERE YOU START CHANGING
-         String preparedSQL = "select * from Invoice";
+         String preparedSQL;
+         
+         if(request.getParameter("invoiceDate")!=null && request.getParameter("PRCID")!=null){
+             preparedSQL = "select * from Invoice where PRCID="+request.getParameter("PRCID")+" and invoiceDate="+request.getParameter("invoiceDate");
+         }
+         else{preparedSQL = "select * from Invoice";}
+         
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          
          
