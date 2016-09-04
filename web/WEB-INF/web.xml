@@ -127,6 +127,10 @@
         <url-pattern>/Servlets.viewInvoiceDetailsServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>viewProductDetailsServlet</servlet-name>
+        <url-pattern>/product.getDetails</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>createRestockOrderServlet</servlet-name>
         <url-pattern>/Servlets.createRestockOrderServlet</url-pattern>
     </servlet-mapping>

@@ -36,7 +36,16 @@
         <c:forEach items="${productsList}" var="prod" begin="0" step="1" varStatus="status">
             <tr>
                     <td>${prod.getProductID()}</td>
-                    <td>${prod.getProductName()}</td>
+                    <c:choose>
+                        <c:when test="${forInvoice ne 'yes'}">
+                            <td><a href="product.getDetails?prodID=<c:out value="${prod.getProductID()}"/>">${prod.getProductName()}</a></td>
+                        </c:when>
+                        <c:when test="${forInvoice eq 'yes'}">
+                            <td><a href="product.getDetails?forInvoice=yes&prodID=<c:out value="${prod.getProductID()}"/>">${prod.getProductName()}</a></td>
+                        </c:when>
+                    </c:choose>
+                    
+                    
                     <td>${prod.getProductDescription()}</td>
                     <td>${prod.getProductPrice()}</td>
                     <td>${prod.getRestockPrice()}</td>

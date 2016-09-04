@@ -61,7 +61,9 @@
             </select><br>
             <input type="submit" value="Add Invoice">
         </form>
-        
+        <br><br>
+        <a href="Servlets.getCustomerServlet">Return to Customer List</a>
+        <br><br>
         <a href="homePage.jsp">Return to Home</a>
         <br><br>
         <a href="Servlets.logoutServlet">logout</a>

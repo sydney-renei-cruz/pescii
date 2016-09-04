@@ -5,7 +5,7 @@
  */
 package Servlets;
 
-import Beans.*;
+import Beans.productBean;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -27,8 +27,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author user
  */
-@WebServlet(name = "viewProductServlet", urlPatterns = {"/viewProductServlet"})
-public class getProductServlet extends HttpServlet {
+@WebServlet(name = "viewProductDetailsServlet", urlPatterns = {"/viewProductDetailsServlet"})
+public class viewProductDetailsServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -69,42 +69,39 @@ public class getProductServlet extends HttpServlet {
          stmt = conn.createStatement();
          
          //---------------
-         //THIS IS WHERE YOU START CHANGING
-         String preparedSQL = "select * from Product";
+         //first get the customer details
+         String preparedSQL = "select * from Product where productID = ?";
+         String inputProductID = request.getParameter("prodID");
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
+         ps.setString(1, inputProductID);
          
-         
-         
+         productBean pbean = new productBean();
          ResultSet dbData = ps.executeQuery();
-         ArrayList<productBean> productsRetrieved = new ArrayList<productBean>();
-         //retrieve the information.
-            while(dbData.next()){
-               productBean pbean = new productBean();
-                pbean.setProductID(dbData.getString("productID"));
-                pbean.setProductName(dbData.getString("productName"));
-                pbean.setProductDescription(dbData.getString("productDescription"));
-                pbean.setProductPrice(dbData.getFloat("productPrice"));
-                pbean.setRestockPrice(dbData.getFloat("restockPrice"));
-                pbean.setStocksRemaining(dbData.getInt("stocksRemaining"));
-                pbean.setLowStock(dbData.getInt("lowStock"));
-                pbean.setBrand(dbData.getString("brand"));
-                pbean.setProductClass(dbData.getString("productClass"));
-                pbean.setColor(dbData.getString("color"));
-                productsRetrieved.add(pbean);
-            }
-         request.setAttribute("productsList", productsRetrieved);
-         String forInvoice = ""+ request.getParameter("forInvoice");
-         if(forInvoice.equals("yes") || session.getAttribute("cart")!=null){
-             request.setAttribute("forInvoice", "yes");
-             context.log("forInvoice is equal to " + request.getParameter("forInvoice"));
+         while(dbData.next()){
+         //customerBean cbean = new customerBean();
+         pbean.setProductID(dbData.getString("productID"));
+         pbean.setProductName(dbData.getString("productName"));
+         pbean.setProductDescription(dbData.getString("productDescription"));
+         pbean.setProductPrice(dbData.getFloat("productPrice"));
+         pbean.setRestockPrice(dbData.getFloat("restockPrice"));
+         pbean.setStocksRemaining(dbData.getInt("stocksRemaining"));
+         pbean.setLowStock(dbData.getInt("lowStock"));
+         pbean.setBrand(dbData.getString("brand"));
+         pbean.setProductClass(dbData.getString("productClass"));
+         pbean.setColor(dbData.getString("color"));
          }
-         request.getRequestDispatcher("getProduct.jsp").forward(request,response);
-            
+         request.setAttribute("product", pbean);
+         
+         String forInvoice = "" + request.getParameter("forInvoice");
+         if(forInvoice.equals("yes") || session.getAttribute("cart")!=null){
+            request.setAttribute("forInvoice", "yes");
+         }
+         request.getRequestDispatcher("productDetails.jsp").forward(request,response);
          
         }
-        catch(SQLException ex){
+        catch(Exception ex){
             ex.printStackTrace();
-            out.println("SQL error: " + ex);
+            out.println("error: " + ex);
         }
         finally {
             out.close();  // Close the output writer
@@ -118,7 +115,6 @@ public class getProductServlet extends HttpServlet {
                 out.println("Another SQL error: " + ex);
             }
      }
-        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
