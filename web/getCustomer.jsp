@@ -9,7 +9,10 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
     ArrayList<customerBean> customersList = (ArrayList<customerBean>)request.getAttribute("customersList");
+<<<<<<< HEAD
     String addInvoice = ""+request.getAttribute("addInvoice");
+=======
+>>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
 %>
 <!DOCTYPE html>
 <html>
@@ -19,9 +22,12 @@
     </head>
     <body>
         <h1>This is the Get Customer page!</h1>
+<<<<<<< HEAD
         <c:if test="${addInvoice != ''}">
             <h3>Select the customer making the invoice.</h3>
         </c:if>
+=======
+>>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
         <table border="1">
             <tr>
                 <th>PRC ID</th>

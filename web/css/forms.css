@@ -1,0 +1,89 @@
+<style>
+
+body {
+    background-color: #333333;
+    font-family: 'Montserrat-UltraLight', sans-serif;
+    opacity: inherit ; 
+    color: white;
+    font-size: 12px;
+    padding-left: 10px;
+    margin-left: 300px;
+}
+    
+/* Reset top and bottom margins from certain elements */
+.forms-header,
+.forms p {
+  margin-top: 5px;
+  margin-bottom: 0;
+
+}
+
+/* The triangle form is achieved by a CSS hack */
+.forms-triangle {
+  width: 0;
+  margin-right: auto;
+  margin-left: 5px;
+  border: 12px solid transparent;
+  border-bottom-color: #28d;
+}
+
+.forms-header {
+  background: #28d;
+  padding: 20px;
+  font-size: 1.4em;
+  font-weight: normal;
+  text-align: center;
+  text-transform: uppercase;
+  color: white;
+}
+
+.forms-container {
+  background: #ebebeb;
+  padding: 12px;
+}
+
+/* Every row inside .forms-container is defined with p tags */
+.forms p {
+  padding: 12px;
+}
+
+.forms input {
+  box-sizing: border-box;
+  display: block;   
+align-content: center;
+  width: 50%;
+  padding: 16px;
+  outline: 0;
+  font-family: inherit;
+
+}
+
+.forms input[type="email"],
+.forms input[type="password"] {
+  background: #fff;
+  border-color: #bbb;
+  color: white ;
+}
+
+/* Text fields' focus effect */
+.forms input[type="email"]:focus,
+.forms input[type="password"]:focus {
+  border-color: #888;
+}
+
+.forms input[type="submit"] {
+  background: #28d;
+  border-color: transparent;
+  color: #fff;
+  cursor: pointer;
+}
+
+.forms input[type="submit"]:hover {
+  background: #17c;
+}
+
+/* Buttons' focus effect */
+.forms input[type="submit"]:focus {
+  border-color: #05a;
+}
+</style>

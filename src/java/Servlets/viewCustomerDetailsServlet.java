@@ -5,7 +5,12 @@
  */
 package Servlets;
 
+<<<<<<< HEAD
 import Beans.*;
+=======
+import Beans.customerBean;
+import Beans.clinicBean;
+>>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -21,7 +26,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+<<<<<<< HEAD
 import javax.servlet.http.HttpSession;
+=======
+>>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
 
 /**
  *
@@ -44,7 +52,10 @@ public class viewCustomerDetailsServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         
+<<<<<<< HEAD
         HttpSession session = request.getSession();
+=======
+>>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
         
@@ -75,15 +86,25 @@ public class viewCustomerDetailsServlet extends HttpServlet {
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          ps.setString(1, inputPRCID);
          
+<<<<<<< HEAD
          customerBean cbean = new customerBean();
          ResultSet dbData = ps.executeQuery();
          while(dbData.next()){
          //customerBean cbean = new customerBean();
+=======
+         ResultSet dbData = ps.executeQuery();
+         dbData.next();
+         customerBean cbean = new customerBean();
+>>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
          cbean.setPRCID(dbData.getString("PRCID"));
          cbean.setCustomerName(dbData.getString("customerName"));
          cbean.setCustomerMobileNumber(dbData.getString("customerMobileNumber"));
          cbean.setCustomerTelephoneNumber(dbData.getString("customerTelephoneNumber"));
+<<<<<<< HEAD
          }
+=======
+         
+>>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
          request.setAttribute("customer", cbean);
          
          //now get the clinic/s
@@ -93,14 +114,21 @@ public class viewCustomerDetailsServlet extends HttpServlet {
          
          ResultSet dbData2 = ps2.executeQuery();
          ArrayList<clinicBean> clinicsRetrieved = new ArrayList<clinicBean>();
+<<<<<<< HEAD
             while(dbData2.next()){
                 clinicBean clinbean = new clinicBean();
                 clinbean.setClinicID(dbData2.getString("clinicID"));
+=======
+         //retrieve the information.
+            while(dbData2.next()){
+                clinicBean clinbean = new clinicBean();
+>>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
                 clinbean.setClinicAddress(dbData2.getString("clinicAddress"));
                 clinbean.setClinicPhoneNumber(dbData2.getString("clinicPhoneNumber"));
                 clinbean.setClinicName(dbData2.getString("clinicName"));
                 clinicsRetrieved.add(clinbean);
             }
+<<<<<<< HEAD
             
          request.setAttribute("clinicsList", clinicsRetrieved);
          context.log("size of clinicsRetrieved is " + clinicsRetrieved.size());
@@ -144,6 +172,17 @@ public class viewCustomerDetailsServlet extends HttpServlet {
         catch(Exception ex){
             ex.printStackTrace();
             out.println("error: " + ex);
+=======
+         request.setAttribute("clinicsList", clinicsRetrieved);
+         
+         request.getRequestDispatcher("customerDetails.jsp").forward(request,response);
+            
+         
+        }
+        catch(SQLException ex){
+            ex.printStackTrace();
+            out.println("SQL error: " + ex);
+>>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
         }
         finally {
             out.close();  // Close the output writer

@@ -29,11 +29,18 @@
         
         <c:forEach items="${invoiceList}" var="inv" begin="0" step="1" varStatus="status">
             <tr>
+<<<<<<< HEAD
                 <td><a href="Servlets.viewInvoiceDetailsServlet?editInvoice=no&invID=<c:out value="${inv.getInvoiceID()}"/>">${inv.getInvoiceID()}</a></td>
                 <td>${inv.getPRCID()}</td>
                 <td>${inv.getClinicID()}</td>
                 <td>${inv.getInvoiceDate()}</td>
                 <td><a href="Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID=<c:out value="${inv.getInvoiceID()}"/>">Edit Invoice</a></td>
+=======
+                <td><a href="Servlets.viewInvoiceDetailsServlet?invID=<c:out value="${inv.getInvoiceID()}"/>">${inv.getInvoiceID()}</a></td>
+                <td>${inv.getPRCID()}</td>
+                <td>${inv.getClinicID()}</td>
+                <td>${inv.getInvoiceDate()}</td>
+>>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
             </tr>
         </c:forEach>
         </table>

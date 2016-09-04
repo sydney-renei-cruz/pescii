@@ -4,12 +4,16 @@
     Author     : user
 --%>
 
+<<<<<<< HEAD
 <%@page import="Beans.*,java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
     invoiceBean invoice = (invoiceBean)request.getAttribute("invoice");
 %>
+=======
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+>>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
 <!DOCTYPE html>
 <html>
     <head>
@@ -18,6 +22,7 @@
     </head>
     <body>
         <h1>This is the Edit Invoice page!</h1>
+<<<<<<< HEAD
         
         <br><br><br>
         <!--show the invoice details so users can have an easier time-->
@@ -120,6 +125,9 @@
         <br><br>
         <a href="Servlets.getInvoiceServlet">Return to list of Invoices</a>
         <br><br>
+=======
+
+>>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
         <a href="homePage.jsp">Return to Home</a>
         <br><br>
         <a href="Servlets.logoutServlet">logout</a>

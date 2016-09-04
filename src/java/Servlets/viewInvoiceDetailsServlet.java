@@ -110,6 +110,7 @@ public class viewInvoiceDetailsServlet extends HttpServlet {
                 invItemsRetrieved.add(invitembean);
             }
          request.setAttribute("invitemsList", invItemsRetrieved);
+<<<<<<< HEAD
          String editInvoice = "" + request.getParameter("editInvoice");
          context.log("-->Editting Invoice?"+editInvoice);
          if(editInvoice.equals("yes")){
@@ -118,6 +119,10 @@ public class viewInvoiceDetailsServlet extends HttpServlet {
          else{
             request.getRequestDispatcher("invoiceDetails.jsp").forward(request,response);
          }   
+=======
+         request.getRequestDispatcher("invoiceDetails.jsp").forward(request,response);
+            
+>>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
          
         }
         catch(SQLException ex){

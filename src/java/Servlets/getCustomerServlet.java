@@ -21,7 +21,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+<<<<<<< HEAD
 import javax.servlet.http.HttpSession;
+=======
+>>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
 
 /**
  *
@@ -44,7 +47,11 @@ public class getCustomerServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         
+<<<<<<< HEAD
         HttpSession session = request.getSession();
+=======
+        
+>>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
         
@@ -85,11 +92,17 @@ public class getCustomerServlet extends HttpServlet {
                 customersRetrieved.add(data);
             }
             request.setAttribute("customersList", customersRetrieved);
+<<<<<<< HEAD
             if(session.getAttribute("cart")!=null){
                 request.setAttribute("addInvoice", "yes");
             }
             request.getRequestDispatcher("getCustomer.jsp").forward(request,response);
          
+=======
+            request.getRequestDispatcher("getCustomer.jsp").forward(request,response);
+         
+         
+>>>>>>> 6c76f4a4ff7cd215e69507498bd92d6a2cd82aeb
         }
         catch(Exception ex){
             ex.printStackTrace();
