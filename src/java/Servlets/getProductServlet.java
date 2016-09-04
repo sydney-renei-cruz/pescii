@@ -21,14 +21,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author user
  */
-@WebServlet(name = "viewCustomerServlet", urlPatterns = {"/viewCustomerServlet"})
-public class getCustomerServlet extends HttpServlet {
+@WebServlet(name = "viewProductServlet", urlPatterns = {"/viewProductServlet"})
+public class getProductServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -44,7 +43,7 @@ public class getCustomerServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         
-        HttpSession session = request.getSession();
+        
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
         
@@ -70,30 +69,41 @@ public class getCustomerServlet extends HttpServlet {
          
          //---------------
          //THIS IS WHERE YOU START CHANGING
-         String preparedSQL = "select * from Customer";
+         String preparedSQL = "select * from Product";
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          
+         
+         
          ResultSet dbData = ps.executeQuery();
-         ArrayList<customerBean> customersRetrieved = new ArrayList<customerBean>();
+         ArrayList<productBean> productsRetrieved = new ArrayList<productBean>();
          //retrieve the information.
             while(dbData.next()){
-                customerBean data = new customerBean();
-                data.setPRCID(dbData.getString("PRCID"));
-                data.setCustomerName(dbData.getString("customerName"));
-                data.setCustomerMobileNumber(dbData.getString("customerMobileNumber"));
-                data.setCustomerTelephoneNumber(dbData.getString("customerTelephoneNumber"));
-                customersRetrieved.add(data);
+               productBean pbean = new productBean();
+                pbean.setProductID(dbData.getString("productID"));
+                pbean.setProductName(dbData.getString("productName"));
+                pbean.setProductDescription(dbData.getString("productDescription"));
+                pbean.setProductPrice(dbData.getFloat("productPrice"));
+                pbean.setRestockPrice(dbData.getFloat("restockPrice"));
+                pbean.setStocksRemaining(dbData.getInt("stocksRemaining"));
+                pbean.setLowStock(dbData.getInt("lowStock"));
+                pbean.setBrand(dbData.getString("brand"));
+                pbean.setProductClass(dbData.getString("productClass"));
+                pbean.setColor(dbData.getString("color"));
+                productsRetrieved.add(pbean);
+                /* Is it .getInt (for int), .getFloat (for Float)*/
             }
-            request.setAttribute("customersList", customersRetrieved);
-            if(session.getAttribute("cart")!=null){
-                request.setAttribute("addInvoice", "yes");
-            }
-            request.getRequestDispatcher("getCustomer.jsp").forward(request,response);
+         request.setAttribute("productsList", productsRetrieved);
+         if(request.getParameter("forInvoice")!=null){
+             request.setAttribute("forInvoice", "yes");
+            context.log("forInvoice is equal to " + request.getParameter("forInvoice"));
+         }
+         request.getRequestDispatcher("getProduct.jsp").forward(request,response);
+            
          
         }
-        catch(Exception ex){
+        catch(SQLException ex){
             ex.printStackTrace();
-            out.println("error: " + ex);
+            out.println("SQL error: " + ex);
         }
         finally {
             out.close();  // Close the output writer
@@ -107,9 +117,6 @@ public class getCustomerServlet extends HttpServlet {
                 out.println("Another SQL error: " + ex);
             }
      }
-        
-        
-        
         
     }
 
