@@ -50,7 +50,7 @@
                     - see document to know what these are
         -->
         <c:if test="${accountType == 'Accountant'}">
-            <a href="Servlets.getProductServlet?forInvoice=yes">Add Invoice</a><br>
+            <a href="Servlets.getProductServlet?forInvoice=yes">Create Invoice</a><br>
             <a href="Servlets.getInvoiceServlet">Edit Invoice</a><br>
             <a href="Servlets.getInvoiceServlet">View Invoice</a><br><br>
             <a href="editAccount.jsp">Edit Account</a><br><br>
@@ -81,7 +81,7 @@
             
             <a href="createRestockOrder.jsp">Add Restock Order</a><br>
             <a href="editRestockOrder.jsp">Edit Restock Order</a><br>
-            <a href="getRestockOrder.jsp">View Restock Order</a><br><br>
+            <a href="restockOrder.get">View Restock Order</a><br><br>
             
             <a href="editAccount.jsp">Edit Account</a><br><br>
         </c:if>
@@ -92,7 +92,7 @@
         -->
         <c:if test="${accountType == 'Auditor'}">
             <a href="editRestockOrder.jsp">Edit Restock Order</a><br>
-            <a href="getRestockOrder.jsp">View Restock Order</a><br>
+            <a href="restockOrder.get">View Restock Order</a><br><br>
             <a href="editAccount.jsp">Edit Account</a><br><br>
         </c:if>  
         
@@ -100,7 +100,7 @@
                 - the CEO can do everything
         -->
         <c:if test="${accountType == 'CEO'}">
-            <a href="Servlets.getProductServlet?forInvoice=yes">Add Invoice</a><br>
+            <a href="Servlets.getProductServlet?forInvoice=yes">Create Invoice</a><br>
             <a href="Servlets.getInvoiceServlet">Edit Invoice</a><br>
             <a href="Servlets.getInvoiceServlet">View Invoice</a><br><br>
             
@@ -115,7 +115,7 @@
             <a href="editProduct.jsp">Edit Product</a><br>
             <a href="createRestockOrder.jsp">Add Restock Order</a><br>
             <a href="editRestockOrder.jsp">Edit Restock Order</a><br>
-            <a href="getRestockOrder.jsp">View Restock Order</a><br><br>
+            <a href="restockOrder.get">View Restock Order</a><br><br>
         </c:if>
         
         <a href="Servlets.getProductServlet">View Product</a><br>

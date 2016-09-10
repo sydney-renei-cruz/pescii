@@ -62,7 +62,7 @@
         
         <c:choose>
             <c:when test="${forInvoice ne 'yes'}">
-                <a href="Servlets.getProductServlet">Return to Products list</a>
+                <a href="Servlets.getProductServlet">Go to Products list</a>
             </c:when>
             <c:when test="${forInvoice eq 'yes'}">
                 <a href="Servlets.getProductServlet?forInvoice=yes">Return to Products list</a>

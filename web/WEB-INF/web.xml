@@ -60,12 +60,20 @@
         <servlet-class>Servlets.getProductServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>getRestockOrderServlet</servlet-name>
+        <servlet-class>Servlets.getRestockOrderServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>viewCustomerDetailsServlet</servlet-name>
         <servlet-class>Servlets.viewCustomerDetailsServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>viewInvoiceDetailsServlet</servlet-name>
         <servlet-class>Servlets.viewInvoiceDetailsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>viewRODetailsServlet</servlet-name>
+        <servlet-class>Servlets.viewRODetailsServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>createRestockOrderServlet</servlet-name>
@@ -119,6 +127,10 @@
         <url-pattern>/Servlets.getProductServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>getRestockOrderServlet</servlet-name>
+        <url-pattern>/restockOrder.get</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>viewCustomerDetailsServlet</servlet-name>
         <url-pattern>/Servlets.viewCustomerDetailsServlet</url-pattern>
     </servlet-mapping>
@@ -129,6 +141,10 @@
     <servlet-mapping>
         <servlet-name>viewProductDetailsServlet</servlet-name>
         <url-pattern>/product.getDetails</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>viewRODetailsServlet</servlet-name>
+        <url-pattern>/restockOrder.getDetails</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>createRestockOrderServlet</servlet-name>
