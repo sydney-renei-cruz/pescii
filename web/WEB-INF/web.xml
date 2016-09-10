@@ -83,6 +83,10 @@
         <servlet-name>editInvoiceServlet</servlet-name>
         <servlet-class>Servlets.editInvoiceServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>editCustomerServlet</servlet-name>
+        <servlet-class>Servlets.editCustomerServlet</servlet-class>
+    </servlet>
     
     <!-- Servlet Mapping-->
     
@@ -153,6 +157,10 @@
     <servlet-mapping>
         <servlet-name>editInvoiceServlet</servlet-name>
         <url-pattern>/invoice.edit</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>editCustomerServlet</servlet-name>
+        <url-pattern>/customer.edit</url-pattern>
     </servlet-mapping>
     
     <!--Filters-->

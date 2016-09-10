@@ -133,9 +133,12 @@ public class viewCustomerDetailsServlet extends HttpServlet {
          request.setAttribute("invoicesList", invoicesRetrieved);
          context.log("size of invoicesRetrieved is " + invoicesRetrieved.size());
          
-         
+         String forEdit = ""+request.getParameter("forEdit");
          if(session.getAttribute("cart")!=null){
              request.getRequestDispatcher("addInvoice.jsp").forward(request, response);
+         }
+         else if(forEdit.equals("yes")){
+             request.getRequestDispatcher("editCustomer.jsp").forward(request, response);
          }
          else{
             request.getRequestDispatcher("customerDetails.jsp").forward(request,response);
