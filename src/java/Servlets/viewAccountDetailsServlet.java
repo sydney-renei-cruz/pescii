@@ -5,7 +5,7 @@
  */
 package Servlets;
 
-import Beans.*;
+import Beans.accountBean;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -14,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -26,8 +27,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author user
  */
-@WebServlet(name = "viewRODetailsServlet", urlPatterns = {"/viewRODetailsServlet"})
-public class viewRODetailsServlet extends HttpServlet {
+@WebServlet(name = "viewAccountDetailsServlet", urlPatterns = {"/viewAccountDetailsServlet"})
+public class viewAccountDetailsServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,7 +44,6 @@ public class viewRODetailsServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         
-        HttpSession session = request.getSession();
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
         
@@ -68,56 +68,26 @@ public class viewRODetailsServlet extends HttpServlet {
          stmt = conn.createStatement();
          
          //---------------
-         //first get the RestockOrder details
-         String preparedSQL = "select * from RestockOrder where restockOrderID = ?";
-         String inputRestockOrderID = request.getParameter("restockID");
+         //first get the customer details
+         String preparedSQL = "select * from Account where accountID = ?";
+         String inputAccountID = request.getParameter("accID");
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
-         ps.setString(1, inputRestockOrderID);
+         ps.setString(1, inputAccountID);
          
-         restockOrderBean rbean = new restockOrderBean();
+         accountBean abean = new accountBean();
          ResultSet dbData = ps.executeQuery();
          while(dbData.next()){
-            rbean.setRestockOrderID(dbData.getInt("restockOrderID"));
-            rbean.setProductID(dbData.getInt("productID"));
-            rbean.setNumberOfPiecesOrdered(dbData.getInt("numberOfPiecesOrdered"));
-            rbean.setNumberOfPiecesReceived(dbData.getInt("numberOfPiecesReceived"));
-            rbean.setSupplier(dbData.getString("supplier"));
-            rbean.setPurpose(dbData.getString("purpose"));
-            rbean.setRODateCreated(dbData.getString("RODateCreated"));
-            rbean.setRODateDelivered(dbData.getString("RODateDelivered"));
+         //customerBean cbean = new customerBean();
+         abean.setAccountID(dbData.getInt("accountID"));
+         abean.setUserName(dbData.getString("userName"));
+         abean.setPassword(dbData.getString("password"));
+         abean.setAccountStatus(dbData.getString("accountStatus"));
+         abean.setAccountType(dbData.getString("accountType"));
          }
-         request.setAttribute("restockOrder", rbean);
-         context.log("ID IIIIIISSS: " + rbean.getRestockOrderID());
+         request.setAttribute("account", abean);
          
-         //now you get the Product's details
-         preparedSQL = "select * from Product where productID = ?";
-         int inputProductID = rbean.getProductID();
-         ps = conn.prepareStatement(preparedSQL);
-         ps.setInt(1, inputProductID);
+         request.getRequestDispatcher("editAccount.jsp").forward(request,response);
          
-         productBean pbean = new productBean();
-         dbData = ps.executeQuery();
-         while(dbData.next()){
-            pbean.setProductID(dbData.getString("productID"));
-            pbean.setProductName(dbData.getString("productName"));
-            pbean.setProductDescription(dbData.getString("productDescription"));
-            pbean.setProductPrice(dbData.getFloat("productPrice"));
-            pbean.setRestockPrice(dbData.getFloat("restockPrice"));
-            pbean.setStocksRemaining(dbData.getInt("stocksRemaining"));
-            pbean.setLowStock(dbData.getInt("lowStock"));
-            pbean.setBrand(dbData.getString("brand"));
-            pbean.setProductClass(dbData.getString("productClass"));
-            pbean.setColor(dbData.getString("color"));
-         }
-         request.setAttribute("product", pbean);
-         
-         String editRestock = ""+request.getParameter("editRestock");
-         if(editRestock.equals("yes")) {
-             request.getRequestDispatcher("editRestockOrder.jsp").forward(request,response);
-         }
-         else{
-             request.getRequestDispatcher("restockOrderDetails.jsp").forward(request,response);
-         }
         }
         catch(Exception ex){
             ex.printStackTrace();

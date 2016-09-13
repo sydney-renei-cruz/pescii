@@ -5,7 +5,7 @@
  */
 package Servlets;
 
-import Beans.*;
+import Beans.clinicBean;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -20,14 +20,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author user
  */
-@WebServlet(name = "viewRODetailsServlet", urlPatterns = {"/viewRODetailsServlet"})
-public class viewRODetailsServlet extends HttpServlet {
+@WebServlet(name = "getClinicServlet", urlPatterns = {"/getClinicServlet"})
+public class getClinicServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,10 +42,9 @@ public class viewRODetailsServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         
-        HttpSession session = request.getSession();
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
-        
+        context.log("HEEEEEERE!!!!!");
         try {
          Class.forName(context.getInitParameter("jdbcDriver"));
       } catch(ClassNotFoundException ex) {
@@ -68,56 +66,25 @@ public class viewRODetailsServlet extends HttpServlet {
          stmt = conn.createStatement();
          
          //---------------
-         //first get the RestockOrder details
-         String preparedSQL = "select * from RestockOrder where restockOrderID = ?";
-         String inputRestockOrderID = request.getParameter("restockID");
-         PreparedStatement ps = conn.prepareStatement(preparedSQL);
-         ps.setString(1, inputRestockOrderID);
          
-         restockOrderBean rbean = new restockOrderBean();
+         String preparedSQL = "select * from Clinic where clinicID=?";
+         String inputClinID = request.getParameter("clinID");
+         PreparedStatement ps = conn.prepareStatement(preparedSQL);
+         ps.setString(1, inputClinID);
+
+         clinicBean cbean = new clinicBean();
          ResultSet dbData = ps.executeQuery();
          while(dbData.next()){
-            rbean.setRestockOrderID(dbData.getInt("restockOrderID"));
-            rbean.setProductID(dbData.getInt("productID"));
-            rbean.setNumberOfPiecesOrdered(dbData.getInt("numberOfPiecesOrdered"));
-            rbean.setNumberOfPiecesReceived(dbData.getInt("numberOfPiecesReceived"));
-            rbean.setSupplier(dbData.getString("supplier"));
-            rbean.setPurpose(dbData.getString("purpose"));
-            rbean.setRODateCreated(dbData.getString("RODateCreated"));
-            rbean.setRODateDelivered(dbData.getString("RODateDelivered"));
+           cbean.setClinicID(dbData.getString("clinicID"));
+           cbean.setPRCID(dbData.getString("PRCID"));
+           cbean.setClinicAddress(dbData.getString("clinicAddress"));
+           cbean.setClinicPhoneNumber(dbData.getString("clinicPhoneNumber"));
+           cbean.setClinicName(dbData.getString("clinicName"));
          }
-         request.setAttribute("restockOrder", rbean);
-         context.log("ID IIIIIISSS: " + rbean.getRestockOrderID());
-         
-         //now you get the Product's details
-         preparedSQL = "select * from Product where productID = ?";
-         int inputProductID = rbean.getProductID();
-         ps = conn.prepareStatement(preparedSQL);
-         ps.setInt(1, inputProductID);
-         
-         productBean pbean = new productBean();
-         dbData = ps.executeQuery();
-         while(dbData.next()){
-            pbean.setProductID(dbData.getString("productID"));
-            pbean.setProductName(dbData.getString("productName"));
-            pbean.setProductDescription(dbData.getString("productDescription"));
-            pbean.setProductPrice(dbData.getFloat("productPrice"));
-            pbean.setRestockPrice(dbData.getFloat("restockPrice"));
-            pbean.setStocksRemaining(dbData.getInt("stocksRemaining"));
-            pbean.setLowStock(dbData.getInt("lowStock"));
-            pbean.setBrand(dbData.getString("brand"));
-            pbean.setProductClass(dbData.getString("productClass"));
-            pbean.setColor(dbData.getString("color"));
-         }
-         request.setAttribute("product", pbean);
-         
-         String editRestock = ""+request.getParameter("editRestock");
-         if(editRestock.equals("yes")) {
-             request.getRequestDispatcher("editRestockOrder.jsp").forward(request,response);
-         }
-         else{
-             request.getRequestDispatcher("restockOrderDetails.jsp").forward(request,response);
-         }
+         request.setAttribute("clinic", cbean);
+
+         request.getRequestDispatcher("editClinic.jsp").forward(request,response);
+
         }
         catch(Exception ex){
             ex.printStackTrace();

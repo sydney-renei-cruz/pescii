@@ -34,7 +34,7 @@
                 <td>${ro.getSupplier()}</td>
                 <td>${ro.getRODateCreated()}</td>
                 <td>${ro.getRODateDelivered()}</td>
-                <td><a href="restockOrder.getDetails?editInvoice=yes&restockID=<c:out value="${ro.getRestockOrderID()}"/>">Edit RO</a></td>
+                <td><a href="restockOrder.getDetails?editRestock=yes&restockID=<c:out value="${ro.getRestockOrderID()}"/>">Edit RO</a></td>
             </tr>
         </c:forEach>
         </table>

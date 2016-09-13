@@ -5,7 +5,7 @@
  */
 package Servlets;
 
-import Beans.*;
+import Beans.accountBean;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -15,7 +15,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -28,8 +27,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author user
  */
-@WebServlet(name = "logInServlet", urlPatterns = {"/logInServlet"})
-public class logInServlet extends HttpServlet {
+@WebServlet(name = "getAccountServlet", urlPatterns = {"/getAccountServlet"})
+public class getAccountServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,6 +42,80 @@ public class logInServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        
+        HttpSession session = request.getSession();
+        ServletContext context = request.getSession().getServletContext();
+        response.setContentType("text/html");
+        
+        try {
+         Class.forName(context.getInitParameter("jdbcDriver"));
+      } catch(ClassNotFoundException ex) {
+         ex.printStackTrace();
+         out.println("jdbc error: " + ex);
+      }
+        
+        Connection conn = null;
+        Statement stmt = null;
+        
+        try{
+        //Allocate a database Connection object
+         //This uses the pageContext servlet.  Look at Web.xml for the params!
+         //This means we don't need to recompile!
+         
+         conn = DriverManager.getConnection(context.getInitParameter("databaseUrl"), context.getInitParameter("databaseUser"), context.getInitParameter("databasePassword"));
+        
+         //Allocate a Statement object within the Connection
+         stmt = conn.createStatement();
+         
+         //---------------
+         //THIS IS WHERE YOU START CHANGING
+         String accountType = ""+session.getAttribute("accountType");
+         String preparedSQL = "select * from Account";
+         if(accountType.equals("Secretary") || accountType.equals("CEO")){
+             preparedSQL = "select * from Account";
+         }
+         else{
+             String accountID = ""+session.getAttribute("accountID");
+             preparedSQL = "select * from Account where accountID="+accountID;
+         }
+         PreparedStatement ps = conn.prepareStatement(preparedSQL);
+         
+         
+         
+         ResultSet dbData = ps.executeQuery();
+         ArrayList<accountBean> accountsRetrieved = new ArrayList<accountBean>();
+         //retrieve the information.
+            while(dbData.next()){
+               accountBean abean = new accountBean();
+                abean.setAccountID(dbData.getInt("accountID"));
+                abean.setUserName(dbData.getString("userName"));
+                abean.setPassword(dbData.getString("password"));
+                abean.setAccountStatus(dbData.getString("accountStatus"));
+                abean.setAccountType(dbData.getString("accountType"));
+                accountsRetrieved.add(abean);
+            }
+         request.setAttribute("accountsList", accountsRetrieved);
+         
+         request.getRequestDispatcher("getAccount.jsp").forward(request,response);
+            
+        }
+        catch(Exception ex){
+            ex.printStackTrace();
+            out.println("SQL error: " + ex);
+        }
+        finally {
+            out.close();  // Close the output writer
+            try {
+              //Close the resources
+              if (stmt != null) stmt.close();
+              if (conn != null) conn.close();
+            }
+            catch (SQLException ex) {
+                ex.printStackTrace();
+                out.println("Another SQL error: " + ex);
+            }
+     }
         
         
     }
@@ -74,96 +147,6 @@ public class logInServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-        
-        RequestDispatcher rd = null;
-        
-        PrintWriter out = response.getWriter();
-        
-        String username = request.getParameter("usernameInput");
-        String password = request.getParameter("passwordInput");
-        
-        ServletContext context = request.getSession().getServletContext();
-        response.setContentType("text/html");
-        
-        try {
-         Class.forName(context.getInitParameter("jdbcDriver"));
-      } catch(ClassNotFoundException ex) {
-         ex.printStackTrace();
-         out.println("jdbc error: " + ex);
-      }
-        
-        Connection conn = null;
-        Statement stmt = null;
-        
-        try{
-        //Allocate a database Connection object
-         //This uses the pageContext servlet.  Look at Web.xml for the params!
-         //This means we don't need to recompile!
-         
-         conn = DriverManager.getConnection(context.getInitParameter("databaseUrl"), context.getInitParameter("databaseUser"), context.getInitParameter("databasePassword"));
-        
-         //Allocate a Statement object within the Connection
-         stmt = conn.createStatement();
-         stmt = conn.createStatement();
-         //---------------
-         String preparedSQL = "select * from Account where userName = ? and password = ?";
-         
-         PreparedStatement ps = conn.prepareStatement(preparedSQL);
-         
-         ps.setString(1, username);
-         ps.setString(2, password);
-         ResultSet dbData = ps.executeQuery();
-         String message = "";
-         if (!dbData.isBeforeFirst()){
-             //response.sendRedirect("index.jsp");
-             message = "Username or password is incorrect.";
-             request.setAttribute("message", message);
-             request.getRequestDispatcher("logIn.jsp").forward(request, response);
-         }
-         else {
-            dbData.next();
-            if((dbData.getString("accountStatus")).equals("Deactivated")){
-                message = "The specified account is deactivated and unusable.";
-                //response.sendRedirect("index.jsp");
-                request.setAttribute("message", message);
-                request.getRequestDispatcher("logIn.jsp").forward(request, response);
-                
-            }
-            else{
-                message = "did it! Username is "+username+"!";
-                HttpSession session = request.getSession();
-                session.setAttribute("accountID", dbData.getInt("accountID"));
-                session.setAttribute("userName", username);
-                session.setAttribute("accountType", dbData.getString("accountType"));
-                session.setAttribute("state", "logged in");
-                //request.setAttribute("message", message);
-                request.getRequestDispatcher("homePage.jsp").forward(request,response);
-            }
-         }
-         
-         
-        }
-        catch(SQLException ex){
-            ex.printStackTrace();
-            out.println("SQL error: " + ex);
-        }
-        finally {
-            out.close();  // Close the output writer
-            try {
-              //Close the resources
-              if (stmt != null) stmt.close();
-              if (conn != null) conn.close();
-            }
-            catch (SQLException ex) {
-                ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
-            }
-     }
-        
-        
-        
-        
-        
     }
 
     /**

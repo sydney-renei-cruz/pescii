@@ -5,31 +5,28 @@
  */
 package Servlets;
 
-import Beans.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import javax.servlet.RequestDispatcher;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author user
  */
-@WebServlet(name = "logInServlet", urlPatterns = {"/logInServlet"})
-public class logInServlet extends HttpServlet {
+@WebServlet(name = "editRestockOrderServlet", urlPatterns = {"/editRestockOrderServlet"})
+public class editRestockOrderServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,7 +40,7 @@ public class logInServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
+         PrintWriter out = response.getWriter();
         
     }
 
@@ -74,13 +71,7 @@ public class logInServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-        
-        RequestDispatcher rd = null;
-        
-        PrintWriter out = response.getWriter();
-        
-        String username = request.getParameter("usernameInput");
-        String password = request.getParameter("passwordInput");
+         PrintWriter out = response.getWriter();
         
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
@@ -104,43 +95,35 @@ public class logInServlet extends HttpServlet {
         
          //Allocate a Statement object within the Connection
          stmt = conn.createStatement();
-         stmt = conn.createStatement();
+         
          //---------------
-         String preparedSQL = "select * from Account where userName = ? and password = ?";
+         //first get the invoice details
+         //String preparedSQL = "update RestockOrder set numberOfPiecesOrdered=?, numberOfPiecesReceived=?, supplier=?, purpose=?, RODateCreated=?, RODateDelivered=?"
+         //                       + "where restockOrderID=?";
+         String preparedSQL = "update RestockOrder set numberOfPiecesOrdered=?, numberOfPiecesReceived=?, supplier=?, purpose=?, RODateDelivered=? where restockOrderID=?";
+         
+         int newNumberOfPiecesOrdered = Integer.parseInt(request.getParameter("numberOfPiecesOrderedInput"));
+         int newNumberOfPiecesReceived = Integer.parseInt(request.getParameter("numberOfPiecesReceivedInput"));
+         String newSupplier = request.getParameter("supplierInput");
+         String newPurpose = request.getParameter("purposeInput");
+         String newRODateDelivered = request.getParameter("roDateDeliveredInput");
+         String inputRestockOrderID = request.getParameter("restockOrderIDInput");
          
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
+         ps.setInt(1,newNumberOfPiecesOrdered);
+         ps.setInt(2,newNumberOfPiecesReceived);
+         ps.setString(3,newSupplier);
+         ps.setString(4,newPurpose);
+         ps.setString(5,newRODateDelivered);
+         ps.setString(6,inputRestockOrderID);
          
-         ps.setString(1, username);
-         ps.setString(2, password);
-         ResultSet dbData = ps.executeQuery();
-         String message = "";
-         if (!dbData.isBeforeFirst()){
-             //response.sendRedirect("index.jsp");
-             message = "Username or password is incorrect.";
-             request.setAttribute("message", message);
-             request.getRequestDispatcher("logIn.jsp").forward(request, response);
-         }
-         else {
-            dbData.next();
-            if((dbData.getString("accountStatus")).equals("Deactivated")){
-                message = "The specified account is deactivated and unusable.";
-                //response.sendRedirect("index.jsp");
-                request.setAttribute("message", message);
-                request.getRequestDispatcher("logIn.jsp").forward(request, response);
-                
-            }
-            else{
-                message = "did it! Username is "+username+"!";
-                HttpSession session = request.getSession();
-                session.setAttribute("accountID", dbData.getInt("accountID"));
-                session.setAttribute("userName", username);
-                session.setAttribute("accountType", dbData.getString("accountType"));
-                session.setAttribute("state", "logged in");
-                //request.setAttribute("message", message);
-                request.getRequestDispatcher("homePage.jsp").forward(request,response);
-            }
-         }
+         ps.executeUpdate();
          
+         context.log("--->Restock Order successfully updated. RestockID is: "+inputRestockOrderID);
+         
+         
+         request.setAttribute("message", "Restock Order successfully editted!");
+         request.getRequestDispatcher("homePage.jsp").forward(request,response);
          
         }
         catch(SQLException ex){
@@ -159,11 +142,6 @@ public class logInServlet extends HttpServlet {
                 out.println("Another SQL error: " + ex);
             }
      }
-        
-        
-        
-        
-        
     }
 
     /**

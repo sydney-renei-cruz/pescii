@@ -29,10 +29,10 @@
             
             <br><input type="submit" value="Save Changes">
         </form>
-        
-            <a href="homePage.jsp">Return to Home</a>
-            <br><br>
-            <a href="Servlets.logoutServlet">logout</a>
+
+        <a href="homePage.jsp">Return to Home</a>
+        <br><br>
+        <a href="Servlets.logoutServlet">logout</a>
         
     </body>
 </html>
