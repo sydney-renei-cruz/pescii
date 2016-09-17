@@ -5,8 +5,7 @@
  */
 package Servlets;
 
-import Beans.invoiceBean;
-import Beans.invoiceItemBean;
+import Beans.accountBean;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -15,22 +14,21 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author user
  */
-@WebServlet(name = "editInvoiceServlet", urlPatterns = {"/editInvoiceServlet"})
-public class editInvoiceServlet extends HttpServlet {
+@WebServlet(name = "getAccountServlet", urlPatterns = {"/getAccountServlet"})
+public class getAccountServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -45,6 +43,81 @@ public class editInvoiceServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
+        
+        HttpSession session = request.getSession();
+        ServletContext context = request.getSession().getServletContext();
+        response.setContentType("text/html");
+        
+        try {
+         Class.forName(context.getInitParameter("jdbcDriver"));
+      } catch(ClassNotFoundException ex) {
+         ex.printStackTrace();
+         out.println("jdbc error: " + ex);
+      }
+        
+        Connection conn = null;
+        Statement stmt = null;
+        
+        try{
+        //Allocate a database Connection object
+         //This uses the pageContext servlet.  Look at Web.xml for the params!
+         //This means we don't need to recompile!
+         
+         conn = DriverManager.getConnection(context.getInitParameter("databaseUrl"), context.getInitParameter("databaseUser"), context.getInitParameter("databasePassword"));
+        
+         //Allocate a Statement object within the Connection
+         stmt = conn.createStatement();
+         
+         //---------------
+         //THIS IS WHERE YOU START CHANGING
+         String accountType = ""+session.getAttribute("accountType");
+         String preparedSQL = "select * from Account";
+         if(accountType.equals("Secretary") || accountType.equals("CEO")){
+             preparedSQL = "select * from Account";
+         }
+         else{
+             String accountID = ""+session.getAttribute("accountID");
+             preparedSQL = "select * from Account where accountID="+accountID;
+         }
+         PreparedStatement ps = conn.prepareStatement(preparedSQL);
+         
+         
+         
+         ResultSet dbData = ps.executeQuery();
+         ArrayList<accountBean> accountsRetrieved = new ArrayList<accountBean>();
+         //retrieve the information.
+            while(dbData.next()){
+               accountBean abean = new accountBean();
+                abean.setAccountID(dbData.getInt("accountID"));
+                abean.setUserName(dbData.getString("userName"));
+                abean.setPassword(dbData.getString("password"));
+                abean.setAccountStatus(dbData.getString("accountStatus"));
+                abean.setAccountType(dbData.getString("accountType"));
+                accountsRetrieved.add(abean);
+            }
+         request.setAttribute("accountsList", accountsRetrieved);
+         
+         request.getRequestDispatcher("getAccount.jsp").forward(request,response);
+            
+        }
+        catch(Exception ex){
+            ex.printStackTrace();
+            out.println("SQL error: " + ex);
+        }
+        finally {
+            out.close();  // Close the output writer
+            try {
+              //Close the resources
+              if (stmt != null) stmt.close();
+              if (conn != null) conn.close();
+            }
+            catch (SQLException ex) {
+                ex.printStackTrace();
+                out.println("Another SQL error: " + ex);
+            }
+     }
+        
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -74,82 +147,6 @@ public class editInvoiceServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-        PrintWriter out = response.getWriter();
-        
-        ServletContext context = request.getSession().getServletContext();
-        response.setContentType("text/html");
-        
-        try {
-         Class.forName(context.getInitParameter("jdbcDriver"));
-      } catch(ClassNotFoundException ex) {
-         ex.printStackTrace();
-         out.println("jdbc error: " + ex);
-      }
-        
-        Connection conn = null;
-        Statement stmt = null;
-        
-        try{
-        //Allocate a database Connection object
-         //This uses the pageContext servlet.  Look at Web.xml for the params!
-         //This means we don't need to recompile!
-         
-         conn = DriverManager.getConnection(context.getInitParameter("databaseUrl"), context.getInitParameter("databaseUser"), context.getInitParameter("databasePassword"));
-        
-         //Allocate a Statement object within the Connection
-         stmt = conn.createStatement();
-         
-         //---------------
-         //first get the invoice details
-         String preparedSQL = "update Invoice set deliveryDate=?, termsOfPayment=?, paymentDueDate=?, datePaid=?, dateClosed=?, status=?"
-                                + "where invoiceID=?";
-         
-         String newDeliveryDate = request.getParameter("deliveryDateInput");
-         String newTop = request.getParameter("topInput");
-         String newPaymentDueDate = request.getParameter("paymentDueDateInput");
-         String newDatePaid = request.getParameter("datePaidInput");
-         String newStatus = request.getParameter("statusInput");
-         String newDateClosed = "";
-         if(!newStatus.equals("In Progress")){
-            Date date = new Date();
-            newDateClosed = new SimpleDateFormat("yyyy-MM-dd").format(date);
-         }
-         String inputInvID = request.getParameter("invoiceIDInput");
-         
-         PreparedStatement ps = conn.prepareStatement(preparedSQL);
-         ps.setString(1,newDeliveryDate);
-         ps.setString(2,newTop);
-         ps.setString(3,newPaymentDueDate);
-         ps.setString(4,newDatePaid);
-         ps.setString(5,newDateClosed);
-         ps.setString(6,newStatus);
-         ps.setString(7,inputInvID);
-         
-         ps.executeUpdate();
-         context.log("--->Invoice successfully updated. InvoiceID is: "+inputInvID);
-         
-         request.setAttribute("message", "Invoice successfully editted!");
-         request.getRequestDispatcher("homePage.jsp").forward(request,response);
-         
-        }
-        catch(SQLException ex){
-            ex.printStackTrace();
-            out.println("SQL error: " + ex);
-        }
-        finally {
-            out.close();  // Close the output writer
-            try {
-              //Close the resources
-              if (stmt != null) stmt.close();
-              if (conn != null) conn.close();
-            }
-            catch (SQLException ex) {
-                ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
-            }
-     }
-        
-        
     }
 
     /**

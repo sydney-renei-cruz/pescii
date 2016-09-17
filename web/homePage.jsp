@@ -50,10 +50,10 @@
                     - see document to know what these are
         -->
         <c:if test="${accountType == 'Accountant'}">
-            <a href="Servlets.getProductServlet?forInvoice=yes">Add Invoice</a><br>
+            <a href="Servlets.getProductServlet?forInvoice=yes">Create Invoice</a><br>
             <a href="Servlets.getInvoiceServlet">Edit Invoice</a><br>
             <a href="Servlets.getInvoiceServlet">View Invoice</a><br><br>
-            <a href="editAccount.jsp">Edit Account</a><br><br>
+            <a href="account.get">Edit Account</a><br><br>
         </c:if>
         
         <!--this is the Secretary section
@@ -66,7 +66,7 @@
             <a href="Servlets.getCustomerServlet">View Customer</a><br><br>
             
             <a href="createAccount.jsp">Create Account</a><br>
-            <a href="editAccount.jsp">Edit Account</a><br><br>
+            <a href="account.get">Edit Account</a><br><br>
         </c:if>    
         
         <!--this is the Inventory Manager Section
@@ -81,9 +81,9 @@
             
             <a href="createRestockOrder.jsp">Add Restock Order</a><br>
             <a href="editRestockOrder.jsp">Edit Restock Order</a><br>
-            <a href="getRestockOrder.jsp">View Restock Order</a><br><br>
+            <a href="restockOrder.get">View Restock Order</a><br><br>
             
-            <a href="editAccount.jsp">Edit Account</a><br><br>
+            <a href="account.get">Edit Account</a><br><br>
         </c:if>
         
         <!--this is the Auditor section
@@ -92,30 +92,30 @@
         -->
         <c:if test="${accountType == 'Auditor'}">
             <a href="editRestockOrder.jsp">Edit Restock Order</a><br>
-            <a href="getRestockOrder.jsp">View Restock Order</a><br>
-            <a href="editAccount.jsp">Edit Account</a><br><br>
+            <a href="restockOrder.get">View Restock Order</a><br><br>
+            <a href="account.get">Edit Account</a><br><br>
         </c:if>  
         
         <!--this is the CEO section
                 - the CEO can do everything
         -->
         <c:if test="${accountType == 'CEO'}">
-            <a href="Servlets.getProductServlet?forInvoice=yes">Add Invoice</a><br>
+            <a href="Servlets.getProductServlet?forInvoice=yes">Create Invoice</a><br>
             <a href="Servlets.getInvoiceServlet">Edit Invoice</a><br>
             <a href="Servlets.getInvoiceServlet">View Invoice</a><br><br>
             
             <a href="addCustomer.jsp">Add Customer</a><br>
-            <a href="editCustomer.jsp">Edit Customer</a><br>
+            <a href="Servlets.getCustomerServlet">Edit Customer</a><br>
             <a href="Servlets.getCustomerServlet">View Customer</a><br><br>
             
             <a href="createAccount.jsp">Create Account</a><br>
-            <a href="editAccount.jsp">Edit Account</a><br><br>
+            <a href="account.get">Edit Account</a><br><br>
             
             <a href="addProduct.jsp">Add Product</a><br>
             <a href="editProduct.jsp">Edit Product</a><br>
             <a href="createRestockOrder.jsp">Add Restock Order</a><br>
-            <a href="editRestockOrder.jsp">Edit Restock Order</a><br>
-            <a href="getRestockOrder.jsp">View Restock Order</a><br><br>
+            <a href="restockOrder.get">Edit Restock Order</a><br>
+            <a href="restockOrder.get">View Restock Order</a><br><br>
         </c:if>
         
         <a href="Servlets.getProductServlet">View Product</a><br>

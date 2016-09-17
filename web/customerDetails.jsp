@@ -60,10 +60,15 @@
                 <td>${clin.getClinicName()}</td>
                 <td>${clin.getClinicAddress()}</td>
                 <td>${clin.getClinicPhoneNumber()}</td>
+                <td><a href="customer.getClinic?clinID=<c:out value="${clin.getClinicID()}"/>">Edit</a></td>
             </tr>
         </c:forEach>
         </table>
-        
+        <br><br>
+        <form action="addClinic.jsp">
+            <input type="hidden" value="${customer.getPRCID()}" name="custID">
+            <input type="submit" value="Add Clinic">
+        </form>
         <br><br>
          <!-- this table is for the invoices-->
         <h5>Invoices</h5>

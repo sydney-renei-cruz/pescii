@@ -1,23 +1,18 @@
+package Servlets;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Servlets;
 
-import Beans.invoiceBean;
-import Beans.invoiceItemBean;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -29,8 +24,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author user
  */
-@WebServlet(name = "editInvoiceServlet", urlPatterns = {"/editInvoiceServlet"})
-public class editInvoiceServlet extends HttpServlet {
+@WebServlet(name = "editAccountServlet_1", urlPatterns = {"/editAccountServlet_1"})
+public class editAccountServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -74,6 +69,7 @@ public class editInvoiceServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
+        
         PrintWriter out = response.getWriter();
         
         ServletContext context = request.getSession().getServletContext();
@@ -100,35 +96,28 @@ public class editInvoiceServlet extends HttpServlet {
          stmt = conn.createStatement();
          
          //---------------
-         //first get the invoice details
-         String preparedSQL = "update Invoice set deliveryDate=?, termsOfPayment=?, paymentDueDate=?, datePaid=?, dateClosed=?, status=?"
-                                + "where invoiceID=?";
+         String preparedSQL = "update Account set userName=?, password=?, accountStatus=?, accountType=?"
+                                + "where accountID=?";
          
-         String newDeliveryDate = request.getParameter("deliveryDateInput");
-         String newTop = request.getParameter("topInput");
-         String newPaymentDueDate = request.getParameter("paymentDueDateInput");
-         String newDatePaid = request.getParameter("datePaidInput");
-         String newStatus = request.getParameter("statusInput");
-         String newDateClosed = "";
-         if(!newStatus.equals("In Progress")){
-            Date date = new Date();
-            newDateClosed = new SimpleDateFormat("yyyy-MM-dd").format(date);
-         }
-         String inputInvID = request.getParameter("invoiceIDInput");
+         String newUserName = request.getParameter("userNameInput");
+         String password = request.getParameter("newPasswordInput");
+         if(password==null){password = request.getParameter("oldPassword");}
+         String newAccountStatus = request.getParameter("accountStatusInput");
+         String newAccountType = request.getParameter("accountTypeInput");
+         int accountID = Integer.parseInt(request.getParameter("accountIDInput"));
          
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
-         ps.setString(1,newDeliveryDate);
-         ps.setString(2,newTop);
-         ps.setString(3,newPaymentDueDate);
-         ps.setString(4,newDatePaid);
-         ps.setString(5,newDateClosed);
-         ps.setString(6,newStatus);
-         ps.setString(7,inputInvID);
+         ps.setString(1,newUserName);
+         ps.setString(2,password);
+         ps.setString(3,newAccountStatus);
+         ps.setString(4,newAccountType);
+         ps.setInt(5,accountID);
          
          ps.executeUpdate();
-         context.log("--->Invoice successfully updated. InvoiceID is: "+inputInvID);
          
-         request.setAttribute("message", "Invoice successfully editted!");
+         context.log("--->Account successfully updated. AccountID is: "+accountID);
+         
+         request.setAttribute("message", "Account successfully editted!");
          request.getRequestDispatcher("homePage.jsp").forward(request,response);
          
         }
@@ -148,6 +137,8 @@ public class editInvoiceServlet extends HttpServlet {
                 out.println("Another SQL error: " + ex);
             }
      }
+        
+        
         
         
     }

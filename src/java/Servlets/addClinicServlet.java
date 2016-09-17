@@ -5,19 +5,13 @@
  */
 package Servlets;
 
-import Beans.invoiceBean;
-import Beans.invoiceItemBean;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -29,8 +23,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author user
  */
-@WebServlet(name = "editInvoiceServlet", urlPatterns = {"/editInvoiceServlet"})
-public class editInvoiceServlet extends HttpServlet {
+@WebServlet(name = "addClinicServlet", urlPatterns = {"/addClinicServlet"})
+public class addClinicServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -74,10 +68,10 @@ public class editInvoiceServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-        PrintWriter out = response.getWriter();
-        
+        //DO NOT CHANGE THESE
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
         
         try {
          Class.forName(context.getInitParameter("jdbcDriver"));
@@ -100,36 +94,29 @@ public class editInvoiceServlet extends HttpServlet {
          stmt = conn.createStatement();
          
          //---------------
-         //first get the invoice details
-         String preparedSQL = "update Invoice set deliveryDate=?, termsOfPayment=?, paymentDueDate=?, datePaid=?, dateClosed=?, status=?"
-                                + "where invoiceID=?";
+         //THIS IS WHERE YOU START CHANGING
          
-         String newDeliveryDate = request.getParameter("deliveryDateInput");
-         String newTop = request.getParameter("topInput");
-         String newPaymentDueDate = request.getParameter("paymentDueDateInput");
-         String newDatePaid = request.getParameter("datePaidInput");
-         String newStatus = request.getParameter("statusInput");
-         String newDateClosed = "";
-         if(!newStatus.equals("In Progress")){
-            Date date = new Date();
-            newDateClosed = new SimpleDateFormat("yyyy-MM-dd").format(date);
-         }
-         String inputInvID = request.getParameter("invoiceIDInput");
+         String preparedSQL = "insert into Clinic(PRCID, clinicAddress, clinicPhoneNumber, clinicName) values(?,?,?,?)";
          
+         //you don't change this
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
-         ps.setString(1,newDeliveryDate);
-         ps.setString(2,newTop);
-         ps.setString(3,newPaymentDueDate);
-         ps.setString(4,newDatePaid);
-         ps.setString(5,newDateClosed);
-         ps.setString(6,newStatus);
-         ps.setString(7,inputInvID);
          
+         String inputPRCID = request.getParameter("customerIDInput");
+         String inputClinicAddress = request.getParameter("clinicAddressInput");
+         String inputClinPhoneNum = request.getParameter("clinicPhoneNumInput");
+         String inputClinicName = request.getParameter("clinicNameInput");
+         
+         ps.setString(1, inputPRCID);
+         ps.setString(2, inputClinicAddress);
+         ps.setString(3, inputClinPhoneNum);
+         ps.setString(4, inputClinicName);
          ps.executeUpdate();
-         context.log("--->Invoice successfully updated. InvoiceID is: "+inputInvID);
          
-         request.setAttribute("message", "Invoice successfully editted!");
+         
+         String message = "Clinic successfully added!";
+         request.setAttribute("message", message);
          request.getRequestDispatcher("homePage.jsp").forward(request,response);
+            
          
         }
         catch(SQLException ex){
@@ -148,8 +135,6 @@ public class editInvoiceServlet extends HttpServlet {
                 out.println("Another SQL error: " + ex);
             }
      }
-        
-        
     }
 
     /**

@@ -5,18 +5,14 @@
  */
 package Servlets;
 
-import Beans.invoiceBean;
-import Beans.invoiceItemBean;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -29,8 +25,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author user
  */
-@WebServlet(name = "editInvoiceServlet", urlPatterns = {"/editInvoiceServlet"})
-public class editInvoiceServlet extends HttpServlet {
+@WebServlet(name = "editRestockOrderServlet", urlPatterns = {"/editRestockOrderServlet"})
+public class editRestockOrderServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -44,7 +40,8 @@ public class editInvoiceServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
+         PrintWriter out = response.getWriter();
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -74,7 +71,7 @@ public class editInvoiceServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-        PrintWriter out = response.getWriter();
+         PrintWriter out = response.getWriter();
         
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
@@ -101,34 +98,31 @@ public class editInvoiceServlet extends HttpServlet {
          
          //---------------
          //first get the invoice details
-         String preparedSQL = "update Invoice set deliveryDate=?, termsOfPayment=?, paymentDueDate=?, datePaid=?, dateClosed=?, status=?"
-                                + "where invoiceID=?";
+         //String preparedSQL = "update RestockOrder set numberOfPiecesOrdered=?, numberOfPiecesReceived=?, supplier=?, purpose=?, RODateCreated=?, RODateDelivered=?"
+         //                       + "where restockOrderID=?";
+         String preparedSQL = "update RestockOrder set numberOfPiecesOrdered=?, numberOfPiecesReceived=?, supplier=?, purpose=?, RODateDelivered=? where restockOrderID=?";
          
-         String newDeliveryDate = request.getParameter("deliveryDateInput");
-         String newTop = request.getParameter("topInput");
-         String newPaymentDueDate = request.getParameter("paymentDueDateInput");
-         String newDatePaid = request.getParameter("datePaidInput");
-         String newStatus = request.getParameter("statusInput");
-         String newDateClosed = "";
-         if(!newStatus.equals("In Progress")){
-            Date date = new Date();
-            newDateClosed = new SimpleDateFormat("yyyy-MM-dd").format(date);
-         }
-         String inputInvID = request.getParameter("invoiceIDInput");
+         int newNumberOfPiecesOrdered = Integer.parseInt(request.getParameter("numberOfPiecesOrderedInput"));
+         int newNumberOfPiecesReceived = Integer.parseInt(request.getParameter("numberOfPiecesReceivedInput"));
+         String newSupplier = request.getParameter("supplierInput");
+         String newPurpose = request.getParameter("purposeInput");
+         String newRODateDelivered = request.getParameter("roDateDeliveredInput");
+         String inputRestockOrderID = request.getParameter("restockOrderIDInput");
          
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
-         ps.setString(1,newDeliveryDate);
-         ps.setString(2,newTop);
-         ps.setString(3,newPaymentDueDate);
-         ps.setString(4,newDatePaid);
-         ps.setString(5,newDateClosed);
-         ps.setString(6,newStatus);
-         ps.setString(7,inputInvID);
+         ps.setInt(1,newNumberOfPiecesOrdered);
+         ps.setInt(2,newNumberOfPiecesReceived);
+         ps.setString(3,newSupplier);
+         ps.setString(4,newPurpose);
+         ps.setString(5,newRODateDelivered);
+         ps.setString(6,inputRestockOrderID);
          
          ps.executeUpdate();
-         context.log("--->Invoice successfully updated. InvoiceID is: "+inputInvID);
          
-         request.setAttribute("message", "Invoice successfully editted!");
+         context.log("--->Restock Order successfully updated. RestockID is: "+inputRestockOrderID);
+         
+         
+         request.setAttribute("message", "Restock Order successfully editted!");
          request.getRequestDispatcher("homePage.jsp").forward(request,response);
          
         }
@@ -148,8 +142,6 @@ public class editInvoiceServlet extends HttpServlet {
                 out.println("Another SQL error: " + ex);
             }
      }
-        
-        
     }
 
     /**

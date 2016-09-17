@@ -13,14 +13,14 @@ import java.io.Serializable;
  */
 public class accountBean implements Serializable{
     
-    public String accountID;
+    public int accountID;
     public String userName;
     public String password;
     public String accountStatus;
     public String accountType;
     
     
-    public accountBean(String accID, String un, String pword, String accStat, String accType){
+    public accountBean(int accID, String un, String pword, String accStat, String accType){
         this.accountID=accID;
         this.userName=un;
         this.password=pword;
@@ -28,13 +28,13 @@ public class accountBean implements Serializable{
         this.accountType=accType;
     }
     
-    public void setAccountID(String accID){this.accountID=accID;}
+    public void setAccountID(int accID){this.accountID=accID;}
     public void setUserName(String un){this.userName=un;}
     public void setPassword(String pword){this.password=pword;}
     public void setAccountStatus(String accStat){this.accountStatus=accStat;}
     public void setAccountType(String accType){this.accountType=accType;}
     
-    public String getAccountID(){return this.accountID;}
+    public int getAccountID(){return this.accountID;}
     public String getUserName(){return this.userName;}
     public String getPassword(){return this.password;}
     public String getAccountStatus(){return this.accountStatus;}

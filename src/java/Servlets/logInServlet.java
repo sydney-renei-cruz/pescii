@@ -132,6 +132,7 @@ public class logInServlet extends HttpServlet {
             else{
                 message = "did it! Username is "+username+"!";
                 HttpSession session = request.getSession();
+                session.setAttribute("accountID", dbData.getInt("accountID"));
                 session.setAttribute("userName", username);
                 session.setAttribute("accountType", dbData.getString("accountType"));
                 session.setAttribute("state", "logged in");

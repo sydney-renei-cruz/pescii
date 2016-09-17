@@ -14,7 +14,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -27,8 +26,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author user
  */
-@WebServlet(name = "viewCustomerDetailsServlet", urlPatterns = {"/viewCustomerDetailsServlet"})
-public class viewCustomerDetailsServlet extends HttpServlet {
+@WebServlet(name = "viewRODetailsServlet", urlPatterns = {"/viewRODetailsServlet"})
+public class viewRODetailsServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -69,79 +68,55 @@ public class viewCustomerDetailsServlet extends HttpServlet {
          stmt = conn.createStatement();
          
          //---------------
-         //first get the customer details
-         String preparedSQL = "select * from Customer where PRCID = ?";
-         String inputPRCID = request.getParameter("custID");
+         //first get the RestockOrder details
+         String preparedSQL = "select * from RestockOrder where restockOrderID = ?";
+         String inputRestockOrderID = request.getParameter("restockID");
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
-         ps.setString(1, inputPRCID);
+         ps.setString(1, inputRestockOrderID);
          
-         customerBean cbean = new customerBean();
+         restockOrderBean rbean = new restockOrderBean();
          ResultSet dbData = ps.executeQuery();
          while(dbData.next()){
-         //customerBean cbean = new customerBean();
-         cbean.setPRCID(dbData.getString("PRCID"));
-         cbean.setCustomerName(dbData.getString("customerName"));
-         cbean.setCustomerMobileNumber(dbData.getString("customerMobileNumber"));
-         cbean.setCustomerTelephoneNumber(dbData.getString("customerTelephoneNumber"));
+            rbean.setRestockOrderID(dbData.getInt("restockOrderID"));
+            rbean.setProductID(dbData.getInt("productID"));
+            rbean.setNumberOfPiecesOrdered(dbData.getInt("numberOfPiecesOrdered"));
+            rbean.setNumberOfPiecesReceived(dbData.getInt("numberOfPiecesReceived"));
+            rbean.setSupplier(dbData.getString("supplier"));
+            rbean.setPurpose(dbData.getString("purpose"));
+            rbean.setRODateCreated(dbData.getString("RODateCreated"));
+            rbean.setRODateDelivered(dbData.getString("RODateDelivered"));
          }
-         request.setAttribute("customer", cbean);
+         request.setAttribute("restockOrder", rbean);
+         context.log("ID IIIIIISSS: " + rbean.getRestockOrderID());
          
-         //now get the clinic/s
-         String preparedSQL2 = "select * from Clinic where PRCID = ?";
-         PreparedStatement ps2 = conn.prepareStatement(preparedSQL2);
-         ps2.setString(1,inputPRCID);
+         //now you get the Product's details
+         preparedSQL = "select * from Product where productID = ?";
+         int inputProductID = rbean.getProductID();
+         ps = conn.prepareStatement(preparedSQL);
+         ps.setInt(1, inputProductID);
          
-         ResultSet dbData2 = ps2.executeQuery();
-         ArrayList<clinicBean> clinicsRetrieved = new ArrayList<clinicBean>();
-            while(dbData2.next()){
-                clinicBean clinbean = new clinicBean();
-                clinbean.setClinicID(dbData2.getString("clinicID"));
-                clinbean.setClinicAddress(dbData2.getString("clinicAddress"));
-                clinbean.setClinicPhoneNumber(dbData2.getString("clinicPhoneNumber"));
-                clinbean.setClinicName(dbData2.getString("clinicName"));
-                clinicsRetrieved.add(clinbean);
-            }
-            
-         request.setAttribute("clinicsList", clinicsRetrieved);
-         context.log("size of clinicsRetrieved is " + clinicsRetrieved.size());
-         
-         //finally, get the invoices
-         String preparedSQL3 = "select * from Invoice where PRCID = ?";
-         PreparedStatement ps3 = conn.prepareStatement(preparedSQL3);
-         ps3.setString(1,inputPRCID);
-         
-         //later on, you'll just call the Servlets.viewInvoiceDetailsServlet to perform these
-         ResultSet dbData3 = ps3.executeQuery();
-         ArrayList<invoiceBean> invoicesRetrieved = new ArrayList<invoiceBean>();
-         while(dbData3.next()){
-             invoiceBean invBean = new invoiceBean();
-             invBean.setInvoiceID(dbData3.getInt("invoiceID"));
-             invBean.setPRCID(dbData3.getString("PRCID"));
-             invBean.setClinicID(dbData3.getInt("clinicID"));
-             invBean.setInvoiceDate(dbData3.getString("invoiceDate"));
-             invBean.setDeliveryDate(dbData3.getString("deliveryDate"));
-             invBean.setAdditionalAccessories(dbData3.getString("additionalAccessories"));
-             invBean.setTermsOfPayment(dbData3.getString("termsOfPayment"));
-             invBean.setPaymentDueDate(dbData3.getString("paymentDueDate"));
-             invBean.setDatePaid(dbData3.getString("datePaid"));
-             invBean.setDateClosed(dbData3.getString("dateClosed"));
-             invBean.setStatus(dbData3.getString("status"));
-             invBean.setOverdueFee(dbData3.getFloat("overdueFee"));
-             invoicesRetrieved.add(invBean);
+         productBean pbean = new productBean();
+         dbData = ps.executeQuery();
+         while(dbData.next()){
+            pbean.setProductID(dbData.getString("productID"));
+            pbean.setProductName(dbData.getString("productName"));
+            pbean.setProductDescription(dbData.getString("productDescription"));
+            pbean.setProductPrice(dbData.getFloat("productPrice"));
+            pbean.setRestockPrice(dbData.getFloat("restockPrice"));
+            pbean.setStocksRemaining(dbData.getInt("stocksRemaining"));
+            pbean.setLowStock(dbData.getInt("lowStock"));
+            pbean.setBrand(dbData.getString("brand"));
+            pbean.setProductClass(dbData.getString("productClass"));
+            pbean.setColor(dbData.getString("color"));
          }
+         request.setAttribute("product", pbean);
          
-         request.setAttribute("invoicesList", invoicesRetrieved);
-         context.log("size of invoicesRetrieved is " + invoicesRetrieved.size());
-         
-         String forEdit = ""+request.getParameter("forEdit");
-         if(session.getAttribute("cart")!=null){
-             request.getRequestDispatcher("addInvoice.jsp").forward(request, response);
-         }
-         else if(forEdit.equals("yes")){
-             request.getRequestDispatcher("editCustomer.jsp").forward(request, response);
+         String editRestock = ""+request.getParameter("editRestock");
+         if(editRestock.equals("yes")) {
+             request.getRequestDispatcher("editRestockOrder.jsp").forward(request,response);
          }
          else{
-            request.getRequestDispatcher("customerDetails.jsp").forward(request,response);
+             request.getRequestDispatcher("restockOrderDetails.jsp").forward(request,response);
          }
         }
         catch(Exception ex){
@@ -160,8 +135,6 @@ public class viewCustomerDetailsServlet extends HttpServlet {
                 out.println("Another SQL error: " + ex);
             }
      }
-        
-        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

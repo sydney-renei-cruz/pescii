@@ -48,6 +48,10 @@
         <servlet-class>Servlets.addToCartServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>addClinicServlet</servlet-name>
+        <servlet-class>Servlets.addClinicServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>getCustomerServlet</servlet-name>
         <servlet-class>Servlets.getCustomerServlet</servlet-class>
     </servlet>
@@ -60,6 +64,18 @@
         <servlet-class>Servlets.getProductServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>getRestockOrderServlet</servlet-name>
+        <servlet-class>Servlets.getRestockOrderServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>getAccountServlet</servlet-name>
+        <servlet-class>Servlets.getAccountServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>getClinicServlet</servlet-name>
+        <servlet-class>Servlets.getClinicServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>viewCustomerDetailsServlet</servlet-name>
         <servlet-class>Servlets.viewCustomerDetailsServlet</servlet-class>
     </servlet>
@@ -68,12 +84,36 @@
         <servlet-class>Servlets.viewInvoiceDetailsServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>viewRODetailsServlet</servlet-name>
+        <servlet-class>Servlets.viewRODetailsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>viewAccountDetailsServlet</servlet-name>
+        <servlet-class>Servlets.viewAccountDetailsServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>createRestockOrderServlet</servlet-name>
         <servlet-class>Servlets.createRestockOrderServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>editInvoiceServlet</servlet-name>
         <servlet-class>Servlets.editInvoiceServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>editCustomerServlet</servlet-name>
+        <servlet-class>Servlets.editCustomerServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>editAccountServlet</servlet-name>
+        <servlet-class>Servlets.editAccountServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>editRestockOrderServlet</servlet-name>
+        <servlet-class>Servlets.editRestockOrderServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>editClinicServlet</servlet-name>
+        <servlet-class>Servlets.editClinicServlet</servlet-class>
     </servlet>
     
     <!-- Servlet Mapping-->
@@ -107,6 +147,10 @@
         <url-pattern>/addToCart</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>addClinicServlet</servlet-name>
+        <url-pattern>/customer.addClinic</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>getCustomerServlet</servlet-name>
         <url-pattern>/Servlets.getCustomerServlet</url-pattern>
     </servlet-mapping>
@@ -117,6 +161,18 @@
     <servlet-mapping>
         <servlet-name>getProductServlet</servlet-name>
         <url-pattern>/Servlets.getProductServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getRestockOrderServlet</servlet-name>
+        <url-pattern>/restockOrder.get</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getAccountServlet</servlet-name>
+        <url-pattern>/account.get</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getClinicServlet</servlet-name>
+        <url-pattern>/customer.getClinic</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>viewCustomerDetailsServlet</servlet-name>
@@ -131,12 +187,36 @@
         <url-pattern>/product.getDetails</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>viewRODetailsServlet</servlet-name>
+        <url-pattern>/restockOrder.getDetails</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>viewAccountDetailsServlet</servlet-name>
+        <url-pattern>/account.getDetails</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>createRestockOrderServlet</servlet-name>
         <url-pattern>/Servlets.createRestockOrderServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>editRestockOrderServlet</servlet-name>
+        <url-pattern>/restock.edit</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>editInvoiceServlet</servlet-name>
         <url-pattern>/invoice.edit</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>editCustomerServlet</servlet-name>
+        <url-pattern>/customer.edit</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>editAccountServlet</servlet-name>
+        <url-pattern>/account.edit</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>editClinicServlet</servlet-name>
+        <url-pattern>/customer.editClinic</url-pattern>
     </servlet-mapping>
     
     <!--Filters-->
