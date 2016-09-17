@@ -5,8 +5,7 @@
  */
 package Servlets;
 
-import Beans.invoiceBean;
-import Beans.invoiceItemBean;
+import Beans.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -104,6 +103,7 @@ public class editInvoiceServlet extends HttpServlet {
          String preparedSQL = "update Invoice set deliveryDate=?, termsOfPayment=?, paymentDueDate=?, datePaid=?, dateClosed=?, status=?"
                                 + "where invoiceID=?";
          
+         int invoiceID = Integer.parseInt(request.getParameter("invoiceIDInput"));
          String newDeliveryDate = request.getParameter("deliveryDateInput");
          String newTop = request.getParameter("topInput");
          String newPaymentDueDate = request.getParameter("paymentDueDateInput");
@@ -128,13 +128,48 @@ public class editInvoiceServlet extends HttpServlet {
          ps.executeUpdate();
          context.log("--->Invoice successfully updated. InvoiceID is: "+inputInvID);
          
-         request.setAttribute("message", "Invoice successfully editted!");
+         
+         if(newStatus.equals("Completed")){
+            //now update the product
+            //first get the invoice items
+            preparedSQL = "select * from InvoiceItem where invoiceID = ?";
+            ps = conn.prepareStatement(preparedSQL);
+            ps.setInt(1,invoiceID);
+
+            ResultSet dbData = ps.executeQuery();
+            //you might wanna change this to an array one of these days
+            ArrayList<invoiceItemBean> invItemsRetrieved = new ArrayList<invoiceItemBean>();
+            //retrieve the information.
+               while(dbData.next()){
+                  invoiceItemBean invItemBean = new invoiceItemBean();
+                  //invItemBean.setInvoiceID(dbData.getInt("invoiceID"));
+                  invItemBean.setProductID(dbData.getInt("productID"));
+                  //invItemBean.setQuantityPurchased(dbData.getInt("quantityPurchased"));
+                  invItemsRetrieved.add(invItemBean);
+               }
+
+           /* UPDATE Product JOIN InvoiceItem ON Product.productID=InvoiceItem.productID
+            SET Product.stocksRemaining = Product.stocksRemaining-InvoiceItem.quantityPurchased
+            WHERE Product.productID=1 and InvoiceItem.invoiceID=9;*/
+            for(invoiceItemBean iibean : invItemsRetrieved){
+                preparedSQL = "UPDATE Product JOIN InvoiceItem ON Product.productID=InvoiceItem.productID" +
+   "               SET Product.stocksRemaining = Product.stocksRemaining-InvoiceItem.quantityPurchased" +
+   "               WHERE Product.productID=? and InvoiceItem.invoiceID=?;";
+                ps = conn.prepareStatement(preparedSQL);
+                ps.setInt(1,iibean.getProductID());
+                ps.setInt(2,invoiceID);
+
+                ps.executeUpdate();
+            }
+         }
+         
+         request.setAttribute("message", "Invoice successfully editted! Inventory updated.");
          request.getRequestDispatcher("homePage.jsp").forward(request,response);
          
         }
-        catch(SQLException ex){
+        catch(Exception ex){
             ex.printStackTrace();
-            out.println("SQL error: " + ex);
+            out.println("error: " + ex);
         }
         finally {
             out.close();  // Close the output writer
