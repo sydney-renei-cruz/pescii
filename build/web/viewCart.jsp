@@ -26,13 +26,14 @@
                 <c:set var="cartSize" value="${sessionScope.cart.size()}"/>
                 <c:set var="cart" value="${sessionScope.cart}"/>
                 <c:set var="prodNames" value="${sessionScope.prodNames}"/>
-                <p>the size is <c:out value="${cartSize}"/></p>
+                <h4>the size is <c:out value="${cartSize}"/></h4>
+                <p>Please enter the quantity you wish to purchase.</p>
                 
                 <!--Now make the table-->
                 <form action="addToCart">
                     <input type="hidden" name="gotQuantity" value="yes">
                     <c:forEach items="${prodNames}" var="prods" begin="0" step="1">
-                        ${prods} <input type="text" name="${prods}"><br>
+                        ${prods}: <input type="text" name="${prods}"><br>
                     </c:forEach>
                         <br>
                         <input type="submit" value="Select Customer">

@@ -15,6 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import javax.servlet.ServletContext;
@@ -102,7 +103,7 @@ public class addInvoiceServlet extends HttpServlet {
          
          //---------------
          //THIS IS WHERE YOU START CHANGING
-         
+         String message = "Invoice successfully created!";
          String preparedSQL = "insert into Invoice(PRCID, clinicID, invoiceDate, deliveryDate, additionalAccessories,"
                                 + "termsOfPayment, paymentDueDate, datePaid, dateClosed, status, overdueFee) values(?,?,?,?,?,?,?,?,?,?,?)";
          
@@ -153,10 +154,10 @@ public class addInvoiceServlet extends HttpServlet {
          
          
          //-----Now make the InvoiceItems
-         String invoiceIDInput;
+         int invoiceIDInput;
          try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
             if (generatedKeys.next()) {
-                invoiceIDInput = "" + generatedKeys.getInt(1);
+                invoiceIDInput = generatedKeys.getInt(1);
                 context.log("The invoiceID of the new invoice is: " + invoiceIDInput);
                 
                 //the session attributes are:
@@ -195,7 +196,44 @@ public class addInvoiceServlet extends HttpServlet {
             }
         }
          
-         request.setAttribute("message", "Invoice successfully created!");
+         if(inputStatus.equals("Completed")){
+            //now update the product
+            //first get the invoice items
+            preparedSQL = "select * from InvoiceItem where invoiceID = ?";
+            ps = conn.prepareStatement(preparedSQL);
+            ps.setInt(1,invoiceIDInput);
+
+            ResultSet dbData = ps.executeQuery();
+            //you might wanna change this to an array one of these days
+            ArrayList<invoiceItemBean> invItemsRetrieved = new ArrayList<invoiceItemBean>();
+            //retrieve the information.
+               while(dbData.next()){
+                  invoiceItemBean invItemBean = new invoiceItemBean();
+                  //invItemBean.setInvoiceID(dbData.getInt("invoiceID"));
+                  invItemBean.setProductID(dbData.getInt("productID"));
+                  //invItemBean.setQuantityPurchased(dbData.getInt("quantityPurchased"));
+                  invItemsRetrieved.add(invItemBean);
+               }
+
+           /* UPDATE Product JOIN InvoiceItem ON Product.productID=InvoiceItem.productID
+            SET Product.stocksRemaining = Product.stocksRemaining-InvoiceItem.quantityPurchased
+            WHERE Product.productID=1 and InvoiceItem.invoiceID=9;*/
+            for(invoiceItemBean iibean : invItemsRetrieved){
+                preparedSQL = "UPDATE Product JOIN InvoiceItem ON Product.productID=InvoiceItem.productID" +
+   "               SET Product.stocksRemaining = Product.stocksRemaining-InvoiceItem.quantityPurchased" +
+   "               WHERE Product.productID=? and InvoiceItem.invoiceID=?;";
+                ps = conn.prepareStatement(preparedSQL);
+                ps.setInt(1,iibean.getProductID());
+                ps.setInt(2,invoiceIDInput);
+
+                ps.executeUpdate();
+                
+                message = "Invoice successfully created! Inventory Updated.";
+            }
+         }
+         
+         
+         request.setAttribute("message", message);
          session.setAttribute("cart", null);
          session.setAttribute("prodNames", null);
          session.setAttribute("quantity", null);

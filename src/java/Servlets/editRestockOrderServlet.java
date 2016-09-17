@@ -5,14 +5,17 @@
  */
 package Servlets;
 
+import Beans.invoiceItemBean;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -100,8 +103,11 @@ public class editRestockOrderServlet extends HttpServlet {
          //first get the invoice details
          //String preparedSQL = "update RestockOrder set numberOfPiecesOrdered=?, numberOfPiecesReceived=?, supplier=?, purpose=?, RODateCreated=?, RODateDelivered=?"
          //                       + "where restockOrderID=?";
+         String message = "Restock Order successfully editted!";
          String preparedSQL = "update RestockOrder set numberOfPiecesOrdered=?, numberOfPiecesReceived=?, supplier=?, purpose=?, RODateDelivered=? where restockOrderID=?";
          
+         //int restockOrderID = Integer.parseInt(request.getParameter("restockOrderIDInput"));
+         int productID = Integer.parseInt(request.getParameter("productIDInput"));
          int newNumberOfPiecesOrdered = Integer.parseInt(request.getParameter("numberOfPiecesOrderedInput"));
          int newNumberOfPiecesReceived = Integer.parseInt(request.getParameter("numberOfPiecesReceivedInput"));
          String newSupplier = request.getParameter("supplierInput");
@@ -121,8 +127,25 @@ public class editRestockOrderServlet extends HttpServlet {
          
          context.log("--->Restock Order successfully updated. RestockID is: "+inputRestockOrderID);
          
+         if(!newRODateDelivered.equals("")){
+            //now update the product if an RODateDelivered was entered
+
+           /* UPDATE Product JOIN InvoiceItem ON Product.productID=InvoiceItem.productID
+            SET Product.stocksRemaining = Product.stocksRemaining-InvoiceItem.quantityPurchased
+            WHERE Product.productID=1 and InvoiceItem.invoiceID=9;*/
+            preparedSQL = "UPDATE Product JOIN RestockOrder ON Product.productID=RestockOrder.productID" +
+"               SET Product.stocksRemaining = Product.stocksRemaining-RestockOrder.numberOfPiecesReceived" +
+"               WHERE Product.productID=?";
+            ps = conn.prepareStatement(preparedSQL);
+            ps.setInt(1,productID);
+
+            ps.executeUpdate();
+            message = "Restock Order successfully editted! Inventory updated.";
+         }
          
-         request.setAttribute("message", "Restock Order successfully editted!");
+         
+         
+         request.setAttribute("message", message);
          request.getRequestDispatcher("homePage.jsp").forward(request,response);
          
         }
