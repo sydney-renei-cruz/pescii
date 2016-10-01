@@ -85,8 +85,8 @@ public class getRestockOrderServlet extends HttpServlet {
                 rbean.setNumberOfPiecesReceived(dbData.getInt("numberOfPiecesReceived"));
                 rbean.setSupplier(dbData.getString("supplier"));
                 rbean.setPurpose(dbData.getString("purpose"));
-                rbean.setRODateCreated(dbData.getString("RODateCreated"));
-                rbean.setRODateDelivered(dbData.getString("RODateDelivered"));
+                rbean.setRODateDue(dbData.getDate("RODateDue"));
+                rbean.setRODateDelivered(dbData.getDate("RODateDelivered"));
                 restocksRetrieved.add(rbean);
             }
          request.setAttribute("restocksList", restocksRetrieved);

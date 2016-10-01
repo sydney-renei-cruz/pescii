@@ -122,7 +122,7 @@ public class logInServlet extends HttpServlet {
          }
          else {
             dbData.next();
-            if((dbData.getString("accountStatus")).equals("Deactivated")){
+            if((dbData.getInt("accountStatus"))==2){
                 message = "The specified account is deactivated and unusable.";
                 //response.sendRedirect("index.jsp");
                 request.setAttribute("message", message);
@@ -134,7 +134,7 @@ public class logInServlet extends HttpServlet {
                 HttpSession session = request.getSession();
                 session.setAttribute("accountID", dbData.getInt("accountID"));
                 session.setAttribute("userName", username);
-                session.setAttribute("accountType", dbData.getString("accountType"));
+                session.setAttribute("accountType", ""+dbData.getInt("accountType"));
                 session.setAttribute("state", "logged in");
                 //request.setAttribute("message", message);
                 request.getRequestDispatcher("homePage.jsp").forward(request,response);

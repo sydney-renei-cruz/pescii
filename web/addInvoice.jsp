@@ -48,7 +48,7 @@
             </select>
             
             <br><br>
-            <input type="hidden" name="PRCIDInput" value="${customer.getPRCID()}">
+            <input type="hidden" name="customerIDInput" value="${customer.getCustomerID()}">
             
             Enter Delivery Date: <input type="text" name="deliveryDateInput"><br>
             Additional Accessories: <input type="text" name="addAccInput"><br>

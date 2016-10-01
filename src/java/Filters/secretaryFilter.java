@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -36,8 +37,11 @@ public class secretaryFilter implements Filter {
         if (session == null || session.getAttribute("accountType") == null) {
             response.sendRedirect(request.getContextPath() + "/logIn.jsp");
         } 
-        else if(!session.getAttribute("accountType").equals("Secretary")){
-            if(session.getAttribute("accountType").equals("CEO")){
+        else if(!session.getAttribute("accountType").equals("2")){
+            ServletContext context = request.getSession().getServletContext();
+            context.log("HEEEEEERE!");
+            if(session.getAttribute("accountType").equals("1")){
+                context.log("YOOOO!");
                 chain.doFilter(request, response);
             }
             else{

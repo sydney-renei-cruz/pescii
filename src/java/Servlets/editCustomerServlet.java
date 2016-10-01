@@ -97,23 +97,24 @@ public class editCustomerServlet extends HttpServlet {
          
          //---------------
          //first get the invoice details
-         String preparedSQL = "update Customer set customerName=?, customerMobileNumber=?, customerTelephoneNumber=?"
-                                + "where PRCID=?";
+         String preparedSQL = "update Customer set customerName=?, customerMobileNumber=?, customerTelephoneNumber=?, salesRepID=? where customerID=?";
          
          String newCustomerName = request.getParameter("customerNameInput");
          String newCustomerMobileNumber = request.getParameter("customerMobileNumberInput");
          String newCustomerTelephoneNumber = request.getParameter("customerTelNumInput");
-         String inputPRCID = request.getParameter("PRCIDInput");
+         int inputCustomerID = Integer.parseInt(request.getParameter("customerIDInput"));
+         int newSalesRepID = Integer.parseInt(request.getParameter("chosenSalesRep"));
          
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          ps.setString(1,newCustomerName);
          ps.setString(2,newCustomerMobileNumber);
          ps.setString(3,newCustomerTelephoneNumber);
-         ps.setString(4,inputPRCID);
+         ps.setInt(4,newSalesRepID);
+         ps.setInt(5,inputCustomerID);
          
          ps.executeUpdate();
          
-         context.log("--->Customer successfully updated. InvoiceID is: "+inputPRCID);
+         context.log("--->Customer successfully updated. CustomerID is: "+inputCustomerID);
          
          request.setAttribute("message", "Customer successfully editted!");
          request.getRequestDispatcher("homePage.jsp").forward(request,response);

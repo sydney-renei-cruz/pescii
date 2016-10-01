@@ -70,7 +70,10 @@ public class getCustomerServlet extends HttpServlet {
          
          //---------------
          //THIS IS WHERE YOU START CHANGING
-         String preparedSQL = "select * from Customer";
+         String preparedSQL = "select Customer.customerID, Customer.PRCID, Customer.customerName, Customer.customerMobileNumber, "
+                 + "Customer.customerTelephoneNumber, SalesRep.salesRepName, Customer.salesRepID from Customer "
+                 + "inner join SalesRep on SalesRep.salesRepID = Customer.salesRepID";
+         
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          
          ResultSet dbData = ps.executeQuery();
@@ -78,18 +81,39 @@ public class getCustomerServlet extends HttpServlet {
          //retrieve the information.
             while(dbData.next()){
                 customerBean data = new customerBean();
+                data.setCustomerID(dbData.getInt("customerID"));
                 data.setPRCID(dbData.getString("PRCID"));
                 data.setCustomerName(dbData.getString("customerName"));
                 data.setCustomerMobileNumber(dbData.getString("customerMobileNumber"));
                 data.setCustomerTelephoneNumber(dbData.getString("customerTelephoneNumber"));
+                data.setSalesRep(dbData.getString("salesRepName"));
+                data.setSalesRepID(dbData.getInt("salesRepID"));
                 customersRetrieved.add(data);
             }
             request.setAttribute("customersList", customersRetrieved);
             if(session.getAttribute("cart")!=null){
                 request.setAttribute("addInvoice", "yes");
             }
-            request.getRequestDispatcher("getCustomer.jsp").forward(request,response);
+            if((""+request.getParameter("forAdd")).equals("yes")){
+                preparedSQL = "select * from SalesRep";
          
+                ps = conn.prepareStatement(preparedSQL);
+
+                dbData = ps.executeQuery();
+                ArrayList<salesRepBean> salesRepsRetrieved = new ArrayList<salesRepBean>();
+                //retrieve the information.
+                   while(dbData.next()){
+                       salesRepBean data = new salesRepBean();
+                       data.setSalesRepName(dbData.getString("salesRepName"));
+                       data.setSalesRepID(dbData.getInt("salesRepID"));
+                       salesRepsRetrieved.add(data);
+                   }
+                request.setAttribute("salesRepList", salesRepsRetrieved);
+                request.getRequestDispatcher("addCustomer.jsp").forward(request,response);
+            }
+            else{
+                request.getRequestDispatcher("getCustomer.jsp").forward(request,response);
+            }
         }
         catch(Exception ex){
             ex.printStackTrace();

@@ -76,6 +76,14 @@
         <servlet-class>Servlets.getClinicServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>getUnfinishedServlet</servlet-name>
+        <servlet-class>Servlets.getUnfinishedServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>getNewEntryServlet</servlet-name>
+        <servlet-class>Servlets.getNewEntryServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>viewCustomerDetailsServlet</servlet-name>
         <servlet-class>Servlets.viewCustomerDetailsServlet</servlet-class>
     </servlet>
@@ -175,6 +183,14 @@
         <url-pattern>/customer.getClinic</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>getUnfinishedServlet</servlet-name>
+        <url-pattern>/unfinished.get</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getNewEntryServlet</servlet-name>
+        <url-pattern>/new.get</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>viewCustomerDetailsServlet</servlet-name>
         <url-pattern>/Servlets.viewCustomerDetailsServlet</url-pattern>
     </servlet-mapping>
@@ -251,7 +267,7 @@
     <filter-mapping>
         <filter-name>IMFilter</filter-name>
         <url-pattern>/addProduct.jsp</url-pattern>
-        <url-pattern>/editProduct</url-pattern>
+        <url-pattern>/editProduct.jsp</url-pattern>
         <url-pattern>/createRestockOrder.jsp</url-pattern>
         <url-pattern>/editRestockOrder.jsp</url-pattern>
         <url-pattern>/getRestockOrder.jsp</url-pattern>

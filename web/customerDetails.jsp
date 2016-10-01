@@ -31,6 +31,8 @@
                 <th>Customer Name</th>
                 <th>Mobile #</th>
                 <th>Telephone #</th>
+                <th>Sales Rep</th>
+                <th>Sales Rep ID</th>
             </tr>
         
             <tr>
@@ -38,6 +40,8 @@
                 <td>${customer.getCustomerName()}</td>
                 <td>${customer.getCustomerMobileNumber()}</td>
                 <td>${customer.getCustomerTelephoneNumber()}</td>
+                <td>${customer.getSalesRep()}</td>
+                <td>${customer.getSalesRepID()}</td>
             </tr>
         </table>
             
@@ -66,7 +70,7 @@
         </table>
         <br><br>
         <form action="addClinic.jsp">
-            <input type="hidden" value="${customer.getPRCID()}" name="custID">
+            <input type="hidden" value="${customer.getCustomerID()}" name="custID">
             <input type="submit" value="Add Clinic">
         </form>
         <br><br>

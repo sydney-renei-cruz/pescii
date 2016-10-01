@@ -70,32 +70,43 @@ public class viewCustomerDetailsServlet extends HttpServlet {
          
          //---------------
          //first get the customer details
-         String preparedSQL = "select * from Customer where PRCID = ?";
-         String inputPRCID = request.getParameter("custID");
+         //String preparedSQL = "select * from Customer where customerID = ?";
+         String preparedSQL = "select Customer.customerID, Customer.PRCID, Customer.customerName, Customer.customerMobileNumber, "
+                 + "Customer.customerTelephoneNumber, SalesRep.salesRepName, Customer.salesRepID from Customer "
+                 + "inner join SalesRep on SalesRep.salesRepID = Customer.salesRepID "
+                 + "where Customer.customerID = ?";
+         int inputCustomerID = Integer.parseInt(request.getParameter("custID"));
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
-         ps.setString(1, inputPRCID);
+         ps.setInt(1, inputCustomerID);
          
          customerBean cbean = new customerBean();
          ResultSet dbData = ps.executeQuery();
          while(dbData.next()){
          //customerBean cbean = new customerBean();
+         cbean.setCustomerID(dbData.getInt("customerID"));
          cbean.setPRCID(dbData.getString("PRCID"));
          cbean.setCustomerName(dbData.getString("customerName"));
          cbean.setCustomerMobileNumber(dbData.getString("customerMobileNumber"));
          cbean.setCustomerTelephoneNumber(dbData.getString("customerTelephoneNumber"));
+         cbean.setSalesRep(dbData.getString("salesRepName"));
+         cbean.setSalesRepID(dbData.getInt("salesRepID"));;
          }
          request.setAttribute("customer", cbean);
          
          //now get the clinic/s
-         String preparedSQL2 = "select * from Clinic where PRCID = ?";
+         String preparedSQL2 = "select Clinic.clinicID, Customer.PRCID, Clinic.clinicAddress, "
+                 + "Clinic.clinicPhoneNumber, Clinic.clinicName from Clinic "
+                 + "inner join Customer on Customer.customerID = Clinic.customerID "
+                 + "where Clinic.customerID = ?";
          PreparedStatement ps2 = conn.prepareStatement(preparedSQL2);
-         ps2.setString(1,inputPRCID);
+         ps2.setInt(1,inputCustomerID);
          
          ResultSet dbData2 = ps2.executeQuery();
          ArrayList<clinicBean> clinicsRetrieved = new ArrayList<clinicBean>();
             while(dbData2.next()){
                 clinicBean clinbean = new clinicBean();
                 clinbean.setClinicID(dbData2.getString("clinicID"));
+                clinbean.setPRCID(dbData2.getString("PRCID"));
                 clinbean.setClinicAddress(dbData2.getString("clinicAddress"));
                 clinbean.setClinicPhoneNumber(dbData2.getString("clinicPhoneNumber"));
                 clinbean.setClinicName(dbData2.getString("clinicName"));
@@ -106,9 +117,14 @@ public class viewCustomerDetailsServlet extends HttpServlet {
          context.log("size of clinicsRetrieved is " + clinicsRetrieved.size());
          
          //finally, get the invoices
-         String preparedSQL3 = "select * from Invoice where PRCID = ?";
+         String preparedSQL3 = "select Invoice.invoiceID, Customer.PRCID, Invoice.clinicID, Invoice.invoiceDate, "
+                 + "Invoice.deliveryDate, Invoice.additionalAccessories, Invoice.termsOfPayment, "
+                 + "Invoice.paymentDueDate, Invoice.datePaid, Invoice.dateClosed, Invoice.status, "
+                 + "Invoice.overdueFee from Invoice "
+                 + "inner join Customer on Customer.customerID = Invoice.customerID "
+                 + "where Invoice.customerID = ?";
          PreparedStatement ps3 = conn.prepareStatement(preparedSQL3);
-         ps3.setString(1,inputPRCID);
+         ps3.setInt(1,inputCustomerID);
          
          //later on, you'll just call the Servlets.viewInvoiceDetailsServlet to perform these
          ResultSet dbData3 = ps3.executeQuery();
@@ -118,13 +134,16 @@ public class viewCustomerDetailsServlet extends HttpServlet {
              invBean.setInvoiceID(dbData3.getInt("invoiceID"));
              invBean.setPRCID(dbData3.getString("PRCID"));
              invBean.setClinicID(dbData3.getInt("clinicID"));
-             invBean.setInvoiceDate(dbData3.getString("invoiceDate"));
-             invBean.setDeliveryDate(dbData3.getString("deliveryDate"));
+             invBean.setInvoiceDate(dbData3.getDate("invoiceDate"));
+             invBean.setDeliveryDate(dbData3.getDate("deliveryDate"));
              invBean.setAdditionalAccessories(dbData3.getString("additionalAccessories"));
              invBean.setTermsOfPayment(dbData3.getString("termsOfPayment"));
-             invBean.setPaymentDueDate(dbData3.getString("paymentDueDate"));
-             invBean.setDatePaid(dbData3.getString("datePaid"));
-             invBean.setDateClosed(dbData3.getString("dateClosed"));
+             invBean.setPaymentDueDate(dbData3.getDate("paymentDueDate"));
+             if(!(""+dbData3.getDate("dateClosed")).equals("0000-00-00")){invBean.setDateClosed(dbData3.getDate("dateClosed"));}
+             if(!(""+dbData3.getDate("datePaid")).equals("0000-00-00")){invBean.setDatePaid(dbData3.getDate("datePaid"));}
+                
+             //invBean.setDatePaid(dbData3.getDate("datePaid"));
+             //invBean.setDateClosed(dbData3.getDate("dateClosed"));
              invBean.setStatus(dbData3.getString("status"));
              invBean.setOverdueFee(dbData3.getFloat("overdueFee"));
              invoicesRetrieved.add(invBean);
@@ -138,6 +157,20 @@ public class viewCustomerDetailsServlet extends HttpServlet {
              request.getRequestDispatcher("addInvoice.jsp").forward(request, response);
          }
          else if(forEdit.equals("yes")){
+             preparedSQL = "select * from SalesRep";
+         
+                ps = conn.prepareStatement(preparedSQL);
+
+                dbData = ps.executeQuery();
+                ArrayList<salesRepBean> salesRepsRetrieved = new ArrayList<salesRepBean>();
+                //retrieve the information.
+                   while(dbData.next()){
+                       salesRepBean data = new salesRepBean();
+                       data.setSalesRepName(dbData.getString("salesRepName"));
+                       data.setSalesRepID(dbData.getInt("salesRepID"));
+                       salesRepsRetrieved.add(data);
+                   }
+             request.setAttribute("salesRepList", salesRepsRetrieved);
              request.getRequestDispatcher("editCustomer.jsp").forward(request, response);
          }
          else{

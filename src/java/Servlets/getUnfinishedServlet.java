@@ -5,7 +5,7 @@
  */
 package Servlets;
 
-import Beans.accountBean;
+import Beans.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -27,8 +27,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author user
  */
-@WebServlet(name = "getAccountServlet", urlPatterns = {"/getAccountServlet"})
-public class getAccountServlet extends HttpServlet {
+@WebServlet(name = "getUnfinishedServlet", urlPatterns = {"/getUnfinishedServlet"})
+public class getUnfinishedServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -70,47 +70,69 @@ public class getAccountServlet extends HttpServlet {
          
          //---------------
          //THIS IS WHERE YOU START CHANGING
-         String accountType = ""+session.getAttribute("accountType");
-         String preparedSQL = "select * from Account";
-         if(accountType.equals("2") || accountType.equals("1")){
-             preparedSQL = "select Account.accountID, Account.userName, Account.password, Account.dateCreated, "
-                     + "AccountStatus.accountStatus, AccountType.accountType from Account "
-                     + "inner join AccountStatus on AccountStatus.accountStatusID = Account.accountStatus "
-                     + "inner join AccountType on AccountType.accountTypeID = Account.accountType";
+         String table = request.getParameter("getTable");
+         String preparedSQL = "";
+         PreparedStatement ps;
+         ResultSet dbData;
+         if(table.equals("invoice")){
+             preparedSQL = "select Invoice.invoiceID, Customer.PRCID, Invoice.clinicID, Invoice.invoiceDate, "
+                 + "Invoice.deliveryDate, Invoice.additionalAccessories, Invoice.termsOfPayment, "
+                 + "Invoice.paymentDueDate, Invoice.datePaid, Invoice.dateClosed, Invoice.status, "
+                 + "Invoice.overdueFee from Invoice "
+                 + "inner join Customer on Customer.customerID = Invoice.customerID where status = 'In Progress' order by paymentDueDate";
+             ps = conn.prepareStatement(preparedSQL);
+             dbData = ps.executeQuery();
+             ArrayList<invoiceBean> invoicesRetrieved = new ArrayList<invoiceBean>();
+             //retrieve the information.
+             while(dbData.next()){
+                 invoiceBean ibean = new invoiceBean();
+                 ibean.setInvoiceID(dbData.getInt("invoiceID"));
+                 ibean.setPRCID(dbData.getString("PRCID"));
+                 ibean.setClinicID(dbData.getInt("clinicID"));
+                 ibean.setInvoiceDate(dbData.getDate("invoiceDate"));
+                 ibean.setDeliveryDate(dbData.getDate("deliveryDate"));
+                 ibean.setAdditionalAccessories(dbData.getString("additionalAccessories"));
+                 ibean.setTermsOfPayment(dbData.getString("termsOfPayment"));
+                 ibean.setPaymentDueDate(dbData.getDate("paymentDueDate"));
+                 if(!(""+dbData.getDate("dateClosed")).equals("0000-00-00")){ibean.setDateClosed(dbData.getDate("dateClosed"));}
+                 if(!(""+dbData.getDate("datePaid")).equals("0000-00-00")){ibean.setDatePaid(dbData.getDate("datePaid"));}
+
+                 //ibean.setDatePaid(dbData.getDate("datePaid"));
+                 ibean.setStatus(dbData.getString("status"));
+                 ibean.setOverdueFee(dbData.getFloat("overdueFee"));
+                 invoicesRetrieved.add(ibean);
+             }
+
+                 request.setAttribute("invoiceList", invoicesRetrieved);
+                 request.getRequestDispatcher("getInvoice.jsp").forward(request,response);
          }
          else{
-             String accountID = ""+session.getAttribute("accountID");
-             //preparedSQL = "select * from Account where accountID="+accountID;
-             preparedSQL = "select Account.accountID, Account.userName, Account.password, Account.dateCreated, "
-                     + "AccountStatus.accountStatus, AccountType.accountType from Account "
-                     + "inner join AccountStatus on AccountStatus.accountStatusID = Account.accountStatus "
-                     + "inner join AccountType on AccountType.accountTypeID = Account.accountType "
-                     + "where accountID="+accountID;
+            preparedSQL = "Select * from RestockOrder where RODateDelivered = null order by RODateDue";
+            ps = conn.prepareStatement(preparedSQL);
+            dbData = ps.executeQuery();
+            ArrayList<restockOrderBean> restocksRetrieved = new ArrayList<restockOrderBean>();
+            //retrieve the information.
+               while(dbData.next()){
+                  restockOrderBean rbean = new restockOrderBean();
+                   rbean.setRestockOrderID(dbData.getInt("restockOrderID"));
+                   rbean.setProductID(dbData.getInt("productID"));
+                   rbean.setNumberOfPiecesOrdered(dbData.getInt("numberOfPiecesOrdered"));
+                   rbean.setNumberOfPiecesReceived(dbData.getInt("numberOfPiecesReceived"));
+                   rbean.setSupplier(dbData.getString("supplier"));
+                   rbean.setPurpose(dbData.getString("purpose"));
+                   rbean.setRODateDue(dbData.getDate("RODateDue"));
+                   rbean.setRODateDelivered(dbData.getDate("RODateDelivered"));
+                   restocksRetrieved.add(rbean);
+               }
+            request.setAttribute("restocksList", restocksRetrieved);
+
+            request.getRequestDispatcher("getRestockOrder.jsp").forward(request,response);
+
          }
-         PreparedStatement ps = conn.prepareStatement(preparedSQL);
-         
-         
-         
-         ResultSet dbData = ps.executeQuery();
-         ArrayList<accountBean> accountsRetrieved = new ArrayList<accountBean>();
-         //retrieve the information.
-            while(dbData.next()){
-               accountBean abean = new accountBean();
-                abean.setAccountID(dbData.getInt("accountID"));
-                abean.setUserName(dbData.getString("userName"));
-                abean.setPassword(dbData.getString("password"));
-                abean.setAccountStatus(dbData.getString("accountStatus"));
-                abean.setAccountType(dbData.getString("accountType"));
-                //abean.setDateCreated(dbData.getTimestamp("dateCreated"));
-                abean.setDateCreated(dbData.getTimestamp("dateCreated"));
-                accountsRetrieved.add(abean);
-            }
-         request.setAttribute("accountsList", accountsRetrieved);
-         
-         request.getRequestDispatcher("getAccount.jsp").forward(request,response);
             
+         
         }
-        catch(Exception ex){
+        catch(SQLException ex){
             ex.printStackTrace();
             out.println("SQL error: " + ex);
         }
@@ -126,8 +148,6 @@ public class getAccountServlet extends HttpServlet {
                 out.println("Another SQL error: " + ex);
             }
      }
-        
-        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

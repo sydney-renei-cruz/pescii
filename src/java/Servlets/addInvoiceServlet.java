@@ -104,7 +104,7 @@ public class addInvoiceServlet extends HttpServlet {
          //---------------
          //THIS IS WHERE YOU START CHANGING
          String message = "Invoice successfully created!";
-         String preparedSQL = "insert into Invoice(PRCID, clinicID, invoiceDate, deliveryDate, additionalAccessories,"
+         String preparedSQL = "insert into Invoice(customerID, clinicID, invoiceDate, deliveryDate, additionalAccessories,"
                                 + "termsOfPayment, paymentDueDate, datePaid, dateClosed, status, overdueFee) values(?,?,?,?,?,?,?,?,?,?,?)";
          
          //this is put at the start because it needs to cancel immediately if there are no InvoiceItems
@@ -126,7 +126,7 @@ public class addInvoiceServlet extends HttpServlet {
          PreparedStatement ps = conn.prepareStatement(preparedSQL, Statement.RETURN_GENERATED_KEYS);
          
          //-----First Make the Invoice entry
-         String inputPRCID = request.getParameter("PRCIDInput");
+         int inputCustomerID = Integer.parseInt(request.getParameter("customerIDInput"));
          int inputClinicID = Integer.parseInt(request.getParameter("chosenClinic"));
          Date date = new Date();
          String inputInvoiceDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
@@ -134,20 +134,21 @@ public class addInvoiceServlet extends HttpServlet {
          String inputAddAcc = request.getParameter("addAccInput");
          String inputTop = request.getParameter("topInput");
          String inputPaymentDueDate = request.getParameter("paymentDueDateInput");
-         String inputDatePaid = ""+request.getParameter("datePaidInput");
+         String inputDatePaid = request.getParameter("datePaidInput");
          String inputStatus = request.getParameter("statusInput");
          
          
-         ps.setString(1,inputPRCID);
+         ps.setInt(1,inputCustomerID);
          ps.setInt(2, inputClinicID);
          ps.setString(3,inputInvoiceDate);
          ps.setString(4,inputDeliveryDate);
          ps.setString(5,inputAddAcc);
          ps.setString(6,inputTop);
          ps.setString(7,inputPaymentDueDate);
-         ps.setString(8,inputDatePaid);
+         if(inputDatePaid.equals("")){ps.setString(8,null);}
+         else{ps.setString(8,inputDatePaid);}
          if(inputStatus.equals("Completed")){ps.setString(9,inputDatePaid);}
-         else{ps.setString(9,"");}
+         else{ps.setString(9,null);}
          ps.setString(10,inputStatus);
          ps.setFloat(11, 0);
          ps.executeUpdate();                   //at this point, you have already inserted into the database
@@ -196,9 +197,11 @@ public class addInvoiceServlet extends HttpServlet {
             }
         }
          
-         if(inputStatus.equals("Completed")){
+         //if(inputStatus.equals("Completed")){
             //now update the product
             //first get the invoice items
+            
+            //it has just occured to us that the inventory should update regardless of completion
             preparedSQL = "select * from InvoiceItem where invoiceID = ?";
             ps = conn.prepareStatement(preparedSQL);
             ps.setInt(1,invoiceIDInput);
@@ -230,7 +233,7 @@ public class addInvoiceServlet extends HttpServlet {
                 
                 message = "Invoice successfully created! Inventory Updated.";
             }
-         }
+         //}
          
          
          request.setAttribute("message", message);
@@ -238,11 +241,6 @@ public class addInvoiceServlet extends HttpServlet {
          session.setAttribute("prodNames", null);
          session.setAttribute("quantity", null);
          request.getRequestDispatcher("homePage.jsp").forward(request,response);
-         /*
-         request.setAttribute("PRCID", inputPRCID);
-         request.setAttribute("invoiceDate", inputInvoiceDate);
-         request.getRequestDispatcher("Servlets.getInvoiceServlet").forward(request,response);
-           */ 
          
         }
         catch(SQLException ex){

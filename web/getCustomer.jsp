@@ -33,10 +33,10 @@
         <c:forEach items="${customersList}" var="cust" begin="0" step="1" varStatus="status">
             <tr>
                     <td>${cust.getPRCID()}</td>
-                    <td><a href="Servlets.viewCustomerDetailsServlet?custID=<c:out value="${cust.getPRCID()}"/>">${cust.getCustomerName()}</a></td>
+                    <td><a href="Servlets.viewCustomerDetailsServlet?custID=<c:out value="${cust.getCustomerID()}"/>">${cust.getCustomerName()}</a></td>
                     <td>${cust.getCustomerMobileNumber()}</td>
                     <td>${cust.getCustomerTelephoneNumber()}</td>
-                    <td><a href="Servlets.viewCustomerDetailsServlet?forEdit=yes&custID=<c:out value="${cust.getPRCID()}"/>">Edit</td>
+                    <td><a href="Servlets.viewCustomerDetailsServlet?forEdit=yes&custID=<c:out value="${cust.getCustomerID()}"/>">Edit</td>
             </tr>
         </c:forEach>
         </table>

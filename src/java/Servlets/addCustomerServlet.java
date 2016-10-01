@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.servlet.ServletContext;
@@ -96,39 +97,48 @@ public class addCustomerServlet extends HttpServlet {
          //---------------
          //THIS IS WHERE YOU START CHANGING
          
-         String preparedSQL = "insert into Customer(PRCID, customerName, customerMobileNumber, customerTelephoneNumber) values(?,?,?,?)";
-         String preparedSQL2 = "insert into Clinic(PRCID, clinicAddress, clinicPhoneNumber, clinicName) values(?,?,?,?)";
+         String preparedSQL = "insert into Customer(PRCID, customerName, customerMobileNumber, customerTelephoneNumber, salesRepID) values(?,?,?,?,?)";
+         String preparedSQL2 = "insert into Clinic(customerID, clinicAddress, clinicPhoneNumber, clinicName) values(?,?,?,?)";
          
          //you don't change this
-         PreparedStatement ps = conn.prepareStatement(preparedSQL);
+         PreparedStatement ps = conn.prepareStatement(preparedSQL, Statement.RETURN_GENERATED_KEYS);
          PreparedStatement ps2 = conn.prepareStatement(preparedSQL2);
          
          String inputPRCID = request.getParameter("customerIDInput");
          String inputCustomerName = request.getParameter("customerNameInput");
          String inputCustomerCelNum = request.getParameter("customerMobileNumberInput");
          String inputTelNum = request.getParameter("customerTelephoneNumberInput");
-         
+         int inputSalesRepID = Integer.parseInt(request.getParameter("chosenSalesRep"));
          
          ps.setString(1,inputPRCID);
          ps.setString(2,inputCustomerName);
          ps.setString(3,inputCustomerCelNum);
          ps.setString(4,inputTelNum);
+         ps.setInt(5,inputSalesRepID);
          ps.executeUpdate();                   //at this point, you have already inserted into the database
          
          String inputClinicAddress = request.getParameter("clinicAddressInput");
          String inputClinPhoneNum = request.getParameter("clinicPhoneNumInput");
          String inputClinicName = request.getParameter("clinicNameInput");
-         
-         ps2.setString(1, inputPRCID);
-         ps2.setString(2, inputClinicAddress);
-         ps2.setString(3, inputClinPhoneNum);
-         ps2.setString(4, inputClinicName);
-         ps2.executeUpdate();
-         
+         int customerID;
+         try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+            if (generatedKeys.next()) {
+                customerID = generatedKeys.getInt(1);
+
+                ps2.setInt(1, customerID);
+                ps2.setString(2, inputClinicAddress);
+                ps2.setString(3, inputClinPhoneNum);
+                ps2.setString(4, inputClinicName);
+                ps2.executeUpdate();
+                
+            }
+            else {
+                throw new SQLException("--> no customerID retrieved");
+            }
+        }
          
          String message = "Customer successfully created!";
          request.setAttribute("message", message);
-         String a = "hello";
          request.getRequestDispatcher("homePage.jsp").forward(request,response);
             
          

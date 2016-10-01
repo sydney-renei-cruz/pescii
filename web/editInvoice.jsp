@@ -53,23 +53,23 @@
             </c:choose>      
             Payment Due Date:        
             <c:choose>
-                <c:when test="${invoice.getDatePaid() eq ''}">
+                <c:when test="${invoice.getDatePaid() eq '0000-00-00'}">
                     <br>
                     From: ${invoice.getPaymentDueDate()}<br>
                     To: <input type="text" name="paymentDueDateInput" value="${invoice.getPaymentDueDate()}"><br><br>
                 </c:when>
-                <c:when test="${invoice.getDatePaid() ne ''}">
+                <c:when test="${invoice.getDatePaid() ne '0000-00-00'}">
                     <input type="hidden" value="${invoice.getPaymentDueDate()}" name="paymentDueDateInput">${invoice.getPaymentDueDate()}<br><br>
                 </c:when>
             </c:choose>
             Date Paid:
             <c:choose>
-                <c:when test="${invoice.getDatePaid() eq ''}">
+                <c:when test="${invoice.getDatePaid() eq null}">
                     <br>
                     From: ${invoice.getDatePaid()}<br>
                     To: <input type="text" name="datePaidInput" value="${invoice.getDatePaid()}"><br><br>
                 </c:when>
-                <c:when test="${invoice.getDatePaid() ne ''}">
+                <c:when test="${invoice.getDatePaid() ne null}">
                     <input type="hidden" value="${invoice.getDatePaid()}" name="datePaidInput">${invoice.getDatePaid()}<br><br>
                 </c:when>
             </c:choose>

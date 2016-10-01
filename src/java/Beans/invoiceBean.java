@@ -6,6 +6,7 @@
 package Beans;
 
 import java.io.Serializable;
+import java.sql.Date;
 
 /**
  *
@@ -16,18 +17,18 @@ public class invoiceBean implements Serializable{
     public int invoiceID;
     public String PRCID;
     public int clinicID;
-    public String invoiceDate;
-    public String deliveryDate;
+    public Date invoiceDate;
+    public Date deliveryDate;
     public String additionalAccessories;
     public String termsOfPayment;
-    public String paymentDueDate;
-    public String datePaid;
-    public String dateClosed;
+    public Date paymentDueDate;
+    public Date datePaid;
+    public Date dateClosed;
     public String status;
     public float overdueFee;
     
-    public invoiceBean(int iid, String cid, int clinid, String invdate, String deldate,
-                        String addacc, String tofpay, String payduedate, String dpaid, String dclosed,
+    public invoiceBean(int iid, String cid, int clinid, Date invdate, Date deldate,
+                        String addacc, String tofpay, Date payduedate, Date dpaid, Date dclosed,
                         String stat, float overfee){
         this.invoiceID=iid;
         this.PRCID=cid;
@@ -48,26 +49,26 @@ public class invoiceBean implements Serializable{
     public void setInvoiceID(int iid){this.invoiceID=iid;}
     public void setPRCID(String cid){this.PRCID=cid;}
     public void setClinicID(int clinid){this.clinicID=clinid;}
-    public void setInvoiceDate(String invdate){this.invoiceDate=invdate;}
-    public void setDeliveryDate(String deldate){this.deliveryDate=deldate;}
+    public void setInvoiceDate(Date invdate){this.invoiceDate=invdate;}
+    public void setDeliveryDate(Date deldate){this.deliveryDate=deldate;}
     public void setAdditionalAccessories(String addacc){this.additionalAccessories=addacc;}
     public void setTermsOfPayment(String tofpay){this.termsOfPayment=tofpay;}
-    public void setPaymentDueDate(String payduedate){this.paymentDueDate=payduedate;}
-    public void setDatePaid(String dpaid){this.datePaid=dpaid;}
-    public void setDateClosed(String dclosed){this.dateClosed=dclosed;}
+    public void setPaymentDueDate(Date payduedate){this.paymentDueDate=payduedate;}
+    public void setDatePaid(Date dpaid){this.datePaid=dpaid;}
+    public void setDateClosed(Date dclosed){this.dateClosed=dclosed;}
     public void setStatus(String stat){this.status=stat;}
     public void setOverdueFee(float overfee){this.overdueFee=overfee;}
     
     public int getInvoiceID(){return this.invoiceID;}
     public String getPRCID(){return this.PRCID;}
     public int getClinicID(){return this.clinicID;}
-    public String getInvoiceDate(){return this.invoiceDate;}
-    public String getDeliveryDate(){return this.deliveryDate;}
+    public Date getInvoiceDate(){return this.invoiceDate;}
+    public Date getDeliveryDate(){return this.deliveryDate;}
     public String getAdditionalAccessories(){return this.additionalAccessories;}
     public String getTermsOfPayment(){return this.termsOfPayment;}
-    public String getPaymentDueDate(){return this.paymentDueDate;}
-    public String getDatePaid(){return this.datePaid;}
-    public String getDateClosed(){return this.dateClosed;}
+    public Date getPaymentDueDate(){return this.paymentDueDate;}
+    public Date getDatePaid(){return this.datePaid;}
+    public Date getDateClosed(){return this.dateClosed;}
     public String getStatus(){return this.status;}
     public float getOverdueFee(){return this.overdueFee;}
     

@@ -32,7 +32,7 @@
             <tr>
                 <td><a href="restockOrder.getDetails?editRestock=no&restockID=<c:out value="${ro.getRestockOrderID()}"/>">${ro.getRestockOrderID()}</a></td>
                 <td>${ro.getSupplier()}</td>
-                <td>${ro.getRODateCreated()}</td>
+                <td>${ro.getRODateDue()}</td>
                 <td>${ro.getRODateDelivered()}</td>
                 <td><a href="restockOrder.getDetails?editRestock=yes&restockID=<c:out value="${ro.getRestockOrderID()}"/>">Edit RO</a></td>
             </tr>

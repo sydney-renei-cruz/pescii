@@ -36,8 +36,8 @@ public class accountantFilter implements Filter {
         if (session == null || session.getAttribute("accountType") == null) {
             response.sendRedirect(request.getContextPath() + "/logIn.jsp");
         } 
-        else if(!session.getAttribute("accountType").equals("Accountant")){
-            if(session.getAttribute("accountType").equals("CEO")){
+        else if(!session.getAttribute("accountType").equals("3")){
+            if(session.getAttribute("accountType").equals("1")){
                 chain.doFilter(request, response);
             }
             else{

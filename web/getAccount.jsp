@@ -25,6 +25,7 @@
                 <th>User Name</th>
                 <th>Account Type</th>
                 <th>Account Status</th>
+                <th>Date Created</th>
             </tr>
         
         <c:forEach items="${accountsList}" var="acc" begin="0" step="1" varStatus="status">
@@ -33,6 +34,7 @@
                     <td>${acc.getUserName()}</td>
                     <td>${acc.getAccountType()}</td>
                     <td>${acc.getAccountStatus()}</td>
+                    <td>${acc.getDateCreated()}</td>
                     <td><a href="account.getDetails?accID=<c:out value="${acc.getAccountID()}"/>">Edit</td>
             </tr>
             

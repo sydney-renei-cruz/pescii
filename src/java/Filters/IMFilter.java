@@ -36,9 +36,9 @@ public class IMFilter implements Filter {
         if (session == null || session.getAttribute("accountType") == null) {
             response.sendRedirect(request.getContextPath() + "/logIn.jsp");
         } 
-        else if(!session.getAttribute("accountType").equals("Inventory Manager")){
-            if(session.getAttribute("accountType").equals("CEO") ||
-                    session.getAttribute("accountType").equals("Auditor")){
+        else if(!session.getAttribute("accountType").equals("4")){
+            if(session.getAttribute("accountType").equals("1") ||
+                    session.getAttribute("accountType").equals("5")){
                 chain.doFilter(request, response);
             }
             else{

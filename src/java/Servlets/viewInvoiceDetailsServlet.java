@@ -70,7 +70,11 @@ public class viewInvoiceDetailsServlet extends HttpServlet {
          
          //---------------
          //first get the invoice details
-         String preparedSQL = "select * from Invoice where invoiceID = ?";
+         String preparedSQL = "select Invoice.invoiceID, Customer.PRCID, Invoice.clinicID, Invoice.invoiceDate, "
+                 + "Invoice.deliveryDate, Invoice.additionalAccessories, Invoice.termsOfPayment, "
+                 + "Invoice.paymentDueDate, Invoice.datePaid, Invoice.dateClosed, Invoice.status, "
+                 + "Invoice.overdueFee from Invoice "
+                 + "inner join Customer on Customer.customerID = Invoice.customerID where invoiceID = ?";
          String inputInvID = request.getParameter("invID");
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          ps.setString(1, inputInvID);
@@ -81,13 +85,17 @@ public class viewInvoiceDetailsServlet extends HttpServlet {
          ibean.setInvoiceID(dbData.getInt("invoiceID"));
          ibean.setPRCID(dbData.getString("PRCID"));
          ibean.setClinicID(dbData.getInt("clinicID"));
-         ibean.setInvoiceDate(dbData.getString("invoiceDate"));
-         ibean.setDeliveryDate(dbData.getString("deliveryDate"));
+         ibean.setInvoiceDate(dbData.getDate("invoiceDate"));
+         ibean.setDeliveryDate(dbData.getDate("deliveryDate"));
          ibean.setAdditionalAccessories(dbData.getString("additionalAccessories"));
          ibean.setTermsOfPayment(dbData.getString("termsOfPayment"));
-         ibean.setPaymentDueDate(dbData.getString("paymentDueDate"));
-         ibean.setDatePaid(dbData.getString("datePaid"));
-         ibean.setDateClosed(dbData.getString("dateClosed"));
+         ibean.setPaymentDueDate(dbData.getDate("paymentDueDate"));
+         if(!(""+dbData.getDate("dateClosed")).equals("0000-00-00")){ibean.setDateClosed(dbData.getDate("dateClosed"));}
+         if(!(""+dbData.getDate("datePaid")).equals("0000-00-00")){ibean.setDatePaid(dbData.getDate("datePaid"));}
+                
+
+         //ibean.setDatePaid(dbData.getDate("datePaid"));
+         //ibean.setDateClosed(dbData.getDate("dateClosed"));
          ibean.setStatus(dbData.getString("status"));
          ibean.setOverdueFee(dbData.getFloat("overdueFee"));
          

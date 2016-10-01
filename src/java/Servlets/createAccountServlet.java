@@ -112,12 +112,21 @@ public class createAccountServlet extends HttpServlet {
          String inputUsername = request.getParameter("usernameInput");
          String inputPassword = request.getParameter("passwordInput");
          String inputAccType = request.getParameter("accTypeInput");
-         
+         int accType = 0;
+         switch(inputAccType){
+             case "CEO": accType=1; break;
+             case "Secretary": accType=2; break;
+             case "Accountant": accType=3; break;
+             case "Inventory Manager": accType=4; break;
+             case "Auditor": accType=5; break;
+             default: response.sendRedirect("createAccount.jsp");
+         }
+         if(accType==0){response.sendRedirect("createAccount.jsp");}
          
          ps.setString(1,inputUsername);
          ps.setString(2,inputPassword);
-         ps.setString(3,"Activated");
-         ps.setString(4, inputAccType);
+         ps.setInt(3,1);
+         ps.setInt(4,accType);
          ps.executeUpdate();                   //at this point, you have already inserted into the database
          
          String message = "Account successfully created!";

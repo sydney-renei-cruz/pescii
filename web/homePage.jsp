@@ -49,7 +49,7 @@
                 - once an invoice is created, there are some fields that can no longer be edited.
                     - see document to know what these are
         -->
-        <c:if test="${accountType == 'Accountant'}">
+        <c:if test="${accountType == '3'}">
             <a href="Servlets.getProductServlet?forInvoice=yes">Create Invoice</a><br>
             <a href="Servlets.getInvoiceServlet">Edit Invoice</a><br>
             <a href="Servlets.getInvoiceServlet">View Invoice</a><br><br>
@@ -60,9 +60,9 @@
                 - the Secretary handles customer information
                 - the Secretary can create Accounts, but can only change the account type when editting
         -->    
-        <c:if test="${accountType == 'Secretary'}">
+        <c:if test="${accountType == '2'}">
             <a href="addCustomer.jsp">Add Customer</a><br>
-            <a href="editCustomer.jsp">Edit Customer</a><br>
+            <a href="Servlets.getCustomerServlet">Edit Customer</a><br>
             <a href="Servlets.getCustomerServlet">View Customer</a><br><br>
             
             <a href="createAccount.jsp">Create Account</a><br>
@@ -75,12 +75,9 @@
                 - he can also create and edit Restock Orders, but only one half of the RO
                     - check document for which fields IM can edit
         -->
-        <c:if test="${accountType == 'Inventory Manager'}">
+        <c:if test="${accountType == '4'}">
             <a href="addProduct.jsp">Add Product</a><br>
             <a href="editProduct.jsp">Edit Product</a><br><br>
-            
-            <a href="createRestockOrder.jsp">Add Restock Order</a><br>
-            <a href="editRestockOrder.jsp">Edit Restock Order</a><br>
             <a href="restockOrder.get">View Restock Order</a><br><br>
             
             <a href="account.get">Edit Account</a><br><br>
@@ -90,8 +87,9 @@
                 - the Auditor can edit the other half of the Restock Order
                     - again, check the document to see which fields the Auditor can edit
         -->
-        <c:if test="${accountType == 'Auditor'}">
-            <a href="editRestockOrder.jsp">Edit Restock Order</a><br>
+        <c:if test="${accountType == '5'}">
+            <a href="createRestockOrder.jsp">Add Restock Order</a><br>
+            <a href="restockOrder.get">Edit Restock Order</a><br>
             <a href="restockOrder.get">View Restock Order</a><br><br>
             <a href="account.get">Edit Account</a><br><br>
         </c:if>  
@@ -99,12 +97,16 @@
         <!--this is the CEO section
                 - the CEO can do everything
         -->
-        <c:if test="${accountType == 'CEO'}">
+        <c:if test="${accountType == '1'}">
             <a href="Servlets.getProductServlet?forInvoice=yes">Create Invoice</a><br>
             <a href="Servlets.getInvoiceServlet">Edit Invoice</a><br>
-            <a href="Servlets.getInvoiceServlet">View Invoice</a><br><br>
+            <a href="new.get?whatFor=invoice">New Invoices</a><br>
+            <a href="new.get?whatFor=invoice&validated=yes">Validated Invoices</a><br>
+            <a href="new.get?whatFor=invoice&close=yes">Invoices Near Deadlines</a><br>
+            <a href="unfinished.get?getTable=invoice">View Unfinished Invoices</a><br>
+            <a href="Servlets.getInvoiceServlet">View All Invoices</a><br><br>
             
-            <a href="addCustomer.jsp">Add Customer</a><br>
+            <a href="Servlets.getCustomerServlet?forAdd=yes">Add Customer</a><br>
             <a href="Servlets.getCustomerServlet">Edit Customer</a><br>
             <a href="Servlets.getCustomerServlet">View Customer</a><br><br>
             
@@ -115,7 +117,11 @@
             <a href="editProduct.jsp">Edit Product</a><br>
             <a href="createRestockOrder.jsp">Add Restock Order</a><br>
             <a href="restockOrder.get">Edit Restock Order</a><br>
-            <a href="restockOrder.get">View Restock Order</a><br><br>
+            <a href="new.get?whatFor=restockOrder&new=yes">New Restock Orders</a><br>
+            <a href="new.get?whatFor=restockOrder&completed=yes">Completed RO</a><br>
+            <a href="new.get?whatFor=restockOrder&close=yes">RO Near Deadlines</a><br>
+            <a href="unfinished.get?getTable=ro">View Unfinished RO</a><br>
+            <a href="restockOrder.get">View All Restock Orders</a><br><br>
         </c:if>
         
         <a href="Servlets.getProductServlet">View Product</a><br>

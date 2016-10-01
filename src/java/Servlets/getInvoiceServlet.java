@@ -72,9 +72,17 @@ public class getInvoiceServlet extends HttpServlet {
          String preparedSQL;
          
          if(request.getParameter("invoiceDate")!=null && request.getParameter("PRCID")!=null){
-             preparedSQL = "select * from Invoice where PRCID="+request.getParameter("PRCID")+" and invoiceDate="+request.getParameter("invoiceDate");
+             preparedSQL = "select Invoice.invoiceID, Customer.PRCID, Invoice.clinicID, Invoice.invoiceDate, "
+                 + "Invoice.deliveryDate, Invoice.additionalAccessories, Invoice.termsOfPayment, "
+                 + "Invoice.paymentDueDate, Invoice.datePaid, Invoice.dateClosed, Invoice.status, "
+                 + "Invoice.overdueFee from Invoice "
+                 + "inner join Customer on Customer.customerID = Invoice.customerID where Customer.PRCID="+request.getParameter("PRCID")+" and Invoice.invoiceDate="+request.getParameter("invoiceDate");
          }
-         else{preparedSQL = "select * from Invoice";}
+         else{preparedSQL = "select Invoice.invoiceID, Customer.PRCID, Invoice.clinicID, Invoice.invoiceDate, "
+                 + "Invoice.deliveryDate, Invoice.additionalAccessories, Invoice.termsOfPayment, "
+                 + "Invoice.paymentDueDate, Invoice.datePaid, Invoice.dateClosed, Invoice.status, "
+                 + "Invoice.overdueFee from Invoice "
+                 + "inner join Customer on Customer.customerID = Invoice.customerID";}
          
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          
@@ -88,13 +96,15 @@ public class getInvoiceServlet extends HttpServlet {
                 ibean.setInvoiceID(dbData.getInt("invoiceID"));
                 ibean.setPRCID(dbData.getString("PRCID"));
                 ibean.setClinicID(dbData.getInt("clinicID"));
-                ibean.setInvoiceDate(dbData.getString("invoiceDate"));
-                ibean.setDeliveryDate(dbData.getString("deliveryDate"));
+                ibean.setInvoiceDate(dbData.getDate("invoiceDate"));
+                ibean.setDeliveryDate(dbData.getDate("deliveryDate"));
                 ibean.setAdditionalAccessories(dbData.getString("additionalAccessories"));
                 ibean.setTermsOfPayment(dbData.getString("termsOfPayment"));
-                ibean.setDatePaid(dbData.getString("datePaid"));
-                ibean.setDateClosed(dbData.getString("dateClosed"));
-                ibean.setDatePaid(dbData.getString("datePaid"));
+                ibean.setPaymentDueDate(dbData.getDate("paymentDueDate"));
+                if(!(""+dbData.getDate("dateClosed")).equals("0000-00-00")){ibean.setDateClosed(dbData.getDate("dateClosed"));}
+                if(!(""+dbData.getDate("datePaid")).equals("0000-00-00")){ibean.setDatePaid(dbData.getDate("datePaid"));}
+                
+                //ibean.setDatePaid(dbData.getDate("datePaid"));
                 ibean.setStatus(dbData.getString("status"));
                 ibean.setOverdueFee(dbData.getFloat("overdueFee"));
                 invoicesRetrieved.add(ibean);
