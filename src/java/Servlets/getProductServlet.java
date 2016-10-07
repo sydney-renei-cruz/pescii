@@ -5,30 +5,28 @@
  */
 package Servlets;
 
-import Beans.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author user
  */
-@WebServlet(name = "viewProductServlet", urlPatterns = {"/viewProductServlet"})
-public class getProductServlet extends HttpServlet {
+@WebServlet(name = "editProductServlet", urlPatterns = {"/editProductServlet"})
+public class editProductServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,83 +40,7 @@ public class getProductServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        
-        HttpSession session = request.getSession();
-        ServletContext context = request.getSession().getServletContext();
-        response.setContentType("text/html");
-        
-        try {
-         Class.forName(context.getInitParameter("jdbcDriver"));
-      } catch(ClassNotFoundException ex) {
-         ex.printStackTrace();
-         out.println("jdbc error: " + ex);
-      }
-        
-        Connection conn = null;
-        Statement stmt = null;
-        
-        try{
-        //Allocate a database Connection object
-         //This uses the pageContext servlet.  Look at Web.xml for the params!
-         //This means we don't need to recompile!
-         
-         conn = DriverManager.getConnection(context.getInitParameter("databaseUrl"), context.getInitParameter("databaseUser"), context.getInitParameter("databasePassword"));
-        
-         //Allocate a Statement object within the Connection
-         stmt = conn.createStatement();
-         
-         //---------------
-         //THIS IS WHERE YOU START CHANGING
-         String preparedSQL = "select * from Product";
-         PreparedStatement ps = conn.prepareStatement(preparedSQL);
-         
-         
-         
-         ResultSet dbData = ps.executeQuery();
-         ArrayList<productBean> productsRetrieved = new ArrayList<productBean>();
-         //retrieve the information.
-            while(dbData.next()){
-               productBean pbean = new productBean();
-                pbean.setProductID(dbData.getString("productID"));
-                pbean.setProductName(dbData.getString("productName"));
-                pbean.setProductDescription(dbData.getString("productDescription"));
-                pbean.setProductPrice(dbData.getFloat("productPrice"));
-                pbean.setRestockPrice(dbData.getFloat("restockPrice"));
-                pbean.setStocksRemaining(dbData.getInt("stocksRemaining"));
-                pbean.setLowStock(dbData.getInt("lowStock"));
-                pbean.setBrand(dbData.getString("brand"));
-                pbean.setProductClass(dbData.getString("productClass"));
-                pbean.setColor(dbData.getString("color"));
-                productsRetrieved.add(pbean);
-            }
-         request.setAttribute("productsList", productsRetrieved);
-         String forInvoice = ""+ request.getParameter("forInvoice");
-         if(forInvoice.equals("yes") || session.getAttribute("cart")!=null){
-             request.setAttribute("forInvoice", "yes");
-             context.log("forInvoice is equal to " + request.getParameter("forInvoice"));
-         }
-         request.getRequestDispatcher("getProduct.jsp").forward(request,response);
-            
-         
-        }
-        catch(SQLException ex){
-            ex.printStackTrace();
-            out.println("SQL error: " + ex);
-        }
-        finally {
-            out.close();  // Close the output writer
-            try {
-              //Close the resources
-              if (stmt != null) stmt.close();
-              if (conn != null) conn.close();
-            }
-            catch (SQLException ex) {
-                ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
-            }
-     }
-        
+     PrintWriter out = response.getWriter();
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -148,6 +70,82 @@ public class getProductServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
+         PrintWriter out = response.getWriter();
+        
+        ServletContext context = request.getSession().getServletContext();
+        response.setContentType("text/html");
+        
+        try {
+         Class.forName(context.getInitParameter("jdbcDriver"));
+      } catch(ClassNotFoundException ex) {
+         ex.printStackTrace();
+         out.println("jdbc error: " + ex);
+      }
+        
+        Connection conn = null;
+        Statement stmt = null;
+        
+        try{
+        //Allocate a database Connection object
+         //This uses the pageContext servlet.  Look at Web.xml for the params!
+         //This means we don't need to recompile!
+         
+         conn = DriverManager.getConnection(context.getInitParameter("databaseUrl"), context.getInitParameter("databaseUser"), context.getInitParameter("databasePassword"));
+        
+         //Allocate a Statement object within the Connection
+         stmt = conn.createStatement();
+         
+         //---------------
+         //first get the invoice details
+         String preparedSQL = "update Product set productName=?, productDescription=?, productPrice=?, restockPrice=?, lowStock=?, brand=?, productClass=?, color=?"
+                                + "where productID=?";
+         
+         String newProductID = request.getParameter("productIDInput");
+         String newProductName = request.getParameter("productNameInput");
+         String newProductDescription = request.getParameter("productDescriptionInput");
+         String newProductPrice= request.getParameter("datePaidInput");
+         String newRestockPrice = request.getParameter("statusInput");
+         String newLowStock = request.getParameter("lowStockInput");
+         String newBrand = request.getParameter("brandInput");
+         String newProductClass = request.getParameter("productClassInput");
+         String newColor = request.getParameter("colorInput");
+         
+         
+         PreparedStatement ps = conn.prepareStatement(preparedSQL);
+         
+         ps.setString(1,newProductName);
+         ps.setString(2,newProductDescription);
+         ps.setString(3,newProductPrice);
+         ps.setString(4,newRestockPrice);
+         ps.setString(5,newLowStock);
+         ps.setString(6,newBrand);
+         ps.setString(7, newProductClass);
+         ps.setString(8, newColor);
+         ps.setString(9,newProductID);
+         
+         ps.executeUpdate();
+         context.log("---> Product successfully updated. ProductId is: "+newProductID);
+         
+         request.setAttribute("message", "Product successfully editted!");
+         request.getRequestDispatcher("homePage.jsp").forward(request,response);
+         
+        }
+        catch(SQLException ex){
+            ex.printStackTrace();
+            out.println("SQL error: " + ex);
+        }
+        finally {
+            out.close();  // Close the output writer
+            try {
+              //Close the resources
+              if (stmt != null) stmt.close();
+              if (conn != null) conn.close();
+            }
+            catch (SQLException ex) {
+                ex.printStackTrace();
+                out.println("Another SQL error: " + ex);
+            }
+     }
     }
 
     /**
