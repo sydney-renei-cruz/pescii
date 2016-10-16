@@ -10,6 +10,7 @@
 <%
     ArrayList<productBean> productsList = (ArrayList<productBean>)request.getAttribute("productsList");
     String forInvoice = "" + request.getAttribute("forInvoice");
+    String forRestock = "" + request.getAttribute("forRestock");
 %>
 <!DOCTYPE html>
 <html>
@@ -56,8 +57,12 @@
                     <td>${prod.getColor()}</td>
                     
                     <c:if test="${forInvoice eq 'yes'}">
-                        <td><a href="addToCart?prodName=<c:out value="${prod.getProductName()}"/>&prodID=<c:out value="${prod.getProductID()}"/>">ADD</a></td>
+                        <td><a href="addToCart?prodName=<c:out value="${prod.getProductName()}"/>&prodID=<c:out value="${prod.getProductID()}"/>">ADD to Cart</a></td>
                     </c:if>
+                    <c:if test="${forRestock eq 'yes'}">
+                      <td><a href="product.getDetails?forRestock=yes&prodID=<c:out value="${prod.getProductID()}"/>">ADD to RO</a></td>
+                    </c:if>    
+                        
                     
             </tr>
             

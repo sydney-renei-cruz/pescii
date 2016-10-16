@@ -5,26 +5,19 @@
  */
 package Servlets;
 
-import Beans.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -45,9 +38,7 @@ public class createRestockOrderServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-           
-        }
+        PrintWriter out = response.getWriter();
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -102,39 +93,29 @@ public class createRestockOrderServlet extends HttpServlet {
          //---------------
          //THIS IS WHERE YOU START CHANGING
          
-         String preparedSQL = "insert into RestockOrder(restockDateCreated, restockArriveDate, restockCompletedDate, restockCost, supplier) values(?,?,?,?,?)";
+         String preparedSQL = "insert into RestockOrder(productID, numberOfPiecesOrdered, supplier, purpose, RODateDue) values(?,?,?,?,?)";
 
              
          //you don't change this
          PreparedStatement rs = conn.prepareStatement(preparedSQL);
-         
-         java.util.Date myDate = new java.util.Date("10/10/2009");
-         java.sql.Date sqlDate = new java.sql.Date(myDate.getTime());
-         
-         
-         String inputDateCreated = request.getParameter("restockDateCreatedInput");
-         String inputArriveDate = request.getParameter("restockDateArriveDateInput");
-         String inputCompletedDate = request.getParameter("restockCompletedDateInput");
-         Float inputCost = Float.parseFloat(request.getParameter("restockCostInput"));
-         String inputSupplier= request.getParameter("supplierInput");
+         context.log("The productID is ----> " + request.getParameter("pid"));
+         int inputProductID = Integer.parseInt(request.getParameter("pid"));
+         int inputPiecesOrdered = Integer.parseInt(request.getParameter("piecesOrderedInput"));
+         String inputSupplier = request.getParameter("supplierInput");
+         String inputPurpose = request.getParameter("purposeInput");
+         String inputDateDue = request.getParameter("dateDueInput");
          
          
-         rs.setString(1,inputDateCreated);
-         rs.setString(2,inputArriveDate);
-         rs.setString(3,inputCompletedDate);
-         rs.setFloat(4,inputCost);
-         rs.setString(5,inputSupplier);
+         rs.setInt(1,inputProductID);
+         rs.setInt(2,inputPiecesOrdered);
+         rs.setString(3,inputSupplier);
+         rs.setString(4,inputPurpose);
+         rs.setString(5,inputDateDue);
          rs.executeUpdate();                   //at this point, you have already inserted into the database
          
-         String message = "Account successfully created!";
+         String message = "Restock Order successfully created!";
          request.setAttribute("message", message);
          request.getRequestDispatcher("homePage.jsp").forward(request,response);
-         
-         
-         
-         
-         
-        
          
         }
          catch(Exception ex){
@@ -153,10 +134,14 @@ public class createRestockOrderServlet extends HttpServlet {
                 out.println("Another SQL error: " + ex);
             }
      }
-    
-    
+        
     }
-    
+
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
     @Override
     public String getServletInfo() {
         return "Short description";

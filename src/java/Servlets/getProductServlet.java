@@ -93,10 +93,12 @@ public class getProductServlet extends HttpServlet {
                 productsRetrieved.add(pbean);
             }
          request.setAttribute("productsList", productsRetrieved);
-         String forInvoice = ""+ request.getParameter("forInvoice");
-         if(forInvoice.equals("yes") || session.getAttribute("cart")!=null){
+         String forOther = ""+ request.getParameter("forOther");
+         if(forOther.equals("invoice") || session.getAttribute("cart")!=null){
              request.setAttribute("forInvoice", "yes");
-             context.log("forInvoice is equal to " + request.getParameter("forInvoice"));
+         }
+         else if(forOther.equals("restock")){
+             request.setAttribute("forRestock", "yes");
          }
          request.getRequestDispatcher("getProduct.jsp").forward(request,response);
             

@@ -133,9 +133,10 @@ public class editRestockOrderServlet extends HttpServlet {
            /* UPDATE Product JOIN InvoiceItem ON Product.productID=InvoiceItem.productID
             SET Product.stocksRemaining = Product.stocksRemaining-InvoiceItem.quantityPurchased
             WHERE Product.productID=1 and InvoiceItem.invoiceID=9;*/
-            preparedSQL = "UPDATE Product JOIN RestockOrder ON Product.productID=RestockOrder.productID" +
-"               SET Product.stocksRemaining = Product.stocksRemaining-RestockOrder.numberOfPiecesReceived" +
-"               WHERE Product.productID=?";
+            /*preparedSQL = "UPDATE Product JOIN RestockOrder ON Product.productID=RestockOrder.productID" +
+"               SET Product.stocksRemaining = Product.stocksRemaining+RestockOrder.numberOfPiecesReceived" +
+"               WHERE Product.productID=?";*/
+            preparedSQL = "update Product set stocksRemaining = stocksRemaining + "+newNumberOfPiecesReceived+" where productID=?";
             ps = conn.prepareStatement(preparedSQL);
             ps.setInt(1,productID);
 

@@ -50,9 +50,14 @@
                     - see document to know what these are
         -->
         <c:if test="${accountType == '3'}">
-            <a href="Servlets.getProductServlet?forInvoice=yes">Create Invoice</a><br>
+            <a href="Servlets.getProductServlet?forOther=invoice">Create Invoice</a><br>
             <a href="Servlets.getInvoiceServlet">Edit Invoice</a><br>
-            <a href="Servlets.getInvoiceServlet">View Invoice</a><br><br>
+            <a href="new.get?whatFor=invoice">New Invoices</a><br>
+            <a href="new.get?whatFor=invoice&validated=yes">Validated Invoices</a><br>
+            <a href="new.get?whatFor=invoice&close=yes">Invoices Near Deadlines</a><br>
+            <a href="unfinished.get?getTable=invoice">View Unfinished Invoices</a><br>
+            <a href="Servlets.getInvoiceServlet">View All Invoices</a><br><br>
+            <a href="Servlets.getCustomerServlet">View Customer</a><br><br>
             <a href="account.get">Edit Account</a><br><br>
         </c:if>
         
@@ -61,7 +66,7 @@
                 - the Secretary can create Accounts, but can only change the account type when editting
         -->    
         <c:if test="${accountType == '2'}">
-            <a href="addCustomer.jsp">Add Customer</a><br>
+            <a href="Servlets.getCustomerServlet?forAdd=yes">Add Customer</a><br>
             <a href="Servlets.getCustomerServlet">Edit Customer</a><br>
             <a href="Servlets.getCustomerServlet">View Customer</a><br><br>
             
@@ -78,7 +83,11 @@
         <c:if test="${accountType == '4'}">
             <a href="addProduct.jsp">Add Product</a><br>
             <a href="editProduct.jsp">Edit Product</a><br><br>
-            <a href="restockOrder.get">View Restock Order</a><br><br>
+            <a href="new.get?whatFor=restockOrder&new=yes">New Restock Orders</a><br>
+            <a href="new.get?whatFor=restockOrder&completed=yes">Recently Completed RO</a><br>
+            <a href="new.get?whatFor=restockOrder&close=yes">RO Near Deadlines</a><br>
+            <a href="unfinished.get?getTable=ro">View Unfinished RO</a><br>
+            <a href="restockOrder.get">View All Restock Orders</a><br><br>
             
             <a href="account.get">Edit Account</a><br><br>
         </c:if>
@@ -88,9 +97,13 @@
                     - again, check the document to see which fields the Auditor can edit
         -->
         <c:if test="${accountType == '5'}">
-            <a href="createRestockOrder.jsp">Add Restock Order</a><br>
+            <a href="Servlets.getProductServlet?forOther=restock">Add Restock Order</a><br>
             <a href="restockOrder.get">Edit Restock Order</a><br>
-            <a href="restockOrder.get">View Restock Order</a><br><br>
+            <a href="new.get?whatFor=restockOrder&new=yes">New Restock Orders</a><br>
+            <a href="new.get?whatFor=restockOrder&completed=yes">Recently Completed RO</a><br>
+            <a href="new.get?whatFor=restockOrder&close=yes">RO Near Deadlines</a><br>
+            <a href="unfinished.get?getTable=ro">View Unfinished RO</a><br>
+            <a href="restockOrder.get">View All Restock Orders</a><br><br>
             <a href="account.get">Edit Account</a><br><br>
         </c:if>  
         
@@ -98,7 +111,7 @@
                 - the CEO can do everything
         -->
         <c:if test="${accountType == '1'}">
-            <a href="Servlets.getProductServlet?forInvoice=yes">Create Invoice</a><br>
+            <a href="Servlets.getProductServlet?forOther=invoice">Create Invoice</a><br>
             <a href="Servlets.getInvoiceServlet">Edit Invoice</a><br>
             <a href="new.get?whatFor=invoice">New Invoices</a><br>
             <a href="new.get?whatFor=invoice&validated=yes">Validated Invoices</a><br>
@@ -115,10 +128,10 @@
             
             <a href="addProduct.jsp">Add Product</a><br>
             <a href="editProduct.jsp">Edit Product</a><br>
-            <a href="createRestockOrder.jsp">Add Restock Order</a><br>
+            <a href="Servlets.getProductServlet?forOther=restock">Add Restock Order</a><br>
             <a href="restockOrder.get">Edit Restock Order</a><br>
             <a href="new.get?whatFor=restockOrder&new=yes">New Restock Orders</a><br>
-            <a href="new.get?whatFor=restockOrder&completed=yes">Completed RO</a><br>
+            <a href="new.get?whatFor=restockOrder&completed=yes">Recently Completed RO</a><br>
             <a href="new.get?whatFor=restockOrder&close=yes">RO Near Deadlines</a><br>
             <a href="unfinished.get?getTable=ro">View Unfinished RO</a><br>
             <a href="restockOrder.get">View All Restock Orders</a><br><br>

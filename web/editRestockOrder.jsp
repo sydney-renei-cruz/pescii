@@ -26,7 +26,6 @@
                 Number of Pieces Received: <input type="text" value="${restockOrder.getNumberOfPiecesReceived()}" name="numberOfPiecesReceivedInput"><br>
                 Supplier: <input type="text" value="${restockOrder.getSupplier()}" name="supplierInput"><br>
                 Purpose: <input type="text" value="${restockOrder.getPurpose()}" name="purposeInput"><br>
-                Restock Order Date Created: ${restockOrder.getRODateCreated()}<br>
                 Restock Order Date Delivered: <input type="text" value="${restockOrder.getRODateDelivered()}" name="roDateDeliveredInput"><br>
                 
                 <p>Product Name: ${product.getProductName()}</p>

@@ -3,8 +3,12 @@
     Created on : 08 20, 16, 5:27:31 PM
     Author     : user
 --%>
-
+<%@page import="Beans.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%
+    productBean pbean = (productBean)request.getAttribute("product");
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -14,11 +18,11 @@
     <body>
         <h1>This is the Create Restock Order page!</h1>
         <form action="Servlets.createRestockOrderServlet" method="post">
-            Enter Restock Date Created:<input type="text" name="restockDateCreatedInput"><br>
-            Enter Restock Arrive Date:<input type="text" name="restockArriveDateInput"><br>
-            Enter Restock Completed Date:<input type="text" name="restockCompletedDateInput"><br>
-            Enter Restock Cost:<input type="text" name="restockCost"><br>
-            Enter Supplier:<input type="text" name="supplier"><br>
+            Product ID: <%=pbean.getProductID()%><input type="hidden" value="<%=pbean.getProductID()%>" name="pid"><br>
+            Enter Quantity Ordered:<input type="text" name="piecesOrderedInput"><br>
+            Enter Purpose:<input type="text" name="purposeInput"><br>
+            Enter Date Due:<input type="text" name="dateDueInput"><br>
+            Enter Supplier:<input type="text" name="supplierInput"><br>
             <input type="Submit" value="Create Restock Order">
         </form>
         

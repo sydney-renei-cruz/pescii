@@ -96,6 +96,10 @@ public class viewProductDetailsServlet extends HttpServlet {
          if(forInvoice.equals("yes") || session.getAttribute("cart")!=null){
             request.setAttribute("forInvoice", "yes");
          }
+         if((""+request.getParameter("forRestock")).equals("yes")){
+             request.getRequestDispatcher("createRestockOrder.jsp").forward(request,response);
+             return;
+         }
          request.getRequestDispatcher("productDetails.jsp").forward(request,response);
          
         }

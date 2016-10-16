@@ -107,7 +107,7 @@ public class getUnfinishedServlet extends HttpServlet {
                  request.getRequestDispatcher("getInvoice.jsp").forward(request,response);
          }
          else{
-            preparedSQL = "Select * from RestockOrder where RODateDelivered = null order by RODateDue";
+            preparedSQL = "Select * from RestockOrder where RODateDelivered is null order by RODateDue";
             ps = conn.prepareStatement(preparedSQL);
             dbData = ps.executeQuery();
             ArrayList<restockOrderBean> restocksRetrieved = new ArrayList<restockOrderBean>();

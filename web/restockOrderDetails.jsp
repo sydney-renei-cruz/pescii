@@ -30,7 +30,7 @@
         <p>Total Price: <fmt:formatNumber pattern="0.00" value="${totalPrice}" type="number"/></p>
         <p>Quantity Received: ${restockOrder.getNumberOfPiecesReceived()}</p>
         <p>Supplier: ${restockOrder.getSupplier()}</p>
-        <p>Date Due: ${restockOrder.getRODueDate()}</p>
+        <p>Date Due: ${restockOrder.getRODateDue()}</p>
         <p>Date Received: ${restockOrder.getRODateDelivered()}</p>
         
         <p>Purpose: ${restockOrder.getPurpose()}</p>
