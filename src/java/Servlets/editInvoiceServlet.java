@@ -123,7 +123,10 @@ public class editInvoiceServlet extends HttpServlet {
          //ps.setString(4,newDatePaid);
          if(newDatePaid.equals("") || newStatus.equals("Cancelled")){ps.setString(4,null);}
          else{ps.setString(4,newDatePaid);}
-         ps.setString(5,newDateClosed);
+         if(newDateClosed.equals("")){
+             ps.setString(5,null);
+         }
+         else{ps.setString(5,newDateClosed);}
          ps.setString(6,newStatus);
          ps.setString(7,inputInvID);
          

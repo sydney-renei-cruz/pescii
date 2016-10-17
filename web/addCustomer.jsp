@@ -20,7 +20,6 @@
     <body>
         <h1>This is the Add Customer page!</h1>
         
-        <%=customersList.get(0).getSalesRepID()%>
         <form action="Servlets.addCustomerServlet" method="post">
             Enter Customer PRCID:<input type="text" name="customerIDInput"><br>
             Enter Customer Name:<input type="text" name="customerNameInput"><br>

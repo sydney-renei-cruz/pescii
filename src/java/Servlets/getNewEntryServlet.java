@@ -78,13 +78,17 @@ public class getNewEntryServlet extends HttpServlet {
          String forValidated = ""+request.getParameter("validated");
          String forCompleted = ""+request.getParameter("completed");
          String forWhere = "dateCreated";
+         String interval = "date_sub(now(),interval 1 week) and now()";
          
          ResultSet dbData;
          
           if(whatFor.equals("invoice")){
-             if(forClose.equals("yes")){forWhere="paymentDueDate";}
+             if(forClose.equals("yes")){
+                 forWhere="paymentDueDate";
+                 interval = "now() and date_add(now(), interval 7 day)";
+             }
              else if(forValidated.equals("yes")){forWhere="datePaid";}
-             preparedSQL = "select * from Invoice where "+forWhere+" between date_sub(now(),interval 1 week) and now()";
+             preparedSQL = "select * from Invoice where "+forWhere+" between " + interval;
              ps = conn.prepareStatement(preparedSQL);
              dbData = ps.executeQuery();
              ArrayList<invoiceBean> invoicesRetrieved = new ArrayList<invoiceBean>();
@@ -113,9 +117,12 @@ public class getNewEntryServlet extends HttpServlet {
                  return;
          }
          else{
-            if(forClose.equals("yes")){forWhere="RODateDue";}
+            if(forClose.equals("yes")){
+                forWhere="RODateDue";
+                interval="now() and date_add(now(), interval 7 day)";
+            }
             else if(forCompleted.equals("yes")){forWhere="RODateDelivered";}
-            preparedSQL = "select * from RestockOrder where "+forWhere+" between date_sub(now(),interval 1 week) and now()";
+            preparedSQL = "select * from RestockOrder where "+forWhere+" between " + interval;
             ps = conn.prepareStatement(preparedSQL);
             dbData = ps.executeQuery();
             ArrayList<restockOrderBean> restocksRetrieved = new ArrayList<restockOrderBean>();

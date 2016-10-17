@@ -67,7 +67,7 @@ public class getClinicServlet extends HttpServlet {
          
          //---------------
          
-         String preparedSQL = "select * from Clinic where clinicID=?";
+         String preparedSQL = "select Clinic.clinicID, Customer.PRCID, Clinic.clinicAddress, Clinic.clinicPhoneNumber, Clinic.clinicName from Clinic inner join Customer on Customer.customerID = Clinic.customerID and clinicID=?";
          String inputClinID = request.getParameter("clinID");
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          ps.setString(1, inputClinID);

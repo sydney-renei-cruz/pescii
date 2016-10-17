@@ -24,6 +24,7 @@
                 <th>PRC ID</th>
                 <th>Clinic ID</th>
                 <th>Invoice Date</th>
+                <th>Payment Due Date</th>
                 
             </tr>
         
@@ -33,6 +34,7 @@
                 <td>${inv.getPRCID()}</td>
                 <td>${inv.getClinicID()}</td>
                 <td>${inv.getInvoiceDate()}</td>
+                <td>${inv.getPaymentDueDate()}</td>
                 <td><a href="Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID=<c:out value="${inv.getInvoiceID()}"/>">Edit Invoice</a></td>
             </tr>
         </c:forEach>

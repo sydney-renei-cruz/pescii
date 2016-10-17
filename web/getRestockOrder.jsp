@@ -23,7 +23,7 @@
             <tr>
                 <th>Restock Order ID</th>
                 <th>Supplier</th>
-                <th>Date Ordered</th>
+                <th>Date Due</th>
                 <th>Date Delivered</th>
                 
             </tr>
