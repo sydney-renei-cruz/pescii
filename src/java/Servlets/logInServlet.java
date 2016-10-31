@@ -8,6 +8,7 @@ package Servlets;
 import Beans.*;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.security.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -106,46 +107,99 @@ public class logInServlet extends HttpServlet {
          stmt = conn.createStatement();
          stmt = conn.createStatement();
          //---------------
-         String preparedSQL = "select * from Account where userName = ? and password = ?";
+         String preparedSQL = "select * from Account where userName = ?";
          
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          
          ps.setString(1, username);
-         ps.setString(2, password);
          ResultSet dbData = ps.executeQuery();
          String message = "";
-         if (!dbData.isBeforeFirst()){
+         HttpSession session = request.getSession();
+         String dbPassword = "";       
+         
+         //10 salts here
+         String[] salts = new String[10];
+         salts[0] = "7LsDFJ9oHjDnfUr12";
+         salts[1] = "K8oMilIOi0ji43amS";
+         salts[2] = "AFIOUVAJNONVASJja";
+         salts[3] = "nVaWIdsj19Aij63df";
+         salts[4] = "uahRksD47kljnJN9k";
+         salts[5] = "dMna7sY01jfIoaPlY";
+         salts[6] = "Wg480ioAjEdsf31Ka";
+         salts[7] = "gMutRHj70ubQnjB67";
+         salts[8] = "gnQiaOhfXquh82z74";
+         salts[9] = "mKvqn7834wHjk1kLa";
+              
+         MessageDigest md = MessageDigest.getInstance("SHA-256");
+         
+         
+         if (!dbData.isBeforeFirst()){  //if the account couldn't be found
              //response.sendRedirect("index.jsp");
              message = "Username or password is incorrect.";
              request.setAttribute("message", message);
              request.getRequestDispatcher("logIn.jsp").forward(request, response);
          }
-         else {
+         
+         else { //if the account is found
             dbData.next();
-            if((dbData.getInt("accountStatus"))==2){
-                message = "The specified account is deactivated and unusable.";
-                //response.sendRedirect("index.jsp");
-                request.setAttribute("message", message);
-                request.getRequestDispatcher("logIn.jsp").forward(request, response);
-                
-            }
-            else{
-                message = "did it! Username is "+username+"!";
-                HttpSession session = request.getSession();
-                session.setAttribute("accountID", dbData.getInt("accountID"));
-                session.setAttribute("userName", username);
-                session.setAttribute("accountType", ""+dbData.getInt("accountType"));
-                session.setAttribute("state", "logged in");
-                //request.setAttribute("message", message);
-                request.getRequestDispatcher("homePage.jsp").forward(request,response);
-            }
+            dbPassword = dbData.getString("password");
+         context.log("The username is -----> " + dbData.getString("userName"));
+            
          }
          
+            for(int i = 0; i <= 9; i++){
+                String pwplaceholder = password + salts[i];
+                
+                md.update(pwplaceholder.getBytes());
+        
+                byte byteData[] = md.digest();
+        
+                StringBuffer sb = new StringBuffer();
+        
+                for(int y = 0; y < byteData.length; y++){
+                    sb.append(Integer.toString((byteData[y] & 0xff) + 0x100, 16).substring(1));
+                }
+
+                context.log("password is: ----->  " + password);
+                context.log("sb is: ------> " + sb.toString());
+                //      correct will become TRUE if a match is found
+                if(dbPassword.equals(sb.toString())){
+                    //status = rs.getBoolean("account_status");
+
+                if((dbData.getInt("accountStatus"))==2){
+                    message = "The specified account is deactivated and unusable.";
+                    //response.sendRedirect("index.jsp");
+                    request.setAttribute("message", message);
+                    request.getRequestDispatcher("logIn.jsp").forward(request, response);
+
+                }
+                else{
+                    message = "did it! Username is "+username+"!";
+                    session.setAttribute("accountID", dbData.getInt("accountID"));
+                    session.setAttribute("userName", username);
+                    session.setAttribute("accountType", ""+dbData.getInt("accountType"));
+                    session.setAttribute("state", "logged in");
+                    //request.setAttribute("message", message);
+                    request.getRequestDispatcher("homePage.jsp").forward(request,response);
+                }
+
+                    
+                    //session.setMaxInactiveInterval(30*60);
+
+                }
+            }            
+            
+            if(!dbData.previous()){
+                session.setAttribute("error_message", "Incorrect username or password");
+                response.sendRedirect("logIn.jsp");
+            }
+            
+            
          
         }
-        catch(SQLException ex){
+        catch(Exception ex){
             ex.printStackTrace();
-            out.println("SQL error: " + ex);
+            out.println("error: " + ex);
         }
         finally {
             out.close();  // Close the output writer

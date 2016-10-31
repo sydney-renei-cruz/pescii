@@ -115,13 +115,14 @@
             <a href="Servlets.getInvoiceServlet">Edit Invoice</a><br>
             <a href="new.get?whatFor=invoice">New Invoices</a><br>
             <a href="new.get?whatFor=invoice&validated=yes">Validated Invoices</a><br>
-            <a href="new.get?whatFor=invoice&close=yes">Invoices Near Deadlines</a><br>
-            <a href="unfinished.get?getTable=invoice">View Unfinished Invoices</a><br>
+            <a href="new.get?whatFor=invoice&close=yes">Invoices Near Payment Deadlines</a><br>
+            <a href="unfinished.get?getTable=invoice">Unfinished Invoices</a><br>
             <a href="Servlets.getInvoiceServlet">View All Invoices</a><br><br>
             
             <a href="Servlets.getCustomerServlet?forAdd=yes">Add Customer</a><br>
             <a href="Servlets.getCustomerServlet">Edit Customer</a><br>
-            <a href="Servlets.getCustomerServlet">View Customer</a><br><br>
+            <a href="new.get?whatFor=customer">Customers With Overdue Fees</a><br>
+            <a href="Servlets.getCustomerServlet">View All Customers</a><br><br>
             
             <a href="createAccount.jsp">Create Account</a><br>
             <a href="account.get">Edit Account</a><br><br>
@@ -133,7 +134,7 @@
             <a href="new.get?whatFor=restockOrder&new=yes">New Restock Orders</a><br>
             <a href="new.get?whatFor=restockOrder&completed=yes">Recently Completed RO</a><br>
             <a href="new.get?whatFor=restockOrder&close=yes">RO Near Deadlines</a><br>
-            <a href="unfinished.get?getTable=ro">View Unfinished RO</a><br>
+            <a href="unfinished.get?getTable=ro">Unfinished RO</a><br>
             <a href="restockOrder.get">View All Restock Orders</a><br><br>
         </c:if>
         

@@ -8,13 +8,14 @@ package Servlets;
 import Beans.*;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.security.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
+import java.util.*;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -102,8 +103,8 @@ public class createAccountServlet extends HttpServlet {
          //---------------
          //THIS IS WHERE YOU START CHANGING
          
-         String preparedSQL = "insert into Account(userName, password, accountStatus, accountType) values(?,?,?,?)";
-
+         String preparedSQL = "select * from Account where userName=?";
+         String message = "";
          
          //you don't change this
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
@@ -112,6 +113,60 @@ public class createAccountServlet extends HttpServlet {
          String inputUsername = request.getParameter("usernameInput");
          String inputPassword = request.getParameter("passwordInput");
          String inputAccType = request.getParameter("accTypeInput");
+         
+         ps.setString(1,inputUsername);
+         ResultSet dbData = ps.executeQuery();
+         while(dbData.next()){
+             if(dbData.getString("userName").equals(inputUsername)){
+                 message = "That username is already in use. Please enter a new one.";
+                 request.setAttribute("message",message);
+                 request.getRequestDispatcher("createAccount.jsp").forward(request,response);
+                 return;
+             }
+         }
+         
+         //                  Hash the password
+        try{
+        
+        //Salts for the hashing
+        String[] salts = new String[10];
+        salts[0] = "7LsDFJ9oHjDnfUr12";
+        salts[1] = "K8oMilIOi0ji43amS";
+        salts[2] = "AFIOUVAJNONVASJja";
+        salts[3] = "nVaWIdsj19Aij63df";
+        salts[4] = "uahRksD47kljnJN9k";
+        salts[5] = "dMna7sY01jfIoaPlY";
+        salts[6] = "Wg480ioAjEdsf31Ka";
+        salts[7] = "gMutRHj70ubQnjB67";
+        salts[8] = "gnQiaOhfXquh82z74";
+        salts[9] = "mKvqn7834wHjk1kLa";
+        
+        Random rand = new Random();
+        
+        inputPassword = inputPassword + salts[rand.nextInt(10)];
+        
+            //              End Salting
+            
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        md.update(inputPassword.getBytes());
+        
+        byte byteData[] = md.digest();
+        
+        StringBuffer sb = new StringBuffer();
+        
+        for(int i = 0; i < byteData.length; i++){
+            sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
+        }
+        
+        inputPassword = sb.toString();
+        }
+        catch(NoSuchAlgorithmException e){
+            e.printStackTrace();
+        }
+        
+        //                 End Hashing
+         
+         
          int accType = 0;
          switch(inputAccType){
              case "CEO": accType=1; break;
@@ -121,7 +176,10 @@ public class createAccountServlet extends HttpServlet {
              case "Auditor": accType=5; break;
              default: response.sendRedirect("createAccount.jsp");
          }
-         if(accType==0){response.sendRedirect("createAccount.jsp");}
+         if(accType==0){response.sendRedirect("createAccount.jsp"); return;}
+         
+         preparedSQL = "insert into Account(userName, password, accountStatus, accountType) values(?,?,?,?)";
+         ps = conn.prepareStatement(preparedSQL);
          
          ps.setString(1,inputUsername);
          ps.setString(2,inputPassword);
@@ -129,7 +187,7 @@ public class createAccountServlet extends HttpServlet {
          ps.setInt(4,accType);
          ps.executeUpdate();                   //at this point, you have already inserted into the database
          
-         String message = "Account successfully created!";
+         message = "Account successfully created!";
          request.setAttribute("message", message);
          request.getRequestDispatcher("homePage.jsp").forward(request,response);
             

@@ -79,7 +79,7 @@ public class getUnfinishedServlet extends HttpServlet {
                  + "Invoice.deliveryDate, Invoice.additionalAccessories, Invoice.termsOfPayment, "
                  + "Invoice.paymentDueDate, Invoice.datePaid, Invoice.dateClosed, Invoice.status, "
                  + "Invoice.overdueFee from Invoice "
-                 + "inner join Customer on Customer.customerID = Invoice.customerID where status = 'In Progress' order by paymentDueDate";
+                 + "inner join Customer on Customer.customerID = Invoice.customerID where Invoice.status = 'In Progress' order by paymentDueDate";
              ps = conn.prepareStatement(preparedSQL);
              dbData = ps.executeQuery();
              ArrayList<invoiceBean> invoicesRetrieved = new ArrayList<invoiceBean>();

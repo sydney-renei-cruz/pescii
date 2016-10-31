@@ -78,17 +78,27 @@ public class getNewEntryServlet extends HttpServlet {
          String forValidated = ""+request.getParameter("validated");
          String forCompleted = ""+request.getParameter("completed");
          String forWhere = "dateCreated";
-         String interval = "date_sub(now(),interval 1 week) and now()";
+         String interval = " between date_sub(now(),interval 1 week) and now()";
+         String status = "";
          
          ResultSet dbData;
          
           if(whatFor.equals("invoice")){
+             //this makes the SQL statement for invoices near payment deadlines
+                //that is, those with payment deadlines within 7 days ahead of the current day
              if(forClose.equals("yes")){
                  forWhere="paymentDueDate";
-                 interval = "now() and date_add(now(), interval 7 day)";
+                 interval = " between now() and date_add(now(), interval 7 day)";
+                 status = " and status='In Progress' and datePaid != null";
              }
-             else if(forValidated.equals("yes")){forWhere="datePaid";}
-             preparedSQL = "select * from Invoice where "+forWhere+" between " + interval;
+             //this sets up the SQL statement for invoices validated, regardless of date
+                //remember: a validated invoice is that which is paid for but not delivered yet
+             else if(forValidated.equals("yes")){
+                 forWhere="datePaid";
+                 status = " and status='In Progress'";
+                 interval = "";
+             }
+             preparedSQL = "select * from Invoice where "+forWhere+ interval + status;
              ps = conn.prepareStatement(preparedSQL);
              dbData = ps.executeQuery();
              ArrayList<invoiceBean> invoicesRetrieved = new ArrayList<invoiceBean>();
@@ -110,19 +120,50 @@ public class getNewEntryServlet extends HttpServlet {
                  ibean.setStatus(dbData.getString("status"));
                  ibean.setOverdueFee(dbData.getFloat("overdueFee"));
                  invoicesRetrieved.add(ibean);
-             };
+             }
 
                  request.setAttribute("invoiceList", invoicesRetrieved);
                  request.getRequestDispatcher("getInvoice.jsp").forward(request,response);
                  return;
          }
+         
+         //this part is for when a Customer is being searched
+         else if(whatFor.equals("customer")){
+             preparedSQL = "select Customer.PRCID, Customer.customerName, Customer.customerMobileNumber, "
+                     + "Customer.customerTelephoneNumber, SalesRep.salesRepName, Customer.customerID, "
+                     + "Invoice.invoiceID, Invoice.overdueFee from Customer "
+                     + "inner join SalesRep on SalesRep.salesRepID = Customer.salesRepID "
+                     + "inner join Invoice on Invoice.customerID = Customer.customerID "
+                     + "where Invoice.status = 'In Progress' and Invoice.overdueFee != null";
+         
+             ps = conn.prepareStatement(preparedSQL);
+             dbData = ps.executeQuery();
+             ArrayList<customerBean> customersRetrieved = new ArrayList<customerBean>();
+             while(dbData.next()){
+                customerBean data = new customerBean();
+                data.setCustomerID(dbData.getInt("customerID"));
+                data.setPRCID(dbData.getString("PRCID"));
+                data.setCustomerName(dbData.getString("customerName"));
+                data.setCustomerMobileNumber(dbData.getString("customerMobileNumber"));
+                data.setCustomerTelephoneNumber(dbData.getString("customerTelephoneNumber"));
+                data.setSalesRep(dbData.getString("salesRepName"));
+                data.setSalesRepID(dbData.getInt("salesRepID"));
+                customersRetrieved.add(data);
+            }
+            
+            request.setAttribute("customersList", customersRetrieved);
+            request.getRequestDispatcher("getCustomer.jsp").forward(request,response);
+            return;
+         }
+          
+         //this part is for when an RO is being searched
          else{
             if(forClose.equals("yes")){
                 forWhere="RODateDue";
-                interval="now() and date_add(now(), interval 7 day)";
+                interval=" between now() and date_add(now(), interval 7 day)";
             }
             else if(forCompleted.equals("yes")){forWhere="RODateDelivered";}
-            preparedSQL = "select * from RestockOrder where "+forWhere+" between " + interval;
+            preparedSQL = "select * from RestockOrder where "+forWhere+ interval;
             ps = conn.prepareStatement(preparedSQL);
             dbData = ps.executeQuery();
             ArrayList<restockOrderBean> restocksRetrieved = new ArrayList<restockOrderBean>();
@@ -148,9 +189,9 @@ public class getNewEntryServlet extends HttpServlet {
             
          
         }
-        catch(SQLException ex){
+        catch(Exception ex){
             ex.printStackTrace();
-            out.println("SQL error: " + ex);
+            out.println("error: " + ex);
         }
         finally {
             out.close();  // Close the output writer
