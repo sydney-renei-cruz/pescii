@@ -21,25 +21,32 @@
         
         <form action="account.edit" method="post">
             Account ID: <input type="hidden" value="${account.getAccountID()}" name="accountIDInput"><br>
+            <%=account.getPassword()%>
             <input type="hidden" value="${account.getPassword()}" name="oldPassword">
             Password: <input type="password" name="newPasswordInput"><br>
+            Enter password again:<input type="password" name="newPasswordInput2"><br>
             User Name: <input type="text" value="${account.getUserName()}" name="userNameInput"><br>
             Account Type:<br>
-            From: ${account.getAccountType()}<br>
+            From: <c:if test="${account.getAccountType() == '1'}">CEO<br></c:if>
+                  <c:if test="${account.getAccountType() == '2'}">Secretary<br></c:if>
+                  <c:if test="${account.getAccountType() == '3'}">Accountant<br></c:if>
+                  <c:if test="${account.getAccountType() == '4'}">Inventory Manager<br></c:if>
+                  <c:if test="${account.getAccountType() == '5'}">Auditor<br></c:if>
             To:
             <select name="accountTypeInput">
-                <option value="Accountant">Accountant</option>
-                <option value="Auditor">Auditor</option>
-                <option value="CEO">CEO</option>
-                <option value="Inventory Manager">Inventory Manager</option>
-                <option value="Secretary">Secretary</option>
+                <option value="3">Accountant</option>
+                <option value="5">Auditor</option>
+                <option value="1">CEO</option>
+                <option value="4">Inventory Manager</option>
+                <option value="2">Secretary</option>
             </select><br>
             Account Status:<br>
-            From: ${account.getAccountStatus()}<br>
+            From: <c:if test="${account.getAccountStatus() == '1'}">Activated<br></c:if>
+                  <c:if test="${account.getAccountStatus() == '2'}">Deactivated<br></c:if>
             To:
             <select name="accountStatusInput">
-                <option value="Activated">Activated</option>
-                <option value="Deactivated">Deactivated</option>
+                <option value="1">Activated</option>
+                <option value="2">Deactivated</option>
             </select><br>
             
             

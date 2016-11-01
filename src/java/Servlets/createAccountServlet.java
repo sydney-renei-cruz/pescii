@@ -112,7 +112,14 @@ public class createAccountServlet extends HttpServlet {
          
          String inputUsername = request.getParameter("usernameInput");
          String inputPassword = request.getParameter("passwordInput");
-         String inputAccType = request.getParameter("accTypeInput");
+         String inputPassword2 = request.getParameter("password2Input");
+         if(!inputPassword.equals(inputPassword2)){
+             message = "Passwords did not match";
+             request.setAttribute("message", message);
+             request.getRequestDispatcher("createAccount.jsp").forward(request,response);
+             return;
+         }
+         int inputAccType = Integer.parseInt(request.getParameter("accTypeInput"));
          
          ps.setString(1,inputUsername);
          ResultSet dbData = ps.executeQuery();
@@ -167,16 +174,6 @@ public class createAccountServlet extends HttpServlet {
         //                 End Hashing
          
          
-         int accType = 0;
-         switch(inputAccType){
-             case "CEO": accType=1; break;
-             case "Secretary": accType=2; break;
-             case "Accountant": accType=3; break;
-             case "Inventory Manager": accType=4; break;
-             case "Auditor": accType=5; break;
-             default: response.sendRedirect("createAccount.jsp");
-         }
-         if(accType==0){response.sendRedirect("createAccount.jsp"); return;}
          
          preparedSQL = "insert into Account(userName, password, accountStatus, accountType) values(?,?,?,?)";
          ps = conn.prepareStatement(preparedSQL);
@@ -184,7 +181,7 @@ public class createAccountServlet extends HttpServlet {
          ps.setString(1,inputUsername);
          ps.setString(2,inputPassword);
          ps.setInt(3,1);
-         ps.setInt(4,accType);
+         ps.setInt(4,inputAccType);
          ps.executeUpdate();                   //at this point, you have already inserted into the database
          
          message = "Account successfully created!";

@@ -68,7 +68,7 @@ public class viewSalesRepDetailsServlet extends HttpServlet {
          
          //---------------
          int srID = Integer.parseInt(request.getParameter("srID"));
-         String preparedSQL = "select * from SalesRep where srID=?";
+         String preparedSQL = "select * from SalesRep where salesRepID=?";
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          ps.setInt(1,srID);
          

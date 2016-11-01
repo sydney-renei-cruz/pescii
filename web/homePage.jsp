@@ -71,6 +71,7 @@
             <a href="Servlets.getCustomerServlet">View Customer</a><br><br>
             
             <a href="addSalesRep.jsp">Add Sales Rep</a><br>
+            <a href="salesrep.get">Edit Sales Rep</a><br>
             <a href="salesrep.get">View Sales Rep</a><br><br>
             
             <a href="createAccount.jsp">Create Account</a><br>
@@ -127,7 +128,8 @@
             <a href="new.get?whatFor=customer">Customers With Overdue Fees</a><br>
             <a href="Servlets.getCustomerServlet">View All Customers</a><br><br>
             <a href="addSalesRep.jsp">Add Sales Rep</a><br>
-            <a href="salesrep.get">View Sales Rep</a><br>
+            <a href="salesrep.get">Edit Sales Rep</a><br>
+            <a href="salesrep.get">View Sales Rep</a><br><br>
             <a href="createAccount.jsp">Create Account</a><br>
             <a href="account.get">Edit Account</a><br><br>
             

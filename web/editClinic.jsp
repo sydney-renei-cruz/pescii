@@ -20,7 +20,7 @@
         <h1>This is the Edit Clinic Page!</h1>
         
         <form action="customer.editClinic" method="post">
-                Clinic ID: <input type="hidden" value="${clinic.getClinicID()}" name="clinID">${restockOrder.getRestockOrderID()}<br>
+                Clinic ID: <input type="hidden" value="${clinic.getClinicID()}" name="clinID">${clinic.getClinicID()}<br>
                 PRCID: ${clinic.getPRCID()}<br>
                 Clinic Name: <input type="text" value="${clinic.getClinicName()}" name="clinicNameInput"><br>
                 Clinic Address: <input type="text" value="${clinic.getClinicAddress()}" name="clinicAddressInput"><br>

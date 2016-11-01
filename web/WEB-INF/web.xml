@@ -135,6 +135,10 @@
         <servlet-name>editClinicServlet</servlet-name>
         <servlet-class>Servlets.editClinicServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>editSalesRepServlet</servlet-name>
+        <servlet-class>Servlets.editSalesRepServlet</servlet-class>
+    </servlet>
     
     <!-- Servlet Mapping-->
     
@@ -257,6 +261,10 @@
     <servlet-mapping>
         <servlet-name>editClinicServlet</servlet-name>
         <url-pattern>/customer.editClinic</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>editSalesRepServlet</servlet-name>
+        <url-pattern>/salesrep.edit</url-pattern>
     </servlet-mapping>
     
     <!--Filters-->
