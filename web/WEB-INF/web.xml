@@ -52,10 +52,6 @@
         <servlet-class>Servlets.addClinicServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>addSalesRepServlet</servlet-name>
-        <servlet-class>Servlets.addSalesRepServlet</servlet-class> 
-    </servlet>
-    <servlet>
         <servlet-name>getCustomerServlet</servlet-name>
         <servlet-class>Servlets.getCustomerServlet</servlet-class>
     </servlet>
@@ -88,10 +84,6 @@
         <servlet-class>Servlets.getNewEntryServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>getSalesRepServlet</servlet-name>
-        <servlet-class>Servlets.getSalesRepServlet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>viewCustomerDetailsServlet</servlet-name>
         <servlet-class>Servlets.viewCustomerDetailsServlet</servlet-class>
     </servlet>
@@ -106,10 +98,6 @@
     <servlet>
         <servlet-name>viewAccountDetailsServlet</servlet-name>
         <servlet-class>Servlets.viewAccountDetailsServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>viewSalesRepDetailsServlet</servlet-name>
-        <servlet-class>Servlets.viewSalesRepDetailsServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>createRestockOrderServlet</servlet-name>
@@ -171,10 +159,6 @@
         <url-pattern>/customer.addClinic</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>addSalesRepServlet</servlet-name>
-        <url-pattern>/salesrep.add</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>getCustomerServlet</servlet-name>
         <url-pattern>/Servlets.getCustomerServlet</url-pattern>
     </servlet-mapping>
@@ -207,10 +191,6 @@
         <url-pattern>/new.get</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>getSalesRepServlet</servlet-name>
-        <url-pattern>/salesrep.get</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>viewCustomerDetailsServlet</servlet-name>
         <url-pattern>/Servlets.viewCustomerDetailsServlet</url-pattern>
     </servlet-mapping>
@@ -229,10 +209,6 @@
     <servlet-mapping>
         <servlet-name>viewAccountDetailsServlet</servlet-name>
         <url-pattern>/account.getDetails</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>viewSalesRepDetailsServlet</servlet-name>
-        <url-pattern>/salesrep.getDetails</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>createRestockOrderServlet</servlet-name>
