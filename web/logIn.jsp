@@ -15,21 +15,40 @@
           <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
-        <h1>This is the log in page!</h1>
-        
-        <c:if test="${message != ''}">
-            <p>${message}</p><br><br>
-        </c:if>
-            <div class="login">
-            <div class="login-triangle"></div>
-            <h2 class="login-header">Log In</h2>
-        <form action="Servlets.logInServlet" method="post" orm class="login-container">
-            <p>Enter username:<input type="text" name="usernameInput"></p><br>
-            <p>Enter password:<input type="password" name="passwordInput"></p><br>
-            <input type="submit" value="Log in" >
-        </form>    
-    </div>
-        <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+         <div class="site__container">
 
+            <div class="grid__container">
+  
+         <form action="Servlets.logInServlet" method="post" class="form form--login">
+         
+        <div class="form__field">
+            <c:if class="fontawesome-lock" test="${message != ''}">
+                <p>${message}</p><br><br>
+            </c:if>
+        </div>
+        
+        <div class="form__field">
+             <label class="fontawesome-user" for="login__username"><span class="hidden">Username</span></label>
+             <input type="text" name="usernameInput" id="login__username" type="text" class="form__input" placeholder="Username" required>
+        </div>
+            
+        <div class="form__field">
+          <label class="fontawesome-lock" for="login__password"><span class="hidden">Password</span></label>
+          <input type="password"name="passwordInput" id="login__password" type="password" class="form__input" placeholder="Password" required>
+        </div>
+
+        <div class="form__field">
+          <input type="submit" value="Log in">
+        </div>
+
+      </form>
+           
+       <p class="text--center">Don't have an account? <a href="#">Sign up now</a> <span class="fontawesome-arrow-right"></span></p>
+
+    </div>
+
+  </div>
+             
     </body>
+
 </html>
