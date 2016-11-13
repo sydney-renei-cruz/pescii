@@ -94,22 +94,22 @@ public class viewCustomerDetailsServlet extends HttpServlet {
          request.setAttribute("customer", cbean);
          
          //now get the clinic/s
-         String preparedSQL2 = "select Clinic.clinicID, Customer.PRCID, Clinic.clinicAddress, "
+         preparedSQL = "select Clinic.clinicID, Customer.PRCID, Clinic.clinicAddress, "
                  + "Clinic.clinicPhoneNumber, Clinic.clinicName from Clinic "
                  + "inner join Customer on Customer.customerID = Clinic.customerID "
                  + "where Clinic.customerID = ?";
-         PreparedStatement ps2 = conn.prepareStatement(preparedSQL2);
-         ps2.setInt(1,inputCustomerID);
+         ps = conn.prepareStatement(preparedSQL);
+         ps.setInt(1,inputCustomerID);
          
-         ResultSet dbData2 = ps2.executeQuery();
+         dbData = ps.executeQuery();
          ArrayList<clinicBean> clinicsRetrieved = new ArrayList<clinicBean>();
-            while(dbData2.next()){
+            while(dbData.next()){
                 clinicBean clinbean = new clinicBean();
-                clinbean.setClinicID(dbData2.getString("clinicID"));
-                clinbean.setPRCID(dbData2.getString("PRCID"));
-                clinbean.setClinicAddress(dbData2.getString("clinicAddress"));
-                clinbean.setClinicPhoneNumber(dbData2.getString("clinicPhoneNumber"));
-                clinbean.setClinicName(dbData2.getString("clinicName"));
+                clinbean.setClinicID(dbData.getString("clinicID"));
+                clinbean.setPRCID(dbData.getString("PRCID"));
+                clinbean.setClinicAddress(dbData.getString("clinicAddress"));
+                clinbean.setClinicPhoneNumber(dbData.getString("clinicPhoneNumber"));
+                clinbean.setClinicName(dbData.getString("clinicName"));
                 clinicsRetrieved.add(clinbean);
             }
             
@@ -117,35 +117,33 @@ public class viewCustomerDetailsServlet extends HttpServlet {
          context.log("size of clinicsRetrieved is " + clinicsRetrieved.size());
          
          //finally, get the invoices
-         String preparedSQL3 = "select Invoice.invoiceID, Customer.PRCID, Invoice.clinicID, Invoice.invoiceDate, "
+         preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, Invoice.clinicID, Invoice.invoiceDate, "
                  + "Invoice.deliveryDate, Invoice.additionalAccessories, Invoice.termsOfPayment, "
                  + "Invoice.paymentDueDate, Invoice.datePaid, Invoice.dateClosed, Invoice.status, "
                  + "Invoice.overdueFee from Invoice "
                  + "inner join Customer on Customer.customerID = Invoice.customerID "
                  + "where Invoice.customerID = ?";
-         PreparedStatement ps3 = conn.prepareStatement(preparedSQL3);
-         ps3.setInt(1,inputCustomerID);
+         ps = conn.prepareStatement(preparedSQL);
+         ps.setInt(1,inputCustomerID);
          
          //later on, you'll just call the Servlets.viewInvoiceDetailsServlet to perform these
-         ResultSet dbData3 = ps3.executeQuery();
+         dbData = ps.executeQuery();
          ArrayList<invoiceBean> invoicesRetrieved = new ArrayList<invoiceBean>();
-         while(dbData3.next()){
+         while(dbData.next()){
              invoiceBean invBean = new invoiceBean();
-             invBean.setInvoiceID(dbData3.getInt("invoiceID"));
-             invBean.setPRCID(dbData3.getString("PRCID"));
-             invBean.setClinicID(dbData3.getInt("clinicID"));
-             invBean.setInvoiceDate(dbData3.getDate("invoiceDate"));
-             invBean.setDeliveryDate(dbData3.getDate("deliveryDate"));
-             invBean.setAdditionalAccessories(dbData3.getString("additionalAccessories"));
-             invBean.setTermsOfPayment(dbData3.getString("termsOfPayment"));
-             invBean.setPaymentDueDate(dbData3.getDate("paymentDueDate"));
-             if(!(""+dbData3.getDate("dateClosed")).equals("0000-00-00")){invBean.setDateClosed(dbData3.getDate("dateClosed"));}
-             if(!(""+dbData3.getDate("datePaid")).equals("0000-00-00")){invBean.setDatePaid(dbData3.getDate("datePaid"));}
-                
-             //invBean.setDatePaid(dbData3.getDate("datePaid"));
-             //invBean.setDateClosed(dbData3.getDate("dateClosed"));
-             invBean.setStatus(dbData3.getString("status"));
-             invBean.setOverdueFee(dbData3.getFloat("overdueFee"));
+             invBean.setInvoiceID(dbData.getInt("invoiceID"));
+             invBean.setInvoiceName(dbData.getString("invoiceName"));
+             invBean.setPRCID(dbData.getString("PRCID"));
+             invBean.setClinicID(dbData.getInt("clinicID"));
+             invBean.setInvoiceDate(dbData.getDate("invoiceDate"));
+             invBean.setDeliveryDate(dbData.getDate("deliveryDate"));
+             invBean.setAdditionalAccessories(dbData.getString("additionalAccessories"));
+             invBean.setTermsOfPayment(dbData.getString("termsOfPayment"));
+             invBean.setPaymentDueDate(dbData.getDate("paymentDueDate"));
+             if(!(""+dbData.getDate("dateClosed")).equals("0000-00-00")){invBean.setDateClosed(dbData.getDate("dateClosed"));}
+             if(!(""+dbData.getDate("datePaid")).equals("0000-00-00")){invBean.setDatePaid(dbData.getDate("datePaid"));}
+             invBean.setStatus(dbData.getString("status"));
+             invBean.setOverdueFee(dbData.getFloat("overdueFee"));
              invoicesRetrieved.add(invBean);
          }
          

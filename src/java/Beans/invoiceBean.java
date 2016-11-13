@@ -15,6 +15,7 @@ import java.sql.Date;
 public class invoiceBean implements Serializable{
     
     public int invoiceID;
+    public String invoiceName;
     public String PRCID;
     public int clinicID;
     public Date invoiceDate;
@@ -27,10 +28,11 @@ public class invoiceBean implements Serializable{
     public String status;
     public float overdueFee;
     
-    public invoiceBean(int iid, String cid, int clinid, Date invdate, Date deldate,
+    public invoiceBean(int iid, String iname, String cid, int clinid, Date invdate, Date deldate,
                         String addacc, String tofpay, Date payduedate, Date dpaid, Date dclosed,
                         String stat, float overfee){
         this.invoiceID=iid;
+        this.invoiceName=iname;
         this.PRCID=cid;
         this.clinicID=clinid;
         this.invoiceDate=invdate;
@@ -47,6 +49,7 @@ public class invoiceBean implements Serializable{
     public invoiceBean(){}
     
     public void setInvoiceID(int iid){this.invoiceID=iid;}
+    public void setInvoiceName(String iname){this.invoiceName=iname;}
     public void setPRCID(String cid){this.PRCID=cid;}
     public void setClinicID(int clinid){this.clinicID=clinid;}
     public void setInvoiceDate(Date invdate){this.invoiceDate=invdate;}
@@ -60,6 +63,7 @@ public class invoiceBean implements Serializable{
     public void setOverdueFee(float overfee){this.overdueFee=overfee;}
     
     public int getInvoiceID(){return this.invoiceID;}
+    public String getInvoiceName(){return this.invoiceName;}
     public String getPRCID(){return this.PRCID;}
     public int getClinicID(){return this.clinicID;}
     public Date getInvoiceDate(){return this.invoiceDate;}

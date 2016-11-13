@@ -79,6 +79,7 @@
         <table border="1">
             <tr>
                 <th>Invoice ID</th>
+                <th>Invoice Name</th>
                 <th>Clinic ID</th>
                 <th>Payment Due Date</th>
                 <th>Date Paid</th>
@@ -88,6 +89,7 @@
         <c:forEach items="${invoicesList}" var="inv" begin="0" step="1">
             <tr>
                 <td><a href="Servlets.viewInvoiceDetailsServlet?invID=<c:out value="${inv.getInvoiceID()}"/>">${inv.getInvoiceID()}</a></td>
+                <td>${inv.getInvoiceName()}</td>
                 <td>${inv.getClinicID()}</td>
                 <td>${inv.getPaymentDueDate()}</td>
                 <td>${inv.getDatePaid()}</td>

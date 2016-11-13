@@ -138,6 +138,7 @@ public class logInServlet extends HttpServlet {
              message = "Username or password is incorrect.";
              request.setAttribute("message", message);
              request.getRequestDispatcher("logIn.jsp").forward(request, response);
+             return;
          }
          
          else { //if the account is found

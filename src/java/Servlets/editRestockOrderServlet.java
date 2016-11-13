@@ -104,7 +104,7 @@ public class editRestockOrderServlet extends HttpServlet {
          //String preparedSQL = "update RestockOrder set numberOfPiecesOrdered=?, numberOfPiecesReceived=?, supplier=?, purpose=?, RODateCreated=?, RODateDelivered=?"
          //                       + "where restockOrderID=?";
          String message = "Restock Order successfully editted!";
-         String preparedSQL = "update RestockOrder set numberOfPiecesOrdered=?, numberOfPiecesReceived=?, supplier=?, purpose=?, RODateDelivered=? where restockOrderID=?";
+         String preparedSQL = "update RestockOrder set numberOfPiecesOrdered=?, numberOfPiecesReceived=?, supplier=?, purpose=?, RODateDelivered=?, ROName=? where restockOrderID=?";
          
          //int restockOrderID = Integer.parseInt(request.getParameter("restockOrderIDInput"));
          int productID = Integer.parseInt(request.getParameter("productIDInput"));
@@ -113,7 +113,8 @@ public class editRestockOrderServlet extends HttpServlet {
          String newSupplier = request.getParameter("supplierInput");
          String newPurpose = request.getParameter("purposeInput");
          String newRODateDelivered = request.getParameter("roDateDeliveredInput");
-         String inputRestockOrderID = request.getParameter("restockOrderIDInput");
+         int inputRestockOrderID = Integer.parseInt(request.getParameter("restockOrderIDInput"));
+         String newROName = request.getParameter("newRONameInput");
          
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          ps.setInt(1,newNumberOfPiecesOrdered);
@@ -121,7 +122,8 @@ public class editRestockOrderServlet extends HttpServlet {
          ps.setString(3,newSupplier);
          ps.setString(4,newPurpose);
          ps.setString(5,newRODateDelivered);
-         ps.setString(6,inputRestockOrderID);
+         ps.setString(6,newROName);
+         ps.setInt(7,inputRestockOrderID);
          
          ps.executeUpdate();
          
@@ -130,12 +132,7 @@ public class editRestockOrderServlet extends HttpServlet {
          if(!newRODateDelivered.equals("")){
             //now update the product if an RODateDelivered was entered
 
-           /* UPDATE Product JOIN InvoiceItem ON Product.productID=InvoiceItem.productID
-            SET Product.stocksRemaining = Product.stocksRemaining-InvoiceItem.quantityPurchased
-            WHERE Product.productID=1 and InvoiceItem.invoiceID=9;*/
-            /*preparedSQL = "UPDATE Product JOIN RestockOrder ON Product.productID=RestockOrder.productID" +
-"               SET Product.stocksRemaining = Product.stocksRemaining+RestockOrder.numberOfPiecesReceived" +
-"               WHERE Product.productID=?";*/
+           
             preparedSQL = "update Product set stocksRemaining = stocksRemaining + "+newNumberOfPiecesReceived+" where productID=?";
             ps = conn.prepareStatement(preparedSQL);
             ps.setInt(1,productID);

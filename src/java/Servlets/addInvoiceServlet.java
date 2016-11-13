@@ -105,7 +105,7 @@ public class addInvoiceServlet extends HttpServlet {
          //THIS IS WHERE YOU START CHANGING
          String message = "Invoice successfully created!";
          String preparedSQL = "insert into Invoice(customerID, clinicID, invoiceDate, deliveryDate, additionalAccessories,"
-                                + "termsOfPayment, paymentDueDate, datePaid, dateClosed, status, overdueFee) values(?,?,?,?,?,?,?,?,?,?,?)";
+                                + "termsOfPayment, paymentDueDate, datePaid, dateClosed, status, overdueFee, invoiceName) values(?,?,?,?,?,?,?,?,?,?,?,?)";
          
          //this is put at the start because it needs to cancel immediately if there are no InvoiceItems
          LinkedList<String> cart;
@@ -136,6 +136,7 @@ public class addInvoiceServlet extends HttpServlet {
          String inputPaymentDueDate = request.getParameter("paymentDueDateInput");
          String inputDatePaid = request.getParameter("datePaidInput");
          String inputStatus = request.getParameter("statusInput");
+         String inputInvoiceName = request.getParameter("invoiceNameInput");
          
          
          ps.setInt(1,inputCustomerID);
@@ -151,6 +152,7 @@ public class addInvoiceServlet extends HttpServlet {
          else{ps.setString(9,null);}
          ps.setString(10,inputStatus);
          ps.setFloat(11, 0);
+         ps.setString(12,inputInvoiceName);
          ps.executeUpdate();                   //at this point, you have already inserted into the database
          
          

@@ -72,13 +72,13 @@ public class getInvoiceServlet extends HttpServlet {
          String preparedSQL;
          
          if(request.getParameter("invoiceDate")!=null && request.getParameter("PRCID")!=null){
-             preparedSQL = "select Invoice.invoiceID, Customer.PRCID, Invoice.clinicID, Invoice.invoiceDate, "
+             preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, Invoice.clinicID, Invoice.invoiceDate, "
                  + "Invoice.deliveryDate, Invoice.additionalAccessories, Invoice.termsOfPayment, "
                  + "Invoice.paymentDueDate, Invoice.datePaid, Invoice.dateClosed, Invoice.status, "
                  + "Invoice.overdueFee from Invoice "
                  + "inner join Customer on Customer.customerID = Invoice.customerID where Customer.PRCID="+request.getParameter("PRCID")+" and Invoice.invoiceDate="+request.getParameter("invoiceDate");
          }
-         else{preparedSQL = "select Invoice.invoiceID, Customer.PRCID, Invoice.clinicID, Invoice.invoiceDate, "
+         else{preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, Invoice.clinicID, Invoice.invoiceDate, "
                  + "Invoice.deliveryDate, Invoice.additionalAccessories, Invoice.termsOfPayment, "
                  + "Invoice.paymentDueDate, Invoice.datePaid, Invoice.dateClosed, Invoice.status, "
                  + "Invoice.overdueFee from Invoice "
@@ -94,6 +94,7 @@ public class getInvoiceServlet extends HttpServlet {
             while(dbData.next()){
                invoiceBean ibean = new invoiceBean();
                 ibean.setInvoiceID(dbData.getInt("invoiceID"));
+                ibean.setInvoiceName(dbData.getString("invoiceName"));
                 ibean.setPRCID(dbData.getString("PRCID"));
                 ibean.setClinicID(dbData.getInt("clinicID"));
                 ibean.setInvoiceDate(dbData.getDate("invoiceDate"));

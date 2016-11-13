@@ -71,13 +71,14 @@ public class getNewEntryServlet extends HttpServlet {
          
          //---------------
          //first get the customer details
-         String preparedSQL;
+         String preparedSQL = "";
          PreparedStatement ps;
-         String whatFor = request.getParameter("whatFor");
-         String forClose = ""+request.getParameter("close");
-         String forValidated = ""+request.getParameter("validated");
-         String forCompleted = ""+request.getParameter("completed");
-         String forWhere = "dateCreated";
+         String whatFor = ""+request.getParameter("whatFor");
+         //String forClose = ""+request.getParameter("close");
+         //String forValidated = ""+request.getParameter("validated");
+         //String forCompleted = ""+request.getParameter("completed");
+         String getWhat = ""+request.getParameter("getWhat");
+         String forWhere = "dateCreated";   //by default, it'll look for new entries. This'll be changed later
          String interval = " between date_sub(now(),interval 1 week) and now()";
          String status = "";
          
@@ -86,14 +87,14 @@ public class getNewEntryServlet extends HttpServlet {
           if(whatFor.equals("invoice")){
              //this makes the SQL statement for invoices near payment deadlines
                 //that is, those with payment deadlines within 7 days ahead of the current day
-             if(forClose.equals("yes")){
+             if(getWhat.equals("close")){
                  forWhere="paymentDueDate";
                  interval = " between now() and date_add(now(), interval 7 day)";
-                 status = " and status='In Progress' and datePaid != null";
+                 status = " and status='In Progress' and datePaid = null";
              }
              //this sets up the SQL statement for invoices validated, regardless of date
                 //remember: a validated invoice is that which is paid for but not delivered yet
-             else if(forValidated.equals("yes")){
+             else if(getWhat.equals("validated")){
                  forWhere="datePaid";
                  status = " and status='In Progress'";
                  interval = "";
@@ -106,6 +107,7 @@ public class getNewEntryServlet extends HttpServlet {
              while(dbData.next()){
                  invoiceBean ibean = new invoiceBean();
                  ibean.setInvoiceID(dbData.getInt("invoiceID"));
+                 ibean.setInvoiceName(dbData.getString("invoiceName"));
                  ibean.setPRCID(dbData.getString("customerID"));
                  ibean.setClinicID(dbData.getInt("clinicID"));
                  ibean.setInvoiceDate(dbData.getDate("invoiceDate"));
@@ -155,15 +157,64 @@ public class getNewEntryServlet extends HttpServlet {
             request.getRequestDispatcher("getCustomer.jsp").forward(request,response);
             return;
          }
+         
+         //this part is for when a Product is being searched
+         else if(whatFor.equals("product")){
+             String[] inputProductClass = request.getParameterValues("productClassInput");
+             String productClasses = "(productClass = ";
+             for(int i=0;i<inputProductClass.length;i++){
+                 if(i==0){productClasses=productClasses+"'"+inputProductClass[i]+"'";}
+                 else{productClasses=productClasses+" or productClass = '"+inputProductClass[i]+"'";}
+             }
+             productClasses=productClasses+")";
+             
+             String inputLowStock = "" + request.getParameter("lowStockInput");
+             String inputStocks = "";
+             if(inputLowStock.equals("yes")){inputStocks="and stocksRemaining <= lowStock";}
+             else if(inputLowStock.equals("no")){inputStocks="and stocksRemaining >lowStock";}
+             /*
+             if(getWhat.equals("lowStock")){preparedSQL = "select * from Product where stocksRemaining <= lowStock";}
+             else if(getWhat.equals("rawMaterials")){preparedSQL = "select * from Product where productClass = Raw Material";}
+             */
+             preparedSQL = "select * from Product where " + productClasses + inputStocks;
+             context.log(preparedSQL);
+             ps = conn.prepareStatement(preparedSQL);
+             dbData = ps.executeQuery();
+             ArrayList<productBean> productsRetrieved = new ArrayList<productBean>();
+             while(dbData.next()){
+                productBean pbean = new productBean();
+                pbean.setProductID(dbData.getString("productID"));
+                pbean.setProductName(dbData.getString("productName"));
+                pbean.setProductDescription(dbData.getString("productDescription"));
+                pbean.setProductPrice(dbData.getFloat("productPrice"));
+                pbean.setRestockPrice(dbData.getFloat("restockPrice"));
+                pbean.setStocksRemaining(dbData.getInt("stocksRemaining"));
+                pbean.setLowStock(dbData.getInt("lowStock"));
+                pbean.setBrand(dbData.getString("brand"));
+                pbean.setProductClass(dbData.getString("productClass"));
+                pbean.setColor(dbData.getString("color"));
+                productsRetrieved.add(pbean);
+            }
+            
+            request.setAttribute("productsList", productsRetrieved);
+            request.getRequestDispatcher("getProduct.jsp").forward(request,response);
+            return;
+         }
+         
           
          //this part is for when an RO is being searched
-         else{
-            if(forClose.equals("yes")){
+         else if(whatFor.equals("restockOrder")){
+            if(getWhat.equals("close")){
                 forWhere="RODateDue";
-                interval=" between now() and date_add(now(), interval 7 day)";
+                interval=" between now() and date_add(now(), interval 7 day) and RODateDelivered = null";
             }
-            else if(forCompleted.equals("yes")){forWhere="RODateDelivered";}
-            preparedSQL = "select * from RestockOrder where "+forWhere+ interval;
+            else if(getWhat.equals("completed")){forWhere="RODateDelivered";}
+            preparedSQL = "Select RestockOrder.restockOrderID, Product.productID, Product.productName, RestockOrder.numberOfPiecesOrdered, "
+                    + "RestockOrder.numberOfPiecesReceived, RestockOrder.supplier, RestockOrder.purpose, RestockOrder.RODateDue, "
+                    + "RestockOrder.RODateDelivered, RestockOrder.ROName "
+                    + "from RestockOrder "
+                    + "inner join Product on Product.productID = RestockOrder.productID "
+                    + "where RestockOrder." + forWhere + interval;
             ps = conn.prepareStatement(preparedSQL);
             dbData = ps.executeQuery();
             ArrayList<restockOrderBean> restocksRetrieved = new ArrayList<restockOrderBean>();
@@ -171,7 +222,9 @@ public class getNewEntryServlet extends HttpServlet {
                while(dbData.next()){
                   restockOrderBean rbean = new restockOrderBean();
                    rbean.setRestockOrderID(dbData.getInt("restockOrderID"));
+                   rbean.setRestockOrderName(dbData.getString("ROName"));
                    rbean.setProductID(dbData.getInt("productID"));
+                   rbean.setProductName(dbData.getString("productName"));
                    rbean.setNumberOfPiecesOrdered(dbData.getInt("numberOfPiecesOrdered"));
                    rbean.setNumberOfPiecesReceived(dbData.getInt("numberOfPiecesReceived"));
                    rbean.setSupplier(dbData.getString("supplier"));

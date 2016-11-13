@@ -70,7 +70,7 @@ public class viewInvoiceDetailsServlet extends HttpServlet {
          
          //---------------
          //first get the invoice details
-         String preparedSQL = "select Invoice.invoiceID, Customer.PRCID, Invoice.clinicID, Invoice.invoiceDate, "
+         String preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, Invoice.clinicID, Invoice.invoiceDate, "
                  + "Invoice.deliveryDate, Invoice.additionalAccessories, Invoice.termsOfPayment, "
                  + "Invoice.paymentDueDate, Invoice.datePaid, Invoice.dateClosed, Invoice.status, "
                  + "Invoice.overdueFee from Invoice "
@@ -83,6 +83,7 @@ public class viewInvoiceDetailsServlet extends HttpServlet {
          dbData.next();
          invoiceBean ibean = new invoiceBean();
          ibean.setInvoiceID(dbData.getInt("invoiceID"));
+         ibean.setInvoiceName(dbData.getString("invoiceName"));
          ibean.setPRCID(dbData.getString("PRCID"));
          ibean.setClinicID(dbData.getInt("clinicID"));
          ibean.setInvoiceDate(dbData.getDate("invoiceDate"));
@@ -102,19 +103,19 @@ public class viewInvoiceDetailsServlet extends HttpServlet {
          request.setAttribute("invoice", ibean);
          
          //now get the InvoiceItem/s
-         String preparedSQL2 = "select * from InvoiceItem where invoiceID = ?";
-         PreparedStatement ps2 = conn.prepareStatement(preparedSQL2);
-         ps2.setString(1,inputInvID);
+         preparedSQL = "select * from InvoiceItem where invoiceID = ?";
+         ps = conn.prepareStatement(preparedSQL);
+         ps.setString(1,inputInvID);
          
-         ResultSet dbData2 = ps2.executeQuery();
+         dbData = ps.executeQuery();
          ArrayList<invoiceItemBean> invItemsRetrieved = new ArrayList<invoiceItemBean>();
          //retrieve the information.
-            while(dbData2.next()){
+            while(dbData.next()){
                 invoiceItemBean invitembean = new invoiceItemBean();
-                invitembean.setInvoiceItemID(dbData2.getInt("invoiceItemID"));
-                invitembean.setInvoiceID(dbData2.getInt("invoiceID"));
-                invitembean.setProductID(dbData2.getInt("productID"));
-                invitembean.setQuantityPurchased(dbData2.getInt("quantityPurchased"));
+                invitembean.setInvoiceItemID(dbData.getInt("invoiceItemID"));
+                invitembean.setInvoiceID(dbData.getInt("invoiceID"));
+                invitembean.setProductID(dbData.getInt("productID"));
+                invitembean.setQuantityPurchased(dbData.getInt("quantityPurchased"));
                 invItemsRetrieved.add(invitembean);
             }
          request.setAttribute("invitemsList", invItemsRetrieved);

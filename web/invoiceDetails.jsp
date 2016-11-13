@@ -25,6 +25,7 @@
         <table border="1">
             <tr>
                 <th>Invoice ID</th>
+                <th>Invoice Name</th>
                 <th>PRC ID</th>
                 <th>Clinic ID</th>
                 <th>Invoice Date</th>
@@ -39,6 +40,7 @@
         
         <tr>
                 <td>${invoice.getInvoiceID()}</td>
+                <td>${invoice.getInvoiceName()}</td>
                 <td>${invoice.getPRCID()}</td>
                 <td>${invoice.getClinicID()}</td>
                 <td>${invoice.getInvoiceDate()}</td>

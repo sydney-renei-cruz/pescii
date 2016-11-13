@@ -78,6 +78,7 @@ public class viewRODetailsServlet extends HttpServlet {
          ResultSet dbData = ps.executeQuery();
          while(dbData.next()){
             rbean.setRestockOrderID(dbData.getInt("restockOrderID"));
+            rbean.setRestockOrderName(dbData.getString("ROName"));
             rbean.setProductID(dbData.getInt("productID"));
             rbean.setNumberOfPiecesOrdered(dbData.getInt("numberOfPiecesOrdered"));
             rbean.setNumberOfPiecesReceived(dbData.getInt("numberOfPiecesReceived"));

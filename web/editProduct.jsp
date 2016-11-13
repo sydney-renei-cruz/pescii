@@ -36,6 +36,7 @@
             <select name="productClassInput">
                 <option value="Dental Unit">Dental Unit</option>
                 <option value="Impression Material">Impression Material</option>
+                <option value="Raw Material">Raw Material</option>
             </select>
         </div> 
        

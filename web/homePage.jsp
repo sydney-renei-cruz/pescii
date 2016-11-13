@@ -52,10 +52,8 @@
         <c:if test="${accountType == '3'}">
             <a href="Servlets.getProductServlet?forOther=invoice">Create Invoice</a><br>
             <a href="Servlets.getInvoiceServlet">Edit Invoice</a><br>
-            <a href="new.get?whatFor=invoice">New Invoices</a><br>
-            <a href="new.get?whatFor=invoice&validated=yes">Validated Invoices</a><br>
-            <a href="new.get?whatFor=invoice&close=yes">Invoices Near Deadlines</a><br>
-            <a href="unfinished.get?getTable=invoice">View Unfinished Invoices</a><br>
+            <a href="unfinished.get?getTable=invoice">Unfinished Invoices</a><br>
+            <a href="conditionsInvoice.jsp">Custom View Invoice</a><br>
             <a href="Servlets.getInvoiceServlet">View All Invoices</a><br><br>
             <a href="Servlets.getCustomerServlet">View Customer</a><br><br>
             <a href="account.get">Edit Account</a><br><br>
@@ -68,7 +66,8 @@
         <c:if test="${accountType == '2'}">
             <a href="Servlets.getCustomerServlet?forAdd=yes">Add Customer</a><br>
             <a href="Servlets.getCustomerServlet">Edit Customer</a><br>
-            <a href="Servlets.getCustomerServlet">View Customer</a><br><br>
+            <a href="new.get?whatFor=customer">Customers With Overdue Fees</a><br>
+            <a href="Servlets.getCustomerServlet">View All Customers</a><br><br>
             
             <a href="addSalesRep.jsp">Add Sales Rep</a><br>
             <a href="salesrep.get">Edit Sales Rep</a><br>
@@ -87,10 +86,9 @@
         <c:if test="${accountType == '4'}">
             <a href="addProduct.jsp">Add Product</a><br>
             <a href="editProduct.jsp">Edit Product</a><br><br>
-            <a href="new.get?whatFor=restockOrder&new=yes">New Restock Orders</a><br>
-            <a href="new.get?whatFor=restockOrder&completed=yes">Recently Completed RO</a><br>
-            <a href="new.get?whatFor=restockOrder&close=yes">RO Near Deadlines</a><br>
-            <a href="unfinished.get?getTable=ro">View Unfinished RO</a><br>
+            
+            <a href="unfinished.get?getTable=ro">Unfinished RO</a><br>
+            <a href="conditionsRestockOrder.jsp">Custom View RO</a><br>
             <a href="restockOrder.get">View All Restock Orders</a><br><br>
             
             <a href="account.get">Edit Account</a><br><br>
@@ -103,10 +101,8 @@
         <c:if test="${accountType == '5'}">
             <a href="Servlets.getProductServlet?forOther=restock">Add Restock Order</a><br>
             <a href="restockOrder.get">Edit Restock Order</a><br>
-            <a href="new.get?whatFor=restockOrder&new=yes">New Restock Orders</a><br>
-            <a href="new.get?whatFor=restockOrder&completed=yes">Recently Completed RO</a><br>
-            <a href="new.get?whatFor=restockOrder&close=yes">RO Near Deadlines</a><br>
-            <a href="unfinished.get?getTable=ro">View Unfinished RO</a><br>
+            <a href="unfinished.get?getTable=ro">Unfinished RO</a><br>
+            <a href="conditionsRestockOrder.jsp">Custom View RO</a><br>
             <a href="restockOrder.get">View All Restock Orders</a><br><br>
             <a href="account.get">Edit Account</a><br><br>
         </c:if>  
@@ -117,10 +113,8 @@
         <c:if test="${accountType == '1'}">
             <a href="Servlets.getProductServlet?forOther=invoice">Create Invoice</a><br>
             <a href="Servlets.getInvoiceServlet">Edit Invoice</a><br>
-            <a href="new.get?whatFor=invoice">New Invoices</a><br>
-            <a href="new.get?whatFor=invoice&validated=yes">Validated Invoices</a><br>
-            <a href="new.get?whatFor=invoice&close=yes">Invoices Near Payment Deadlines</a><br>
             <a href="unfinished.get?getTable=invoice">Unfinished Invoices</a><br>
+            <a href="conditionsInvoice.jsp">Custom View Invoice</a><br>
             <a href="Servlets.getInvoiceServlet">View All Invoices</a><br><br>
             
             <a href="Servlets.getCustomerServlet?forAdd=yes">Add Customer</a><br>
@@ -137,13 +131,12 @@
             <a href="editProduct.jsp">Edit Product</a><br>
             <a href="Servlets.getProductServlet?forOther=restock">Add Restock Order</a><br>
             <a href="restockOrder.get">Edit Restock Order</a><br>
-            <a href="new.get?whatFor=restockOrder&new=yes">New Restock Orders</a><br>
-            <a href="new.get?whatFor=restockOrder&completed=yes">Recently Completed RO</a><br>
-            <a href="new.get?whatFor=restockOrder&close=yes">RO Near Deadlines</a><br>
             <a href="unfinished.get?getTable=ro">Unfinished RO</a><br>
+            <a href="conditionsRestockOrder.jsp">Custom View RO</a><br>
             <a href="restockOrder.get">View All Restock Orders</a><br><br>
         </c:if>
         
+        <a href="conditionsProduct.jsp">Custom View Product</a><br>
         <a href="Servlets.getProductServlet">View Product</a><br>
         
     </body>

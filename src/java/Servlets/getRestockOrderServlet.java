@@ -69,7 +69,12 @@ public class getRestockOrderServlet extends HttpServlet {
          
          //---------------
          //THIS IS WHERE YOU START CHANGING
-         String preparedSQL = "select * from RestockOrder";
+         String preparedSQL = "Select RestockOrder.restockOrderID, Product.productID, Product.productName, RestockOrder.numberOfPiecesOrdered, "
+                    + "RestockOrder.numberOfPiecesReceived, RestockOrder.supplier, RestockOrder.purpose, RestockOrder.RODateDue, "
+                    + "RestockOrder.RODateDelivered, RestockOrder.ROName "
+                    + "from RestockOrder "
+                    + "inner join Product on Product.productID = RestockOrder.productID "
+                    + "order by RestockOrder.RODateDue";
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          
          
@@ -80,7 +85,9 @@ public class getRestockOrderServlet extends HttpServlet {
             while(dbData.next()){
                restockOrderBean rbean = new restockOrderBean();
                 rbean.setRestockOrderID(dbData.getInt("restockOrderID"));
+                rbean.setRestockOrderName(dbData.getString("ROName"));
                 rbean.setProductID(dbData.getInt("productID"));
+                rbean.setProductName(dbData.getString("productName"));
                 rbean.setNumberOfPiecesOrdered(dbData.getInt("numberOfPiecesOrdered"));
                 rbean.setNumberOfPiecesReceived(dbData.getInt("numberOfPiecesReceived"));
                 rbean.setSupplier(dbData.getString("supplier"));
@@ -95,9 +102,9 @@ public class getRestockOrderServlet extends HttpServlet {
             
          
         }
-        catch(SQLException ex){
+        catch(Exception ex){
             ex.printStackTrace();
-            out.println("SQL error: " + ex);
+            out.println("error: " + ex);
         }
         finally {
             out.close();  // Close the output writer

@@ -21,6 +21,7 @@
         <h1>This is the Edit Restock Order page!</h1>
           <form action="restock.edit" method="post">
                 Restock Order ID: <input type="hidden" value="${restockOrder.getRestockOrderID()}" name="restockOrderIDInput">${restockOrder.getRestockOrderID()}<br>
+                Restock Order Name: <input type="text" value="${restockOrder.getRestockOrderName()}" name="newRONameInput"><br>
                 Product ID: <input type="hidden" value="${restockOrder.getProductID()}" name="productIDInput">${restockOrder.getProductID()}<br>
                 Number of Pieces Ordered: <input type="text" value="${restockOrder.getNumberOfPiecesOrdered()}" name="numberOfPiecesOrderedInput"><br>
                 Number of Pieces Received: <input type="text" value="${restockOrder.getNumberOfPiecesReceived()}" name="numberOfPiecesReceivedInput"><br>

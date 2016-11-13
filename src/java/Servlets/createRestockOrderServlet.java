@@ -93,12 +93,13 @@ public class createRestockOrderServlet extends HttpServlet {
          //---------------
          //THIS IS WHERE YOU START CHANGING
          
-         String preparedSQL = "insert into RestockOrder(productID, numberOfPiecesOrdered, supplier, purpose, RODateDue) values(?,?,?,?,?)";
+         String preparedSQL = "insert into RestockOrder(productID, numberOfPiecesOrdered, supplier, purpose, RODateDue, ROName) values(?,?,?,?,?,?)";
 
              
          //you don't change this
          PreparedStatement rs = conn.prepareStatement(preparedSQL);
          context.log("The productID is ----> " + request.getParameter("pid"));
+         String inputROName = request.getParameter("RONameInput");
          int inputProductID = Integer.parseInt(request.getParameter("pid"));
          int inputPiecesOrdered = Integer.parseInt(request.getParameter("piecesOrderedInput"));
          String inputSupplier = request.getParameter("supplierInput");
@@ -111,6 +112,7 @@ public class createRestockOrderServlet extends HttpServlet {
          rs.setString(3,inputSupplier);
          rs.setString(4,inputPurpose);
          rs.setString(5,inputDateDue);
+         rs.setString(6,inputROName);
          rs.executeUpdate();                   //at this point, you have already inserted into the database
          
          String message = "Restock Order successfully created!";

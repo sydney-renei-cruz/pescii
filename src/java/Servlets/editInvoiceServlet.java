@@ -100,10 +100,11 @@ public class editInvoiceServlet extends HttpServlet {
          
          //---------------
          //first get the invoice details
-         String preparedSQL = "update Invoice set deliveryDate=?, termsOfPayment=?, paymentDueDate=?, datePaid=?, dateClosed=?, status=?"
+         String preparedSQL = "update Invoice set invoiceName=?, deliveryDate=?, termsOfPayment=?, paymentDueDate=?, datePaid=?, dateClosed=?, status=?"
                                 + "where invoiceID=?";
          
          int invoiceID = Integer.parseInt(request.getParameter("invoiceIDInput"));
+         String newInvoiceName = request.getParameter("newInvoiceNameInput");
          String newDeliveryDate = request.getParameter("deliveryDateInput");
          String newTop = request.getParameter("topInput");
          String newPaymentDueDate = request.getParameter("paymentDueDateInput");
@@ -114,25 +115,25 @@ public class editInvoiceServlet extends HttpServlet {
             Date date = new Date();
             newDateClosed = new SimpleDateFormat("yyyy-MM-dd").format(date);
          }
-         String inputInvID = request.getParameter("invoiceIDInput");
          
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
-         ps.setString(1,newDeliveryDate);
-         ps.setString(2,newTop);
-         ps.setString(3,newPaymentDueDate);
+         ps.setString(1,newInvoiceName);
+         ps.setString(2,newDeliveryDate);
+         ps.setString(3,newTop);
+         ps.setString(4,newPaymentDueDate);
          //ps.setString(4,newDatePaid);
-         if(newDatePaid.equals("") || newStatus.equals("Cancelled")){ps.setString(4,null);}
-         else{ps.setString(4,newDatePaid);}
+         if(newDatePaid.equals("") || newStatus.equals("Cancelled")){ps.setString(5,null);}
+         else{ps.setString(5,newDatePaid);}
          if(newDateClosed.equals("")){
-             ps.setString(5,null);
+             ps.setString(6,null);
          }
-         else{ps.setString(5,newDateClosed);}
-         ps.setString(6,newStatus);
-         ps.setString(7,inputInvID);
+         else{ps.setString(6,newDateClosed);}
+         ps.setString(7,newStatus);
+         ps.setInt(8,invoiceID);
          
          
          ps.executeUpdate();
-         context.log("--->Invoice successfully updated. InvoiceID is: "+inputInvID);
+         context.log("--->Invoice successfully updated. InvoiceID is: "+invoiceID);
          
          
          if(!newStatus.equals("In Progress")){

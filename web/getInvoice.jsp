@@ -21,6 +21,7 @@
         <table border="1">
             <tr>
                 <th>Invoice ID</th>
+                <th>Invoice Name</th>
                 <th>PRC ID</th>
                 <th>Clinic ID</th>
                 <th>Invoice Date</th>
@@ -31,6 +32,7 @@
         <c:forEach items="${invoiceList}" var="inv" begin="0" step="1" varStatus="status">
             <tr>
                 <td><a href="Servlets.viewInvoiceDetailsServlet?editInvoice=no&invID=<c:out value="${inv.getInvoiceID()}"/>">${inv.getInvoiceID()}</a></td>
+                <td>${inv.getInvoiceName()}</td>
                 <td>${inv.getPRCID()}</td>
                 <td>${inv.getClinicID()}</td>
                 <td>${inv.getInvoiceDate()}</td>

@@ -75,7 +75,7 @@ public class getUnfinishedServlet extends HttpServlet {
          PreparedStatement ps;
          ResultSet dbData;
          if(table.equals("invoice")){
-             preparedSQL = "select Invoice.invoiceID, Customer.PRCID, Invoice.clinicID, Invoice.invoiceDate, "
+             preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, Invoice.clinicID, Invoice.invoiceDate, "
                  + "Invoice.deliveryDate, Invoice.additionalAccessories, Invoice.termsOfPayment, "
                  + "Invoice.paymentDueDate, Invoice.datePaid, Invoice.dateClosed, Invoice.status, "
                  + "Invoice.overdueFee from Invoice "
@@ -87,6 +87,7 @@ public class getUnfinishedServlet extends HttpServlet {
              while(dbData.next()){
                  invoiceBean ibean = new invoiceBean();
                  ibean.setInvoiceID(dbData.getInt("invoiceID"));
+                 ibean.setInvoiceName(dbData.getString("invoiceName"));
                  ibean.setPRCID(dbData.getString("PRCID"));
                  ibean.setClinicID(dbData.getInt("clinicID"));
                  ibean.setInvoiceDate(dbData.getDate("invoiceDate"));
@@ -107,7 +108,12 @@ public class getUnfinishedServlet extends HttpServlet {
                  request.getRequestDispatcher("getInvoice.jsp").forward(request,response);
          }
          else{
-            preparedSQL = "Select * from RestockOrder where RODateDelivered is null order by RODateDue";
+            preparedSQL = "Select RestockOrder.restockOrderID, Product.productID, Product.productName, RestockOrder.numberOfPiecesOrdered, "
+                    + "RestockOrder.numberOfPiecesReceived, RestockOrder.supplier, RestockOrder.purpose, RestockOrder.RODateDue, "
+                    + "RestockOrder.RODateDelivered, RestockOrder.ROName "
+                    + "from RestockOrder "
+                    + "inner join Product on Product.productID = RestockOrder.productID "
+                    + "where RestockOrder.RODateDelivered is null order by RestockOrder.RODateDue";
             ps = conn.prepareStatement(preparedSQL);
             dbData = ps.executeQuery();
             ArrayList<restockOrderBean> restocksRetrieved = new ArrayList<restockOrderBean>();
@@ -115,7 +121,9 @@ public class getUnfinishedServlet extends HttpServlet {
                while(dbData.next()){
                   restockOrderBean rbean = new restockOrderBean();
                    rbean.setRestockOrderID(dbData.getInt("restockOrderID"));
+                   rbean.setRestockOrderName(dbData.getString("ROName"));
                    rbean.setProductID(dbData.getInt("productID"));
+                   rbean.setProductName(dbData.getString("productName"));
                    rbean.setNumberOfPiecesOrdered(dbData.getInt("numberOfPiecesOrdered"));
                    rbean.setNumberOfPiecesReceived(dbData.getInt("numberOfPiecesReceived"));
                    rbean.setSupplier(dbData.getString("supplier"));

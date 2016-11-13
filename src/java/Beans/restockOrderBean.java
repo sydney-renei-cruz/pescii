@@ -15,7 +15,9 @@ import java.sql.Date;
 public class restockOrderBean implements Serializable{
     
     public int restockOrderID;
+    public String ROName;
     public int productID;
+    public String productName;
     public int numberOfPiecesOrdered;
     public int numberOfPiecesReceived;
     public String supplier;
@@ -23,9 +25,11 @@ public class restockOrderBean implements Serializable{
     public Date RODateDue;
     public Date RODateDelivered;
     
-    public restockOrderBean(int roid, int pid, int nopo, int nopr, String sup, String purp, Date rod, Date rodd){
+    public restockOrderBean(int roid, String ron, int pid, String pn, int nopo, int nopr, String sup, String purp, Date rod, Date rodd){
         this.restockOrderID=roid;
+        this.ROName=ron;
         this.productID=pid;
+        this.productName=pn;
         this.numberOfPiecesOrdered=nopo;
         this.numberOfPiecesReceived=nopr;
         this.supplier=sup;
@@ -38,7 +42,9 @@ public class restockOrderBean implements Serializable{
     public restockOrderBean(){}
     
     public void setRestockOrderID(int roid){this.restockOrderID=roid;}
+    public void setRestockOrderName(String ron){this.ROName=ron;}
     public void setProductID(int pid){this.productID=pid;}
+    public void setProductName(String pn){this.productName=pn;}
     public void setNumberOfPiecesOrdered(int nopo){this.numberOfPiecesOrdered=nopo;}
     public void setNumberOfPiecesReceived(int nopr){this.numberOfPiecesReceived=nopr;}
     public void setSupplier(String sup){this.supplier=sup;}
@@ -47,7 +53,9 @@ public class restockOrderBean implements Serializable{
     public void setRODateDelivered(Date rodd){this.RODateDelivered=rodd;}
 
     public int getRestockOrderID(){return this.restockOrderID;}
+    public String getRestockOrderName(){return this.ROName;}
     public int getProductID(){return this.productID;}
+    public String getProductName(){return this.productName;}
     public int getNumberOfPiecesOrdered(){return this.numberOfPiecesOrdered;}
     public int getNumberOfPiecesReceived(){return this.numberOfPiecesReceived;}
     public String getSupplier(){return this.supplier;}

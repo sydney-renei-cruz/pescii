@@ -18,7 +18,9 @@
     <body>
         <h1>This is the Create Restock Order page!</h1>
         <form action="Servlets.createRestockOrderServlet" method="post">
+            Enter RO Name: <input type="text" name="RONameInput"><br>
             Product ID: <%=pbean.getProductID()%><input type="hidden" value="<%=pbean.getProductID()%>" name="pid"><br>
+            Product Name: <%=pbean.getProductName()%><br>
             Enter Quantity Ordered:<input type="text" name="piecesOrderedInput"><br>
             Enter Purpose:<input type="text" name="purposeInput"><br>
             Enter Date Due:<input type="text" name="dateDueInput"><br>

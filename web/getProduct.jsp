@@ -16,7 +16,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>PESCII Get Product</title>
+        <title>PESCII View Product</title>
     </head>
     <body>
         <h1>This is the Get Product page!</h1>

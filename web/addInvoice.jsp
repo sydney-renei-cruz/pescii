@@ -41,6 +41,7 @@
         
         <form action="invoice.add" method="POST">
             
+            Enter Invoice Name: <input type="text" name="invoiceNameInput"><br>
             Select Clinic: <select name="chosenClinic">
                 <c:forEach items="${clinicsList}" var="clin" begin="0" step="1">
                     <option value="${clin.getClinicID()}">${clin.getClinicAddress()}</option>
