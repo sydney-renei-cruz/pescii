@@ -24,8 +24,9 @@ public class restockOrderBean implements Serializable{
     public String purpose;
     public Date RODateDue;
     public Date RODateDelivered;
+    public float restockPrice;
     
-    public restockOrderBean(int roid, String ron, int pid, String pn, int nopo, int nopr, String sup, String purp, Date rod, Date rodd){
+    public restockOrderBean(int roid, String ron, int pid, String pn, int nopo, int nopr, String sup, String purp, Date rod, Date rodd, float rp){
         this.restockOrderID=roid;
         this.ROName=ron;
         this.productID=pid;
@@ -36,7 +37,7 @@ public class restockOrderBean implements Serializable{
         this.purpose=purp;
         this.RODateDue=rod;
         this.RODateDelivered=rodd;
-        
+        this.restockPrice=rp;
     }
     
     public restockOrderBean(){}
@@ -51,6 +52,7 @@ public class restockOrderBean implements Serializable{
     public void setPurpose(String purp){this.purpose=purp;}
     public void setRODateDue(Date rod){this.RODateDue=rod;}
     public void setRODateDelivered(Date rodd){this.RODateDelivered=rodd;}
+    public void setRestockPrice(float rp){this.restockPrice=rp;}
 
     public int getRestockOrderID(){return this.restockOrderID;}
     public String getRestockOrderName(){return this.ROName;}
@@ -62,6 +64,6 @@ public class restockOrderBean implements Serializable{
     public String getPurpose(){return this.purpose;}
     public Date getRODateDue(){return this.RODateDue;}
     public Date getRODateDelivered(){return this.RODateDelivered;}
-        
+    public float getRestockPrice(){return this.restockPrice;}    
         
 }

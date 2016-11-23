@@ -70,11 +70,14 @@ public class viewInvoiceDetailsServlet extends HttpServlet {
          
          //---------------
          //first get the invoice details
-         String preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, Invoice.clinicID, Invoice.invoiceDate, "
+         String preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID,"
+                 + " Customer.customerFirstName, Customer.customerLastName, Invoice.clinicID, Clinic.clinicName, Invoice.invoiceDate, "
                  + "Invoice.deliveryDate, Invoice.additionalAccessories, Invoice.termsOfPayment, "
                  + "Invoice.paymentDueDate, Invoice.datePaid, Invoice.dateClosed, Invoice.status, "
                  + "Invoice.overdueFee from Invoice "
-                 + "inner join Customer on Customer.customerID = Invoice.customerID where invoiceID = ?";
+                 + "inner join Customer on Customer.customerID = Invoice.customerID "
+                 + "inner join Clinic on Clinic.clinicID = Invoice.clinicID "
+                 + "where invoiceID = ?";
          String inputInvID = request.getParameter("invID");
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          ps.setString(1, inputInvID);
@@ -85,7 +88,9 @@ public class viewInvoiceDetailsServlet extends HttpServlet {
          ibean.setInvoiceID(dbData.getInt("invoiceID"));
          ibean.setInvoiceName(dbData.getString("invoiceName"));
          ibean.setPRCID(dbData.getString("PRCID"));
+         ibean.setCustomerName(dbData.getString("customerLastName")+", "+dbData.getString("customerFirstName"));
          ibean.setClinicID(dbData.getInt("clinicID"));
+         ibean.setClinicName(dbData.getString("clinicName"));
          ibean.setInvoiceDate(dbData.getDate("invoiceDate"));
          ibean.setDeliveryDate(dbData.getDate("deliveryDate"));
          ibean.setAdditionalAccessories(dbData.getString("additionalAccessories"));
@@ -103,7 +108,10 @@ public class viewInvoiceDetailsServlet extends HttpServlet {
          request.setAttribute("invoice", ibean);
          
          //now get the InvoiceItem/s
-         preparedSQL = "select * from InvoiceItem where invoiceID = ?";
+         preparedSQL = "select InvoiceItem.invoiceItemID, InvoiceItem.invoiceID, Product.productID, Product.productName, InvoiceItem.quantityPurchased from InvoiceItem "
+                 + "inner join Product on Product.productID = InvoiceItem.productID "
+                 + "inner join Invoice on Invoice.invoiceID = InvoiceItem.invoiceID "
+                 + "where Invoice.invoiceID = ?";
          ps = conn.prepareStatement(preparedSQL);
          ps.setString(1,inputInvID);
          
@@ -115,6 +123,7 @@ public class viewInvoiceDetailsServlet extends HttpServlet {
                 invitembean.setInvoiceItemID(dbData.getInt("invoiceItemID"));
                 invitembean.setInvoiceID(dbData.getInt("invoiceID"));
                 invitembean.setProductID(dbData.getInt("productID"));
+                invitembean.setProductName(dbData.getString("productName"));
                 invitembean.setQuantityPurchased(dbData.getInt("quantityPurchased"));
                 invItemsRetrieved.add(invitembean);
             }

@@ -21,16 +21,20 @@
         <h1>This is the Add Customer page!</h1>
         
         <form action="Servlets.addCustomerServlet" method="post">
+            <b>Customer</b><br>
             Enter Customer PRCID:<input type="text" name="customerIDInput"><br>
-            Enter Customer Name:<input type="text" name="customerNameInput"><br>
-            Enter Customer Mobile Number:<input type="text" name="customerMobileNumberInput"><br>
-            Enter Customer Telephone Number:<input type="text" name="customerTelephoneNumberInput"><br>
+            Enter Last Name:<input type="text" name="customerLastNameInput"><br>
+            Enter First Name:<input type="text" name="customerFirstNameInput"><br>
+            Enter Mobile Number:<input type="text" name="customerMobileNumberInput"><br>
+            Enter Telephone Number:<input type="text" name="customerTelephoneNumberInput"><br><br>
+            
+            <b>Clinic</b><br>
             Enter Clinic Name:<input type="text" name="clinicNameInput"><br>
             Enter Clinic Address:<input type="text" name="clinicAddressInput"><br>
             Enter Clinic Phone Number:<input type="text" name="clinicPhoneNumInput"><br>
             Enter Sales Representative:<select name="chosenSalesRep">
                 <c:forEach items="${salesRepList}" var="sr" begin="0" step="1">
-                    <option value="${sr.getSalesRepID()}">${sr.getSalesRepName()}</option>
+                    <option value="${sr.getSalesRepID()}">${sr.getSalesRepLastName()} ${sr.getSalesRepFirstName()}</option>
                 </c:forEach>
             </select><br><br>
             <input type="submit" value="Add"><br>

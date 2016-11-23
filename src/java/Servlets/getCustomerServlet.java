@@ -70,9 +70,9 @@ public class getCustomerServlet extends HttpServlet {
          
          //---------------
          //THIS IS WHERE YOU START CHANGING
-         String preparedSQL = "select Customer.customerID, Customer.PRCID, Customer.customerName, Customer.customerMobileNumber, "
-                 + "Customer.customerTelephoneNumber, SalesRep.salesRepName, Customer.salesRepID from Customer "
-                 + "inner join SalesRep on SalesRep.salesRepID = Customer.salesRepID";
+         String preparedSQL = "select Customer.customerID, Customer.PRCID, Customer.customerFirstName, Customer.customerLastName, Customer.customerMobileNumber, "
+                 + "Customer.customerTelephoneNumber, SalesRep.salesRepFirstName, SalesRep.salesRepLastName, Customer.salesRepID from Customer "
+                 + "inner join SalesRep on SalesRep.salesRepID = Customer.salesRepID order by Customer.customerLastName asc";
          
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          
@@ -83,10 +83,11 @@ public class getCustomerServlet extends HttpServlet {
                 customerBean data = new customerBean();
                 data.setCustomerID(dbData.getInt("customerID"));
                 data.setPRCID(dbData.getString("PRCID"));
-                data.setCustomerName(dbData.getString("customerName"));
+                data.setCustomerFirstName(dbData.getString("customerFirstName"));
+                data.setCustomerLastName(dbData.getString("customerLastName"));
                 data.setCustomerMobileNumber(dbData.getString("customerMobileNumber"));
                 data.setCustomerTelephoneNumber(dbData.getString("customerTelephoneNumber"));
-                data.setSalesRep(dbData.getString("salesRepName"));
+                data.setSalesRep(dbData.getString("salesRepLastName")+", "+dbData.getString("salesRepFirstName"));
                 data.setSalesRepID(dbData.getInt("salesRepID"));
                 customersRetrieved.add(data);
             }
@@ -95,7 +96,7 @@ public class getCustomerServlet extends HttpServlet {
                 request.setAttribute("addInvoice", "yes");
             }
             if((""+request.getParameter("forAdd")).equals("yes")){
-                preparedSQL = "select * from SalesRep";
+                preparedSQL = "select * from SalesRep sort by salesRepLastName asc";
          
                 ps = conn.prepareStatement(preparedSQL);
 
@@ -104,7 +105,8 @@ public class getCustomerServlet extends HttpServlet {
                 //retrieve the information.
                    while(dbData.next()){
                        salesRepBean data = new salesRepBean();
-                       data.setSalesRepName(dbData.getString("salesRepName"));
+                       data.setSalesRepFirstName(dbData.getString("salesRepFirstName"));
+                       data.setSalesRepLastName(dbData.getString("salesRepLastName"));
                        data.setSalesRepID(dbData.getInt("salesRepID"));
                        salesRepsRetrieved.add(data);
                    }

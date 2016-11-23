@@ -97,20 +97,22 @@ public class editCustomerServlet extends HttpServlet {
          
          //---------------
          //first get the invoice details
-         String preparedSQL = "update Customer set customerName=?, customerMobileNumber=?, customerTelephoneNumber=?, salesRepID=? where customerID=?";
+         String preparedSQL = "update Customer set customerLastName=?, customerFirstName=?, customerMobileNumber=?, customerTelephoneNumber=?, salesRepID=? where customerID=?";
          
-         String newCustomerName = request.getParameter("customerNameInput");
+         String newCustomerLastName = request.getParameter("customerLastNameInput");
+         String newCustomerFirstName = request.getParameter("customerFirstNameInput");
          String newCustomerMobileNumber = request.getParameter("customerMobileNumberInput");
          String newCustomerTelephoneNumber = request.getParameter("customerTelNumInput");
          int inputCustomerID = Integer.parseInt(request.getParameter("customerIDInput"));
          int newSalesRepID = Integer.parseInt(request.getParameter("chosenSalesRep"));
          
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
-         ps.setString(1,newCustomerName);
-         ps.setString(2,newCustomerMobileNumber);
-         ps.setString(3,newCustomerTelephoneNumber);
-         ps.setInt(4,newSalesRepID);
-         ps.setInt(5,inputCustomerID);
+         ps.setString(1,newCustomerLastName);
+         ps.setString(2,newCustomerFirstName);
+         ps.setString(3,newCustomerMobileNumber);
+         ps.setString(4,newCustomerTelephoneNumber);
+         ps.setInt(5,newSalesRepID);
+         ps.setInt(6,inputCustomerID);
          
          ps.executeUpdate();
          

@@ -26,8 +26,8 @@
         <form action="invoice.edit" method="post">
             <input type="hidden" value="${invoice.getInvoiceID()}" name="invoiceIDInput"><p>Invoice ID: ${invoice.getInvoiceID()}</p>
             Invoice Name: <input type="text" value="${invoice.getInvoiceName()}" name="newInvoiceNameInput"><br>
-            <input type="hidden" value="${invoice.getPRCID()}" name="PRCIDInput"><p>PRC ID: ${invoice.getPRCID()}</p>
-            <input type="hidden" value="${invoice.getClinicID()}" name="clinicIDInput"><p>Clinic ID: ${invoice.getClinicID()}</p>
+            <input type="hidden" value="${invoice.getPRCID()}" name="PRCIDInput"><p>Customer Name: ${invoice.getCustomerName()}</p>
+            <input type="hidden" value="${invoice.getClinicID()}" name="clinicIDInput"><p>Clinic Name: ${invoice.getClinicName()}</p>
             <input type="hidden" value="${invoice.getInvoiceDate()}" name="invoiceDateInput"><p>Invoice Date Created: ${invoice.getInvoiceDate()}</p>
             Delivery Date:<br>
             <c:choose>
@@ -102,14 +102,14 @@
         <table border="1">
             <tr>
                 <th>Invoice Item ID</th>
-                <th>Product ID</th>
+                <th>Product Name</th>
                 <th>Quantity Purchased</th>
             </tr>
         
         <c:forEach items="${invitemsList}" var="invitem" begin="0" step="1">
             <tr>
                 <td>${invitem.getInvoiceItemID()}</td>
-                <td>${invitem.getProductID()}</td>
+                <td>${invitem.getProductName()}</td>
                 <td>${invitem.getQuantityPurchased()}</td>
             </tr>
         </c:forEach>

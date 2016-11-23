@@ -76,13 +76,13 @@ public class getInvoiceServlet extends HttpServlet {
                  + "Invoice.deliveryDate, Invoice.additionalAccessories, Invoice.termsOfPayment, "
                  + "Invoice.paymentDueDate, Invoice.datePaid, Invoice.dateClosed, Invoice.status, "
                  + "Invoice.overdueFee from Invoice "
-                 + "inner join Customer on Customer.customerID = Invoice.customerID where Customer.PRCID="+request.getParameter("PRCID")+" and Invoice.invoiceDate="+request.getParameter("invoiceDate");
+                 + "inner join Customer on Customer.customerID = Invoice.customerID where Customer.PRCID="+request.getParameter("PRCID")+" and Invoice.invoiceDate="+request.getParameter("invoiceDate") +" order by Invoice.dateCreated desc";
          }
          else{preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, Invoice.clinicID, Invoice.invoiceDate, "
                  + "Invoice.deliveryDate, Invoice.additionalAccessories, Invoice.termsOfPayment, "
                  + "Invoice.paymentDueDate, Invoice.datePaid, Invoice.dateClosed, Invoice.status, "
                  + "Invoice.overdueFee from Invoice "
-                 + "inner join Customer on Customer.customerID = Invoice.customerID";}
+                 + "inner join Customer on Customer.customerID = Invoice.customerID"+" order by Invoice.dateCreated desc";}
          
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          

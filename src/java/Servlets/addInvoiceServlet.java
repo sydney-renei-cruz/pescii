@@ -46,6 +46,62 @@ public class addInvoiceServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
+        HttpSession session = request.getSession();
+        ServletContext context = request.getSession().getServletContext();
+        response.setContentType("text/html");
+        
+        try {
+         Class.forName(context.getInitParameter("jdbcDriver"));
+      } catch(ClassNotFoundException ex) {
+         ex.printStackTrace();
+         out.println("jdbc error: " + ex);
+      }
+        
+        Connection conn = null;
+        Statement stmt = null;
+        
+        try{
+        //Allocate a database Connection object
+         //This uses the pageContext servlet.  Look at Web.xml for the params!
+         //This means we don't need to recompile!
+         
+         conn = DriverManager.getConnection(context.getInitParameter("databaseUrl"), context.getInitParameter("databaseUser"), context.getInitParameter("databasePassword"));
+        
+         //Allocate a Statement object within the Connection
+         stmt = conn.createStatement();
+         
+         //---------------
+         //THIS IS WHERE YOU START CHANGING
+         String toCancel = ""+request.getParameter("cancel");
+         context.log("toCancel = "+toCancel);
+         String message = "";
+         if(toCancel.equals("yes")){    //this is for when the invoice is cancelled. It was put here to save space...I guess.
+                message = "Invoice cancelled.";
+                request.setAttribute("message", message);
+                session.setAttribute("cart", null);
+                session.setAttribute("prodNames", null);
+                session.setAttribute("quantity", null);
+                request.getRequestDispatcher("homePage.jsp").forward(request,response);
+                return;
+         }
+        }
+        catch(Exception ex){
+            ex.printStackTrace();
+            out.println("error: " + ex);
+        }
+        finally {
+            out.close();  // Close the output writer
+            try {
+              //Close the resources
+              if (stmt != null) stmt.close();
+              if (conn != null) conn.close();
+            }
+            catch (SQLException ex) {
+                ex.printStackTrace();
+                out.println("Another SQL error: " + ex);
+            }
+     }
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -74,7 +130,6 @@ public class addInvoiceServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
         
         HttpSession session = request.getSession();
         ServletContext context = request.getSession().getServletContext();
@@ -103,151 +158,165 @@ public class addInvoiceServlet extends HttpServlet {
          
          //---------------
          //THIS IS WHERE YOU START CHANGING
+         String toCancel = ""+request.getParameter("cancel");
+         context.log("toCancel = "+toCancel);
          String message = "Invoice successfully created!";
-         String preparedSQL = "insert into Invoice(customerID, clinicID, invoiceDate, deliveryDate, additionalAccessories,"
-                                + "termsOfPayment, paymentDueDate, datePaid, dateClosed, status, overdueFee, invoiceName) values(?,?,?,?,?,?,?,?,?,?,?,?)";
-         
-         //this is put at the start because it needs to cancel immediately if there are no InvoiceItems
-         LinkedList<String> cart;
-         LinkedList<String> prodNames;
-         LinkedList<Integer> quantity;
-         if(session.getAttribute("cart")!=null){
-            cart = (LinkedList<String>)(session.getAttribute("cart"));
-            prodNames = (LinkedList<String>)(session.getAttribute("prodNames"));
-            quantity = (LinkedList<Integer>)(session.getAttribute("quantity"));
+         if(toCancel.equals("yes")){    //this is for when the invoice is cancelled. It was put here to save space...I guess.
+                message = "Invoice cancelled.";
+                request.setAttribute("message", message);
+                session.setAttribute("cart", null);
+                session.setAttribute("prodNames", null);
+                session.setAttribute("quantity", null);
+                request.getRequestDispatcher("homePage.jsp").forward(request,response);
+                return;
          }
-         else{
-             request.setAttribute("message", "You have no products selected. Invoice could not be created");
-             return;
-         }
+         else{  //if not cancelled, then do what this servlet was made for.
+            String preparedSQL = "insert into Invoice(customerID, clinicID, invoiceDate, deliveryDate, additionalAccessories,"
+                                   + "termsOfPayment, paymentDueDate, datePaid, dateClosed, status, overdueFee, invoiceName) values(?,?,?,?,?,?,?,?,?,?,?,?)";
 
-
-         //you don't change this
-         PreparedStatement ps = conn.prepareStatement(preparedSQL, Statement.RETURN_GENERATED_KEYS);
-         
-         //-----First Make the Invoice entry
-         int inputCustomerID = Integer.parseInt(request.getParameter("customerIDInput"));
-         int inputClinicID = Integer.parseInt(request.getParameter("chosenClinic"));
-         Date date = new Date();
-         String inputInvoiceDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
-         String inputDeliveryDate = request.getParameter("deliveryDateInput");
-         String inputAddAcc = request.getParameter("addAccInput");
-         String inputTop = request.getParameter("topInput");
-         String inputPaymentDueDate = request.getParameter("paymentDueDateInput");
-         String inputDatePaid = request.getParameter("datePaidInput");
-         String inputStatus = request.getParameter("statusInput");
-         String inputInvoiceName = request.getParameter("invoiceNameInput");
-         
-         
-         ps.setInt(1,inputCustomerID);
-         ps.setInt(2, inputClinicID);
-         ps.setString(3,inputInvoiceDate);
-         ps.setString(4,inputDeliveryDate);
-         ps.setString(5,inputAddAcc);
-         ps.setString(6,inputTop);
-         ps.setString(7,inputPaymentDueDate);
-         if(inputDatePaid.equals("")){ps.setString(8,null);}
-         else{ps.setString(8,inputDatePaid);}
-         if(inputStatus.equals("Completed")){ps.setString(9,inputDatePaid);}
-         else{ps.setString(9,null);}
-         ps.setString(10,inputStatus);
-         ps.setFloat(11, 0);
-         ps.setString(12,inputInvoiceName);
-         ps.executeUpdate();                   //at this point, you have already inserted into the database
-         
-         
-         //-----Now make the InvoiceItems
-         int invoiceIDInput;
-         try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
-            if (generatedKeys.next()) {
-                invoiceIDInput = generatedKeys.getInt(1);
-                context.log("The invoiceID of the new invoice is: " + invoiceIDInput);
-                
-                //the session attributes are:
-                //cart  -- these are the productIDs
-                //prodNames -- these are the productNames
-                //quantity  -- these are the quantities of each invoiceItem
-                
-                //DO NOT SORT THEM EVER. They're already in order.
-                
-                //This is where you start making the invoiceItems and add them to the database
-                
-                String preparedSQL2;
-                PreparedStatement ps2;
-                Integer inputInvoiceID = generatedKeys.getInt(1);
-                String inputProductID;
-                String inputQuantityPurchased;
-                for(int i=0;i<cart.size();i++){
-                    //you gotta insert into the table for every product in the cart
-                    preparedSQL2 = "insert into InvoiceItem(invoiceID, productID, quantityPurchased) "
-                                    + "values(?,?,?)";
-                    ps2 = conn.prepareStatement(preparedSQL2);
-                    
-                    inputProductID = cart.get(i);
-                    inputQuantityPurchased = ""+quantity.get(i);
-                    
-                    ps2.setInt(1, inputInvoiceID);
-                    ps2.setInt(2, Integer.parseInt(inputProductID));
-                    ps2.setInt(3, Integer.parseInt(inputQuantityPurchased));
-                    ps2.executeUpdate();
-                    context.log("You've updated: " + inputProductID);
-                }
-                
+            //this is put at the start because it needs to cancel immediately if there are no InvoiceItems
+            LinkedList<String> cart;
+            LinkedList<String> prodNames;
+            LinkedList<Integer> quantity;
+            if(session.getAttribute("cart")!=null){
+               cart = (LinkedList<String>)(session.getAttribute("cart"));
+               prodNames = (LinkedList<String>)(session.getAttribute("prodNames"));
+               quantity = (LinkedList<Integer>)(session.getAttribute("quantity"));
             }
-            else {
-                throw new SQLException("--> no invoiceID retrieved");
+            else{
+                message = "You have no products selected. Invoice could not be created";
+                request.setAttribute("message", message);
+                return;
             }
-        }
-         
-         //if(inputStatus.equals("Completed")){
-            //now update the product
-            //first get the invoice items
-            
-            //it has just occured to us that the inventory should update regardless of completion
-            preparedSQL = "select * from InvoiceItem where invoiceID = ?";
-            ps = conn.prepareStatement(preparedSQL);
-            ps.setInt(1,invoiceIDInput);
 
-            ResultSet dbData = ps.executeQuery();
-            //you might wanna change this to an array one of these days
-            ArrayList<invoiceItemBean> invItemsRetrieved = new ArrayList<invoiceItemBean>();
-            //retrieve the information.
-               while(dbData.next()){
-                  invoiceItemBean invItemBean = new invoiceItemBean();
-                  //invItemBean.setInvoiceID(dbData.getInt("invoiceID"));
-                  invItemBean.setProductID(dbData.getInt("productID"));
-                  //invItemBean.setQuantityPurchased(dbData.getInt("quantityPurchased"));
-                  invItemsRetrieved.add(invItemBean);
+
+            //you don't change this
+            PreparedStatement ps = conn.prepareStatement(preparedSQL, Statement.RETURN_GENERATED_KEYS);
+
+            //-----First Make the Invoice entry
+            int inputCustomerID = Integer.parseInt(request.getParameter("customerIDInput"));
+            int inputClinicID = Integer.parseInt(request.getParameter("chosenClinic"));
+            Date date = new Date();
+            String inputInvoiceDate = new SimpleDateFormat("yyyy-MM-dd").format(date);
+            String inputDeliveryDate = request.getParameter("deliveryDateInput");
+            String inputAddAcc = request.getParameter("addAccInput");
+            String inputTop = request.getParameter("topInput");
+            String inputPaymentDueDate = request.getParameter("paymentDueDateInput");
+            String inputDatePaid = request.getParameter("datePaidInput");
+            String inputStatus = request.getParameter("statusInput");
+            String inputInvoiceName = request.getParameter("invoiceNameInput");
+
+
+            ps.setInt(1,inputCustomerID);
+            ps.setInt(2, inputClinicID);
+            ps.setString(3,inputInvoiceDate);
+            ps.setString(4,inputDeliveryDate);
+            ps.setString(5,inputAddAcc);
+            ps.setString(6,inputTop);
+            ps.setString(7,inputPaymentDueDate);
+            if(inputDatePaid.equals("")){ps.setString(8,null);}
+            else{ps.setString(8,inputDatePaid);}
+            if(inputStatus.equals("Completed")){ps.setString(9,inputDatePaid);}
+            else{ps.setString(9,null);}
+            ps.setString(10,inputStatus);
+            ps.setFloat(11, 0);
+            ps.setString(12,inputInvoiceName);
+            ps.executeUpdate();                   //at this point, you have already inserted into the database
+
+
+            //-----Now make the InvoiceItems
+            int invoiceIDInput;
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+               if (generatedKeys.next()) {
+                   invoiceIDInput = generatedKeys.getInt(1);
+                   context.log("The invoiceID of the new invoice is: " + invoiceIDInput);
+
+                   //the session attributes are:
+                   //cart  -- these are the productIDs
+                   //prodNames -- these are the productNames
+                   //quantity  -- these are the quantities of each invoiceItem
+
+                   //DO NOT SORT THEM EVER. They're already in order.
+
+                   //This is where you start making the invoiceItems and add them to the database
+
+                   String preparedSQL2;
+                   PreparedStatement ps2;
+                   Integer inputInvoiceID = generatedKeys.getInt(1);
+                   String inputProductID;
+                   String inputQuantityPurchased;
+                   for(int i=0;i<cart.size();i++){
+                       //you gotta insert into the table for every product in the cart
+                       preparedSQL2 = "insert into InvoiceItem(invoiceID, productID, quantityPurchased) "
+                                       + "values(?,?,?)";
+                       ps2 = conn.prepareStatement(preparedSQL2);
+
+                       inputProductID = cart.get(i);
+                       inputQuantityPurchased = ""+quantity.get(i);
+
+                       ps2.setInt(1, inputInvoiceID);
+                       ps2.setInt(2, Integer.parseInt(inputProductID));
+                       ps2.setInt(3, Integer.parseInt(inputQuantityPurchased));
+                       ps2.executeUpdate();
+                       context.log("You've updated: " + inputProductID);
+                   }
+
                }
+               else {
+                   throw new SQLException("--> no invoiceID retrieved");
+               }
+           }
 
-           /* UPDATE Product JOIN InvoiceItem ON Product.productID=InvoiceItem.productID
-            SET Product.stocksRemaining = Product.stocksRemaining-InvoiceItem.quantityPurchased
-            WHERE Product.productID=1 and InvoiceItem.invoiceID=9;*/
-            for(invoiceItemBean iibean : invItemsRetrieved){
-                preparedSQL = "UPDATE Product JOIN InvoiceItem ON Product.productID=InvoiceItem.productID" +
-   "               SET Product.stocksRemaining = Product.stocksRemaining-InvoiceItem.quantityPurchased" +
-   "               WHERE Product.productID=? and InvoiceItem.invoiceID=?;";
-                ps = conn.prepareStatement(preparedSQL);
-                ps.setInt(1,iibean.getProductID());
-                ps.setInt(2,invoiceIDInput);
+            //if(inputStatus.equals("Completed")){
+               //now update the product
+               //first get the invoice items
 
-                ps.executeUpdate();
-                
-                message = "Invoice successfully created! Inventory Updated.";
-            }
-         //}
-         
-         
-         request.setAttribute("message", message);
-         session.setAttribute("cart", null);
-         session.setAttribute("prodNames", null);
-         session.setAttribute("quantity", null);
-         request.getRequestDispatcher("homePage.jsp").forward(request,response);
-         
+               //it has just occured to us that the inventory should update regardless of completion
+               preparedSQL = "select * from InvoiceItem where invoiceID = ?";
+               ps = conn.prepareStatement(preparedSQL);
+               ps.setInt(1,invoiceIDInput);
+
+               ResultSet dbData = ps.executeQuery();
+               //you might wanna change this to an array one of these days
+               ArrayList<invoiceItemBean> invItemsRetrieved = new ArrayList<invoiceItemBean>();
+               //retrieve the information.
+                  while(dbData.next()){
+                     invoiceItemBean invItemBean = new invoiceItemBean();
+                     //invItemBean.setInvoiceID(dbData.getInt("invoiceID"));
+                     invItemBean.setProductID(dbData.getInt("productID"));
+                     //invItemBean.setQuantityPurchased(dbData.getInt("quantityPurchased"));
+                     invItemsRetrieved.add(invItemBean);
+                  }
+
+              /* UPDATE Product JOIN InvoiceItem ON Product.productID=InvoiceItem.productID
+               SET Product.stocksRemaining = Product.stocksRemaining-InvoiceItem.quantityPurchased
+               WHERE Product.productID=1 and InvoiceItem.invoiceID=9;*/
+               for(invoiceItemBean iibean : invItemsRetrieved){
+                   preparedSQL = "UPDATE Product JOIN InvoiceItem ON Product.productID=InvoiceItem.productID" +
+      "               SET Product.stocksRemaining = Product.stocksRemaining-InvoiceItem.quantityPurchased" +
+      "               WHERE Product.productID=? and InvoiceItem.invoiceID=?;";
+                   ps = conn.prepareStatement(preparedSQL);
+                   ps.setInt(1,iibean.getProductID());
+                   ps.setInt(2,invoiceIDInput);
+
+                   ps.executeUpdate();
+
+                   message = "Invoice successfully created! Inventory Updated.";
+               }
+            //}
+
+
+            request.setAttribute("message", message);
+            session.setAttribute("cart", null);
+            session.setAttribute("prodNames", null);
+            session.setAttribute("quantity", null);
+            request.getRequestDispatcher("homePage.jsp").forward(request,response);
+
+           }
         }
-        catch(SQLException ex){
+        catch(Exception ex){
             ex.printStackTrace();
-            out.println("SQL error: " + ex);
+            out.println("error: " + ex);
         }
         finally {
             out.close();  // Close the output writer

@@ -19,37 +19,17 @@
     </head>
     <body>
         <h1>This is the Product Details Page!</h1>
-        <table border="1">
-            <tr>
-                <th>Product ID</th>
-                <th>Product Name</th>
-                <th>Product Description</th>
-                <th>Product Price</th>
-                <th>Restock Price</th>
-                <th>Stocks Remaining</th>
-                <th>Low Stock</th>
-                <th>Brand</th>
-                <th>Product</th>
-                <th>Color</th>
-            </tr>
+        <p>Product ID: ${product.getProductID()}</p>
+        <p>Product Name: ${product.getProductName()}</p>
+        <p>Product Description: ${product.getProductDescription()}</p>
+        <p>Product Price:${product.getProductPrice()}</p>
+        <p>Restock Price: ${product.getRestockPrice()}</p>
+        <p>Stocks Remaining: ${product.getStocksRemaining()}</p>
+        <p>Low Stock: ${product.getLowStock()}</p>
+        <p>Brand: ${product.getBrand()}</p>
+        <p>Product: ${product.getProductClass()}</p>
+        <p>Color: ${product.getColor()}</p>
         
-            <tr>
-                    <td>${product.getProductID()}</td>
-                    <td>${product.getProductName()}</td>
-                    <td>${product.getProductDescription()}</td>
-                    <td>${product.getProductPrice()}</td>
-                    <td>${product.getRestockPrice()}</td>
-                    <td>${product.getStocksRemaining()}</td>
-                    <td>${product.getLowStock()}</td>
-                    <td>${product.getBrand()}</td>
-                    <td>${product.getProductClass()}</td>
-                    <td>${product.getColor()}</td>
-                    
-                    
-                    
-            </tr>
-            
-        </table>
         <br><br><br>
         <c:if test="${forInvoice eq 'yes'}">
             <a href="addToCart?prodName=<c:out value="${product.getProductName()}"/>&prodID=<c:out value="${product.getProductID()}"/>">ADD</a><br><br>
@@ -65,7 +45,8 @@
                 <a href="Servlets.getProductServlet">Go to Products list</a>
             </c:when>
             <c:when test="${forInvoice eq 'yes'}">
-                <a href="Servlets.getProductServlet?forInvoice=yes">Return to Products list</a>
+                <a href="Servlets.getProductServlet?forInvoice=yes">Return to Products list</a><br>
+                <a href="invoice.add?cancel=yes">Cancel Invoice</a><br>
             </c:when>
         </c:choose>
         

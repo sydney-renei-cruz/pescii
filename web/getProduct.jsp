@@ -62,7 +62,8 @@
                     <c:if test="${forRestock eq 'yes'}">
                       <td><a href="product.getDetails?forRestock=yes&prodID=<c:out value="${prod.getProductID()}"/>">ADD to RO</a></td>
                     </c:if>    
-                        
+                    
+                      <td><a href="product.getDetails?forEdit=yes&prodID=<c:out value="${prod.getProductID()}"/>">EDIT</a></td>
                     
             </tr>
             
@@ -71,7 +72,9 @@
         
         <c:if test="${forInvoice eq 'yes'}">
             <br><br>
-            <a href="viewCart.jsp">View Cart</a> to add your invoice.
+            <a href="viewCart.jsp">View Cart</a> to add your invoice.<br>
+            <a href="invoice.add?cancel=yes">Cancel Invoice</a><br>
+            
         </c:if>
         
         <br><br>

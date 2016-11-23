@@ -23,8 +23,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author user
  */
-@WebServlet(name = "addSalesRepServlet_1", urlPatterns = {"/addSalesRepServlet_1"})
-public class addSalesRepServlet extends HttpServlet {
+@WebServlet(name = "editProductServlet_1", urlPatterns = {"/editProductServlet_1"})
+public class editProductServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -67,10 +67,11 @@ public class addSalesRepServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        //DO NOT CHANGE THESE
+        processRequest(request, response);
+         PrintWriter out = response.getWriter();
+        
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
-        PrintWriter out = response.getWriter();
         
         try {
          Class.forName(context.getInitParameter("jdbcDriver"));
@@ -83,41 +84,53 @@ public class addSalesRepServlet extends HttpServlet {
         Statement stmt = null;
         
         try{
-        
+        //Allocate a database Connection object
+         //This uses the pageContext servlet.  Look at Web.xml for the params!
+         //This means we don't need to recompile!
+         
          conn = DriverManager.getConnection(context.getInitParameter("databaseUrl"), context.getInitParameter("databaseUser"), context.getInitParameter("databasePassword"));
         
          //Allocate a Statement object within the Connection
          stmt = conn.createStatement();
          
          //---------------
-         //THIS IS WHERE YOU START CHANGING
          
-         String preparedSQL = "insert into SalesRep(salesRepFirstName, salesRepMobileNumber, salesRepAddress, salesRepLastName) values (?,?,?,?)";
+         String preparedSQL = "update Product set productName=?, productDescription=?, productPrice=?, restockPrice=?, "
+                 + "lowStock=?, brand=?, productClass=?, color=? where productID=?";
+         
+         //int restockOrderID = Integer.parseInt(request.getParameter("restockOrderIDInput"));
+         context.log(request.getParameter("productIDInput"));
+         int productID = Integer.parseInt(request.getParameter("productIDInput"));
+         String newProductName = request.getParameter("productNameInput");
+         String newProductDescription = request.getParameter("productDescriptionInput");
+         float newProductPrice = Float.parseFloat(request.getParameter("productPriceInput"));
+         float newRestockPrice = Float.parseFloat(request.getParameter("restockPriceInput"));
+         int newLowStock = Integer.parseInt(request.getParameter("lowStockInput"));
+         String newBrand = request.getParameter("brandInput");
+         String newProductClass = request.getParameter("productClassInput");
+         String newColor = request.getParameter("colorInput");
+         
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
+         ps.setString(1,newProductName);
+         ps.setString(2,newProductDescription);
+         ps.setFloat(3,newProductPrice);
+         ps.setFloat(4,newRestockPrice);
+         ps.setInt(5,newLowStock);
+         ps.setString(6,newBrand);
+         ps.setString(7,newProductClass);
+         ps.setString(8,newColor);
+         ps.setInt(9,productID);
          
-         String inputSalesRepFirstName = request.getParameter("salesrepFirstNameInput");
-         String inputSalesRepLastName = request.getParameter("salesrepLastNameInput");
-         String inputSalesRepMobileNumber = request.getParameter("salesrepMNInput");
-         String inputSalesRepAddress = request.getParameter("salesrepAddressInput");
+         ps.executeUpdate();
          
-         
-         ps.setString(1,inputSalesRepFirstName);
-         ps.setString(2,inputSalesRepMobileNumber);
-         ps.setString(3,inputSalesRepAddress);
-         ps.setString(4,inputSalesRepLastName);
-         
-         ps.executeUpdate();                   //at this point, you have already inserted into the database
-         
-         
-         String message = "Sales Rep successfully added!";
+         String message = "Product successfully editted!";
          request.setAttribute("message", message);
          request.getRequestDispatcher("homePage.jsp").forward(request,response);
-            
          
         }
-        catch(SQLException ex){
+        catch(Exception ex){
             ex.printStackTrace();
-            out.println("SQL error: " + ex);
+            out.println("error: " + ex);
         }
         finally {
             out.close();  // Close the output writer
@@ -131,6 +144,11 @@ public class addSalesRepServlet extends HttpServlet {
                 out.println("Another SQL error: " + ex);
             }
      }
+        
+        
+        
+        
+        
     }
 
     /**

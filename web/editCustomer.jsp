@@ -25,12 +25,15 @@
         <form action="customer.edit" method="post">
             <input type="hidden" value="${customer.getCustomerID()}" name="customerIDInput">
             PRCID: <input type="hidden" value="${customer.getPRCID()}" name="PRCIDInput">${customer.getPRCID()}<br>
-            CustomerName: <input type="text" value="${customer.getCustomerName()}" name="customerNameInput"><br>
+            Last Name: <input type="text" value="${customer.getCustomerLastName()}" name="customerLastNameInput"><br>
+            First Name: <input type="text" value="${customer.getCustomerFirstName()}" name="customerFirstNameInput"><br>
             Mobile Number: <input type="text" value="${customer.getCustomerMobileNumber()}" name="customerMobileNumberInput"><br>
-            Telephone Number: <input type="text" value="${customer.getCustomerTelephoneNumber()}" name="customerTelNumInput"><br>
-            Sales Representative:<select name="chosenSalesRep">
+            Telephone Number: <input type="text" value="${customer.getCustomerTelephoneNumber()}" name="customerTelNumInput"><br><br>
+            <b>Sales Representative</b><br>
+            From: ${customer.getSalesRep()}<br>
+            To:<select name="chosenSalesRep">
                 <c:forEach items="${salesRepList}" var="sr" begin="0" step="1">
-                    <option value="${sr.getSalesRepID()}">${sr.getSalesRepName()}</option>
+                    <option value="${sr.getSalesRepID()}">${sr.getSalesRepLastName()} ${sr.getSalesRepFirstName()}</option>
                 </c:forEach>
             </select><br><br>
             <br><input type="submit" value="Save Changes"><br>

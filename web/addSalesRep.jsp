@@ -14,7 +14,8 @@
     <body>
         <h1>This is the Add Sales Rep Page!</h1>
         <form action="salesrep.add" method="post">
-            Enter Sales Rep name:<input type="text" name="salesrepNameInput"><br>
+            First name:<input type="text" name="salesrepFirstNameInput"><br>
+            Last name:<input type="text" name="salesrepLastNameInput"><br>
             Enter Sales Rep mobile number:<input type="text" name="salesrepMNInput"><br>
             Enter Sales Rep Address:<input type="text" name="salesrepAddressInput"><br>
             <input type="submit" value="Save Sales Rep"><br>

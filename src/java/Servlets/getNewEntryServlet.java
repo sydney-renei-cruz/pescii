@@ -81,6 +81,7 @@ public class getNewEntryServlet extends HttpServlet {
          String forWhere = "dateCreated";   //by default, it'll look for new entries. This'll be changed later
          String interval = " between date_sub(now(),interval 1 week) and now()";
          String status = "";
+         String orderBy = "";
          
          ResultSet dbData;
          
@@ -91,6 +92,7 @@ public class getNewEntryServlet extends HttpServlet {
                  forWhere="paymentDueDate";
                  interval = " between now() and date_add(now(), interval 7 day)";
                  status = " and status='In Progress' and datePaid = null";
+                 orderBy = " order by paymentDueDate asc";
              }
              //this sets up the SQL statement for invoices validated, regardless of date
                 //remember: a validated invoice is that which is paid for but not delivered yet
@@ -98,8 +100,9 @@ public class getNewEntryServlet extends HttpServlet {
                  forWhere="datePaid";
                  status = " and status='In Progress'";
                  interval = "";
+                 orderBy = " order by deliveryDate asc";
              }
-             preparedSQL = "select * from Invoice where "+forWhere+ interval + status;
+             preparedSQL = "select * from Invoice where "+forWhere+ interval + status + orderBy;
              ps = conn.prepareStatement(preparedSQL);
              dbData = ps.executeQuery();
              ArrayList<invoiceBean> invoicesRetrieved = new ArrayList<invoiceBean>();
@@ -131,12 +134,13 @@ public class getNewEntryServlet extends HttpServlet {
          
          //this part is for when a Customer is being searched
          else if(whatFor.equals("customer")){
-             preparedSQL = "select Customer.PRCID, Customer.customerName, Customer.customerMobileNumber, "
-                     + "Customer.customerTelephoneNumber, SalesRep.salesRepName, Customer.customerID, "
+             preparedSQL = "select Customer.PRCID, Customer.customerFirstName, Customer.customerLastName, Customer.customerMobileNumber, "
+                     + "Customer.customerTelephoneNumber, SalesRep.salesRepFirstName, SalesRep.salesRepLastName, Customer.customerID, "
                      + "Invoice.invoiceID, Invoice.overdueFee from Customer "
                      + "inner join SalesRep on SalesRep.salesRepID = Customer.salesRepID "
                      + "inner join Invoice on Invoice.customerID = Customer.customerID "
-                     + "where Invoice.status = 'In Progress' and Invoice.overdueFee != null";
+                     + "where Invoice.status = 'In Progress' and Invoice.overdueFee != null "
+                     + "order by Customer.customerLastName asc";
          
              ps = conn.prepareStatement(preparedSQL);
              dbData = ps.executeQuery();
@@ -145,10 +149,11 @@ public class getNewEntryServlet extends HttpServlet {
                 customerBean data = new customerBean();
                 data.setCustomerID(dbData.getInt("customerID"));
                 data.setPRCID(dbData.getString("PRCID"));
-                data.setCustomerName(dbData.getString("customerName"));
+                data.setCustomerFirstName(dbData.getString("customerFirstName"));
+                data.setCustomerLastName(dbData.getString("customerLastName"));
                 data.setCustomerMobileNumber(dbData.getString("customerMobileNumber"));
                 data.setCustomerTelephoneNumber(dbData.getString("customerTelephoneNumber"));
-                data.setSalesRep(dbData.getString("salesRepName"));
+                data.setSalesRep(dbData.getString("salesRepLastName")+", "+dbData.getString("salesRepFirstName"));
                 data.setSalesRepID(dbData.getInt("salesRepID"));
                 customersRetrieved.add(data);
             }
@@ -176,7 +181,7 @@ public class getNewEntryServlet extends HttpServlet {
              if(getWhat.equals("lowStock")){preparedSQL = "select * from Product where stocksRemaining <= lowStock";}
              else if(getWhat.equals("rawMaterials")){preparedSQL = "select * from Product where productClass = Raw Material";}
              */
-             preparedSQL = "select * from Product where " + productClasses + inputStocks;
+             preparedSQL = "select * from Product where " + productClasses + inputStocks + " order by productName asc";
              context.log(preparedSQL);
              ps = conn.prepareStatement(preparedSQL);
              dbData = ps.executeQuery();
@@ -207,14 +212,15 @@ public class getNewEntryServlet extends HttpServlet {
             if(getWhat.equals("close")){
                 forWhere="RODateDue";
                 interval=" between now() and date_add(now(), interval 7 day) and RODateDelivered = null";
+                orderBy = " order by RODateDue asc";
             }
-            else if(getWhat.equals("completed")){forWhere="RODateDelivered";}
+            else if(getWhat.equals("completed")){forWhere="RODateDelivered"; orderBy = " order by RODateDelivered";}
             preparedSQL = "Select RestockOrder.restockOrderID, Product.productID, Product.productName, RestockOrder.numberOfPiecesOrdered, "
                     + "RestockOrder.numberOfPiecesReceived, RestockOrder.supplier, RestockOrder.purpose, RestockOrder.RODateDue, "
                     + "RestockOrder.RODateDelivered, RestockOrder.ROName "
                     + "from RestockOrder "
                     + "inner join Product on Product.productID = RestockOrder.productID "
-                    + "where RestockOrder." + forWhere + interval;
+                    + "where RestockOrder." + forWhere + interval + orderBy;
             ps = conn.prepareStatement(preparedSQL);
             dbData = ps.executeQuery();
             ArrayList<restockOrderBean> restocksRetrieved = new ArrayList<restockOrderBean>();

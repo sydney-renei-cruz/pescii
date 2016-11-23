@@ -76,7 +76,8 @@ public class viewSalesRepDetailsServlet extends HttpServlet {
          dbData.next();
          salesRepBean srbean = new salesRepBean();
          srbean.setSalesRepID(dbData.getInt("salesRepID"));
-         srbean.setSalesRepName(dbData.getString("salesRepName"));
+         srbean.setSalesRepFirstName(dbData.getString("salesRepFirstName"));
+         srbean.setSalesRepLastName(dbData.getString("salesRepLastName"));
          srbean.setSalesRepMobileNumber(dbData.getString("salesRepMobileNumber"));
          srbean.setSalesRepAddress(dbData.getString("salesRepAddress"));
          request.setAttribute("srbean", srbean);

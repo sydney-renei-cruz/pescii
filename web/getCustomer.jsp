@@ -25,7 +25,8 @@
         <table border="1">
             <tr>
                 <th>PRC ID</th>
-                <th>Customer Name</th>
+                <th>Last Name</th>
+                <th>First Name</th>
                 <th>Mobile #</th>
                 <th>Telephone #</th>
             </tr>
@@ -33,7 +34,8 @@
         <c:forEach items="${customersList}" var="cust" begin="0" step="1" varStatus="status">
             <tr>
                     <td>${cust.getPRCID()}</td>
-                    <td><a href="Servlets.viewCustomerDetailsServlet?custID=<c:out value="${cust.getCustomerID()}"/>">${cust.getCustomerName()}</a></td>
+                    <td><a href="Servlets.viewCustomerDetailsServlet?custID=<c:out value="${cust.getCustomerID()}"/>">${cust.getCustomerLastName()}</a></td>
+                    <td>${cust.getCustomerFirstName()}</td>
                     <td>${cust.getCustomerMobileNumber()}</td>
                     <td>${cust.getCustomerTelephoneNumber()}</td>
                     <td><a href="Servlets.viewCustomerDetailsServlet?forEdit=yes&custID=<c:out value="${cust.getCustomerID()}"/>">Edit</td>

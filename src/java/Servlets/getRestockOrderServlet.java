@@ -69,12 +69,12 @@ public class getRestockOrderServlet extends HttpServlet {
          
          //---------------
          //THIS IS WHERE YOU START CHANGING
-         String preparedSQL = "Select RestockOrder.restockOrderID, Product.productID, Product.productName, RestockOrder.numberOfPiecesOrdered, "
+         String preparedSQL = "Select RestockOrder.restockOrderID, Product.productID, Product.productName, Product.restockPrice, RestockOrder.numberOfPiecesOrdered, "
                     + "RestockOrder.numberOfPiecesReceived, RestockOrder.supplier, RestockOrder.purpose, RestockOrder.RODateDue, "
                     + "RestockOrder.RODateDelivered, RestockOrder.ROName "
                     + "from RestockOrder "
                     + "inner join Product on Product.productID = RestockOrder.productID "
-                    + "order by RestockOrder.RODateDue";
+                    + "order by RestockOrder.RODateDue desc";
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          
          
@@ -94,6 +94,7 @@ public class getRestockOrderServlet extends HttpServlet {
                 rbean.setPurpose(dbData.getString("purpose"));
                 rbean.setRODateDue(dbData.getDate("RODateDue"));
                 rbean.setRODateDelivered(dbData.getDate("RODateDelivered"));
+                rbean.setRestockPrice(dbData.getFloat("restockPrice"));
                 restocksRetrieved.add(rbean);
             }
          request.setAttribute("restocksList", restocksRetrieved);

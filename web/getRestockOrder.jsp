@@ -35,14 +35,15 @@
         <c:forEach items="${restocksList}" var="ro" begin="0" step="1" varStatus="status">
             <tr>
                 <td>${ro.getRestockOrderID()}</td>
-                <td><a href="restockOrder.getDetails?editRestock=yes&restockID=<c:out value="${ro.getRestockOrderID()}"/>">Edit</td>
+                <td><a href="restockOrder.getDetails?restockID=<c:out value="${ro.getRestockOrderID()}"/>">${ro.getRestockOrderName()}</td>
                 <td>${ro.getProductName()}</td>
-                <td></td>
+                <td>${ro.getRestockPrice()}</td>
                 <td>${ro.getNumberOfPiecesOrdered()}</td>
                 <td>${ro.getNumberOfPiecesReceived()}</td>
                 <td>${ro.getSupplier()}</td>
                 <td>${ro.getRODateDue()}</td>
                 <td>${ro.getRODateDelivered()}</td>
+                <td><a href="restockOrder.getDetails?editRestock=yes&restockID=<c:out value="${ro.getRestockOrderID()}"/>">Edit</td>
             </tr>
             
         </c:forEach>

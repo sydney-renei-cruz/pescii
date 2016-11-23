@@ -22,37 +22,20 @@
         <br><br><br>
         <!--Invoice-->
         <h5>Invoice Details</h5>
-        <table border="1">
-            <tr>
-                <th>Invoice ID</th>
-                <th>Invoice Name</th>
-                <th>PRC ID</th>
-                <th>Clinic ID</th>
-                <th>Invoice Date</th>
-                <th>Delivery Date</th>
-                <th>Additional Accessories</th>
-                <th>Terms Of Payment</th>
-                <th>Date Paid</th>
-                <th>Date Closed</th>
-                <th>Status</th>
-                <th>Overdue Fee</th>
-            </tr>
         
-        <tr>
-                <td>${invoice.getInvoiceID()}</td>
-                <td>${invoice.getInvoiceName()}</td>
-                <td>${invoice.getPRCID()}</td>
-                <td>${invoice.getClinicID()}</td>
-                <td>${invoice.getInvoiceDate()}</td>
-                <td>${invoice.getDeliveryDate()}</td>
-                <td>${invoice.getAdditionalAccessories()}</td>
-                <td>${invoice.getTermsOfPayment()}</td>
-                <td>${invoice.getDatePaid()}</td>
-                <td>${invoice.getDateClosed()}</td>
-                <td>${invoice.getStatus()}</td>
-                <td>${invoice.getOverdueFee()}</td>
-            </tr>
-        </table>
+        <p>Invoice ID: ${invoice.getInvoiceID()}</p>
+        <p>Invoice Name: ${invoice.getInvoiceName()}</p>
+        <p>Customer PRCID: ${invoice.getPRCID()}</p>
+        <p>Customer Name: ${invoice.getCustomerName()}</p>
+        <p>Clinic Name: ${invoice.getClinicName()}</p>
+        <p>Invoice Date: ${invoice.getInvoiceDate()}</p>
+        <p>Delivery Date: ${invoice.getDeliveryDate()}</p>
+        <p>Additional Accessories: ${invoice.getAdditionalAccessories()}</p>
+        <p>Terms Of Payment: ${invoice.getTermsOfPayment()}</p>
+        <p>Date Paid: ${invoice.getDatePaid()}</p>
+        <p>Date Closed: ${invoice.getDateClosed()}</p>
+        <p>Status: ${invoice.getStatus()}</p>
+        <p>Overdue Fee: ${invoice.getOverdueFee()}</p>
         
         <!-- Invoice Items-->
         <br><br><br>
@@ -60,14 +43,14 @@
         <table border="1">
             <tr>
                 <th>Invoice Item ID</th>
-                <th>Product ID</th>
+                <th>Product Name</th>
                 <th>Quantity Purchased</th>
             </tr>
         
         <c:forEach items="${invitemsList}" var="invitem" begin="0" step="1">
             <tr>
                 <td>${invitem.getInvoiceItemID()}</td>
-                <td>${invitem.getProductID()}</td>
+                <td><a href="product.getDetails?prodID=<c:out value="${invitem.getProductID()}"/>">${invitem.getProductName()}</a></td>
                 <td>${invitem.getQuantityPurchased()}</td>
             </tr>
         </c:forEach>

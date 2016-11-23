@@ -21,9 +21,10 @@
         
         <form action="salesrep.edit" method="post">
                 Sales Rep ID: <input type="hidden" value="<%=salesRep.getSalesRepID()%>" name="srID"><%=salesRep.getSalesRepID()%><br>
-                Sales Rep Name: <input type="text" value="<%=salesRep.getSalesRepName()%>" name="newSalesRepNameInput"><br>
-                Sales Rep Mobile Number: <input type="text" value="<%=salesRep.getSalesRepMobileNumber()%>" name="newSalesRepMNInput"><br>
-                Sales Rep Address: <input type="text" value="<%=salesRep.getSalesRepAddress()%>" name="newSalesRepAddressInput"><br>
+                Last Name: <input type="text" value="<%=salesRep.getSalesRepLastName()%>" name="newSalesRepLastNameInput"><br>
+                First Name: <input type="text" value="<%=salesRep.getSalesRepFirstName()%>" name="newSalesRepFirstNameInput"><br>
+                Mobile Number: <input type="text" value="<%=salesRep.getSalesRepMobileNumber()%>" name="newSalesRepMNInput"><br>
+                Address: <input type="text" value="<%=salesRep.getSalesRepAddress()%>" name="newSalesRepAddressInput"><br>
                 
                 <br><input type="submit" value="Save Changes">
         </form>

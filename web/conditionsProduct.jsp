@@ -26,7 +26,7 @@
             Low Stock:<br>
                 <input type="radio" name="lowStockInput" value="yes">Yes<br>
                 <input type="radio" name="lowStockInput" value="no">No<br>
-                <input type="radio" name="lowStockInput" value="both">Both<br>
+                <input type="radio" name="lowStockInput" value="cancel">Cancel<br>
                 <br>
             <input type="submit" value="Get">    
         </form>

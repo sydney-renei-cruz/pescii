@@ -71,8 +71,8 @@ public class viewCustomerDetailsServlet extends HttpServlet {
          //---------------
          //first get the customer details
          //String preparedSQL = "select * from Customer where customerID = ?";
-         String preparedSQL = "select Customer.customerID, Customer.PRCID, Customer.customerName, Customer.customerMobileNumber, "
-                 + "Customer.customerTelephoneNumber, SalesRep.salesRepName, Customer.salesRepID from Customer "
+         String preparedSQL = "select Customer.customerID, Customer.PRCID, Customer.customerFirstName, Customer.customerLastName, Customer.customerMobileNumber, "
+                 + "Customer.customerTelephoneNumber, SalesRep.salesRepFirstName, SalesRep.salesRepLastName, Customer.salesRepID from Customer "
                  + "inner join SalesRep on SalesRep.salesRepID = Customer.salesRepID "
                  + "where Customer.customerID = ?";
          int inputCustomerID = Integer.parseInt(request.getParameter("custID"));
@@ -85,10 +85,11 @@ public class viewCustomerDetailsServlet extends HttpServlet {
          //customerBean cbean = new customerBean();
          cbean.setCustomerID(dbData.getInt("customerID"));
          cbean.setPRCID(dbData.getString("PRCID"));
-         cbean.setCustomerName(dbData.getString("customerName"));
+         cbean.setCustomerFirstName(dbData.getString("customerFirstName"));
+         cbean.setCustomerLastName(dbData.getString("customerLastName"));
          cbean.setCustomerMobileNumber(dbData.getString("customerMobileNumber"));
          cbean.setCustomerTelephoneNumber(dbData.getString("customerTelephoneNumber"));
-         cbean.setSalesRep(dbData.getString("salesRepName"));
+         cbean.setSalesRep(dbData.getString("salesRepLastName")+", "+dbData.getString("salesRepFirstName"));
          cbean.setSalesRepID(dbData.getInt("salesRepID"));;
          }
          request.setAttribute("customer", cbean);
@@ -164,7 +165,8 @@ public class viewCustomerDetailsServlet extends HttpServlet {
                 //retrieve the information.
                    while(dbData.next()){
                        salesRepBean data = new salesRepBean();
-                       data.setSalesRepName(dbData.getString("salesRepName"));
+                       data.setSalesRepFirstName(dbData.getString("salesRepFirstName"));
+                       data.setSalesRepLastName(dbData.getString("salesRepLastName"));
                        data.setSalesRepID(dbData.getInt("salesRepID"));
                        salesRepsRetrieved.add(data);
                    }

@@ -68,7 +68,7 @@ public class getSalesRepServlet extends HttpServlet {
          stmt = conn.createStatement();
          
          //---------------
-         String preparedSQL = "select * from SalesRep";
+         String preparedSQL = "select * from SalesRep order by salesRepLastName asc";
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          
          ResultSet dbData = ps.executeQuery();
@@ -77,7 +77,8 @@ public class getSalesRepServlet extends HttpServlet {
             while(dbData.next()){
                salesRepBean srbean = new salesRepBean();
                 srbean.setSalesRepID(dbData.getInt("salesRepID"));
-                srbean.setSalesRepName(dbData.getString("salesRepName"));
+                srbean.setSalesRepFirstName(dbData.getString("salesRepFirstName"));
+                srbean.setSalesRepLastName(dbData.getString("salesRepLastName"));
                 srbean.setSalesRepMobileNumber(dbData.getString("salesRepMobileNumber"));
                 srbean.setSalesRepAddress(dbData.getString("salesRepAddress"));
                 salesRepsRetrieved.add(srbean);

@@ -22,15 +22,17 @@
         <table border="1">
             <tr>
                 <th>Sales Rep ID</th>
-                <th>Sales Rep Name</th>
-                <th>Sales Rep Mobile Number</th>
-                <th>Sales Rep Address</th>
+                <th>Last Name</th>
+                <th>First Name</th>
+                <th>Mobile Number</th>
+                <th>Address</th>
             </tr>
         
         <c:forEach items="${salesRepsList}" var="sr" begin="0" step="1" varStatus="status">
             <tr>
                     <td>${sr.getSalesRepID()}</td>
-                    <td>${sr.getSalesRepName()}</td>
+                    <td>${sr.getSalesRepLastName()}</td>
+                    <td>${sr.getSalesRepFirstName()}</td>
                     <td>${sr.getSalesRepMobileNumber()}</td>
                     <td>${sr.getSalesRepAddress()}</td>
                     <td><a href="salesrep.getDetails?srID=<c:out value="${sr.getSalesRepID()}"/>">Edit</td>

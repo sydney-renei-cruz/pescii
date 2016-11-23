@@ -23,7 +23,7 @@
         
         <br><br>
         <p>ID: ${restockOrder.getRestockOrderID()}</p>
-        <p>Restock Oder Name: ${restockOrder.getRestockOrderName()}</p>
+        <p>Restock Order Name: ${restockOrder.getRestockOrderName()}</p>
         <p>Product Ordered: <a href="product.getDetails?forInvoice=no&prodID=<c:out value="${product.getProductID()}"/>">${product.getProductName()}</a></p>
         <p>Unit Price: ${product.getRestockPrice()}</p>
         <p>Quantity Ordered: ${restockOrder.getNumberOfPiecesOrdered()}</p>

@@ -100,6 +100,10 @@ public class viewProductDetailsServlet extends HttpServlet {
              request.getRequestDispatcher("createRestockOrder.jsp").forward(request,response);
              return;
          }
+         if((""+request.getParameter("forEdit")).equals("yes")){
+             request.getRequestDispatcher("editProduct.jsp").forward(request,response);
+             return;
+         }
          request.getRequestDispatcher("productDetails.jsp").forward(request,response);
          
         }

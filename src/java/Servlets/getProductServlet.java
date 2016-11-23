@@ -15,6 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -70,7 +71,23 @@ public class getProductServlet extends HttpServlet {
          
          //---------------
          //THIS IS WHERE YOU START CHANGING
-         String preparedSQL = "select * from Product";
+         String preparedSQL = "select * from Product order by productName asc";
+         
+         if(session.getAttribute("cart")!=null){
+             context.log(preparedSQL);
+             LinkedList<String> cart = (LinkedList<String>)(session.getAttribute("cart"));
+             String prodIDs = "";
+             context.log(""+cart.size());
+             if(cart.size()>0){
+                 prodIDs = " where productID!="+cart.get(0);
+                 if(cart.size()>1){
+                    for(int i=1;i<cart.size();i++){
+                        prodIDs = prodIDs + " and productID!=" + cart.get(i);
+                    }
+                 }
+             }
+             preparedSQL = preparedSQL + prodIDs;
+         };
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          
          
@@ -93,6 +110,7 @@ public class getProductServlet extends HttpServlet {
                 productsRetrieved.add(pbean);
             }
          request.setAttribute("productsList", productsRetrieved);
+         
          String forOther = ""+ request.getParameter("forOther");
          if(forOther.equals("invoice") || session.getAttribute("cart")!=null){
              request.setAttribute("forInvoice", "yes");

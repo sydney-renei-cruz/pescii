@@ -121,7 +121,8 @@ public class editRestockOrderServlet extends HttpServlet {
          ps.setInt(2,newNumberOfPiecesReceived);
          ps.setString(3,newSupplier);
          ps.setString(4,newPurpose);
-         ps.setString(5,newRODateDelivered);
+         if(newRODateDelivered.equals("") || newRODateDelivered==null){ps.setString(5,null);}
+         else{ps.setString(5,newRODateDelivered);}
          ps.setString(6,newROName);
          ps.setInt(7,inputRestockOrderID);
          

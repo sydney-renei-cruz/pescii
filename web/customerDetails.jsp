@@ -24,26 +24,14 @@
         <!--this is the table for the customer details-->
         <h5>Customer Details</h5>
         
+        <p>PRC ID: ${customer.getPRCID()}</p>
+        <p>Last Name: ${customer.getCustomerLastName()}</p>
+        <p>First Name: ${customer.getCustomerFirstName()}</p>
+        <p>Mobile Number: ${customer.getCustomerMobileNumber()}</p>
+        <p>Telephone Number: ${customer.getCustomerTelephoneNumber()}</p>
+        <p>Sales Rep:${customer.getSalesRep()}</p>
+        <p>Sales Rep ID:${customer.getSalesRepID()}</p>
         
-        <table border="1">
-            <tr>
-                <th>PRC ID</th>
-                <th>Customer Name</th>
-                <th>Mobile #</th>
-                <th>Telephone #</th>
-                <th>Sales Rep</th>
-                <th>Sales Rep ID</th>
-            </tr>
-        
-            <tr>
-                <td>${customer.getPRCID()}</td>
-                <td>${customer.getCustomerName()}</td>
-                <td>${customer.getCustomerMobileNumber()}</td>
-                <td>${customer.getCustomerTelephoneNumber()}</td>
-                <td>${customer.getSalesRep()}</td>
-                <td>${customer.getSalesRepID()}</td>
-            </tr>
-        </table>
             
         <br><br>
             

@@ -69,9 +69,18 @@
             <a href="new.get?whatFor=customer">Customers With Overdue Fees</a><br>
             <a href="Servlets.getCustomerServlet">View All Customers</a><br><br>
             
+            <a href="unfinished.get?getTable=invoice">Unfinished Invoices</a><br>
+            <a href="conditionsInvoice.jsp">Custom View Invoice</a><br>
+            <a href="Servlets.getInvoiceServlet">View All Invoices</a><br><br>
+            
             <a href="addSalesRep.jsp">Add Sales Rep</a><br>
             <a href="salesrep.get">Edit Sales Rep</a><br>
             <a href="salesrep.get">View Sales Rep</a><br><br>
+            
+            <a href="unfinished.get?getTable=ro">Unfinished RO</a><br>
+            <a href="conditionsRestockOrder.jsp">Custom View RO</a><br>
+            <a href="restockOrder.get">View All Restock Orders</a><br><br>
+            
             
             <a href="createAccount.jsp">Create Account</a><br>
             <a href="account.get">Edit Account</a><br><br>
@@ -128,7 +137,7 @@
             <a href="account.get">Edit Account</a><br><br>
             
             <a href="addProduct.jsp">Add Product</a><br>
-            <a href="editProduct.jsp">Edit Product</a><br>
+            <a href="Servlets.getProductServlet">Edit Product</a><br>
             <a href="Servlets.getProductServlet?forOther=restock">Add Restock Order</a><br>
             <a href="restockOrder.get">Edit Restock Order</a><br>
             <a href="unfinished.get?getTable=ro">Unfinished RO</a><br>

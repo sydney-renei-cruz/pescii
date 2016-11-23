@@ -95,20 +95,22 @@ public class editSalesRepServlet extends HttpServlet {
          
          //---------------
          
-         String preparedSQL = "update SalesRep set salesRepName=?, salesRepMobileNumber=?, salesRepAddress=? where salesRepID=?";
+         String preparedSQL = "update SalesRep set salesRepFirstName=?, salesRepLastName=?, salesRepMobileNumber=?, salesRepAddress=? where salesRepID=?";
          
          //int restockOrderID = Integer.parseInt(request.getParameter("restockOrderIDInput"));
          context.log(request.getParameter("srID"));
          int salesRepID = Integer.parseInt(request.getParameter("srID"));
-         String newSalesRepName = request.getParameter("newSalesRepNameInput");
+         String newSalesRepFirstName = request.getParameter("newSalesRepFirstNameInput");
+         String newSalesRepLastName = request.getParameter("newSalesRepLastNameInput");
          String newSalesRepMobileNumber = request.getParameter("newSalesRepMNInput");
          String newSalesRepAddress = request.getParameter("newSalesRepAddressInput");
          
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
-         ps.setString(1,newSalesRepName);
-         ps.setString(2,newSalesRepMobileNumber);
-         ps.setString(3,newSalesRepAddress);
-         ps.setInt(4,salesRepID);
+         ps.setString(1,newSalesRepFirstName);
+         ps.setString(2,newSalesRepLastName);
+         ps.setString(3,newSalesRepMobileNumber);
+         ps.setString(4,newSalesRepAddress);
+         ps.setInt(5,salesRepID);
          
          ps.executeUpdate();
          

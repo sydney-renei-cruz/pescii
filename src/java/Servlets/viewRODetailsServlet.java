@@ -69,7 +69,12 @@ public class viewRODetailsServlet extends HttpServlet {
          
          //---------------
          //first get the RestockOrder details
-         String preparedSQL = "select * from RestockOrder where restockOrderID = ?";
+         String preparedSQL = "Select RestockOrder.restockOrderID, Product.productID, Product.productName, RestockOrder.numberOfPiecesOrdered, "
+                    + "RestockOrder.numberOfPiecesReceived, RestockOrder.supplier, RestockOrder.purpose, RestockOrder.RODateDue, "
+                    + "RestockOrder.RODateDelivered, RestockOrder.ROName "
+                    + "from RestockOrder "
+                    + "inner join Product on Product.productID = RestockOrder.productID "
+                    + "where RestockOrder.restockOrderID=?";
          String inputRestockOrderID = request.getParameter("restockID");
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          ps.setString(1, inputRestockOrderID);
@@ -80,6 +85,7 @@ public class viewRODetailsServlet extends HttpServlet {
             rbean.setRestockOrderID(dbData.getInt("restockOrderID"));
             rbean.setRestockOrderName(dbData.getString("ROName"));
             rbean.setProductID(dbData.getInt("productID"));
+            rbean.setProductName(dbData.getString("productName"));
             rbean.setNumberOfPiecesOrdered(dbData.getInt("numberOfPiecesOrdered"));
             rbean.setNumberOfPiecesReceived(dbData.getInt("numberOfPiecesReceived"));
             rbean.setSupplier(dbData.getString("supplier"));

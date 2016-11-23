@@ -97,7 +97,7 @@ public class addCustomerServlet extends HttpServlet {
          //---------------
          //THIS IS WHERE YOU START CHANGING
          
-         String preparedSQL = "insert into Customer(PRCID, customerName, customerMobileNumber, customerTelephoneNumber, salesRepID) values(?,?,?,?,?)";
+         String preparedSQL = "insert into Customer(PRCID, customerFirstName, customerMobileNumber, customerTelephoneNumber, salesRepID, customerLastName) values(?,?,?,?,?,?)";
          String preparedSQL2 = "insert into Clinic(customerID, clinicAddress, clinicPhoneNumber, clinicName) values(?,?,?,?)";
          
          //you don't change this
@@ -105,16 +105,18 @@ public class addCustomerServlet extends HttpServlet {
          PreparedStatement ps2 = conn.prepareStatement(preparedSQL2);
          
          String inputPRCID = request.getParameter("customerIDInput");
-         String inputCustomerName = request.getParameter("customerNameInput");
+         String inputCustomerFirstName = request.getParameter("customerFirstNameInput");
          String inputCustomerCelNum = request.getParameter("customerMobileNumberInput");
          String inputTelNum = request.getParameter("customerTelephoneNumberInput");
          int inputSalesRepID = Integer.parseInt(request.getParameter("chosenSalesRep"));
+         String inputCustomerLastName = request.getParameter("customerLastNameInput");
          
          ps.setString(1,inputPRCID);
-         ps.setString(2,inputCustomerName);
+         ps.setString(2,inputCustomerFirstName);
          ps.setString(3,inputCustomerCelNum);
          ps.setString(4,inputTelNum);
          ps.setInt(5,inputSalesRepID);
+         ps.setString(6,inputCustomerLastName);
          ps.executeUpdate();                   //at this point, you have already inserted into the database
          
          String inputClinicAddress = request.getParameter("clinicAddressInput");

@@ -139,6 +139,10 @@
         <servlet-name>editSalesRepServlet</servlet-name>
         <servlet-class>Servlets.editSalesRepServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>editProductServlet</servlet-name>
+        <servlet-class>Servlets.editProductServlet</servlet-class>
+    </servlet>
     
     <!-- Servlet Mapping-->
     
@@ -266,7 +270,10 @@
         <servlet-name>editSalesRepServlet</servlet-name>
         <url-pattern>/salesrep.edit</url-pattern>
     </servlet-mapping>
-    
+    <servlet-mapping>
+        <servlet-name>editProductServlet</servlet-name>
+        <url-pattern>/product.edit</url-pattern>
+    </servlet-mapping>
     <!--Filters-->
     
     <filter>
@@ -291,6 +298,7 @@
         <url-pattern>/getCustomer.jsp</url-pattern>
         <url-pattern>/getInvoice.jsp</url-pattern>
         <url-pattern>/createAccount.jsp</url-pattern>
+        <url-pattern>/getRestockOrder.jsp</url-pattern>
     </filter-mapping>
     <filter>
         <filter-name>IMFilter</filter-name>
