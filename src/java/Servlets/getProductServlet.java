@@ -86,8 +86,9 @@ public class getProductServlet extends HttpServlet {
                     }
                  }
              }
-             preparedSQL = preparedSQL + prodIDs;
-         };
+             preparedSQL = "select * from Product" + prodIDs + " order by productName asc";
+             context.log(preparedSQL);
+         }
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          
          

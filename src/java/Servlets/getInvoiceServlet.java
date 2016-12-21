@@ -72,17 +72,24 @@ public class getInvoiceServlet extends HttpServlet {
          String preparedSQL;
          
          if(request.getParameter("invoiceDate")!=null && request.getParameter("PRCID")!=null){
-             preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, Invoice.clinicID, Invoice.invoiceDate, "
+             preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, Customer.customerFirstName, "
+                 + "Customer.customerLastName, Invoice.clinicID, Invoice.invoiceDate, Clinic.clinicName, "
                  + "Invoice.deliveryDate, Invoice.additionalAccessories, Invoice.termsOfPayment, "
                  + "Invoice.paymentDueDate, Invoice.datePaid, Invoice.dateClosed, Invoice.status, "
-                 + "Invoice.overdueFee from Invoice "
-                 + "inner join Customer on Customer.customerID = Invoice.customerID where Customer.PRCID="+request.getParameter("PRCID")+" and Invoice.invoiceDate="+request.getParameter("invoiceDate") +" order by Invoice.dateCreated desc";
+                 + "Invoice.overdueFee, Clinic.provinceID, Province.provinceName, Province.provinceDivision from Invoice "
+                 + "inner join Customer on Customer.customerID = Invoice.customerID "
+                 + "inner join Clinic on Clinic.clinicID = Invoice.clinicID "
+                 + "inner join Province on Province.provinceID = Clinic.provinceID "
+                 + "where Customer.PRCID="+request.getParameter("PRCID")+" and Invoice.invoiceDate="+request.getParameter("invoiceDate") +" order by Invoice.dateCreated desc";
          }
-         else{preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, Invoice.clinicID, Invoice.invoiceDate, "
+         else{preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, Customer.customerFirstName, "
+                 + "Customer.customerLastName, Invoice.clinicID, Invoice.invoiceDate, Clinic.clinicName, "
                  + "Invoice.deliveryDate, Invoice.additionalAccessories, Invoice.termsOfPayment, "
                  + "Invoice.paymentDueDate, Invoice.datePaid, Invoice.dateClosed, Invoice.status, "
-                 + "Invoice.overdueFee from Invoice "
-                 + "inner join Customer on Customer.customerID = Invoice.customerID"+" order by Invoice.dateCreated desc";}
+                 + "Invoice.overdueFee, Clinic.provinceID, Province.provinceName, Province.provinceDivision from Invoice "
+                 + "inner join Customer on Customer.customerID = Invoice.customerID "
+                 + "inner join Clinic on Clinic.clinicID = Invoice.clinicID "
+                 + "inner join Province on Province.provinceID = Clinic.provinceID order by Invoice.dateCreated desc";}
          
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          
@@ -96,7 +103,11 @@ public class getInvoiceServlet extends HttpServlet {
                 ibean.setInvoiceID(dbData.getInt("invoiceID"));
                 ibean.setInvoiceName(dbData.getString("invoiceName"));
                 ibean.setPRCID(dbData.getString("PRCID"));
+                ibean.setCustomerName(dbData.getString("customerLastName")+", "+dbData.getString("customerFirstName"));
                 ibean.setClinicID(dbData.getInt("clinicID"));
+                ibean.setClinicName(dbData.getString("clinicName"));
+                ibean.setProvinceName(dbData.getString("provinceName"));
+                ibean.setProvinceDivision(dbData.getString("provinceDivision"));
                 ibean.setInvoiceDate(dbData.getDate("invoiceDate"));
                 ibean.setDeliveryDate(dbData.getDate("deliveryDate"));
                 ibean.setAdditionalAccessories(dbData.getString("additionalAccessories"));

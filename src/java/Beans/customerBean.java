@@ -6,6 +6,7 @@
 package Beans;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.sql.Timestamp;
 
 /**
@@ -23,8 +24,11 @@ public class customerBean implements Serializable{
     public Timestamp dateCreated;
     public String salesRep;
     public int salesRepID;
+    public String lastEdittedBy;
+    public Date lastEdittedDate;
     
-    public customerBean(int c, String cid, String cfname, String clname, String cmnum, String ctnum, Timestamp dc, String sr, int srID){
+    public customerBean(int c, String cid, String cfname, String clname, String cmnum, String ctnum,
+                        Timestamp dc, String sr, int srID, String leb, Date led){
         this.customerID=c;
         this.PRCID=cid;
         this.customerFirstName=cfname;
@@ -34,6 +38,8 @@ public class customerBean implements Serializable{
         this.dateCreated=dc;
         this.salesRep=sr;
         this.salesRepID=srID;
+        this.lastEdittedBy=leb;
+        this.lastEdittedDate=led;
     }
     
     public customerBean(){}
@@ -47,6 +53,8 @@ public class customerBean implements Serializable{
     public void setDateCreated(Timestamp dc){this.dateCreated=dc;}
     public void setSalesRep(String sr){this.salesRep=sr;}
     public void setSalesRepID(int srID){this.salesRepID=srID;}
+    public void setLastEdittedBy(String leb){this.lastEdittedBy=leb;}
+    public void setLastEdittedDate(Date led){this.lastEdittedDate=led;}
     
     public int getCustomerID(){return this.customerID;}
     public String getPRCID(){return this.PRCID;}
@@ -57,4 +65,6 @@ public class customerBean implements Serializable{
     public Timestamp getDateCreated(){return this.dateCreated;}
     public String getSalesRep(){return this.salesRep;}
     public int getSalesRepID(){return this.salesRepID;}
+    public String getLastEdittedBy(){return this.lastEdittedBy;}
+    public Date getLastEdittedDate(){return this.lastEdittedDate;}
 }

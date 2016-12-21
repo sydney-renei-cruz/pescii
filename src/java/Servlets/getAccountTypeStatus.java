@@ -5,7 +5,7 @@
  */
 package Servlets;
 
-import Beans.accountBean;
+import Beans.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -27,8 +27,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author user
  */
-@WebServlet(name = "getAccountServlet", urlPatterns = {"/getAccountServlet"})
-public class getAccountServlet extends HttpServlet {
+@WebServlet(name = "getAccountTypeStatus", urlPatterns = {"/getAccountTypeStatus"})
+public class getAccountTypeStatus extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -70,45 +70,42 @@ public class getAccountServlet extends HttpServlet {
          
          //---------------
          //THIS IS WHERE YOU START CHANGING
-         String accountType = ""+session.getAttribute("accountType");
-         String preparedSQL = "select * from Account";
-         if(accountType.equals("2") || accountType.equals("1")){
-             preparedSQL = "select Account.accountID, Account.userName, Account.password, Account.dateCreated, "
-                     + "AccountStatus.accountStatusName, AccountType.accountTypeName from Account "
-                     + "inner join AccountStatus on AccountStatus.accountStatusID = Account.accountStatus "
-                     + "inner join AccountType on AccountType.accountTypeID = Account.accountType";
-         }
-         else{
-             String accountID = ""+session.getAttribute("accountID");
-             //preparedSQL = "select * from Account where accountID="+accountID;
-             preparedSQL = "select Account.accountID, Account.userName, Account.password, Account.dateCreated, "
-                     + "AccountStatus.accountStatusName, AccountType.accountTypeName from Account "
-                     + "inner join AccountStatus on AccountStatus.accountStatusID = Account.accountStatus "
-                     + "inner join AccountType on AccountType.accountTypeID = Account.accountType "
-                     + "where accountID="+accountID;
-         }
+         //String accountType = ""+session.getAttribute("accountType");
+         String preparedSQL = "select * from AccountStatus";
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
-         
-         
-         
          ResultSet dbData = ps.executeQuery();
-         ArrayList<accountBean> accountsRetrieved = new ArrayList<accountBean>();
+         ArrayList<accountStatusBean> accountStatusesRetrieved = new ArrayList<accountStatusBean>();
          //retrieve the information.
             while(dbData.next()){
-               accountBean abean = new accountBean();
-                abean.setAccountID(dbData.getInt("accountID"));
-                abean.setUserName(dbData.getString("userName"));
-                abean.setPassword(dbData.getString("password"));
-                abean.setAccountStatus(dbData.getString("accountStatusName"));
-                abean.setAccountType(dbData.getString("accountTypeName"));
-                //abean.setDateCreated(dbData.getTimestamp("dateCreated"));
-                abean.setDateCreated(dbData.getTimestamp("dateCreated"));
-                accountsRetrieved.add(abean);
+               accountStatusBean asbean = new accountStatusBean();
+                asbean.setAccountStatusID(dbData.getInt("accountStatusID"));
+                asbean.setAccountStatusName(dbData.getString("accountStatusName"));
+                accountStatusesRetrieved.add(asbean);
             }
-         request.setAttribute("accountsList", accountsRetrieved);
+         request.setAttribute("accountStatusesList", accountStatusesRetrieved);
+         context.log(""+accountStatusesRetrieved.size());
+         preparedSQL = "select * from AccountType";
+         ps = conn.prepareStatement(preparedSQL);
+         dbData = ps.executeQuery();
+         ArrayList<accountTypeBean> accountTypesRetrieved = new ArrayList<accountTypeBean>();
+         //retrieve the information.
+            while(dbData.next()){
+               accountTypeBean atbean = new accountTypeBean();
+                atbean.setAccountTypeID(dbData.getInt("accountTypeID"));
+                atbean.setAccountTypeName(dbData.getString("accountTypeName"));
+                accountTypesRetrieved.add(atbean);
+            }
+         request.setAttribute("atypeList", accountTypesRetrieved);
+         context.log(""+accountTypesRetrieved.size());
          
-         request.getRequestDispatcher("getAccount.jsp").forward(request,response);
-            
+         if(request.getAttribute("account")!=null){
+             request.setAttribute("account", request.getAttribute("account"));
+             request.getRequestDispatcher("editAccount.jsp").forward(request,response);
+         }
+         else{
+            request.getRequestDispatcher("createAccount.jsp").forward(request,response);
+         }
+         
         }
         catch(Exception ex){
             ex.printStackTrace();
@@ -128,6 +125,7 @@ public class getAccountServlet extends HttpServlet {
      }
         
         
+    
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

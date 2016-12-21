@@ -5,7 +5,7 @@
  */
 package Servlets;
 
-import Beans.accountBean;
+import Beans.provinceBean;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -21,14 +21,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author user
  */
-@WebServlet(name = "getAccountServlet", urlPatterns = {"/getAccountServlet"})
-public class getAccountServlet extends HttpServlet {
+@WebServlet(name = "getProvinceServlet", urlPatterns = {"/getProvinceServlet"})
+public class getProvinceServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -44,7 +43,6 @@ public class getAccountServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         
-        HttpSession session = request.getSession();
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
         
@@ -69,46 +67,33 @@ public class getAccountServlet extends HttpServlet {
          stmt = conn.createStatement();
          
          //---------------
-         //THIS IS WHERE YOU START CHANGING
-         String accountType = ""+session.getAttribute("accountType");
-         String preparedSQL = "select * from Account";
-         if(accountType.equals("2") || accountType.equals("1")){
-             preparedSQL = "select Account.accountID, Account.userName, Account.password, Account.dateCreated, "
-                     + "AccountStatus.accountStatusName, AccountType.accountTypeName from Account "
-                     + "inner join AccountStatus on AccountStatus.accountStatusID = Account.accountStatus "
-                     + "inner join AccountType on AccountType.accountTypeID = Account.accountType";
-         }
-         else{
-             String accountID = ""+session.getAttribute("accountID");
-             //preparedSQL = "select * from Account where accountID="+accountID;
-             preparedSQL = "select Account.accountID, Account.userName, Account.password, Account.dateCreated, "
-                     + "AccountStatus.accountStatusName, AccountType.accountTypeName from Account "
-                     + "inner join AccountStatus on AccountStatus.accountStatusID = Account.accountStatus "
-                     + "inner join AccountType on AccountType.accountTypeID = Account.accountType "
-                     + "where accountID="+accountID;
-         }
+         String preparedSQL = "select * from Province order by provinceName asc";
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          
-         
-         
          ResultSet dbData = ps.executeQuery();
-         ArrayList<accountBean> accountsRetrieved = new ArrayList<accountBean>();
+         ArrayList<provinceBean> provincesRetrieved = new ArrayList<provinceBean>();
          //retrieve the information.
             while(dbData.next()){
-               accountBean abean = new accountBean();
-                abean.setAccountID(dbData.getInt("accountID"));
-                abean.setUserName(dbData.getString("userName"));
-                abean.setPassword(dbData.getString("password"));
-                abean.setAccountStatus(dbData.getString("accountStatusName"));
-                abean.setAccountType(dbData.getString("accountTypeName"));
-                //abean.setDateCreated(dbData.getTimestamp("dateCreated"));
-                abean.setDateCreated(dbData.getTimestamp("dateCreated"));
-                accountsRetrieved.add(abean);
+               provinceBean provBean = new provinceBean();
+               provBean.setProvinceID(dbData.getInt("provinceID"));
+               provBean.setProvinceName(dbData.getString("provinceName"));
+               provBean.setProvinceDivision(dbData.getString("provinceDivision"));
+               provincesRetrieved.add(provBean);
             }
-         request.setAttribute("accountsList", accountsRetrieved);
+         request.setAttribute("provList", provincesRetrieved);
          
-         request.getRequestDispatcher("getAccount.jsp").forward(request,response);
-            
+         
+         String whatFor = "" + request.getParameter("whatFor");
+         if(whatFor.equals("addClinic")){
+            String customerID = ""+request.getParameter("custID");
+            request.setAttribute("custID", customerID);
+            request.getRequestDispatcher("addClinic.jsp").forward(request,response);
+         }
+         else if(whatFor.equals("conditionsInvoice")){
+             request.getRequestDispatcher("conditionsInvoice.jsp").forward(request,response);
+         }
+         
+         
         }
         catch(Exception ex){
             ex.printStackTrace();
@@ -126,6 +111,7 @@ public class getAccountServlet extends HttpServlet {
                 out.println("Another SQL error: " + ex);
             }
      }
+        
         
         
     }

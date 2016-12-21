@@ -43,6 +43,7 @@
                 <th>Clinic ID</th>
                 <th>Clinic Name</th>
                 <th>Clinic Address</th>
+                <th>Province</th>
                 <th>Clinic Phone #</th>
             </tr>
         
@@ -51,13 +52,15 @@
                 <td>${clin.getClinicID()}</td>
                 <td>${clin.getClinicName()}</td>
                 <td>${clin.getClinicAddress()}</td>
+                <td>${clin.getProvinceName()}</td>
                 <td>${clin.getClinicPhoneNumber()}</td>
                 <td><a href="customer.getClinic?clinID=<c:out value="${clin.getClinicID()}"/>">Edit</a></td>
             </tr>
         </c:forEach>
         </table>
         <br><br>
-        <form action="addClinic.jsp">
+        <form action="province.get">
+            <input type="hidden" value="addClinic" name="whatFor">
             <input type="hidden" value="${customer.getCustomerID()}" name="custID">
             <input type="submit" value="Add Clinic">
         </form>
@@ -68,7 +71,7 @@
             <tr>
                 <th>Invoice ID</th>
                 <th>Invoice Name</th>
-                <th>Clinic ID</th>
+                <th>Clinic Name</th>
                 <th>Payment Due Date</th>
                 <th>Date Paid</th>
                 <th>Status</th>
@@ -76,9 +79,9 @@
         
         <c:forEach items="${invoicesList}" var="inv" begin="0" step="1">
             <tr>
-                <td><a href="Servlets.viewInvoiceDetailsServlet?invID=<c:out value="${inv.getInvoiceID()}"/>">${inv.getInvoiceID()}</a></td>
-                <td>${inv.getInvoiceName()}</td>
-                <td>${inv.getClinicID()}</td>
+                <td>${inv.getInvoiceID()}</td>
+                <td><a href="Servlets.viewInvoiceDetailsServlet?invID=<c:out value="${inv.getInvoiceID()}"/>">${inv.getInvoiceName()}</a></td>
+                <td>${inv.getClinicName()}</td>
                 <td>${inv.getPaymentDueDate()}</td>
                 <td>${inv.getDatePaid()}</td>
                 <td>${inv.getStatus()}</td>

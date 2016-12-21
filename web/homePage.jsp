@@ -123,7 +123,7 @@
             <a href="Servlets.getProductServlet?forOther=invoice">Create Invoice</a><br>
             <a href="Servlets.getInvoiceServlet">Edit Invoice</a><br>
             <a href="unfinished.get?getTable=invoice">Unfinished Invoices</a><br>
-            <a href="conditionsInvoice.jsp">Custom View Invoice</a><br>
+            <a href="province.get?whatFor=conditionsInvoice">Custom View Invoice</a><br>
             <a href="Servlets.getInvoiceServlet">View All Invoices</a><br><br>
             
             <a href="Servlets.getCustomerServlet?forAdd=yes">Add Customer</a><br>
@@ -133,7 +133,7 @@
             <a href="addSalesRep.jsp">Add Sales Rep</a><br>
             <a href="salesrep.get">Edit Sales Rep</a><br>
             <a href="salesrep.get">View Sales Rep</a><br><br>
-            <a href="createAccount.jsp">Create Account</a><br>
+            <a href="account.getTypeStatus">Create Account</a><br>
             <a href="account.get">Edit Account</a><br><br>
             
             <a href="addProduct.jsp">Add Product</a><br>

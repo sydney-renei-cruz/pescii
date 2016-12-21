@@ -9,6 +9,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
     String customerID = ""+request.getParameter("custID");
+    ArrayList<provinceBean> provList = (ArrayList<provinceBean>)request.getAttribute("provList");
 %>
 <!DOCTYPE html>
 <html>
@@ -18,12 +19,16 @@
     </head>
     <body>
         <h1>This is the Add Clinic Page!</h1>
-        
         <form action="customer.addClinic" method="post">
             <input type="hidden" value="<%=customerID%>" name="customerIDInput">
             Enter Clinic Name:<input type="text" name="clinicNameInput"><br>
             Enter Clinic Address:<input type="text" name="clinicAddressInput"><br>
             Enter Clinic Phone Number:<input type="text" name="clinicPhoneNumInput"><br>
+            Enter Province:<select name="chosenProvince">
+                <c:forEach items="${provList}" var="pro" begin="0" step="1">
+                        <option value="${pro.getProvinceID()}">${pro.getProvinceName()}</option>
+                </c:forEach>
+            </select><br><br>
             <input type="submit" value="Add">
         </form>
         

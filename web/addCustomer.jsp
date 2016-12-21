@@ -10,6 +10,7 @@
 <%
     ArrayList<customerBean> customersList = (ArrayList<customerBean>)request.getAttribute("customersList");
     ArrayList<salesRepBean> salesRepList = (ArrayList<salesRepBean>)request.getAttribute("salesRepList");
+    ArrayList<provinceBean> provinceList = (ArrayList<provinceBean>)request.getAttribute("provList");
 %>
 <!DOCTYPE html>
 <html>
@@ -31,6 +32,11 @@
             <b>Clinic</b><br>
             Enter Clinic Name:<input type="text" name="clinicNameInput"><br>
             Enter Clinic Address:<input type="text" name="clinicAddressInput"><br>
+            Enter Clinic Province:<select name="chosenProvince">
+                <c:forEach items="${provinceList}" var="prov" begin="0" step="1">
+                    <option value="${prov.getProvinceID()}">${prov.getProvinceName()}</option>
+                </c:forEach>
+            </select><br><br>
             Enter Clinic Phone Number:<input type="text" name="clinicPhoneNumInput"><br>
             Enter Sales Representative:<select name="chosenSalesRep">
                 <c:forEach items="${salesRepList}" var="sr" begin="0" step="1">

@@ -22,10 +22,13 @@
             <tr>
                 <th>Invoice ID</th>
                 <th>Invoice Name</th>
-                <th>PRC ID</th>
-                <th>Clinic ID</th>
+                <th>Customer Name</th>
+                <th>Clinic Name</th>
+                <th>Province</th>
+                <th>Status</th>
                 <th>Invoice Date</th>
                 <th>Payment Due Date</th>
+                <th>Date Paid</th>
                 
             </tr>
         
@@ -33,21 +36,25 @@
             <tr>
                 <td>${inv.getInvoiceID()}</td>
                 <td><a href="Servlets.viewInvoiceDetailsServlet?editInvoice=no&invID=<c:out value="${inv.getInvoiceID()}"/>">${inv.getInvoiceName()}</td>
-                <td>${inv.getPRCID()}</td>
-                <td>${inv.getClinicID()}</td>
+                <td>${inv.getCustomerName()}</td>
+                <td>${inv.getClinicName()}</td>
+                <td>${inv.getProvinceName()}</td>
+                <td>${inv.getStatus()}</td>
                 <td>${inv.getInvoiceDate()}</td>
                 <td>${inv.getPaymentDueDate()}</td>
+                <td>${inv.getDatePaid()}</td>
                 <td><a href="Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID=<c:out value="${inv.getInvoiceID()}"/>">Edit Invoice</a></td>
             </tr>
         </c:forEach>
         </table>
         
 
-
-        
-            <a href="homePage.jsp">Return to Home</a>
-            <br><br>
-            <a href="Servlets.logoutServlet">logout</a>
+        <br><br>
+        <a href="province.get?whatFor=conditionsInvoice">Custom View Invoice</a>
+        <br><br>
+        <a href="homePage.jsp">Return to Home</a>
+        <br><br>
+        <a href="Servlets.logoutServlet">logout</a>
         
     </body>
 </html>

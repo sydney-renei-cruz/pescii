@@ -97,7 +97,7 @@ public class editClinicServlet extends HttpServlet {
          
          //---------------
          
-         String preparedSQL = "update Clinic set clinicAddress=?, clinicPhoneNumber=?, clinicName=? where clinicID=?";
+         String preparedSQL = "update Clinic set clinicAddress=?, clinicPhoneNumber=?, clinicName=?, provinceID=? where clinicID=?";
          String inputClinID = request.getParameter("clinID");
          PreparedStatement ps;
 
@@ -105,12 +105,14 @@ public class editClinicServlet extends HttpServlet {
         String newClinicAddress = request.getParameter("clinicAddressInput");
         String newClinicPhoneNumber = request.getParameter("clinicPhoneNumberInput");
         String newClinicName = request.getParameter("clinicNameInput");
+        String provinceID = request.getParameter("chosenProvince");
 
         ps = conn.prepareStatement(preparedSQL);
         ps.setString(1,newClinicAddress);
         ps.setString(2,newClinicPhoneNumber);
         ps.setString(3,newClinicName);
         ps.setString(4,inputClinID);
+        ps.setString(5,provinceID);
 
         ps.executeUpdate();
 

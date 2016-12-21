@@ -5,7 +5,7 @@
  */
 package Servlets;
 
-import Beans.clinicBean;
+import Beans.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -14,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -67,7 +68,10 @@ public class getClinicServlet extends HttpServlet {
          
          //---------------
          
-         String preparedSQL = "select Clinic.clinicID, Customer.PRCID, Clinic.clinicAddress, Clinic.clinicPhoneNumber, Clinic.clinicName from Clinic inner join Customer on Customer.customerID = Clinic.customerID and clinicID=?";
+         String preparedSQL = "select Clinic.clinicID, Customer.PRCID, Clinic.clinicAddress, Clinic.clinicPhoneNumber, Clinic.clinicName, "
+                 + "Province.provinceName, Province.provinceDivision from Clinic "
+                 + "inner join Customer on Customer.customerID = Clinic.customerID "
+                 + "inner join Province on Province.provinceID = Clinic.provinceID and clinicID=?";
          String inputClinID = request.getParameter("clinID");
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          ps.setString(1, inputClinID);
@@ -80,9 +84,27 @@ public class getClinicServlet extends HttpServlet {
            cbean.setClinicAddress(dbData.getString("clinicAddress"));
            cbean.setClinicPhoneNumber(dbData.getString("clinicPhoneNumber"));
            cbean.setClinicName(dbData.getString("clinicName"));
+           cbean.setProvinceName(dbData.getString("provinceName"));
+           cbean.setProvinceDivision(dbData.getString("provinceDivision"));
          }
          request.setAttribute("clinic", cbean);
-
+         
+         preparedSQL = "select * from Province order by provinceName asc";
+         ps = conn.prepareStatement(preparedSQL);
+         
+         dbData = ps.executeQuery();
+         ArrayList<provinceBean> provincesRetrieved = new ArrayList<provinceBean>();
+         //retrieve the information.
+            while(dbData.next()){
+               provinceBean provBean = new provinceBean();
+               provBean.setProvinceID(dbData.getInt("provinceID"));
+               provBean.setProvinceName(dbData.getString("provinceName"));
+               provBean.setProvinceDivision(dbData.getString("provinceDivision"));
+               provincesRetrieved.add(provBean);
+            }
+            context.log("province list size is: "+provincesRetrieved.size());
+         request.setAttribute("provList", provincesRetrieved);
+         
          request.getRequestDispatcher("editClinic.jsp").forward(request,response);
 
         }

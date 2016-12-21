@@ -82,6 +82,16 @@ public class getNewEntryServlet extends HttpServlet {
          String interval = " between date_sub(now(),interval 1 week) and now()";
          String status = "";
          String orderBy = "";
+         String condition = "";
+         String compound = "";
+         String province = "";
+         
+         //this is for the search by name
+         String searchName = "";
+         
+         //this is for the search by date
+         String searchDateFrom = ""+request.getParameter("fromDate");
+         String searchDateTo = ""+request.getParameter("toDate");
          
          ResultSet dbData;
          
@@ -89,7 +99,7 @@ public class getNewEntryServlet extends HttpServlet {
              //this makes the SQL statement for invoices near payment deadlines
                 //that is, those with payment deadlines within 7 days ahead of the current day
              if(getWhat.equals("close")){
-                 forWhere="paymentDueDate";
+                 forWhere = "paymentDueDate";
                  interval = " between now() and date_add(now(), interval 7 day)";
                  status = " and status='In Progress' and datePaid = null";
                  orderBy = " order by paymentDueDate asc";
@@ -97,12 +107,79 @@ public class getNewEntryServlet extends HttpServlet {
              //this sets up the SQL statement for invoices validated, regardless of date
                 //remember: a validated invoice is that which is paid for but not delivered yet
              else if(getWhat.equals("validated")){
-                 forWhere="datePaid";
+                 forWhere = "datePaid";
                  status = " and status='In Progress'";
                  interval = "";
                  orderBy = " order by deliveryDate asc";
              }
-             preparedSQL = "select * from Invoice where "+forWhere+ interval + status + orderBy;
+             
+             //this is for searching with compound conditions
+             else if(getWhat.equals("customSearch")){
+                 
+                 interval="";
+                 forWhere="";
+                 //name field
+                 if(!(request.getParameter("searchNameInput").equals(""))){
+                     condition = condition + "Invoice.invoiceName like '%"+request.getParameter("searchNameInput")+"%'";
+                     compound = "";
+                 }
+                 //supplier field
+                 if(!(request.getParameter("searchStatusInput").equals(""))){
+                     if(!(condition.equals(""))){
+                         compound=" and";
+                         if(!(request.getParameter("searchStatusInput").equals("All"))){
+                            condition = condition + compound + " Invoice.status = '"+request.getParameter("searchStatusInput")+"'";
+                         }
+                         compound="";
+                     }
+                 }
+                 //province field
+                 if(!request.getParameter("searchProvinceInput").equals("")){
+                     if(!(condition.equals(""))){
+                         compound=" and";
+                     }
+                     if(!(request.getParameter("searchProvinceInput").equals("all"))){
+                        condition = condition + compound + " Province.provinceID = '"+request.getParameter("searchProvinceInput")+"'";
+                     }
+                     compound="";
+                 }
+                 //date fields
+                 /*can be:
+                    invoiceDate
+                    deliveryDate
+                    paymentDueDate
+                    datePaid
+                    dateClosed
+                    dateCreated
+                 */
+                 if(!(request.getParameter("searchDateInput").equals(""))){
+                     if(!(searchDateFrom.equals(""))){
+                        if(!(condition.equals(""))){
+                            compound=" and ";
+                        }
+                        interval = " between '" + searchDateFrom + "' and '" + searchDateTo + "'";
+                        condition = condition + compound + request.getParameter("searchDateInput");
+                        compound="";
+                    }
+                 }
+                 forWhere="";
+                 searchName="";
+                 orderBy = " order by Invoice.invoiceName";
+             }
+             
+             
+             //preparedSQL = "select * from Invoice where " + forWhere + searchName + interval + status + orderBy;
+             preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, Customer.customerFirstName, "
+                 + "Customer.customerLastName, Invoice.clinicID, Invoice.invoiceDate, Clinic.clinicName, "
+                 + "Invoice.deliveryDate, Invoice.additionalAccessories, Invoice.termsOfPayment, "
+                 + "Invoice.paymentDueDate, Invoice.datePaid, Invoice.dateClosed, Invoice.status, "
+                 + "Invoice.overdueFee, Clinic.provinceID, Province.provinceName, Province.provinceDivision from Invoice "
+                 + "inner join Customer on Customer.customerID = Invoice.customerID "
+                 + "inner join Clinic on Clinic.clinicID = Invoice.clinicID "
+                 + "inner join Province on Province.provinceID = Clinic.provinceID "
+                 + "where " + condition + forWhere + searchName + interval + status + orderBy;
+             
+             context.log(preparedSQL);
              ps = conn.prepareStatement(preparedSQL);
              dbData = ps.executeQuery();
              ArrayList<invoiceBean> invoicesRetrieved = new ArrayList<invoiceBean>();
@@ -111,8 +188,10 @@ public class getNewEntryServlet extends HttpServlet {
                  invoiceBean ibean = new invoiceBean();
                  ibean.setInvoiceID(dbData.getInt("invoiceID"));
                  ibean.setInvoiceName(dbData.getString("invoiceName"));
-                 ibean.setPRCID(dbData.getString("customerID"));
+                 ibean.setPRCID(dbData.getString("PRCID"));
+                 ibean.setCustomerName(dbData.getString("customerLastName")+", "+dbData.getString("customerFirstName"));
                  ibean.setClinicID(dbData.getInt("clinicID"));
+                 ibean.setClinicName(dbData.getString("clinicName"));
                  ibean.setInvoiceDate(dbData.getDate("invoiceDate"));
                  ibean.setDeliveryDate(dbData.getDate("deliveryDate"));
                  ibean.setAdditionalAccessories(dbData.getString("additionalAccessories"));
@@ -132,7 +211,7 @@ public class getNewEntryServlet extends HttpServlet {
                  return;
          }
          
-         //this part is for when a Customer is being searched
+         //this part is for when a Customer is being searched. Currently not implemented
          else if(whatFor.equals("customer")){
              preparedSQL = "select Customer.PRCID, Customer.customerFirstName, Customer.customerLastName, Customer.customerMobileNumber, "
                      + "Customer.customerTelephoneNumber, SalesRep.salesRepFirstName, SalesRep.salesRepLastName, Customer.customerID, "
@@ -165,23 +244,53 @@ public class getNewEntryServlet extends HttpServlet {
          
          //this part is for when a Product is being searched
          else if(whatFor.equals("product")){
-             String[] inputProductClass = request.getParameterValues("productClassInput");
-             String productClasses = "(productClass = ";
-             for(int i=0;i<inputProductClass.length;i++){
-                 if(i==0){productClasses=productClasses+"'"+inputProductClass[i]+"'";}
-                 else{productClasses=productClasses+" or productClass = '"+inputProductClass[i]+"'";}
-             }
-             productClasses=productClasses+")";
              
-             String inputLowStock = "" + request.getParameter("lowStockInput");
-             String inputStocks = "";
-             if(inputLowStock.equals("yes")){inputStocks="and stocksRemaining <= lowStock";}
-             else if(inputLowStock.equals("no")){inputStocks="and stocksRemaining >lowStock";}
-             /*
-             if(getWhat.equals("lowStock")){preparedSQL = "select * from Product where stocksRemaining <= lowStock";}
-             else if(getWhat.equals("rawMaterials")){preparedSQL = "select * from Product where productClass = Raw Material";}
-             */
-             preparedSQL = "select * from Product where " + productClasses + inputStocks + " order by productName asc";
+             //name field
+                 if(!(request.getParameter("searchNameInput").equals(""))){
+                     condition = condition + "productName like '%"+request.getParameter("searchNameInput")+"%'";
+                     compound = "";
+                 }
+             //supplier field
+                 if(!(request.getParameter("searchBrandInput").equals(""))){
+                     if(!(condition.equals(""))){
+                         compound=" and";
+                     }
+                     condition = condition + compound + " brand like '%"+request.getParameter("searchBrandInput")+"%'";
+                     compound="";
+                 }
+             
+             //productClass field
+             
+             String[] inputProductClass = request.getParameterValues("productClassInput");
+             String productClasses="";
+             if(inputProductClass!=null){
+                 if(!(condition.equals(""))){
+                     compound=" and ";
+                 }
+                productClasses = "(productClass = ";
+                for(int i=0;i<inputProductClass.length;i++){
+                    if(i==0){productClasses=productClasses+"'"+inputProductClass[i]+"'";}
+                    else{productClasses=productClasses+" or productClass = '"+inputProductClass[i]+"'";}
+                }
+                condition = condition + compound + productClasses+")";
+                compound="";
+             }
+             //lowStock field
+             //String lowStockInput = "" + request.getParameter("lowStockInput");
+             //context.log(lowStockInput);
+             //if(!(lowStockInput.equals("")) || lowStockInput!=null || !(lowStockInput.equals("null"))){
+             if(request.getParameter("lowStockInput")!=null){
+                if(!(condition.equals(""))){
+                    compound=" and";
+                }
+                String inputLowStock = "" + request.getParameter("lowStockInput");
+                String inputStocks = "";
+                if(inputLowStock.equals("yes")){inputStocks=" stocksRemaining <= lowStock";}
+                else if(inputLowStock.equals("no")){inputStocks=" stocksRemaining >lowStock";}
+                condition = condition + compound + inputStocks;
+                compound="";
+             }
+             preparedSQL = "select * from Product where " + condition + " order by productName asc";
              context.log(preparedSQL);
              ps = conn.prepareStatement(preparedSQL);
              dbData = ps.executeQuery();
@@ -209,18 +318,72 @@ public class getNewEntryServlet extends HttpServlet {
           
          //this part is for when an RO is being searched
          else if(whatFor.equals("restockOrder")){
+            //this is for getting ROs with near delivery dates
             if(getWhat.equals("close")){
                 forWhere="RODateDue";
                 interval=" between now() and date_add(now(), interval 7 day) and RODateDelivered = null";
                 orderBy = " order by RODateDue asc";
             }
-            else if(getWhat.equals("completed")){forWhere="RODateDelivered"; orderBy = " order by RODateDelivered";}
+            //this is for getting completed ROs
+            else if(getWhat.equals("completed")){
+                forWhere="RODateDelivered";
+                orderBy = " order by RODateDelivered";
+            }
+            //this is for searching with compound conditions
+             else if(getWhat.equals("customSearch")){
+                 
+                 interval="";
+                 forWhere="";
+                 //name field
+                 if(!(request.getParameter("searchNameInput").equals(""))){
+                     condition = condition + "RestockOrder.ROName like '%"+request.getParameter("searchNameInput")+"%'";
+                     compound = "";
+                 }
+                 //supplier field
+                 if(!(request.getParameter("searchSupplierInput").equals(""))){
+                     if(!(condition.equals(""))){
+                         compound=" and";
+                     }
+                     condition = condition + compound + " RestockOrder.supplier like '%"+request.getParameter("searchSupplierInput")+"%'";
+                     compound="";
+                 }
+                 //productName field
+                 if(!request.getParameter("searchProductNameInput").equals("")){
+                     if(!(condition.equals(""))){
+                         compound=" and";
+                     }
+                     condition = condition + compound + " Product.productName like '%"+request.getParameter("searchProductNameInput")+"%'";
+                     compound="";
+                 }
+                 //date fields (can be expected date delivered, date created, or date received
+                 if(!(request.getParameter("searchDateInput").equals(""))){
+                     if(!(searchDateFrom.equals(""))){
+                        if(!(condition.equals(""))){
+                            compound=" and ";
+                        }
+                        interval = " between '" + searchDateFrom + "' and '" + searchDateTo + "'";
+                        condition = condition + compound + request.getParameter("searchDateInput");
+                        compound="";
+                    }
+                 }
+                 forWhere="";
+                 searchName="";
+                 orderBy = " order by ROName";
+             }
+             /*
+             //this is for searching by date
+             else if(getWhat.equals("date")){
+                 forWhere=""+request.getParameter("forWhere");
+                 interval = " between '"+searchDateFrom+"' and '"+searchDateTo+"'"; 
+             }
+            */
             preparedSQL = "Select RestockOrder.restockOrderID, Product.productID, Product.productName, RestockOrder.numberOfPiecesOrdered, "
                     + "RestockOrder.numberOfPiecesReceived, RestockOrder.supplier, RestockOrder.purpose, RestockOrder.RODateDue, "
                     + "RestockOrder.RODateDelivered, RestockOrder.ROName "
                     + "from RestockOrder "
                     + "inner join Product on Product.productID = RestockOrder.productID "
-                    + "where RestockOrder." + forWhere + interval + orderBy;
+                    + "where " + condition + forWhere + searchName + interval + orderBy;
+            context.log(preparedSQL);
             ps = conn.prepareStatement(preparedSQL);
             dbData = ps.executeQuery();
             ArrayList<restockOrderBean> restocksRetrieved = new ArrayList<restockOrderBean>();

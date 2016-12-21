@@ -51,6 +51,8 @@
         
         
         <br><br>
+        <a href="conditionsRestockOrder.jsp">Custom View RO</a>
+        <br><br>
         <a href="homePage.jsp">Return to Home</a>
         <br><br>
         <a href="Servlets.logoutServlet">logout</a>

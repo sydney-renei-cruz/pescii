@@ -96,8 +96,10 @@ public class viewCustomerDetailsServlet extends HttpServlet {
          
          //now get the clinic/s
          preparedSQL = "select Clinic.clinicID, Customer.PRCID, Clinic.clinicAddress, "
-                 + "Clinic.clinicPhoneNumber, Clinic.clinicName from Clinic "
+                 + "Clinic.clinicPhoneNumber, Clinic.clinicName, Clinic.provinceID, Province.provinceName, "
+                 + "Province.provinceDivision from Clinic "
                  + "inner join Customer on Customer.customerID = Clinic.customerID "
+                 + "inner join Province on Province.provinceID = Clinic.provinceID "
                  + "where Clinic.customerID = ?";
          ps = conn.prepareStatement(preparedSQL);
          ps.setInt(1,inputCustomerID);
@@ -111,6 +113,8 @@ public class viewCustomerDetailsServlet extends HttpServlet {
                 clinbean.setClinicAddress(dbData.getString("clinicAddress"));
                 clinbean.setClinicPhoneNumber(dbData.getString("clinicPhoneNumber"));
                 clinbean.setClinicName(dbData.getString("clinicName"));
+                clinbean.setProvinceName(dbData.getString("provinceName"));
+                clinbean.setProvinceDivision(dbData.getString("provinceDivision"));
                 clinicsRetrieved.add(clinbean);
             }
             
@@ -121,9 +125,11 @@ public class viewCustomerDetailsServlet extends HttpServlet {
          preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, Invoice.clinicID, Invoice.invoiceDate, "
                  + "Invoice.deliveryDate, Invoice.additionalAccessories, Invoice.termsOfPayment, "
                  + "Invoice.paymentDueDate, Invoice.datePaid, Invoice.dateClosed, Invoice.status, "
-                 + "Invoice.overdueFee from Invoice "
+                 + "Invoice.overdueFee, Clinic.clinicName from Invoice "
                  + "inner join Customer on Customer.customerID = Invoice.customerID "
+                 + "inner join Clinic on Clinic.clinicID = Invoice.clinicID "
                  + "where Invoice.customerID = ?";
+         context.log(preparedSQL);
          ps = conn.prepareStatement(preparedSQL);
          ps.setInt(1,inputCustomerID);
          
@@ -136,6 +142,7 @@ public class viewCustomerDetailsServlet extends HttpServlet {
              invBean.setInvoiceName(dbData.getString("invoiceName"));
              invBean.setPRCID(dbData.getString("PRCID"));
              invBean.setClinicID(dbData.getInt("clinicID"));
+             invBean.setClinicName(dbData.getString("clinicName"));
              invBean.setInvoiceDate(dbData.getDate("invoiceDate"));
              invBean.setDeliveryDate(dbData.getDate("deliveryDate"));
              invBean.setAdditionalAccessories(dbData.getString("additionalAccessories"));

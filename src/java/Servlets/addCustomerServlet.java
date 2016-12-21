@@ -98,7 +98,7 @@ public class addCustomerServlet extends HttpServlet {
          //THIS IS WHERE YOU START CHANGING
          
          String preparedSQL = "insert into Customer(PRCID, customerFirstName, customerMobileNumber, customerTelephoneNumber, salesRepID, customerLastName) values(?,?,?,?,?,?)";
-         String preparedSQL2 = "insert into Clinic(customerID, clinicAddress, clinicPhoneNumber, clinicName) values(?,?,?,?)";
+         String preparedSQL2 = "insert into Clinic(customerID, clinicAddress, clinicPhoneNumber, clinicName, provinceID) values(?,?,?,?,?)";
          
          //you don't change this
          PreparedStatement ps = conn.prepareStatement(preparedSQL, Statement.RETURN_GENERATED_KEYS);
@@ -122,6 +122,7 @@ public class addCustomerServlet extends HttpServlet {
          String inputClinicAddress = request.getParameter("clinicAddressInput");
          String inputClinPhoneNum = request.getParameter("clinicPhoneNumInput");
          String inputClinicName = request.getParameter("clinicNameInput");
+         String inputProvinceID = request.getParameter("chosenProvince");
          int customerID;
          try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
             if (generatedKeys.next()) {
@@ -131,6 +132,7 @@ public class addCustomerServlet extends HttpServlet {
                 ps2.setString(2, inputClinicAddress);
                 ps2.setString(3, inputClinPhoneNum);
                 ps2.setString(4, inputClinicName);
+                ps.setString(5, inputProvinceID);
                 ps2.executeUpdate();
                 
             }
@@ -145,9 +147,9 @@ public class addCustomerServlet extends HttpServlet {
             
          
         }
-        catch(SQLException ex){
+        catch(Exception ex){
             ex.printStackTrace();
-            out.println("SQL error: " + ex);
+            out.println("error: " + ex);
         }
         finally {
             out.close();  // Close the output writer

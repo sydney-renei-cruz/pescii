@@ -92,6 +92,14 @@
         <servlet-class>Servlets.getSalesRepServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>getProvinceServlet</servlet-name>
+        <servlet-class>Servlets.getProvinceServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>getAccountTypeStatus</servlet-name>
+        <servlet-class>Servlets.getAccountTypeStatus</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>viewCustomerDetailsServlet</servlet-name>
         <servlet-class>Servlets.viewCustomerDetailsServlet</servlet-class>
     </servlet>
@@ -217,6 +225,14 @@
     <servlet-mapping>
         <servlet-name>getSalesRepServlet</servlet-name>
         <url-pattern>/salesrep.get</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getProvinceServlet</servlet-name>
+        <url-pattern>/province.get</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getAccountTypeStatus</servlet-name>
+        <url-pattern>/account.getTypeStatus</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>viewCustomerDetailsServlet</servlet-name>

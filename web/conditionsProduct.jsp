@@ -18,6 +18,10 @@
         
         <form action="new.get">
             <input type="hidden" name="whatFor" value="product">
+            Search by Name:<input type="text" name="searchNameInput">
+            <br><br>
+            Search by Brand:<input type="text" name="searchBrandInput">
+            <br><br>
             Product Class:<br>
                 <input type="checkbox" name="productClassInput" value="Dental Unit">Dental Units<br>
                 <input type="checkbox" name="productClassInput" value="Impression Material">Impression Materials<br>
@@ -26,7 +30,7 @@
             Low Stock:<br>
                 <input type="radio" name="lowStockInput" value="yes">Yes<br>
                 <input type="radio" name="lowStockInput" value="no">No<br>
-                <input type="radio" name="lowStockInput" value="cancel">Cancel<br>
+                <input type="radio" name="lowStockInput" value="cancel">Both<br>
                 <br>
             <input type="submit" value="Get">    
         </form>

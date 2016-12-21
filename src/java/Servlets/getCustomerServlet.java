@@ -95,9 +95,11 @@ public class getCustomerServlet extends HttpServlet {
             if(session.getAttribute("cart")!=null){
                 request.setAttribute("addInvoice", "yes");
             }
+            
+            //this is for when the user will add a customer
+                //its for filling in that dropdown list
             if((""+request.getParameter("forAdd")).equals("yes")){
                 preparedSQL = "select * from SalesRep sort by salesRepLastName asc";
-         
                 ps = conn.prepareStatement(preparedSQL);
 
                 dbData = ps.executeQuery();
@@ -111,6 +113,24 @@ public class getCustomerServlet extends HttpServlet {
                        salesRepsRetrieved.add(data);
                    }
                 request.setAttribute("salesRepList", salesRepsRetrieved);
+                
+                
+                preparedSQL = "select * from Province sort by provinceName asc";
+                ps = conn.prepareStatement(preparedSQL);
+
+                dbData = ps.executeQuery();
+                ArrayList<provinceBean> provsRetrieved = new ArrayList<provinceBean>();
+                //retrieve the information.
+                   while(dbData.next()){
+                       provinceBean data = new provinceBean();
+                       data.setProvinceID(dbData.getInt("provinceID"));
+                       data.setProvinceName(dbData.getString("provinceName"));
+                       data.setProvinceDivision(dbData.getString("provinceDivision"));
+                       provsRetrieved.add(data);
+                   }
+                request.setAttribute("provList", provsRetrieved);
+                
+                
                 request.getRequestDispatcher("addCustomer.jsp").forward(request,response);
             }
             else{

@@ -96,7 +96,7 @@ public class addClinicServlet extends HttpServlet {
          //---------------
          //THIS IS WHERE YOU START CHANGING
          
-         String preparedSQL = "insert into Clinic(customerID, clinicAddress, clinicPhoneNumber, clinicName) values(?,?,?,?)";
+         String preparedSQL = "insert into Clinic(customerID, clinicAddress, clinicPhoneNumber, clinicName, provinceID) values(?,?,?,?,?)";
          
          //you don't change this
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
@@ -105,11 +105,13 @@ public class addClinicServlet extends HttpServlet {
          String inputClinicAddress = request.getParameter("clinicAddressInput");
          String inputClinPhoneNum = request.getParameter("clinicPhoneNumInput");
          String inputClinicName = request.getParameter("clinicNameInput");
+         String provinceID = request.getParameter("chosenProvince");
          
-         ps.setInt(1, inputCustomerID);
-         ps.setString(2, inputClinicAddress);
-         ps.setString(3, inputClinPhoneNum);
-         ps.setString(4, inputClinicName);
+         ps.setInt(1,inputCustomerID);
+         ps.setString(2,inputClinicAddress);
+         ps.setString(3,inputClinPhoneNum);
+         ps.setString(4,inputClinicName);
+         ps.setString(5,provinceID);
          ps.executeUpdate();
          
          

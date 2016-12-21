@@ -72,11 +72,12 @@
         
         <c:if test="${forInvoice eq 'yes'}">
             <br><br>
-            <a href="viewCart.jsp">View Cart</a> to add your invoice.<br>
-            <a href="invoice.add?cancel=yes">Cancel Invoice</a><br>
-            
+            <a href="viewCart.jsp">View Cart</a> to add your invoice.<br><br>
+            <a href="invoice.add?cancel=yes">Cancel Invoice</a><br><br>
         </c:if>
         
+        <br><br>
+        <a href="conditionsProduct.jsp">Custom View Product</a>
         <br><br>
         <a href="homePage.jsp">Return to Home</a>
         <br><br>

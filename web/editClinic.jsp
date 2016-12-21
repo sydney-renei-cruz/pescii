@@ -1,6 +1,6 @@
 <%-- 
     Document   : editClinic
-    Created on : 09 12, 16, 1:52:08 PM
+    Created on : 12 4, 16, 5:24:53 PM
     Author     : user
 --%>
 
@@ -9,6 +9,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
     clinicBean clinic = (clinicBean)request.getAttribute("clinic");
+    ArrayList<provinceBean> provList = (ArrayList<provinceBean>)request.getAttribute("provList");
 %>
 <!DOCTYPE html>
 <html>
@@ -25,7 +26,13 @@
                 Clinic Name: <input type="text" value="${clinic.getClinicName()}" name="clinicNameInput"><br>
                 Clinic Address: <input type="text" value="${clinic.getClinicAddress()}" name="clinicAddressInput"><br>
                 Clinic Phone Number: <input type="text" value="${clinic.getClinicPhoneNumber()}" name="clinicPhoneNumberInput"><br>
-                
+                <b>Province</b><br>
+                From: ${clinic.getProvinceName()}<br>
+                To:<select name="chosenProvince">
+                    <c:forEach items="${provList}" var="pro" begin="0" step="1">
+                        <option value="${pro.getProvinceID()}">${pro.getProvinceName()}</option>
+                    </c:forEach>
+                </select><br><br>
                 <br><input type="submit" value="Save Changes">
                 
         </form>

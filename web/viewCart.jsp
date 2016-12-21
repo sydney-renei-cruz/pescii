@@ -51,6 +51,8 @@
 
 
         <br><br>
+        <a href="viewCart.jsp">View Cart</a> to add your invoice.<br><br>
+        <a href="invoice.add?cancel=yes">Cancel Invoice</a><br><br>
         <a href="Servlets.getProductServlet?forInvoice=yes">Return to Products List</a>
         <br><br>
         <a href="homePage.jsp">Return to Home</a>

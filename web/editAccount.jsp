@@ -9,6 +9,8 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
     accountBean account = (accountBean)request.getAttribute("account");
+    ArrayList<accountStatusBean> accountStatusList = (ArrayList<accountStatusBean>)request.getAttribute("accountStatusesList");
+    ArrayList<accountTypeBean> accountTypes = (ArrayList<accountTypeBean>)request.getAttribute("atypeList");
 %>
 <!DOCTYPE html>
 <html>
@@ -21,32 +23,25 @@
         
         <form action="account.edit" method="post">
             Account ID: <input type="hidden" value="${account.getAccountID()}" name="accountIDInput"><br>
-            <%=account.getPassword()%>
             <input type="hidden" value="${account.getPassword()}" name="oldPassword">
             Password: <input type="password" name="newPasswordInput"><br>
             Enter password again:<input type="password" name="newPasswordInput2"><br>
-            User Name: <input type="text" value="${account.getUserName()}" name="userNameInput"><br>
-            Account Type:<br>
-            From: <c:if test="${account.getAccountType() == '1'}">CEO<br></c:if>
-                  <c:if test="${account.getAccountType() == '2'}">Secretary<br></c:if>
-                  <c:if test="${account.getAccountType() == '3'}">Accountant<br></c:if>
-                  <c:if test="${account.getAccountType() == '4'}">Inventory Manager<br></c:if>
-                  <c:if test="${account.getAccountType() == '5'}">Auditor<br></c:if>
+            User Name: <input type="text" value="${account.getUserName()}" name="userNameInput"><br><br>
+            <b>Account Type</b><br>
+            From:${account.getAccountType()}<br>
             To:
             <select name="accountTypeInput">
-                <option value="3">Accountant</option>
-                <option value="5">Auditor</option>
-                <option value="1">CEO</option>
-                <option value="4">Inventory Manager</option>
-                <option value="2">Secretary</option>
-            </select><br>
-            Account Status:<br>
-            From: <c:if test="${account.getAccountStatus() == '1'}">Activated<br></c:if>
-                  <c:if test="${account.getAccountStatus() == '2'}">Deactivated<br></c:if>
+                <c:forEach items="<%=accountTypes%>" var="atype" begin="0" step="1">
+                        <option value="${atype.getAccountTypeID()}">${atype.getAccountTypeName()}</option>
+                </c:forEach>    
+            </select><br><br>
+            <b>Account Status</b><br>
+            From: ${account.getAccountStatus()}<br>
             To:
             <select name="accountStatusInput">
-                <option value="1">Activated</option>
-                <option value="2">Deactivated</option>
+                <c:forEach items="<%=accountStatusList%>" var="astat" begin="0" step="1">
+                        <option value="${astat.getAccountStatusID()}">${astat.getAccountStatusName()}</option>
+                </c:forEach>    
             </select><br>
             
             

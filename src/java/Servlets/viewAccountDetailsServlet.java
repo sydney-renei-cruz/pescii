@@ -69,7 +69,13 @@ public class viewAccountDetailsServlet extends HttpServlet {
          
          //---------------
          //first get the customer details
-         String preparedSQL = "select * from Account where accountID = ?";
+         String preparedSQL = "select Account.accountID, Account.userName, Account.password, "
+                 + "Account.accountStatus, Account.accountType, "
+                 + "AccountStatus.accountStatusID, AccountStatus.accountStatusName, "
+                 + "AccountType.accountTypeID, AccountType.accountTypeName from Account "
+                 + "inner join AccountStatus on AccountStatus.accountStatusID=Account.accountStatus "
+                 + "inner join AccountType on AccountType.accountTypeID=Account.accountType "
+                 + "where Account.accountID = ?";
          String inputAccountID = request.getParameter("accID");
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          ps.setString(1, inputAccountID);
@@ -81,12 +87,12 @@ public class viewAccountDetailsServlet extends HttpServlet {
          abean.setAccountID(dbData.getInt("accountID"));
          abean.setUserName(dbData.getString("userName"));
          abean.setPassword(dbData.getString("password"));
-         abean.setAccountStatus(dbData.getString("accountStatus"));
-         abean.setAccountType(dbData.getString("accountType"));
+         abean.setAccountStatus(dbData.getString("accountStatusName"));
+         abean.setAccountType(dbData.getString("accountTypeName"));
          }
          request.setAttribute("account", abean);
          
-         request.getRequestDispatcher("editAccount.jsp").forward(request,response);
+         request.getRequestDispatcher("account.getTypeStatus").forward(request,response);
          
         }
         catch(Exception ex){

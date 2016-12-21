@@ -4,7 +4,12 @@
     Author     : user
 --%>
 
+<%@page import="Beans.*,java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%
+    ArrayList<provinceBean> provList = (ArrayList<provinceBean>)request.getAttribute("provList");
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -17,16 +22,54 @@
         
         <h4>Set the conditions of your search</h4>
         
+        <p><b>Search</b></p>
+        <form action="new.get">
+            <input type="hidden" name="getWhat" value="customSearch">
+            <input type="hidden" name="whatFor" value="invoice">
+            Search by Name:<input type="text" name="searchNameInput">
+            <br><br>
+            Search by Status:<select name="searchStatusInput">
+                    <option value="All">All</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Cancelled">Cancelled</option>
+                    
+            </select>
+            <br><br>
+            Search by Province:<select name="searchProvinceInput">
+                    <option value="all">All</option>
+                    <c:forEach items="${provList}" var="pro" begin="0" step="1">
+                        <option value="${pro.getProvinceID()}">${pro.getProvinceName()}</option>
+                    </c:forEach>    
+                </select><br><br>
+            Search by Date:<select name="searchDateInput">
+                    <option value="Invoice.invoiceDate">Invoice Date</option>
+                    <option value="Invoice.deliveryDate">Delivery Date</option>
+                    <option value="Invoice.paymentDueDate">Payment Deadline</option>
+                    <option value="Invoice.datePaid">Date Paid</option>
+                    <option value="Invoice.dateClosed">Close Date</option>
+                    <option value="Invoice.dateCreated">Date Created</option>
+            </select>
+            <br><br>
+            From:<input type="text" name="fromDate"><br>
+            To:<input type="text" name="toDate"><br><br>
+            
+            <input type="submit" value="Search"><br><br><br>
+        </form>
+        
+        
         <form action="new.get">
             <input type="hidden" name="whatFor" value="invoice">
             
-            Conditions:<br>
+            <b>Shortcuts</b><br>
                 <input type="radio" name="getWhat" value="new">New Invoice<br>
                 <input type="radio" name="getWhat" value="validated">Validated Invoices<br>
                 <input type="radio" name="getWhat" value="close">Invoices near payment deadlines<br>
                 <br>
             <input type="submit" value="Get">    
         </form>
+        
+        
         
         
         
