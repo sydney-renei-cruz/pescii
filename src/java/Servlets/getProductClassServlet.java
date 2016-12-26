@@ -5,7 +5,7 @@
  */
 package Servlets;
 
-import Beans.restockOrderBean;
+import Beans.productClassBean;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -21,14 +21,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author user
  */
-@WebServlet(name = "NewServlet", urlPatterns = {"/NewServlet"})
-public class getRestockOrderServlet extends HttpServlet {
+@WebServlet(name = "getProductClassServlet_1", urlPatterns = {"/getProductClassServlet_1"})
+public class getProductClassServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -68,58 +67,43 @@ public class getRestockOrderServlet extends HttpServlet {
          stmt = conn.createStatement();
          
          //---------------
-         //THIS IS WHERE YOU START CHANGING
-         String preparedSQL = "select RestockOrder.restockOrderID, Product.productID, RestockOrder.productID, "
-                 + "RestockOrder.ROName, RestockOrder.numberOfPiecesOrdered, Product.restockPrice, "
-                 + "RestockOrder.numberOfPiecesReceived, Product.supplierID, RestockOrder.purpose, "
-                 + "RestockOrder.RODateDue, RestockOrder.RODateDelivered, RestockOrder.amountPaid, "
-                 + "RestockOrder.discount, RestockOrder.dateCreated, RestockOrder.lastEdittedBy, "
-                 + "RestockOrder.datePaid, Product.productClassID, ProductClass.productClassID, "
-                 + "ProductClass.productClassName, Supplier.supplierID, Supplier.supplierName, "
-                 + "Product.productName "
-                 + "from RestockOrder "
-                 + "inner join Product on Product.productID = RestockOrder.productID "
-                 + "inner join Supplier on Supplier.supplierID = Product.supplierID "
-                 + "inner join ProductClass on ProductClass.productClassID = Product.productClassID "
-                 + "order by RestockOrder.datecreated desc";
-         
+         String preparedSQL = "select * from ProductClass order by productClassName asc";
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
-         context.log(preparedSQL);
-         
          
          ResultSet dbData = ps.executeQuery();
-         ArrayList<restockOrderBean> restocksRetrieved = new ArrayList<restockOrderBean>();
+         ArrayList<productClassBean> productClassesRetrieved = new ArrayList<productClassBean>();
          //retrieve the information.
             while(dbData.next()){
-               restockOrderBean rbean = new restockOrderBean();
-                rbean.setRestockOrderID(dbData.getInt("restockOrderID"));
-                rbean.setRestockOrderName(dbData.getString("ROName"));
-                rbean.setProductID(dbData.getInt("productID"));
-                rbean.setProductName(dbData.getString("productName"));
-                rbean.setNumberOfPiecesOrdered(dbData.getInt("numberOfPiecesOrdered"));
-                rbean.setNumberOfPiecesReceived(dbData.getInt("numberOfPiecesReceived"));
-                rbean.setSupplierID(dbData.getInt("supplierID"));
-                rbean.setSupplierName(dbData.getString("supplierName"));
-                rbean.setPurpose(dbData.getString("purpose"));
-                rbean.setRODateDue(dbData.getDate("RODateDue"));
-                rbean.setRODateDelivered(dbData.getDate("RODateDelivered"));
-                rbean.setRestockPrice(dbData.getFloat("restockPrice"));
-                rbean.setAmountPaid(dbData.getFloat("amountPaid"));
-                rbean.setDiscount(dbData.getFloat("discount"));
-                rbean.setDatePaid(dbData.getDate("datePaid"));
-                rbean.setDateCreated(dbData.getTimestamp("dateCreated"));
-                rbean.setLastEdittedBy(dbData.getString("lastEdittedBy"));
-                restocksRetrieved.add(rbean);
+               productClassBean prodClassBean = new productClassBean();
+               prodClassBean.setProductClassID(dbData.getInt("productClassID"));
+               prodClassBean.setProductClassName(dbData.getString("productClassName"));
+               productClassesRetrieved.add(prodClassBean);
             }
-         request.setAttribute("restocksList", restocksRetrieved);
+         request.setAttribute("prodClassList", productClassesRetrieved);
          
-         request.getRequestDispatcher("getRestockOrder.jsp").forward(request,response);
-            
+         
+         if(request.getParameter("product")!=null){
+             request.setAttribute("product", request.getAttribute("product"));
+             request.getRequestDispatcher("conditionsInvoice.jsp").forward(request,response);
+         }
+         else if((""+request.getParameter("addSupp")).equals("yes")){
+             context.log("MADE IT TO SUPPPPP!!!");
+             request.getRequestDispatcher("addSupplier.jsp").forward(request,response);
+         }
+         else{
+             if((""+request.getAttribute("forEdit")).equals("yes")){
+                 request.setAttribute("product", request.getAttribute("product"));
+                 request.setAttribute("forEdit", "yes");
+                 context.log("getProductClass for EDIT!!!!!");
+             }
+            request.getRequestDispatcher("supplier.get").forward(request,response);
+        }
+         
          
         }
         catch(Exception ex){
             ex.printStackTrace();
-            out.println("error: " + ex);
+            out.println("SQL error: " + ex);
         }
         finally {
             out.close();  // Close the output writer

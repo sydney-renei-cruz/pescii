@@ -21,10 +21,12 @@
             Enter RO Name: <input type="text" name="RONameInput"><br>
             Product ID: <%=pbean.getProductID()%><input type="hidden" value="<%=pbean.getProductID()%>" name="pid"><br>
             Product Name: <%=pbean.getProductName()%><br>
+            Supplier: <%=pbean.getSupplierName()%><input type="hidden" value="<%=pbean.getSupplierID()%>" name="supplierIDInput"><br>
             Enter Quantity Ordered:<input type="text" name="piecesOrderedInput"><br>
             Enter Purpose:<input type="text" name="purposeInput"><br>
             Enter Date Due:<input type="text" name="dateDueInput"><br>
-            Enter Supplier:<input type="text" name="supplierInput"><br>
+            Enter discount:<input type="text" name="discountInput"><br>
+            <!--Enter Supplier:<input type="text" name="supplierInput"><br>-->
             <input type="Submit" value="Create Restock Order">
         </form>
         

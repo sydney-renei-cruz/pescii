@@ -74,9 +74,6 @@ public class getNewEntryServlet extends HttpServlet {
          String preparedSQL = "";
          PreparedStatement ps;
          String whatFor = ""+request.getParameter("whatFor");
-         //String forClose = ""+request.getParameter("close");
-         //String forValidated = ""+request.getParameter("validated");
-         //String forCompleted = ""+request.getParameter("completed");
          String getWhat = ""+request.getParameter("getWhat");
          String forWhere = "dateCreated";   //by default, it'll look for new entries. This'll be changed later
          String interval = " between date_sub(now(),interval 1 week) and now()";
@@ -99,18 +96,18 @@ public class getNewEntryServlet extends HttpServlet {
              //this makes the SQL statement for invoices near payment deadlines
                 //that is, those with payment deadlines within 7 days ahead of the current day
              if(getWhat.equals("close")){
-                 forWhere = "paymentDueDate";
+                 forWhere = "Invoice.paymentDueDate";
                  interval = " between now() and date_add(now(), interval 7 day)";
-                 status = " and status='In Progress' and datePaid = null";
-                 orderBy = " order by paymentDueDate asc";
+                 status = " and InvoiceStatus.statusName='In Progress' and Invoice.datePaid = null";
+                 orderBy = " order by Invoice.paymentDueDate asc";
              }
              //this sets up the SQL statement for invoices validated, regardless of date
                 //remember: a validated invoice is that which is paid for but not delivered yet
              else if(getWhat.equals("validated")){
-                 forWhere = "datePaid";
-                 status = " and status='In Progress'";
+                 forWhere = "Invoice.datePaid";
+                 status = " and InvoiceStatus.statusName='In Progress'";
                  interval = "";
-                 orderBy = " order by deliveryDate asc";
+                 orderBy = " order by Invoice.deliveryDate asc";
              }
              
              //this is for searching with compound conditions
@@ -128,7 +125,7 @@ public class getNewEntryServlet extends HttpServlet {
                      if(!(condition.equals(""))){
                          compound=" and";
                          if(!(request.getParameter("searchStatusInput").equals("All"))){
-                            condition = condition + compound + " Invoice.status = '"+request.getParameter("searchStatusInput")+"'";
+                            condition = condition + compound + " InvoiceStatus.statusName = '"+request.getParameter("searchStatusInput")+"'";
                          }
                          compound="";
                      }
@@ -157,7 +154,7 @@ public class getNewEntryServlet extends HttpServlet {
                         if(!(condition.equals(""))){
                             compound=" and ";
                         }
-                        interval = " between '" + searchDateFrom + "' and '" + searchDateTo + "'";
+                        interval = " between '" + searchDateFrom + " 00:00:00' and '" + searchDateTo + " 23:59:59'";
                         condition = condition + compound + request.getParameter("searchDateInput");
                         compound="";
                     }
@@ -168,16 +165,22 @@ public class getNewEntryServlet extends HttpServlet {
              }
              
              
-             //preparedSQL = "select * from Invoice where " + forWhere + searchName + interval + status + orderBy;
-             preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, Customer.customerFirstName, "
-                 + "Customer.customerLastName, Invoice.clinicID, Invoice.invoiceDate, Clinic.clinicName, "
-                 + "Invoice.deliveryDate, Invoice.additionalAccessories, Invoice.termsOfPayment, "
-                 + "Invoice.paymentDueDate, Invoice.datePaid, Invoice.dateClosed, Invoice.status, "
-                 + "Invoice.overdueFee, Clinic.provinceID, Province.provinceName, Province.provinceDivision from Invoice "
+             preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, "
+                 + "Customer.customerFirstName, Customer.customerLastName, "
+                 + "Invoice.clinicID, Clinic.clinicName, Clinic.provinceID, "
+                 + "Province.provinceID, Province.provinceName, Province.provinceDivision, "
+                 + "Invoice.invoiceDate, Invoice.deliveryDate, "
+                 + "Invoice.termsOfPayment, Invoice.paymentDueDate, Invoice.datePaid, "
+                 + "Invoice.dateClosed, Invoice.statusID, InvoiceStatus.statusName, "
+                 + "Invoice.overdueFee, Invoice.amountDue, Invoice.amountPaid, Invoice.discount, "
+                 + "Invoice.dateDelivered, Invoice.dateCreated, Invoice.lastEdittedBy "
+                 + "from Invoice "
                  + "inner join Customer on Customer.customerID = Invoice.customerID "
                  + "inner join Clinic on Clinic.clinicID = Invoice.clinicID "
                  + "inner join Province on Province.provinceID = Clinic.provinceID "
+                 + "inner join InvoiceStatus on InvoiceStatus.statusID = Invoice.statusID "
                  + "where " + condition + forWhere + searchName + interval + status + orderBy;
+             
              
              context.log(preparedSQL);
              ps = conn.prepareStatement(preparedSQL);
@@ -185,25 +188,31 @@ public class getNewEntryServlet extends HttpServlet {
              ArrayList<invoiceBean> invoicesRetrieved = new ArrayList<invoiceBean>();
              //retrieve the information.
              while(dbData.next()){
-                 invoiceBean ibean = new invoiceBean();
-                 ibean.setInvoiceID(dbData.getInt("invoiceID"));
-                 ibean.setInvoiceName(dbData.getString("invoiceName"));
-                 ibean.setPRCID(dbData.getString("PRCID"));
-                 ibean.setCustomerName(dbData.getString("customerLastName")+", "+dbData.getString("customerFirstName"));
-                 ibean.setClinicID(dbData.getInt("clinicID"));
-                 ibean.setClinicName(dbData.getString("clinicName"));
-                 ibean.setInvoiceDate(dbData.getDate("invoiceDate"));
-                 ibean.setDeliveryDate(dbData.getDate("deliveryDate"));
-                 ibean.setAdditionalAccessories(dbData.getString("additionalAccessories"));
-                 ibean.setTermsOfPayment(dbData.getString("termsOfPayment"));
-                 ibean.setPaymentDueDate(dbData.getDate("paymentDueDate"));
-                 if(!(""+dbData.getDate("dateClosed")).equals("0000-00-00")){ibean.setDateClosed(dbData.getDate("dateClosed"));}
-                 if(!(""+dbData.getDate("datePaid")).equals("0000-00-00")){ibean.setDatePaid(dbData.getDate("datePaid"));}
-
-                 //ibean.setDatePaid(dbData.getDate("datePaid"));
-                 ibean.setStatus(dbData.getString("status"));
-                 ibean.setOverdueFee(dbData.getFloat("overdueFee"));
-                 invoicesRetrieved.add(ibean);
+                 invoiceBean invBean = new invoiceBean();
+                invBean.setInvoiceID(dbData.getInt("invoiceID"));
+                invBean.setInvoiceName(dbData.getString("invoiceName"));
+                invBean.setPRCID(dbData.getString("PRCID"));
+                invBean.setCustomerName(dbData.getString("customerLastName")+", "+dbData.getString("customerFirstName"));
+                invBean.setClinicID(dbData.getInt("clinicID"));
+                invBean.setClinicName(dbData.getString("clinicName"));
+                invBean.setProvinceName(dbData.getString("provinceName"));
+                invBean.setProvinceDivision(dbData.getString("provinceDivision"));
+                invBean.setInvoiceDate(dbData.getDate("invoiceDate"));
+                invBean.setDeliveryDate(dbData.getDate("deliveryDate"));
+                invBean.setTermsOfPayment(dbData.getString("termsOfPayment"));
+                invBean.setPaymentDueDate(dbData.getDate("paymentDueDate"));
+                if(!(""+dbData.getDate("dateClosed")).equals("0000-00-00")){invBean.setDateClosed(dbData.getDate("dateClosed"));}
+                if(!(""+dbData.getDate("datePaid")).equals("0000-00-00")){invBean.setDatePaid(dbData.getDate("datePaid"));}
+                invBean.setStatusID(dbData.getInt("statusID"));
+                invBean.setStatusName(dbData.getString("statusName"));
+                invBean.setOverdueFee(dbData.getFloat("overdueFee"));
+                invBean.setAmountDue(dbData.getFloat("amountDue"));
+                invBean.setAmountPaid(dbData.getFloat("amountPaid"));
+                invBean.setDiscount(dbData.getFloat("discount"));
+                invBean.setDateDelivered(dbData.getDate("dateDelivered"));
+                invBean.setDateCreated(dbData.getTimestamp("dateCreated"));
+                invBean.setLastEdittedBy(dbData.getString("lastEdittedBy"));
+                invoicesRetrieved.add(invBean);
              }
 
                  request.setAttribute("invoiceList", invoicesRetrieved);
@@ -267,10 +276,10 @@ public class getNewEntryServlet extends HttpServlet {
                  if(!(condition.equals(""))){
                      compound=" and ";
                  }
-                productClasses = "(productClass = ";
+                productClasses = "(ProductClass.productClassName = ";
                 for(int i=0;i<inputProductClass.length;i++){
                     if(i==0){productClasses=productClasses+"'"+inputProductClass[i]+"'";}
-                    else{productClasses=productClasses+" or productClass = '"+inputProductClass[i]+"'";}
+                    else{productClasses=productClasses+" or ProductClass.productClassName = '"+inputProductClass[i]+"'";}
                 }
                 condition = condition + compound + productClasses+")";
                 compound="";
@@ -285,12 +294,19 @@ public class getNewEntryServlet extends HttpServlet {
                 }
                 String inputLowStock = "" + request.getParameter("lowStockInput");
                 String inputStocks = "";
-                if(inputLowStock.equals("yes")){inputStocks=" stocksRemaining <= lowStock";}
-                else if(inputLowStock.equals("no")){inputStocks=" stocksRemaining >lowStock";}
+                if(inputLowStock.equals("yes")){inputStocks=" Product.stocksRemaining <= lowStock";}
+                else if(inputLowStock.equals("no")){inputStocks=" Product.stocksRemaining >lowStock";}
                 condition = condition + compound + inputStocks;
                 compound="";
              }
-             preparedSQL = "select * from Product where " + condition + " order by productName asc";
+             preparedSQL = "select Product.productID, Product.productName, Product.productDescription, "
+                 + "Product.productPrice, Product.restockPrice, Product.stocksRemaining, Product.lowStock, "
+                 + "Product.brand, Product.productClassID, ProductClass.productClassname, Product.color, "
+                 + "Product.supplierID, Supplier.supplierID, Supplier.supplierName from Product "
+                 + "inner join ProductClass on ProductClass.productClassID = Product.productClassID "
+                 + "inner join Supplier on Supplier.supplierID = Product.supplierID "
+                 + "where " + condition + " order by productName asc";
+             
              context.log(preparedSQL);
              ps = conn.prepareStatement(preparedSQL);
              dbData = ps.executeQuery();
@@ -305,8 +321,11 @@ public class getNewEntryServlet extends HttpServlet {
                 pbean.setStocksRemaining(dbData.getInt("stocksRemaining"));
                 pbean.setLowStock(dbData.getInt("lowStock"));
                 pbean.setBrand(dbData.getString("brand"));
-                pbean.setProductClass(dbData.getString("productClass"));
+                pbean.setProductClassID(dbData.getInt("productClassID"));
+                pbean.setProductClassName(dbData.getString("productClassName"));
                 pbean.setColor(dbData.getString("color"));
+                pbean.setSupplierID(dbData.getInt("supplierID"));
+                pbean.setSupplierName(dbData.getString("supplierName"));
                 productsRetrieved.add(pbean);
             }
             
@@ -320,14 +339,14 @@ public class getNewEntryServlet extends HttpServlet {
          else if(whatFor.equals("restockOrder")){
             //this is for getting ROs with near delivery dates
             if(getWhat.equals("close")){
-                forWhere="RODateDue";
-                interval=" between now() and date_add(now(), interval 7 day) and RODateDelivered = null";
-                orderBy = " order by RODateDue asc";
+                forWhere="RestockOrder.RODateDue";
+                interval=" between now() and date_add(now(), interval 7 day) and RestockOrder.RODateDelivered = null";
+                orderBy = " order by RestockOrder.RODateDue asc";
             }
             //this is for getting completed ROs
             else if(getWhat.equals("completed")){
-                forWhere="RODateDelivered";
-                orderBy = " order by RODateDelivered";
+                forWhere="RestockOrder.RODateDelivered";
+                orderBy = " order by RestockOrder.RODateDelivered";
             }
             //this is for searching with compound conditions
              else if(getWhat.equals("customSearch")){
@@ -361,28 +380,31 @@ public class getNewEntryServlet extends HttpServlet {
                         if(!(condition.equals(""))){
                             compound=" and ";
                         }
-                        interval = " between '" + searchDateFrom + "' and '" + searchDateTo + "'";
+                        interval = " between '" + searchDateFrom + " 00:00:00' and '" + searchDateTo + " 23:59:59'";
                         condition = condition + compound + request.getParameter("searchDateInput");
                         compound="";
                     }
                  }
                  forWhere="";
                  searchName="";
-                 orderBy = " order by ROName";
+                 orderBy = " order by RestockOrder.ROName";
              }
-             /*
-             //this is for searching by date
-             else if(getWhat.equals("date")){
-                 forWhere=""+request.getParameter("forWhere");
-                 interval = " between '"+searchDateFrom+"' and '"+searchDateTo+"'"; 
-             }
-            */
-            preparedSQL = "Select RestockOrder.restockOrderID, Product.productID, Product.productName, RestockOrder.numberOfPiecesOrdered, "
-                    + "RestockOrder.numberOfPiecesReceived, RestockOrder.supplier, RestockOrder.purpose, RestockOrder.RODateDue, "
-                    + "RestockOrder.RODateDelivered, RestockOrder.ROName "
-                    + "from RestockOrder "
-                    + "inner join Product on Product.productID = RestockOrder.productID "
-                    + "where " + condition + forWhere + searchName + interval + orderBy;
+             
+            preparedSQL = "select RestockOrder.restockOrderID, Product.productID, RestockOrder.productID, "
+                 + "RestockOrder.ROName, RestockOrder.numberOfPiecesOrdered, Product.restockPrice, "
+                 + "RestockOrder.numberOfPiecesReceived, Product.supplierID, RestockOrder.purpose, "
+                 + "RestockOrder.RODateDue, RestockOrder.RODateDelivered, RestockOrder.amountPaid, "
+                 + "RestockOrder.discount, RestockOrder.dateCreated, RestockOrder.lastEdittedBy, "
+                 + "RestockOrder.datePaid, Product.productClassID, ProductClass.productClassID, "
+                 + "ProductClass.productClassName, Supplier.supplierID, Supplier.supplierName, "
+                 + "Product.productName "
+                 + "from RestockOrder "
+                 + "inner join Product on Product.productID = RestockOrder.productID "
+                 + "inner join Supplier on Supplier.supplierID = Product.supplierID "
+                 + "inner join ProductClass on ProductClass.productClassID = Product.productClassID "
+                 + "where " + condition + forWhere + searchName + interval + orderBy;
+            
+            
             context.log(preparedSQL);
             ps = conn.prepareStatement(preparedSQL);
             dbData = ps.executeQuery();
@@ -390,17 +412,24 @@ public class getNewEntryServlet extends HttpServlet {
             //retrieve the information.
                while(dbData.next()){
                   restockOrderBean rbean = new restockOrderBean();
-                   rbean.setRestockOrderID(dbData.getInt("restockOrderID"));
-                   rbean.setRestockOrderName(dbData.getString("ROName"));
-                   rbean.setProductID(dbData.getInt("productID"));
-                   rbean.setProductName(dbData.getString("productName"));
-                   rbean.setNumberOfPiecesOrdered(dbData.getInt("numberOfPiecesOrdered"));
-                   rbean.setNumberOfPiecesReceived(dbData.getInt("numberOfPiecesReceived"));
-                   rbean.setSupplier(dbData.getString("supplier"));
-                   rbean.setPurpose(dbData.getString("purpose"));
-                   rbean.setRODateDue(dbData.getDate("RODateDue"));
-                   rbean.setRODateDelivered(dbData.getDate("RODateDelivered"));
-                   restocksRetrieved.add(rbean);
+                rbean.setRestockOrderID(dbData.getInt("restockOrderID"));
+                rbean.setRestockOrderName(dbData.getString("ROName"));
+                rbean.setProductID(dbData.getInt("productID"));
+                rbean.setProductName(dbData.getString("productName"));
+                rbean.setNumberOfPiecesOrdered(dbData.getInt("numberOfPiecesOrdered"));
+                rbean.setNumberOfPiecesReceived(dbData.getInt("numberOfPiecesReceived"));
+                rbean.setSupplierID(dbData.getInt("supplierID"));
+                rbean.setSupplierName(dbData.getString("supplierName"));
+                rbean.setPurpose(dbData.getString("purpose"));
+                rbean.setRODateDue(dbData.getDate("RODateDue"));
+                rbean.setRODateDelivered(dbData.getDate("RODateDelivered"));
+                rbean.setRestockPrice(dbData.getFloat("restockPrice"));
+                rbean.setAmountPaid(dbData.getFloat("amountPaid"));
+                rbean.setDiscount(dbData.getFloat("discount"));
+                rbean.setDatePaid(dbData.getDate("datePaid"));
+                rbean.setDateCreated(dbData.getTimestamp("dateCreated"));
+                rbean.setLastEdittedBy(dbData.getString("lastEdittedBy"));
+                restocksRetrieved.add(rbean);
                }
             request.setAttribute("restocksList", restocksRetrieved);
             context.log("THE SIZE OF LIST IS------"+restocksRetrieved.size());

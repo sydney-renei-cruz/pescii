@@ -179,6 +179,7 @@ public class logInServlet extends HttpServlet {
                     session.setAttribute("accountID", dbData.getInt("accountID"));
                     session.setAttribute("userName", username);
                     session.setAttribute("accountType", ""+dbData.getInt("accountType"));
+                    session.setAttribute("state", "logged in");
                     request.getRequestDispatcher("homePage.jsp").forward(request,response);
                 }
 

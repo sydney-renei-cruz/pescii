@@ -71,7 +71,13 @@ public class getProductServlet extends HttpServlet {
          
          //---------------
          //THIS IS WHERE YOU START CHANGING
-         String preparedSQL = "select * from Product order by productName asc";
+         String preparedSQL = "select Product.productID, Product.productName, Product.productDescription, "
+                 + "Product.productPrice, Product.restockPrice, Product.stocksRemaining, Product.lowStock, "
+                 + "Product.brand, Product.productClassID, ProductClass.productClassname, Product.color, "
+                 + "Product.supplierID, Supplier.supplierID, Supplier.supplierName from Product "
+                 + "inner join ProductClass on ProductClass.productClassID = Product.productClassID "
+                 + "inner join Supplier on Supplier.supplierID = Product.supplierID "
+                 + "order by Product.productName asc";
          
          if(session.getAttribute("cart")!=null){
              context.log(preparedSQL);
@@ -86,7 +92,13 @@ public class getProductServlet extends HttpServlet {
                     }
                  }
              }
-             preparedSQL = "select * from Product" + prodIDs + " order by productName asc";
+             preparedSQL = "select Product.productID, Product.productName, Product.productDescription, "
+                 + "Product.productPrice, Product.restockPrice, Product.stocksRemaining, Product.lowStock, "
+                 + "Product.brand, Product.productClassID, ProductClass.productClassname, Product.color, "
+                 + "Product.supplierID, Supplier.supplierID, Supplier.supplierName from Product "
+                 + "inner join ProductClass on ProductClass.productClassID = Product.productClassID "
+                 + "inner join Supplier on Supplier.supplierID = Product.supplierID "
+                 + prodIDs + " order by productName asc";
              context.log(preparedSQL);
          }
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
@@ -106,8 +118,11 @@ public class getProductServlet extends HttpServlet {
                 pbean.setStocksRemaining(dbData.getInt("stocksRemaining"));
                 pbean.setLowStock(dbData.getInt("lowStock"));
                 pbean.setBrand(dbData.getString("brand"));
-                pbean.setProductClass(dbData.getString("productClass"));
+                pbean.setProductClassID(dbData.getInt("productClassID"));
+                pbean.setProductClassName(dbData.getString("productClassName"));
                 pbean.setColor(dbData.getString("color"));
+                pbean.setSupplierID(dbData.getInt("supplierID"));
+                pbean.setSupplierName(dbData.getString("supplierName"));
                 productsRetrieved.add(pbean);
             }
          request.setAttribute("productsList", productsRetrieved);

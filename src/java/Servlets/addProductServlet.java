@@ -18,6 +18,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -72,7 +73,7 @@ public class addProductServlet extends HttpServlet {
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
-        
+        HttpSession session = request.getSession();
         try {
          Class.forName(context.getInitParameter("jdbcDriver"));
       } catch(ClassNotFoundException ex) {
@@ -93,8 +94,9 @@ public class addProductServlet extends HttpServlet {
          //---------------
          //THIS IS WHERE YOU START CHANGING
          
-         String preparedSQL = "insert into Product(productName, productDescription, productPrice, restockPrice,"
-                 + "stocksRemaining, lowStock, brand, productClass, color) values(?,?,?,?,?,?,?,?,?)";
+         String preparedSQL = "insert into Product(productName, productDescription, productPrice, "
+                 + "restockPrice, stocksRemaining, lowStock, brand, productClassID, color, supplierID, "
+                 + "lastEdittedBy) values(?,?,?,?,?,?,?,?,?,?,?)";
          
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          
@@ -104,9 +106,10 @@ public class addProductServlet extends HttpServlet {
          float inputRestockPrice = Float.parseFloat(request.getParameter("restockPriceInput"));
          int inputLowStock = Integer.parseInt(request.getParameter("lowStockInput"));
          String inputBrand = request.getParameter("brandInput");
-         String inputProductClass = request.getParameter("productClassInput");
+         int inputProductClass = Integer.parseInt(request.getParameter("productClassInput"));
          String inputColor = request.getParameter("colorInput");
-         
+         int inputSupplier = Integer.parseInt(request.getParameter("supplierInput"));
+         String lastEdittedBy = ""+session.getAttribute("userName");
          
          ps.setString(1,inputProductName);
          ps.setString(2,inputProductDesc);
@@ -115,8 +118,10 @@ public class addProductServlet extends HttpServlet {
          ps.setInt(5,0);
          ps.setInt(6,inputLowStock);
          ps.setString(7,inputBrand);
-         ps.setString(8,inputProductClass);
+         ps.setInt(8,inputProductClass);
          ps.setString(9,inputColor);
+         ps.setInt(10,inputSupplier);
+         ps.setString(11,lastEdittedBy);
          
          ps.executeUpdate();                   //at this point, you have already inserted into the database
          

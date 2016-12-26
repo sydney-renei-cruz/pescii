@@ -70,11 +70,18 @@ public class getCustomerServlet extends HttpServlet {
          
          //---------------
          //THIS IS WHERE YOU START CHANGING
-         String preparedSQL = "select Customer.customerID, Customer.PRCID, Customer.customerFirstName, Customer.customerLastName, Customer.customerMobileNumber, "
-                 + "Customer.customerTelephoneNumber, SalesRep.salesRepFirstName, SalesRep.salesRepLastName, Customer.salesRepID from Customer "
-                 + "inner join SalesRep on SalesRep.salesRepID = Customer.salesRepID order by Customer.customerLastName asc";
+         String preparedSQL = "select Customer.customerID, Customer.PRCID, "
+                 + "Customer.customerFirstName, Customer.customerLastName, "
+                 + "Customer.customerMobileNumber, "
+                 + "Customer.customerTelephoneNumber, SalesRep.salesRepFirstName, "
+                 + "SalesRep.salesRepLastName, Customer.salesRepID, Customer.dateCreated, "
+                 + "Customer.lastEdittedBy "
+                 + "from Customer "
+                 + "inner join SalesRep on SalesRep.salesRepID = Customer.salesRepID "
+                 + "order by Customer.customerLastName asc";
          
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
+         context.log(preparedSQL);
          
          ResultSet dbData = ps.executeQuery();
          ArrayList<customerBean> customersRetrieved = new ArrayList<customerBean>();
@@ -89,6 +96,8 @@ public class getCustomerServlet extends HttpServlet {
                 data.setCustomerTelephoneNumber(dbData.getString("customerTelephoneNumber"));
                 data.setSalesRep(dbData.getString("salesRepLastName")+", "+dbData.getString("salesRepFirstName"));
                 data.setSalesRepID(dbData.getInt("salesRepID"));
+                data.setDateCreated(dbData.getTimestamp("dateCreated"));
+                data.setLastEdittedBy(dbData.getString("lastEdittedBy"));
                 customersRetrieved.add(data);
             }
             request.setAttribute("customersList", customersRetrieved);
@@ -99,7 +108,7 @@ public class getCustomerServlet extends HttpServlet {
             //this is for when the user will add a customer
                 //its for filling in that dropdown list
             if((""+request.getParameter("forAdd")).equals("yes")){
-                preparedSQL = "select * from SalesRep sort by salesRepLastName asc";
+                preparedSQL = "select * from SalesRep order by salesRepLastName asc";
                 ps = conn.prepareStatement(preparedSQL);
 
                 dbData = ps.executeQuery();
@@ -115,7 +124,7 @@ public class getCustomerServlet extends HttpServlet {
                 request.setAttribute("salesRepList", salesRepsRetrieved);
                 
                 
-                preparedSQL = "select * from Province sort by provinceName asc";
+                preparedSQL = "select * from Province order by provinceName asc";
                 ps = conn.prepareStatement(preparedSQL);
 
                 dbData = ps.executeQuery();

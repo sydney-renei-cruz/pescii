@@ -71,10 +71,16 @@ public class viewCustomerDetailsServlet extends HttpServlet {
          //---------------
          //first get the customer details
          //String preparedSQL = "select * from Customer where customerID = ?";
-         String preparedSQL = "select Customer.customerID, Customer.PRCID, Customer.customerFirstName, Customer.customerLastName, Customer.customerMobileNumber, "
-                 + "Customer.customerTelephoneNumber, SalesRep.salesRepFirstName, SalesRep.salesRepLastName, Customer.salesRepID from Customer "
+         String preparedSQL = "select Customer.customerID, Customer.PRCID, "
+                 + "Customer.customerFirstName, Customer.customerLastName, "
+                 + "Customer.customerMobileNumber, "
+                 + "Customer.customerTelephoneNumber, SalesRep.salesRepFirstName, "
+                 + "SalesRep.salesRepLastName, Customer.salesRepID, Customer.dateCreated, "
+                 + "Customer.lastEdittedBy "
+                 + "from Customer "
                  + "inner join SalesRep on SalesRep.salesRepID = Customer.salesRepID "
-                 + "where Customer.customerID = ?";
+                 + "where Customer.customerID=? "
+                 + "order by Customer.customerLastName asc ";
          int inputCustomerID = Integer.parseInt(request.getParameter("custID"));
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          ps.setInt(1, inputCustomerID);
@@ -90,14 +96,18 @@ public class viewCustomerDetailsServlet extends HttpServlet {
          cbean.setCustomerMobileNumber(dbData.getString("customerMobileNumber"));
          cbean.setCustomerTelephoneNumber(dbData.getString("customerTelephoneNumber"));
          cbean.setSalesRep(dbData.getString("salesRepLastName")+", "+dbData.getString("salesRepFirstName"));
-         cbean.setSalesRepID(dbData.getInt("salesRepID"));;
+         cbean.setSalesRepID(dbData.getInt("salesRepID"));
+         cbean.setDateCreated(dbData.getTimestamp("dateCreated"));
+         cbean.setLastEdittedBy(dbData.getString("lastEdittedBy"));
          }
          request.setAttribute("customer", cbean);
          
          //now get the clinic/s
          preparedSQL = "select Clinic.clinicID, Customer.PRCID, Clinic.clinicAddress, "
-                 + "Clinic.clinicPhoneNumber, Clinic.clinicName, Clinic.provinceID, Province.provinceName, "
-                 + "Province.provinceDivision from Clinic "
+                 + "Clinic.clinicPhoneNumber, Clinic.clinicName, Clinic.provinceID, "
+                 + "Province.provinceName, Province.provinceDivision, "
+                 + "Clinic.dateCreated, Clinic.lastEdittedBy "
+                 + "from Clinic "
                  + "inner join Customer on Customer.customerID = Clinic.customerID "
                  + "inner join Province on Province.provinceID = Clinic.provinceID "
                  + "where Clinic.customerID = ?";
@@ -113,8 +123,11 @@ public class viewCustomerDetailsServlet extends HttpServlet {
                 clinbean.setClinicAddress(dbData.getString("clinicAddress"));
                 clinbean.setClinicPhoneNumber(dbData.getString("clinicPhoneNumber"));
                 clinbean.setClinicName(dbData.getString("clinicName"));
+                clinbean.setProvinceID(dbData.getInt("provinceID"));
                 clinbean.setProvinceName(dbData.getString("provinceName"));
                 clinbean.setProvinceDivision(dbData.getString("provinceDivision"));
+                clinbean.setDateCreated(dbData.getTimestamp("dateCreated"));
+                clinbean.setLastEdittedBy(dbData.getString("lastEdittedBy"));
                 clinicsRetrieved.add(clinbean);
             }
             
@@ -122,12 +135,20 @@ public class viewCustomerDetailsServlet extends HttpServlet {
          context.log("size of clinicsRetrieved is " + clinicsRetrieved.size());
          
          //finally, get the invoices
-         preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, Invoice.clinicID, Invoice.invoiceDate, "
-                 + "Invoice.deliveryDate, Invoice.additionalAccessories, Invoice.termsOfPayment, "
-                 + "Invoice.paymentDueDate, Invoice.datePaid, Invoice.dateClosed, Invoice.status, "
-                 + "Invoice.overdueFee, Clinic.clinicName from Invoice "
+         preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, "
+                 + "Customer.customerFirstName, Customer.customerLastName, "
+                 + "Invoice.clinicID, Clinic.clinicName, Clinic.provinceID, "
+                 + "Province.provinceID, Province.provinceName, Province.provinceDivision, "
+                 + "Invoice.invoiceDate, Invoice.deliveryDate, "
+                 + "Invoice.termsOfPayment, Invoice.paymentDueDate, Invoice.datePaid, "
+                 + "Invoice.dateClosed, Invoice.statusID, InvoiceStatus.statusName, "
+                 + "Invoice.overdueFee, Invoice.amountDue, Invoice.amountPaid, Invoice.discount, "
+                 + "Invoice.dateDelivered, Invoice.dateCreated, Invoice.lastEdittedBy "
+                 + "from Invoice "
                  + "inner join Customer on Customer.customerID = Invoice.customerID "
                  + "inner join Clinic on Clinic.clinicID = Invoice.clinicID "
+                 + "inner join Province on Province.provinceID = Clinic.provinceID "
+                 + "inner join InvoiceStatus on InvoiceStatus.statusID = Invoice.statusID "
                  + "where Invoice.customerID = ?";
          context.log(preparedSQL);
          ps = conn.prepareStatement(preparedSQL);
@@ -141,17 +162,26 @@ public class viewCustomerDetailsServlet extends HttpServlet {
              invBean.setInvoiceID(dbData.getInt("invoiceID"));
              invBean.setInvoiceName(dbData.getString("invoiceName"));
              invBean.setPRCID(dbData.getString("PRCID"));
+             invBean.setCustomerName(dbData.getString("customerLastName")+", "+dbData.getString("customerFirstName"));
              invBean.setClinicID(dbData.getInt("clinicID"));
              invBean.setClinicName(dbData.getString("clinicName"));
+             invBean.setProvinceName(dbData.getString("provinceName"));
+             invBean.setProvinceDivision(dbData.getString("provinceDivision"));
              invBean.setInvoiceDate(dbData.getDate("invoiceDate"));
              invBean.setDeliveryDate(dbData.getDate("deliveryDate"));
-             invBean.setAdditionalAccessories(dbData.getString("additionalAccessories"));
              invBean.setTermsOfPayment(dbData.getString("termsOfPayment"));
              invBean.setPaymentDueDate(dbData.getDate("paymentDueDate"));
              if(!(""+dbData.getDate("dateClosed")).equals("0000-00-00")){invBean.setDateClosed(dbData.getDate("dateClosed"));}
              if(!(""+dbData.getDate("datePaid")).equals("0000-00-00")){invBean.setDatePaid(dbData.getDate("datePaid"));}
-             invBean.setStatus(dbData.getString("status"));
+             invBean.setStatusID(dbData.getInt("statusID"));
+             invBean.setStatusName(dbData.getString("statusName"));
              invBean.setOverdueFee(dbData.getFloat("overdueFee"));
+             invBean.setAmountDue(dbData.getFloat("amountDue"));
+             invBean.setAmountPaid(dbData.getFloat("amountPaid"));
+             invBean.setDiscount(dbData.getFloat("discount"));
+             invBean.setDateDelivered(dbData.getDate("dateDelivered"));
+             invBean.setDateCreated(dbData.getTimestamp("dateCreated"));
+             invBean.setLastEdittedBy(dbData.getString("lastEdittedBy"));
              invoicesRetrieved.add(invBean);
          }
          
@@ -160,7 +190,7 @@ public class viewCustomerDetailsServlet extends HttpServlet {
          
          String forEdit = ""+request.getParameter("forEdit");
          if(session.getAttribute("cart")!=null){
-             request.getRequestDispatcher("addInvoice.jsp").forward(request, response);
+             request.getRequestDispatcher("invoice.getStatus").forward(request, response);
          }
          else if(forEdit.equals("yes")){
              preparedSQL = "select * from SalesRep";

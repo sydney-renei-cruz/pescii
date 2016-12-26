@@ -70,7 +70,14 @@ public class viewProductDetailsServlet extends HttpServlet {
          
          //---------------
          //first get the customer details
-         String preparedSQL = "select * from Product where productID = ?";
+         String preparedSQL = "select Product.productID, Product.productName, Product.productDescription, "
+                 + "Product.productPrice, Product.restockPrice, Product.stocksRemaining, Product.lowStock, "
+                 + "Product.brand, Product.productClassID, ProductClass.productClassname, Product.color, "
+                 + "Product.supplierID, Supplier.supplierID, Supplier.supplierName, "
+                 + "Product.dateCreated, Product.lastEdittedBy from Product "
+                 + "inner join ProductClass on ProductClass.productClassID = Product.productClassID "
+                 + "inner join Supplier on Supplier.supplierID = Product.supplierID "
+                 + "where productID = ? order by productName asc";
          String inputProductID = request.getParameter("prodID");
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          ps.setString(1, inputProductID);
@@ -78,17 +85,21 @@ public class viewProductDetailsServlet extends HttpServlet {
          productBean pbean = new productBean();
          ResultSet dbData = ps.executeQuery();
          while(dbData.next()){
-         //customerBean cbean = new customerBean();
-         pbean.setProductID(dbData.getString("productID"));
-         pbean.setProductName(dbData.getString("productName"));
-         pbean.setProductDescription(dbData.getString("productDescription"));
-         pbean.setProductPrice(dbData.getFloat("productPrice"));
-         pbean.setRestockPrice(dbData.getFloat("restockPrice"));
-         pbean.setStocksRemaining(dbData.getInt("stocksRemaining"));
-         pbean.setLowStock(dbData.getInt("lowStock"));
-         pbean.setBrand(dbData.getString("brand"));
-         pbean.setProductClass(dbData.getString("productClass"));
-         pbean.setColor(dbData.getString("color"));
+            pbean.setProductID(dbData.getString("productID"));
+            pbean.setProductName(dbData.getString("productName"));
+            pbean.setProductDescription(dbData.getString("productDescription"));
+            pbean.setProductPrice(dbData.getFloat("productPrice"));
+            pbean.setRestockPrice(dbData.getFloat("restockPrice"));
+            pbean.setStocksRemaining(dbData.getInt("stocksRemaining"));
+            pbean.setLowStock(dbData.getInt("lowStock"));
+            pbean.setBrand(dbData.getString("brand"));
+            pbean.setProductClassID(dbData.getInt("productClassID"));
+            pbean.setProductClassName(dbData.getString("productClassName"));
+            pbean.setColor(dbData.getString("color"));
+            pbean.setSupplierID(dbData.getInt("supplierID"));
+            pbean.setSupplierName(dbData.getString("supplierName"));
+            pbean.setDateCreated(dbData.getTimestamp("dateCreated"));
+            pbean.setLastEdittedBy(dbData.getString("lastEdittedBy"));
          }
          request.setAttribute("product", pbean);
          
@@ -101,7 +112,8 @@ public class viewProductDetailsServlet extends HttpServlet {
              return;
          }
          if((""+request.getParameter("forEdit")).equals("yes")){
-             request.getRequestDispatcher("editProduct.jsp").forward(request,response);
+             request.setAttribute("forEdit", ""+request.getParameter("forEdit"));
+             request.getRequestDispatcher("product.getProductClass").forward(request,response);
              return;
          }
          request.getRequestDispatcher("productDetails.jsp").forward(request,response);

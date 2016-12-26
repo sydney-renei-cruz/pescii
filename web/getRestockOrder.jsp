@@ -40,7 +40,7 @@
                 <td>${ro.getRestockPrice()}</td>
                 <td>${ro.getNumberOfPiecesOrdered()}</td>
                 <td>${ro.getNumberOfPiecesReceived()}</td>
-                <td>${ro.getSupplier()}</td>
+                <td>${ro.getSupplierName()}</td>
                 <td>${ro.getRODateDue()}</td>
                 <td>${ro.getRODateDelivered()}</td>
                 <td><a href="restockOrder.getDetails?editRestock=yes&restockID=<c:out value="${ro.getRestockOrderID()}"/>">Edit</td>

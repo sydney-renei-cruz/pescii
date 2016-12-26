@@ -5,7 +5,7 @@
  */
 package Servlets;
 
-import Beans.restockOrderBean;
+import Beans.invoiceStatusBean;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -27,8 +27,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author user
  */
-@WebServlet(name = "NewServlet", urlPatterns = {"/NewServlet"})
-public class getRestockOrderServlet extends HttpServlet {
+@WebServlet(name = "getInvoiceStatusServlet", urlPatterns = {"/getInvoiceStatusServlet"})
+public class getInvoiceStatusServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -44,6 +44,7 @@ public class getRestockOrderServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         
+        HttpSession session = request.getSession();
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
         
@@ -68,53 +69,38 @@ public class getRestockOrderServlet extends HttpServlet {
          stmt = conn.createStatement();
          
          //---------------
-         //THIS IS WHERE YOU START CHANGING
-         String preparedSQL = "select RestockOrder.restockOrderID, Product.productID, RestockOrder.productID, "
-                 + "RestockOrder.ROName, RestockOrder.numberOfPiecesOrdered, Product.restockPrice, "
-                 + "RestockOrder.numberOfPiecesReceived, Product.supplierID, RestockOrder.purpose, "
-                 + "RestockOrder.RODateDue, RestockOrder.RODateDelivered, RestockOrder.amountPaid, "
-                 + "RestockOrder.discount, RestockOrder.dateCreated, RestockOrder.lastEdittedBy, "
-                 + "RestockOrder.datePaid, Product.productClassID, ProductClass.productClassID, "
-                 + "ProductClass.productClassName, Supplier.supplierID, Supplier.supplierName, "
-                 + "Product.productName "
-                 + "from RestockOrder "
-                 + "inner join Product on Product.productID = RestockOrder.productID "
-                 + "inner join Supplier on Supplier.supplierID = Product.supplierID "
-                 + "inner join ProductClass on ProductClass.productClassID = Product.productClassID "
-                 + "order by RestockOrder.datecreated desc";
-         
+         String preparedSQL = "select * from InvoiceStatus order by statusName asc";
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
-         context.log(preparedSQL);
-         
          
          ResultSet dbData = ps.executeQuery();
-         ArrayList<restockOrderBean> restocksRetrieved = new ArrayList<restockOrderBean>();
+         ArrayList<invoiceStatusBean> invoiceStatusRetrieved = new ArrayList<invoiceStatusBean>();
          //retrieve the information.
             while(dbData.next()){
-               restockOrderBean rbean = new restockOrderBean();
-                rbean.setRestockOrderID(dbData.getInt("restockOrderID"));
-                rbean.setRestockOrderName(dbData.getString("ROName"));
-                rbean.setProductID(dbData.getInt("productID"));
-                rbean.setProductName(dbData.getString("productName"));
-                rbean.setNumberOfPiecesOrdered(dbData.getInt("numberOfPiecesOrdered"));
-                rbean.setNumberOfPiecesReceived(dbData.getInt("numberOfPiecesReceived"));
-                rbean.setSupplierID(dbData.getInt("supplierID"));
-                rbean.setSupplierName(dbData.getString("supplierName"));
-                rbean.setPurpose(dbData.getString("purpose"));
-                rbean.setRODateDue(dbData.getDate("RODateDue"));
-                rbean.setRODateDelivered(dbData.getDate("RODateDelivered"));
-                rbean.setRestockPrice(dbData.getFloat("restockPrice"));
-                rbean.setAmountPaid(dbData.getFloat("amountPaid"));
-                rbean.setDiscount(dbData.getFloat("discount"));
-                rbean.setDatePaid(dbData.getDate("datePaid"));
-                rbean.setDateCreated(dbData.getTimestamp("dateCreated"));
-                rbean.setLastEdittedBy(dbData.getString("lastEdittedBy"));
-                restocksRetrieved.add(rbean);
+               invoiceStatusBean invStatBean = new invoiceStatusBean();
+               invStatBean.setStatusID(dbData.getInt("statusID"));
+               invStatBean.setStatusName(dbData.getString("statusName"));
+               invoiceStatusRetrieved.add(invStatBean);
             }
-         request.setAttribute("restocksList", restocksRetrieved);
+         request.setAttribute("invStatList", invoiceStatusRetrieved);
          
-         request.getRequestDispatcher("getRestockOrder.jsp").forward(request,response);
-            
+         
+         if(session.getAttribute("cart")!=null){
+             
+             request.setAttribute("customer", request.getAttribute("customer"));
+             request.setAttribute("clinicsList", request.getAttribute("clinicsList"));
+             //request.setAttribute("invoicesList", invoicesList);
+             //request.getRequestDispatcher("invoice.getStatus").forward(request, response);
+             request.getRequestDispatcher("addInvoice.jsp").forward(request,response);
+             return;
+         }
+         context.log("editInvoice issss: "+request.getAttribute("editInvoice"));
+         if((""+request.getAttribute("editInvoice")).equals("yes")){
+             request.setAttribute("invoice", request.getAttribute("invoice"));
+             request.setAttribute("invitemsList", request.getAttribute("invitemsList"));
+             context.log("now sending to editInvoice.jsp!");
+             request.getRequestDispatcher("editInvoice.jsp").forward(request,response);
+         }
+         
          
         }
         catch(Exception ex){

@@ -7,6 +7,7 @@
 <%@page import="Beans.*,java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     restockOrderBean restockOrder = (restockOrderBean)request.getAttribute("restockOrder");
     productBean product = (productBean)request.getAttribute("product");
@@ -25,12 +26,16 @@
                 Product Ordered: <input type="hidden" value="${restockOrder.getProductID()}" name="productIDInput">${restockOrder.getProductName()}<br>
                 Number of Pieces Ordered: <input type="text" value="${restockOrder.getNumberOfPiecesOrdered()}" name="numberOfPiecesOrderedInput"><br>
                 Number of Pieces Received: <input type="text" value="${restockOrder.getNumberOfPiecesReceived()}" name="numberOfPiecesReceivedInput"><br>
-                Supplier: <input type="text" value="${restockOrder.getSupplier()}" name="supplierInput"><br>
+                <c:set var="totalPrice" value="${restockOrder.getRestockPrice() * restockOrder.getNumberOfPiecesOrdered()}"/>
+                <p>Original Price: <fmt:formatNumber pattern="0.00" value="${totalPrice}" type="number"/></p>
+                Discount: ${restockOrder.getDiscount()}<br>
+                <c:set var="totalPrice" value="${restockOrder.getRestockPrice() * restockOrder.getNumberOfPiecesOrdered() - restockOrder.getDiscount()}"/>
+                <p>Discounted Price: <fmt:formatNumber pattern="0.00" value="${totalPrice}" type="number"/></p>
+                Amount Paid:<input type="text" value="${restockOrder.getAmountPaid()}" name="amountPaidInput"><br>
+                Supplier: ${restockOrder.getSupplierName()}<br>
                 Purpose: <input type="text" value="${restockOrder.getPurpose()}" name="purposeInput"><br>
-                Restock Order Date Delivered: <input type="text" value="${restockOrder.getRODateDelivered()}" name="roDateDeliveredInput"><br>
-                
-                <p>Product Name: ${product.getProductName()}</p>
-                <p>Restock Price: ${product.getRestockPrice()}</p>
+                Delivery Due Date: ${restockOrder.getRODateDue()}<br>
+                Date Delivered: <input type="text" value="${restockOrder.getRODateDelivered()}" name="roDateDeliveredInput"><br>
                 
                 <br><input type="submit" value="Save Changes">
                 

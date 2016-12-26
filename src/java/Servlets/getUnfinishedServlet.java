@@ -75,62 +75,105 @@ public class getUnfinishedServlet extends HttpServlet {
          PreparedStatement ps;
          ResultSet dbData;
          if(table.equals("invoice")){
-             preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, Invoice.clinicID, Invoice.invoiceDate, "
+            /* preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, Invoice.clinicID, Invoice.invoiceDate, "
                  + "Invoice.deliveryDate, Invoice.additionalAccessories, Invoice.termsOfPayment, "
                  + "Invoice.paymentDueDate, Invoice.datePaid, Invoice.dateClosed, Invoice.status, "
                  + "Invoice.overdueFee from Invoice "
                  + "inner join Customer on Customer.customerID = Invoice.customerID where Invoice.status = 'In Progress' order by paymentDueDate";
+             */
+             preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, "
+                 + "Customer.customerFirstName, Customer.customerLastName, "
+                 + "Invoice.clinicID, Clinic.clinicName, Clinic.provinceID, "
+                 + "Province.provinceID, Province.provinceName, Province.provinceDivision, "
+                 + "Invoice.invoiceDate, Invoice.deliveryDate, "
+                 + "Invoice.termsOfPayment, Invoice.paymentDueDate, Invoice.datePaid, "
+                 + "Invoice.dateClosed, Invoice.statusID, InvoiceStatus.statusName, "
+                 + "Invoice.overdueFee, Invoice.amountDue, Invoice.amountPaid, Invoice.discount, "
+                 + "Invoice.dateDelivered, Invoice.dateCreated, Invoice.lastEdittedBy "
+                 + "from Invoice "
+                 + "inner join Customer on Customer.customerID = Invoice.customerID "
+                 + "inner join Clinic on Clinic.clinicID = Invoice.clinicID "
+                 + "inner join Province on Province.provinceID = Clinic.provinceID "
+                 + "inner join InvoiceStatus on InvoiceStatus.statusID = Invoice.statusID "
+                 + "where InvoiceStatus.statusName='In Progress' order by paymentDueDate";
+             
+             context.log(preparedSQL);
              ps = conn.prepareStatement(preparedSQL);
              dbData = ps.executeQuery();
              ArrayList<invoiceBean> invoicesRetrieved = new ArrayList<invoiceBean>();
              //retrieve the information.
              while(dbData.next()){
-                 invoiceBean ibean = new invoiceBean();
-                 ibean.setInvoiceID(dbData.getInt("invoiceID"));
-                 ibean.setInvoiceName(dbData.getString("invoiceName"));
-                 ibean.setPRCID(dbData.getString("PRCID"));
-                 ibean.setClinicID(dbData.getInt("clinicID"));
-                 ibean.setInvoiceDate(dbData.getDate("invoiceDate"));
-                 ibean.setDeliveryDate(dbData.getDate("deliveryDate"));
-                 ibean.setAdditionalAccessories(dbData.getString("additionalAccessories"));
-                 ibean.setTermsOfPayment(dbData.getString("termsOfPayment"));
-                 ibean.setPaymentDueDate(dbData.getDate("paymentDueDate"));
-                 if(!(""+dbData.getDate("dateClosed")).equals("0000-00-00")){ibean.setDateClosed(dbData.getDate("dateClosed"));}
-                 if(!(""+dbData.getDate("datePaid")).equals("0000-00-00")){ibean.setDatePaid(dbData.getDate("datePaid"));}
-
-                 //ibean.setDatePaid(dbData.getDate("datePaid"));
-                 ibean.setStatus(dbData.getString("status"));
-                 ibean.setOverdueFee(dbData.getFloat("overdueFee"));
-                 invoicesRetrieved.add(ibean);
+                invoiceBean invBean = new invoiceBean();
+                invBean.setInvoiceID(dbData.getInt("invoiceID"));
+                invBean.setInvoiceName(dbData.getString("invoiceName"));
+                invBean.setPRCID(dbData.getString("PRCID"));
+                invBean.setCustomerName(dbData.getString("customerLastName")+", "+dbData.getString("customerFirstName"));
+                invBean.setClinicID(dbData.getInt("clinicID"));
+                invBean.setClinicName(dbData.getString("clinicName"));
+                invBean.setProvinceName(dbData.getString("provinceName"));
+                invBean.setProvinceDivision(dbData.getString("provinceDivision"));
+                invBean.setInvoiceDate(dbData.getDate("invoiceDate"));
+                invBean.setDeliveryDate(dbData.getDate("deliveryDate"));
+                invBean.setTermsOfPayment(dbData.getString("termsOfPayment"));
+                invBean.setPaymentDueDate(dbData.getDate("paymentDueDate"));
+                if(!(""+dbData.getDate("dateClosed")).equals("0000-00-00")){invBean.setDateClosed(dbData.getDate("dateClosed"));}
+                if(!(""+dbData.getDate("datePaid")).equals("0000-00-00")){invBean.setDatePaid(dbData.getDate("datePaid"));}
+                invBean.setStatusID(dbData.getInt("statusID"));
+                invBean.setStatusName(dbData.getString("statusName"));
+                invBean.setOverdueFee(dbData.getFloat("overdueFee"));
+                invBean.setAmountDue(dbData.getFloat("amountDue"));
+                invBean.setAmountPaid(dbData.getFloat("amountPaid"));
+                invBean.setDiscount(dbData.getFloat("discount"));
+                invBean.setDateDelivered(dbData.getDate("dateDelivered"));
+                invBean.setDateCreated(dbData.getTimestamp("dateCreated"));
+                invBean.setLastEdittedBy(dbData.getString("lastEdittedBy"));
+                invoicesRetrieved.add(invBean);
              }
 
                  request.setAttribute("invoiceList", invoicesRetrieved);
                  request.getRequestDispatcher("getInvoice.jsp").forward(request,response);
          }
          else{
-            preparedSQL = "Select RestockOrder.restockOrderID, Product.productID, Product.productName, RestockOrder.numberOfPiecesOrdered, "
-                    + "RestockOrder.numberOfPiecesReceived, RestockOrder.supplier, RestockOrder.purpose, RestockOrder.RODateDue, "
-                    + "RestockOrder.RODateDelivered, RestockOrder.ROName "
-                    + "from RestockOrder "
-                    + "inner join Product on Product.productID = RestockOrder.productID "
-                    + "where RestockOrder.RODateDelivered is null order by RestockOrder.RODateDue";
+            preparedSQL = "select RestockOrder.restockOrderID, Product.productID, RestockOrder.productID, "
+                 + "RestockOrder.ROName, RestockOrder.numberOfPiecesOrdered, Product.restockPrice, "
+                 + "RestockOrder.numberOfPiecesReceived, Product.supplierID, RestockOrder.purpose, "
+                 + "RestockOrder.RODateDue, RestockOrder.RODateDelivered, RestockOrder.amountPaid, "
+                 + "RestockOrder.discount, RestockOrder.dateCreated, RestockOrder.lastEdittedBy, "
+                 + "RestockOrder.datePaid, Product.productClassID, ProductClass.productClassID, "
+                 + "ProductClass.productClassName, Supplier.supplierID, Supplier.supplierName, "
+                 + "Product.productName "
+                 + "from RestockOrder "
+                 + "inner join Product on Product.productID = RestockOrder.productID "
+                 + "inner join Supplier on Supplier.supplierID = Product.supplierID "
+                 + "inner join ProductClass on ProductClass.productClassID = Product.productClassID "
+                 + "where RestockOrder.RODateDelivered is null "
+                 + "order by RestockOrder.RODateDue";
+            
+            context.log(preparedSQL);
             ps = conn.prepareStatement(preparedSQL);
             dbData = ps.executeQuery();
             ArrayList<restockOrderBean> restocksRetrieved = new ArrayList<restockOrderBean>();
             //retrieve the information.
                while(dbData.next()){
-                  restockOrderBean rbean = new restockOrderBean();
-                   rbean.setRestockOrderID(dbData.getInt("restockOrderID"));
-                   rbean.setRestockOrderName(dbData.getString("ROName"));
-                   rbean.setProductID(dbData.getInt("productID"));
-                   rbean.setProductName(dbData.getString("productName"));
-                   rbean.setNumberOfPiecesOrdered(dbData.getInt("numberOfPiecesOrdered"));
-                   rbean.setNumberOfPiecesReceived(dbData.getInt("numberOfPiecesReceived"));
-                   rbean.setSupplier(dbData.getString("supplier"));
-                   rbean.setPurpose(dbData.getString("purpose"));
-                   rbean.setRODateDue(dbData.getDate("RODateDue"));
-                   rbean.setRODateDelivered(dbData.getDate("RODateDelivered"));
-                   restocksRetrieved.add(rbean);
+                    restockOrderBean rbean = new restockOrderBean();
+                    rbean.setRestockOrderID(dbData.getInt("restockOrderID"));
+                    rbean.setRestockOrderName(dbData.getString("ROName"));
+                    rbean.setProductID(dbData.getInt("productID"));
+                    rbean.setProductName(dbData.getString("productName"));
+                    rbean.setNumberOfPiecesOrdered(dbData.getInt("numberOfPiecesOrdered"));
+                    rbean.setNumberOfPiecesReceived(dbData.getInt("numberOfPiecesReceived"));
+                    rbean.setSupplierID(dbData.getInt("supplierID"));
+                    rbean.setSupplierName(dbData.getString("supplierName"));
+                    rbean.setPurpose(dbData.getString("purpose"));
+                    rbean.setRODateDue(dbData.getDate("RODateDue"));
+                    rbean.setRODateDelivered(dbData.getDate("RODateDelivered"));
+                    rbean.setRestockPrice(dbData.getFloat("restockPrice"));
+                    rbean.setAmountPaid(dbData.getFloat("amountPaid"));
+                    rbean.setDiscount(dbData.getFloat("discount"));
+                    rbean.setDatePaid(dbData.getDate("datePaid"));
+                    rbean.setDateCreated(dbData.getTimestamp("dateCreated"));
+                    rbean.setLastEdittedBy(dbData.getString("lastEdittedBy"));
+                    restocksRetrieved.add(rbean);
                }
             request.setAttribute("restocksList", restocksRetrieved);
 
@@ -140,9 +183,9 @@ public class getUnfinishedServlet extends HttpServlet {
             
          
         }
-        catch(SQLException ex){
+        catch(Exception ex){
             ex.printStackTrace();
-            out.println("SQL error: " + ex);
+            out.println("error: " + ex);
         }
         finally {
             out.close();  // Close the output writer

@@ -22,13 +22,16 @@
         <p>Product ID: ${product.getProductID()}</p>
         <p>Product Name: ${product.getProductName()}</p>
         <p>Product Description: ${product.getProductDescription()}</p>
+        <p>Supplier: ${product.getSupplierName()}</p>
         <p>Product Price:${product.getProductPrice()}</p>
         <p>Restock Price: ${product.getRestockPrice()}</p>
         <p>Stocks Remaining: ${product.getStocksRemaining()}</p>
         <p>Low Stock: ${product.getLowStock()}</p>
         <p>Brand: ${product.getBrand()}</p>
-        <p>Product: ${product.getProductClass()}</p>
+        <p>Product Class: ${product.getProductClassName()}</p>
         <p>Color: ${product.getColor()}</p>
+        <p>Date Created: ${product.getDateCreated()}</p>
+        <p>Last Editted By: ${product.getLastEdittedBy()}</p>
         
         <br><br><br>
         <c:if test="${forInvoice eq 'yes'}">
@@ -36,13 +39,14 @@
         </c:if>
         <c:if test="${forInvoice eq 'yes'}">
             <br><br>
-            <a href="viewCart.jsp">View Cart</a> to add your invoice.
+            <a href="viewCart.jsp">View Cart</a> to add your invoice.<br><br>
         </c:if>
-        <br><br>
+        
         
         <c:choose>
             <c:when test="${forInvoice ne 'yes'}">
-                <a href="Servlets.getProductServlet">Go to Products list</a>
+                <a href="Servlets.getProductServlet">Go to Products list</a><br>
+                <a href="product.getDetails?forEdit=yes&prodID=<c:out value="${product.getProductID()}"/>">Edit Product</a>
             </c:when>
             <c:when test="${forInvoice eq 'yes'}">
                 <a href="Servlets.getProductServlet?forInvoice=yes">Return to Products list</a><br>

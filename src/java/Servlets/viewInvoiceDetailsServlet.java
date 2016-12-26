@@ -70,7 +70,7 @@ public class viewInvoiceDetailsServlet extends HttpServlet {
          
          //---------------
          //first get the invoice details
-         String preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID,"
+         String /*preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID,"
                  + " Customer.customerFirstName, Customer.customerLastName, Invoice.clinicID, Clinic.clinicName, Invoice.invoiceDate, "
                  + "Invoice.deliveryDate, Invoice.additionalAccessories, Invoice.termsOfPayment, "
                  + "Invoice.paymentDueDate, Invoice.datePaid, Invoice.dateClosed, Invoice.status, "
@@ -78,37 +78,60 @@ public class viewInvoiceDetailsServlet extends HttpServlet {
                  + "inner join Customer on Customer.customerID = Invoice.customerID "
                  + "inner join Clinic on Clinic.clinicID = Invoice.clinicID "
                  + "where invoiceID = ?";
+         */
+         preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, "
+                 + "Customer.customerFirstName, Customer.customerLastName, "
+                 + "Invoice.clinicID, Clinic.clinicName, Clinic.provinceID, "
+                 + "Province.provinceID, Province.provinceName, Province.provinceDivision, "
+                 + "Invoice.invoiceDate, Invoice.deliveryDate, "
+                 + "Invoice.termsOfPayment, Invoice.paymentDueDate, Invoice.datePaid, "
+                 + "Invoice.dateClosed, Invoice.statusID, InvoiceStatus.statusName, "
+                 + "Invoice.overdueFee, Invoice.amountDue, Invoice.amountPaid, Invoice.discount, "
+                 + "Invoice.dateDelivered, Invoice.dateCreated, Invoice.lastEdittedBy "
+                 + "from Invoice "
+                 + "inner join Customer on Customer.customerID = Invoice.customerID "
+                 + "inner join Clinic on Clinic.clinicID = Invoice.clinicID "
+                 + "inner join Province on Province.provinceID = Clinic.provinceID "
+                 + "inner join InvoiceStatus on InvoiceStatus.statusID = Invoice.statusID "
+                 + "where Invoice.invoiceID=?";
+         
          String inputInvID = request.getParameter("invID");
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          ps.setString(1, inputInvID);
          
          ResultSet dbData = ps.executeQuery();
          dbData.next();
-         invoiceBean ibean = new invoiceBean();
-         ibean.setInvoiceID(dbData.getInt("invoiceID"));
-         ibean.setInvoiceName(dbData.getString("invoiceName"));
-         ibean.setPRCID(dbData.getString("PRCID"));
-         ibean.setCustomerName(dbData.getString("customerLastName")+", "+dbData.getString("customerFirstName"));
-         ibean.setClinicID(dbData.getInt("clinicID"));
-         ibean.setClinicName(dbData.getString("clinicName"));
-         ibean.setInvoiceDate(dbData.getDate("invoiceDate"));
-         ibean.setDeliveryDate(dbData.getDate("deliveryDate"));
-         ibean.setAdditionalAccessories(dbData.getString("additionalAccessories"));
-         ibean.setTermsOfPayment(dbData.getString("termsOfPayment"));
-         ibean.setPaymentDueDate(dbData.getDate("paymentDueDate"));
-         if(!(""+dbData.getDate("dateClosed")).equals("0000-00-00")){ibean.setDateClosed(dbData.getDate("dateClosed"));}
-         if(!(""+dbData.getDate("datePaid")).equals("0000-00-00")){ibean.setDatePaid(dbData.getDate("datePaid"));}
-                
-
-         //ibean.setDatePaid(dbData.getDate("datePaid"));
-         //ibean.setDateClosed(dbData.getDate("dateClosed"));
-         ibean.setStatus(dbData.getString("status"));
-         ibean.setOverdueFee(dbData.getFloat("overdueFee"));
+         invoiceBean invBean = new invoiceBean();
+                invBean.setInvoiceID(dbData.getInt("invoiceID"));
+                invBean.setInvoiceName(dbData.getString("invoiceName"));
+                invBean.setPRCID(dbData.getString("PRCID"));
+                invBean.setCustomerName(dbData.getString("customerLastName")+", "+dbData.getString("customerFirstName"));
+                invBean.setClinicID(dbData.getInt("clinicID"));
+                invBean.setClinicName(dbData.getString("clinicName"));
+                invBean.setProvinceName(dbData.getString("provinceName"));
+                invBean.setProvinceDivision(dbData.getString("provinceDivision"));
+                invBean.setInvoiceDate(dbData.getDate("invoiceDate"));
+                invBean.setDeliveryDate(dbData.getDate("deliveryDate"));
+                invBean.setTermsOfPayment(dbData.getString("termsOfPayment"));
+                invBean.setPaymentDueDate(dbData.getDate("paymentDueDate"));
+                if(!(""+dbData.getDate("dateClosed")).equals("0000-00-00")){invBean.setDateClosed(dbData.getDate("dateClosed"));}
+                if(!(""+dbData.getDate("datePaid")).equals("0000-00-00")){invBean.setDatePaid(dbData.getDate("datePaid"));}
+                invBean.setStatusID(dbData.getInt("statusID"));
+                invBean.setStatusName(dbData.getString("statusName"));
+                invBean.setOverdueFee(dbData.getFloat("overdueFee"));
+                invBean.setAmountDue(dbData.getFloat("amountDue"));
+                invBean.setAmountPaid(dbData.getFloat("amountPaid"));
+                invBean.setDiscount(dbData.getFloat("discount"));
+                invBean.setDateDelivered(dbData.getDate("dateDelivered"));
+                invBean.setDateCreated(dbData.getTimestamp("dateCreated"));
+                invBean.setLastEdittedBy(dbData.getString("lastEdittedBy"));
          
-         request.setAttribute("invoice", ibean);
+         request.setAttribute("invoice", invBean);
          
          //now get the InvoiceItem/s
-         preparedSQL = "select InvoiceItem.invoiceItemID, InvoiceItem.invoiceID, Product.productID, Product.productName, InvoiceItem.quantityPurchased from InvoiceItem "
+         preparedSQL = "select InvoiceItem.invoiceItemID, InvoiceItem.invoiceID, Product.productID, "
+                 + "Product.productName, InvoiceItem.quantityPurchased "
+                 + "from InvoiceItem "
                  + "inner join Product on Product.productID = InvoiceItem.productID "
                  + "inner join Invoice on Invoice.invoiceID = InvoiceItem.invoiceID "
                  + "where Invoice.invoiceID = ?";
@@ -131,7 +154,8 @@ public class viewInvoiceDetailsServlet extends HttpServlet {
          String editInvoice = "" + request.getParameter("editInvoice");
          context.log("-->Editting Invoice?"+editInvoice);
          if(editInvoice.equals("yes")){
-            request.getRequestDispatcher("editInvoice.jsp").forward(request, response);
+            request.setAttribute("editInvoice","yes");
+            request.getRequestDispatcher("invoice.getStatus").forward(request, response);
          }
          else{
             request.getRequestDispatcher("invoiceDetails.jsp").forward(request,response);

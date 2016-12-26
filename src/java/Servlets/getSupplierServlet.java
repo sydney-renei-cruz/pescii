@@ -21,14 +21,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author user
  */
-@WebServlet(name = "getAccountTypeStatus", urlPatterns = {"/getAccountTypeStatus"})
-public class getAccountTypeStatus extends HttpServlet {
+@WebServlet(name = "getSupplierServlet", urlPatterns = {"/getSupplierServlet"})
+public class getSupplierServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -44,7 +43,6 @@ public class getAccountTypeStatus extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         
-        HttpSession session = request.getSession();
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
         
@@ -69,42 +67,41 @@ public class getAccountTypeStatus extends HttpServlet {
          stmt = conn.createStatement();
          
          //---------------
-         //THIS IS WHERE YOU START CHANGING
-         //String accountType = ""+session.getAttribute("accountType");
-         String preparedSQL = "select * from AccountStatus";
+         String preparedSQL = "select Supplier.supplierID, Supplier.supplierName, Supplier.supplierAddress, "
+                 + "Supplier.supplierContactNumber, Supplier.ProductClassID, ProductClass.productClassID, "
+                 + "ProductClass.productClassName, Supplier.dateCreated, Supplier.lastEdittedBy from Supplier "
+                 + "inner join ProductClass on ProductClass.productClassID=Supplier.productClassID "
+                 + "order by supplierName asc";
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
-         ResultSet dbData = ps.executeQuery();
-         ArrayList<accountStatusBean> accountStatusesRetrieved = new ArrayList<accountStatusBean>();
-         //retrieve the information.
-            while(dbData.next()){
-               accountStatusBean asbean = new accountStatusBean();
-                asbean.setAccountStatusID(dbData.getInt("accountStatusID"));
-                asbean.setAccountStatusName(dbData.getString("accountStatusName"));
-                accountStatusesRetrieved.add(asbean);
-            }
-         request.setAttribute("accountStatusesList", accountStatusesRetrieved);
-         context.log(""+accountStatusesRetrieved.size());
-         preparedSQL = "select * from AccountType";
-         ps = conn.prepareStatement(preparedSQL);
-         dbData = ps.executeQuery();
-         ArrayList<accountTypeBean> accountTypesRetrieved = new ArrayList<accountTypeBean>();
-         //retrieve the information.
-            while(dbData.next()){
-               accountTypeBean atbean = new accountTypeBean();
-                atbean.setAccountTypeID(dbData.getInt("accountTypeID"));
-                atbean.setAccountTypeName(dbData.getString("accountTypeName"));
-                accountTypesRetrieved.add(atbean);
-            }
-         request.setAttribute("atypeList", accountTypesRetrieved);
-         context.log(""+accountTypesRetrieved.size());
          
-         if(request.getAttribute("account")!=null){
-             request.setAttribute("account", request.getAttribute("account"));
-             request.getRequestDispatcher("editAccount.jsp").forward(request,response);
+         ResultSet dbData = ps.executeQuery();
+         ArrayList<supplierBean> suppliersRetrieved = new ArrayList<supplierBean>();
+         //retrieve the information.
+            while(dbData.next()){
+               supplierBean suppbean = new supplierBean();
+                suppbean.setSupplierID(dbData.getInt("supplierID"));
+                suppbean.setSupplierName(dbData.getString("supplierName"));
+                suppbean.setSupplierAddress(dbData.getString("supplierAddress"));
+                suppbean.setSupplierContactNumber(dbData.getString("supplierContactNumber"));
+                suppbean.setProductClassID(dbData.getInt("productClassID"));
+                suppbean.setProductClassName(dbData.getString("productClassName"));
+                suppbean.setDateCreated(dbData.getTimestamp("dateCreated"));
+                suppbean.setLastEdittedBy(dbData.getString("lastEdittedBy"));
+                suppliersRetrieved.add(suppbean);
+            }
+         request.setAttribute("suppliersList", suppliersRetrieved);
+         
+         request.setAttribute("prodClassList", request.getAttribute("prodClassList"));
+         context.log("FOREDIT EQUAAAAALS: " + request.getAttribute("forEdit"));
+         if((""+request.getAttribute("forEdit")).equals("yes")){
+             //request.setAttribute("forEdit", "yes");
+             request.setAttribute("product", request.getAttribute("product"));
+             request.setAttribute("productClassList", request.getAttribute("productClassList"));
+             request.getRequestDispatcher("editProduct.jsp").forward(request,response);
          }
          else{
-            request.getRequestDispatcher("createAccount.jsp").forward(request,response);
-         }
+            request.getRequestDispatcher("addProduct.jsp").forward(request,response);
+         }   
          
         }
         catch(Exception ex){
@@ -123,9 +120,6 @@ public class getAccountTypeStatus extends HttpServlet {
                 out.println("Another SQL error: " + ex);
             }
      }
-        
-        
-    
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

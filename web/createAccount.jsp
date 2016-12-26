@@ -24,7 +24,6 @@
         <c:if test="${message != ''}">
             <p>${message}</p><br><br>
         </c:if>
-        <%=accountTypes.get(0).getAccountTypeName()%>
         <form action="Servlets.createAccountServlet" method="post">
             Enter username:<input type="text" name="usernameInput"><br>
             Enter password:<input type="password" name="passwordInput"><br>

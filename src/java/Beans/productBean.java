@@ -25,13 +25,15 @@ public class productBean implements Serializable{
     public int productClassID;
     public String productClassName;
     public String color;
+    public int supplierID;
+    public String supplierName;
     public Timestamp dateCreated;
     public String lastEdittedBy;
     public Date lastEdittedDate;
     
     public productBean(String pid, String pname, String pdesc, float pprice, float rprice,
                         int srem, int lstock, String b, int pclassID, String pclassName, String c, 
-                        Timestamp dc, String leb, Date led){
+                        int suppID, String suppName, Timestamp dc, String leb, Date led){
         this.productID=pid;
         this.productName=pname;
         this.productDescription=pdesc;
@@ -43,6 +45,8 @@ public class productBean implements Serializable{
         this.productClassID=pclassID;
         this.productClassName=pclassName;
         this.color=c;
+        this.supplierID=suppID;
+        this.supplierName=suppName;
         this.dateCreated=dc;
         this.lastEdittedBy=leb;
         this.lastEdittedDate=led;
@@ -61,6 +65,8 @@ public class productBean implements Serializable{
     public void setProductClassID(int pclassID){this.productClassID=pclassID;}
     public void setProductClassName(String pclassName){this.productClassName=pclassName;}
     public void setColor(String c){this.color=c;}
+    public void setSupplierID(int suppID){this.supplierID=suppID;}
+    public void setSupplierName(String suppName){this.supplierName=suppName;}
     public void setDateCreated(Timestamp dc){this.dateCreated=dc;}
     public void setLastEdittedBy(String leb){this.lastEdittedBy=leb;}
     public void setLastEdittedDate(Date led){this.lastEdittedDate=led;}
@@ -76,6 +82,8 @@ public class productBean implements Serializable{
     public int getProductClassID(){return this.productClassID;}
     public String getProductClassName(){return this.productClassName;}
     public String getColor(){return this.color;}
+    public int getSupplierID(){return this.supplierID;}
+    public String getSupplierName(){return this.supplierName;}
     public Timestamp getDateCreated(){return this.dateCreated;}
     public String getLastEdittedBy(){return this.lastEdittedBy;}
     public Date getLastEdittedDate(){return this.lastEdittedDate;}

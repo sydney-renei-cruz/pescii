@@ -23,6 +23,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -75,6 +76,7 @@ public class editInvoiceServlet extends HttpServlet {
         processRequest(request, response);
         PrintWriter out = response.getWriter();
         
+        HttpSession session = request.getSession();
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
         
@@ -100,8 +102,10 @@ public class editInvoiceServlet extends HttpServlet {
          
          //---------------
          //first get the invoice details
-         String preparedSQL = "update Invoice set invoiceName=?, deliveryDate=?, termsOfPayment=?, paymentDueDate=?, datePaid=?, dateClosed=?, status=?"
-                                + "where invoiceID=?";
+         String preparedSQL = "update Invoice set invoiceName=?, deliveryDate=?, termsOfPayment=?, "
+                 + "paymentDueDate=?, datePaid=?, dateClosed=?, statusID=?, amountDue=?, "
+                 + "discount=?, amountPaid=?, dateDelivered=?, lastEdittedBy=? "
+                 + "where invoiceID=?";
          
          int invoiceID = Integer.parseInt(request.getParameter("invoiceIDInput"));
          String newInvoiceName = request.getParameter("newInvoiceNameInput");
@@ -109,12 +113,17 @@ public class editInvoiceServlet extends HttpServlet {
          String newTop = request.getParameter("topInput");
          String newPaymentDueDate = request.getParameter("paymentDueDateInput");
          String newDatePaid = request.getParameter("datePaidInput");
-         String newStatus = request.getParameter("statusInput");
+         int newStatus = Integer.parseInt(request.getParameter("statusInput"));
          String newDateClosed = "";
-         if(!newStatus.equals("In Progress")){
+         if(newStatus!=2){
             Date date = new Date();
             newDateClosed = new SimpleDateFormat("yyyy-MM-dd").format(date);
          }
+         float newAmountDue = 0 + Float.parseFloat(request.getParameter("amountDueInput"));
+         float newDiscount = 0 + Float.parseFloat(request.getParameter("discountInput"));
+         float newAmountPaid = 0 + Float.parseFloat(request.getParameter("amountPaidInput"));
+         String newDateDelivered = request.getParameter("dateDeliveredInput");
+         String lastEdittedBy = ""+session.getAttribute("userName");
          
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          ps.setString(1,newInvoiceName);
@@ -122,21 +131,24 @@ public class editInvoiceServlet extends HttpServlet {
          ps.setString(3,newTop);
          ps.setString(4,newPaymentDueDate);
          //ps.setString(4,newDatePaid);
-         if(newDatePaid.equals("") || newStatus.equals("Cancelled")){ps.setString(5,null);}
+         if(newDatePaid.equals("") || newStatus==3){ps.setString(5,null);}
          else{ps.setString(5,newDatePaid);}
-         if(newDateClosed.equals("")){
-             ps.setString(6,null);
-         }
+         if(newDateClosed.equals("")){ps.setString(6,null);}
          else{ps.setString(6,newDateClosed);}
-         ps.setString(7,newStatus);
-         ps.setInt(8,invoiceID);
+         ps.setFloat(7,newStatus);
+         ps.setFloat(8,newAmountDue);
+         ps.setFloat(9,newDiscount);
+         ps.setFloat(10,newAmountPaid);
+         ps.setString(11,newDateDelivered);
+         ps.setString(12,lastEdittedBy);
+         ps.setInt(13,invoiceID);
          
          
          ps.executeUpdate();
          context.log("--->Invoice successfully updated. InvoiceID is: "+invoiceID);
          
          
-         if(!newStatus.equals("In Progress")){
+         if(newStatus!=2){
             //now update the product
             //first get the invoice items
             preparedSQL = "select * from InvoiceItem where invoiceID = ?";
@@ -157,7 +169,7 @@ public class editInvoiceServlet extends HttpServlet {
 
            //check if it was cancelled or completed
            String operator;
-           if(newStatus.equals("Cancelled")){operator = "+";}
+           if(newStatus==3){operator = "+";}
            else{operator = "-";}
                
             for(invoiceItemBean iibean : invItemsRetrieved){

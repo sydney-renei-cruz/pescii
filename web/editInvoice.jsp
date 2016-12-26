@@ -9,6 +9,8 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
     invoiceBean invoice = (invoiceBean)request.getAttribute("invoice");
+    ArrayList<invoiceStatusBean> invStatList = (ArrayList<invoiceStatusBean>)request.getAttribute("invStatList");
+    ArrayList<invoiceItemBean> invitemsList = (ArrayList<invoiceItemBean>)request.getAttribute("invitemsList");
 %>
 <!DOCTYPE html>
 <html>
@@ -24,31 +26,30 @@
         <h5>Invoice Details</h5>
         
         <form action="invoice.edit" method="post">
-            <input type="hidden" value="${invoice.getInvoiceID()}" name="invoiceIDInput"><p>Invoice ID: ${invoice.getInvoiceID()}</p>
-            Invoice Name: <input type="text" value="${invoice.getInvoiceName()}" name="newInvoiceNameInput"><br>
-            <input type="hidden" value="${invoice.getPRCID()}" name="PRCIDInput"><p>Customer Name: ${invoice.getCustomerName()}</p>
-            <input type="hidden" value="${invoice.getClinicID()}" name="clinicIDInput"><p>Clinic Name: ${invoice.getClinicName()}</p>
-            <input type="hidden" value="${invoice.getInvoiceDate()}" name="invoiceDateInput"><p>Invoice Date Created: ${invoice.getInvoiceDate()}</p>
-            Delivery Date:<br>
+            <p>Invoice ID: <input type="hidden" value="${invoice.getInvoiceID()}" name="invoiceIDInput">${invoice.getInvoiceID()}</p>
+            <p>Invoice Name: <input type="text" value="${invoice.getInvoiceName()}" name="newInvoiceNameInput"><br>
+            <p>Customer Name: <input type="hidden" value="${invoice.getPRCID()}" name="PRCIDInput">${invoice.getCustomerName()}</p>
+            <p>Clinic Name: <input type="hidden" value="${invoice.getClinicID()}" name="clinicIDInput">${invoice.getClinicName()}</p>
+            <p><input type="hidden" value="${invoice.getInvoiceDate()}" name="invoiceDateInput">Invoice Date Created: ${invoice.getInvoiceDate()}</p>
+            Delivery Due Date:<br>
             <c:choose>
-                <c:when test="${invoice.getStatus() eq 'In Progress'}">
+                <c:when test="${invoice.getStatusName() eq 'In Progress'}">
                     <br>
                     From: ${invoice.getDeliveryDate()}<br>
                     To: <input type="text" name="deliveryDateInput" value="${invoice.getDeliveryDate()}"><br>
                 </c:when>
-                <c:when test="${invoice.getStatus() ne 'In Progress'}">
+                <c:when test="${invoice.getStatusName() ne 'In Progress'}">
                     <input type="hidden" value="${invoice.getDeliveryDate()}" name="deliveryDateInput">${invoice.getDeliveryDate()}<br>
                 </c:when>
             </c:choose>
-            <input type="hidden" value="${invoice.getAdditionalAccessories()}" name="addAccInput"><p>Additional Accessories: ${invoice.getAdditionalAccessories()}</p>
             Terms of Payment:
             <c:choose>
-                <c:when test="${invoice.getStatus() eq 'In Progress'}">
+                <c:when test="${invoice.getStatusName() eq 'In Progress'}">
                     <br>
                     From: ${invoice.getTermsOfPayment()}<br>
                     To: <input type="text" name="topInput" value="${invoice.getTermsOfPayment()}"><br><br>
                 </c:when>
-                <c:when test="${invoice.getStatus() ne 'In Progress'}">
+                <c:when test="${invoice.getStatusName() ne 'In Progress'}">
                     <input type="hidden" value="${invoice.getTermsOfPayment()}" name="topInput">${invoice.getTermsOfPayment()}<br><br>
                 </c:when>
             </c:choose>      
@@ -63,7 +64,7 @@
                     <input type="hidden" value="${invoice.getPaymentDueDate()}" name="paymentDueDateInput">${invoice.getPaymentDueDate()}<br><br>
                 </c:when>
             </c:choose>
-            Date Paid:
+            <b>Date Paid:</b>
             <c:choose>
                 <c:when test="${invoice.getDatePaid() eq null}">
                     <br>
@@ -74,29 +75,71 @@
                     <input type="hidden" value="${invoice.getDatePaid()}" name="datePaidInput">${invoice.getDatePaid()}<br><br>
                 </c:when>
             </c:choose>
-            Status:
+            <b>Status:</b>
             <c:choose>
-                <c:when test="${invoice.getStatus() ne 'Completed'}">
+                <c:when test="${invoice.getStatusName() ne 'Completed'}">
                     <br>
-                    From: ${invoice.getStatus()}<br>
+                    From: ${invoice.getStatusName()}<br>
                     To: 
                     <select name="statusInput">
-                        <option value="In Progress">In Progress</option>
-                        <option value="Completed">Completed</option>
-                        <option value="Cancelled">Cancelled</option>
+                        <c:forEach items="${invStatList}" var="invStat" begin="0" step="1">
+                        <option value="${invStat.getStatusID()}">${invStat.getStatusName()}</option>
+                        </c:forEach>
                     </select><br>
                 </c:when>
-                <c:when test="${invoice.getStatus() eq 'Completed'}">
-                    <input type="hidden" value="${invoice.getStatus()}" name="statusInput">${invoice.getStatus()}<br>
+                <c:when test="${invoice.getStatusName() eq 'Completed'}">
+                    <input type="hidden" value="${invoice.getStatusID()}" name="statusInput">${invoice.getStatusName()}<br>
                 </c:when>
             </c:choose>
             
+            Amount Due:
+            <c:choose>
+                <c:when test="${invoice.getStatusName() ne 'Completed'}">
+                    <input type="text" value="${invoice.getAmountDue()}" name="amountDueInput"><br>
+                </c:when>
+                <c:when test="${invoice.getStatusName() eq 'Completed'}">
+                    <input type="hidden" value="${invoice.getAmountDue()}" name="amountDueInput">${invoice.getAmountDue()}<br>
+                </c:when>
+            </c:choose>
+                    
+            Discount:
+            <c:choose>
+                <c:when test="${invoice.getStatusName() ne 'Completed'}">
+                    <input type="text" value="${invoice.getDiscount()}" name="discountInput"><br>
+                </c:when>
+                <c:when test="${invoice.getStatusName() eq 'CompletstatusInputed'}">
+                    <input type="hidden" value="${invoice.getDiscount()}" name="discountInput">${invoice.getDiscount()}<br>
+                </c:when>
+            </c:choose>
+                    
+            Amount Paid:
+            <c:choose>
+                <c:when test="${invoice.getStatusName() ne 'Completed'}">
+                    <input type="text" value="${invoice.getAmountPaid()}" name="amountPaidInput"><br>
+                </c:when>
+                <c:when test="${invoice.getStatusName() eq 'Completed'}">
+                    <input type="hidden" value="${invoice.getAmountPaid()}" name="amountPaidInput">${invoice.getAmountPaid()}<br>
+                </c:when>
+            </c:choose>
+                    
+            Date Delivered:
+            <c:choose>
+                <c:when test="${invoice.getStatusName() ne 'Completed'}">
+                    <input type="text" value="${invoice.getDateDelivered()}" name="dateDeliveredInput"><br>
+                </c:when>
+                <c:when test="${invoice.getStatusName() eq 'Completed'}">
+                    <input type="hidden" value="${invoice.getDateDelivered()}" name="dateDeliveredInput">${invoice.getDateDelivered()}<br>
+                </c:when>
+            </c:choose>
+                    
+                    
+                    
             <p>Overdue Fee: ${invoice.getOverdueFee()}</p>
             <br><input type="submit" value="Save Changes">
         </form>
         
         
-        <!-- Invoice Items, for user friendliness-->
+        <!-- Display Invoice Items, for user friendliness-->
         <br><br><br>
         <h5>Invoice Items</h5>
         <table border="1">

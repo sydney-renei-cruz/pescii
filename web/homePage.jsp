@@ -136,7 +136,9 @@
             <a href="account.getTypeStatus">Create Account</a><br>
             <a href="account.get">Edit Account</a><br><br>
             
-            <a href="addProduct.jsp">Add Product</a><br>
+            <a href="product.getProductClass?addSupp=yes">Add Supplier</a><br><br>
+            
+            <a href="product.getProductClass">Add Product</a><br>
             <a href="Servlets.getProductServlet">Edit Product</a><br>
             <a href="Servlets.getProductServlet?forOther=restock">Add Restock Order</a><br>
             <a href="restockOrder.get">Edit Restock Order</a><br>

@@ -28,14 +28,19 @@
         <p>Customer PRCID: ${invoice.getPRCID()}</p>
         <p>Customer Name: ${invoice.getCustomerName()}</p>
         <p>Clinic Name: ${invoice.getClinicName()}</p>
-        <p>Invoice Date: ${invoice.getInvoiceDate()}</p>
+        <p>Province: ${invoice.getProvinceName()}</p>
+        <p>Invoice Date: ${invoice.getDateCreated()}</p>
         <p>Delivery Date: ${invoice.getDeliveryDate()}</p>
-        <p>Additional Accessories: ${invoice.getAdditionalAccessories()}</p>
+        <p>Date Delivered: ${invoice.getDateDelivered()}</p>
         <p>Terms Of Payment: ${invoice.getTermsOfPayment()}</p>
         <p>Date Paid: ${invoice.getDatePaid()}</p>
+        <p>Amount Due: ${invoice.getAmountDue()}</p>
+        <p>Discount: ${invoice.getDiscount()}</p>
+        <p>Amount Paid: ${invoice.getAmountPaid()}</p>
         <p>Date Closed: ${invoice.getDateClosed()}</p>
-        <p>Status: ${invoice.getStatus()}</p>
+        <p>Status: ${invoice.getStatusName()}</p>
         <p>Overdue Fee: ${invoice.getOverdueFee()}</p>
+        <p>Last Editted By: ${invoice.getLastEdittedBy()}</p>
         
         <!-- Invoice Items-->
         <br><br><br>

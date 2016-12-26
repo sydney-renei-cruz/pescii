@@ -39,7 +39,7 @@
                 <td>${inv.getCustomerName()}</td>
                 <td>${inv.getClinicName()}</td>
                 <td>${inv.getProvinceName()}</td>
-                <td>${inv.getStatus()}</td>
+                <td>${inv.getStatusName()}</td>
                 <td>${inv.getInvoiceDate()}</td>
                 <td>${inv.getPaymentDueDate()}</td>
                 <td>${inv.getDatePaid()}</td>

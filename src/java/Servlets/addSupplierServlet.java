@@ -5,18 +5,13 @@
  */
 package Servlets;
 
-import Beans.invoiceItemBean;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -29,8 +24,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author user
  */
-@WebServlet(name = "editRestockOrderServlet", urlPatterns = {"/editRestockOrderServlet"})
-public class editRestockOrderServlet extends HttpServlet {
+@WebServlet(name = "addSupplierServlet", urlPatterns = {"/addSupplierServlet"})
+public class addSupplierServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -44,8 +39,7 @@ public class editRestockOrderServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-         PrintWriter out = response.getWriter();
-        
+        PrintWriter out = response.getWriter();
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -74,12 +68,10 @@ public class editRestockOrderServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
-         PrintWriter out = response.getWriter();
-        
+        //DO NOT CHANGE THESE
         ServletContext context = request.getSession().getServletContext();
-        HttpSession session = request.getSession();
         response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
         
         try {
          Class.forName(context.getInitParameter("jdbcDriver"));
@@ -92,67 +84,39 @@ public class editRestockOrderServlet extends HttpServlet {
         Statement stmt = null;
         
         try{
-        //Allocate a database Connection object
-         //This uses the pageContext servlet.  Look at Web.xml for the params!
-         //This means we don't need to recompile!
-         
+        
          conn = DriverManager.getConnection(context.getInitParameter("databaseUrl"), context.getInitParameter("databaseUser"), context.getInitParameter("databasePassword"));
         
          //Allocate a Statement object within the Connection
          stmt = conn.createStatement();
          
          //---------------
-         //first get the invoice details
-         //String preparedSQL = "update RestockOrder set numberOfPiecesOrdered=?, numberOfPiecesReceived=?, supplier=?, purpose=?, RODateCreated=?, RODateDelivered=?"
-         //                       + "where restockOrderID=?";
-         String message = "Restock Order successfully editted!";
-         String preparedSQL = "update RestockOrder set ROname=?,numberOfPiecesOrdered=?, "
-                 + "numberOfPiecesReceived=?, amountPaid=?, purpose=?, RODateDelivered=?, "
-                 + "lastEdittedBy=? "
-                 + "where restockOrderID=?";
+         //THIS IS WHERE YOU START CHANGING
+         HttpSession session = request.getSession();
+         String preparedSQL = "insert into Supplier(supplierName, supplierAddress, "
+                 + "supplierContactNumber, productClassID, lastEdittedBy) values (?,?,?,?,?)";
+         PreparedStatement ps = conn.prepareStatement(preparedSQL);
          
-         //int restockOrderID = Integer.parseInt(request.getParameter("restockOrderIDInput"));
-         int productID = Integer.parseInt(request.getParameter("productIDInput"));
-         String newROName = request.getParameter("newRONameInput");
-         int newNumberOfPiecesOrdered = 0 + Integer.parseInt(request.getParameter("numberOfPiecesOrderedInput"));
-         int newNumberOfPiecesReceived = 0 + Integer.parseInt(request.getParameter("numberOfPiecesReceivedInput"));
-         float newAmountPaid = 0 + Float.parseFloat(request.getParameter("amountPaidInput"));
-         String newPurpose = request.getParameter("purposeInput");
-         String newRODateDelivered = request.getParameter("roDateDeliveredInput");
-         int inputRestockOrderID = 0 + Integer.parseInt(request.getParameter("restockOrderIDInput"));
+         String inputSupplierName = request.getParameter("supplierNameInput");
+         String inputSupplierAddress = request.getParameter("supplierAddressInput");
+         String inputSupplierContactNumber = request.getParameter("supplierContactNumberInput");
+         int inputProductClassID = Integer.parseInt(request.getParameter("productClassInput"));
          String lastEdittedBy = ""+session.getAttribute("userName");
          
-         PreparedStatement ps = conn.prepareStatement(preparedSQL);
-         ps.setString(1,newROName);
-         ps.setInt(2,newNumberOfPiecesOrdered);
-         ps.setInt(3,newNumberOfPiecesReceived);
-         ps.setFloat(4,newAmountPaid);
-         ps.setString(5,newPurpose);
-         if(newRODateDelivered.equals("") || newRODateDelivered==null){ps.setString(6,null);}
-         else{ps.setString(6,newRODateDelivered);}
-         ps.setString(7,lastEdittedBy);
-         ps.setInt(8,inputRestockOrderID);
          
-         ps.executeUpdate();
+         ps.setString(1,inputSupplierName);
+         ps.setString(2,inputSupplierAddress);
+         ps.setString(3,inputSupplierContactNumber);
+         ps.setInt(4,inputProductClassID);
+         ps.setString(5,lastEdittedBy);
          
-         context.log("--->Restock Order successfully updated. RestockID is: "+inputRestockOrderID);
-         
-         if(!newRODateDelivered.equals("")){
-            //now update the product if an RODateDelivered was entered
-
-           
-            preparedSQL = "update Product set stocksRemaining = stocksRemaining + "+newNumberOfPiecesReceived+" where productID=?";
-            ps = conn.prepareStatement(preparedSQL);
-            ps.setInt(1,productID);
-
-            ps.executeUpdate();
-            message = "Restock Order successfully editted! Inventory updated.";
-         }
+         ps.executeUpdate();                   //at this point, you have already inserted into the database
          
          
-         
+         String message = "Supplier successfully added!";
          request.setAttribute("message", message);
          request.getRequestDispatcher("homePage.jsp").forward(request,response);
+            
          
         }
         catch(SQLException ex){

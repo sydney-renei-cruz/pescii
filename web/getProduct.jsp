@@ -25,6 +25,7 @@
                 <th>Product ID</th>
                 <th>Product Name</th>
                 <th>Product Description</th>
+                <th>Supplier</th>
                 <th>Product Price</th>
                 <th>Restock Price</th>
                 <th>Stocks Remaining</th>
@@ -48,12 +49,13 @@
                     
                     
                     <td>${prod.getProductDescription()}</td>
+                    <td>${prod.getSupplierName()}</td>
                     <td>${prod.getProductPrice()}</td>
                     <td>${prod.getRestockPrice()}</td>
                     <td>${prod.getStocksRemaining()}</td>
                     <td>${prod.getLowStock()}</td>
                     <td>${prod.getBrand()}</td>
-                    <td>${prod.getProductClass()}</td>
+                    <td>${prod.getProductClassName()}</td>
                     <td>${prod.getColor()}</td>
                     
                     <c:if test="${forInvoice eq 'yes'}">

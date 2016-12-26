@@ -22,7 +22,7 @@
         <h1>This is the Edit Account Page!</h1>
         
         <form action="account.edit" method="post">
-            Account ID: <input type="hidden" value="${account.getAccountID()}" name="accountIDInput"><br>
+            <input type="hidden" value="${account.getAccountID()}" name="accountIDInput"><br>
             <input type="hidden" value="${account.getPassword()}" name="oldPassword">
             Password: <input type="password" name="newPasswordInput"><br>
             Enter password again:<input type="password" name="newPasswordInput2"><br>

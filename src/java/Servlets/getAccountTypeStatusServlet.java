@@ -5,7 +5,7 @@
  */
 package Servlets;
 
-import Beans.restockOrderBean;
+import Beans.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -27,8 +27,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author user
  */
-@WebServlet(name = "NewServlet", urlPatterns = {"/NewServlet"})
-public class getRestockOrderServlet extends HttpServlet {
+@WebServlet(name = "getAccountTypeStatus", urlPatterns = {"/getAccountTypeStatus"})
+public class getAccountTypeStatusServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -44,6 +44,7 @@ public class getRestockOrderServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         
+        HttpSession session = request.getSession();
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
         
@@ -69,57 +70,46 @@ public class getRestockOrderServlet extends HttpServlet {
          
          //---------------
          //THIS IS WHERE YOU START CHANGING
-         String preparedSQL = "select RestockOrder.restockOrderID, Product.productID, RestockOrder.productID, "
-                 + "RestockOrder.ROName, RestockOrder.numberOfPiecesOrdered, Product.restockPrice, "
-                 + "RestockOrder.numberOfPiecesReceived, Product.supplierID, RestockOrder.purpose, "
-                 + "RestockOrder.RODateDue, RestockOrder.RODateDelivered, RestockOrder.amountPaid, "
-                 + "RestockOrder.discount, RestockOrder.dateCreated, RestockOrder.lastEdittedBy, "
-                 + "RestockOrder.datePaid, Product.productClassID, ProductClass.productClassID, "
-                 + "ProductClass.productClassName, Supplier.supplierID, Supplier.supplierName, "
-                 + "Product.productName "
-                 + "from RestockOrder "
-                 + "inner join Product on Product.productID = RestockOrder.productID "
-                 + "inner join Supplier on Supplier.supplierID = Product.supplierID "
-                 + "inner join ProductClass on ProductClass.productClassID = Product.productClassID "
-                 + "order by RestockOrder.datecreated desc";
-         
+         //String accountType = ""+session.getAttribute("accountType");
+         String preparedSQL = "select * from AccountStatus";
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
-         context.log(preparedSQL);
-         
-         
          ResultSet dbData = ps.executeQuery();
-         ArrayList<restockOrderBean> restocksRetrieved = new ArrayList<restockOrderBean>();
+         ArrayList<accountStatusBean> accountStatusesRetrieved = new ArrayList<accountStatusBean>();
          //retrieve the information.
             while(dbData.next()){
-               restockOrderBean rbean = new restockOrderBean();
-                rbean.setRestockOrderID(dbData.getInt("restockOrderID"));
-                rbean.setRestockOrderName(dbData.getString("ROName"));
-                rbean.setProductID(dbData.getInt("productID"));
-                rbean.setProductName(dbData.getString("productName"));
-                rbean.setNumberOfPiecesOrdered(dbData.getInt("numberOfPiecesOrdered"));
-                rbean.setNumberOfPiecesReceived(dbData.getInt("numberOfPiecesReceived"));
-                rbean.setSupplierID(dbData.getInt("supplierID"));
-                rbean.setSupplierName(dbData.getString("supplierName"));
-                rbean.setPurpose(dbData.getString("purpose"));
-                rbean.setRODateDue(dbData.getDate("RODateDue"));
-                rbean.setRODateDelivered(dbData.getDate("RODateDelivered"));
-                rbean.setRestockPrice(dbData.getFloat("restockPrice"));
-                rbean.setAmountPaid(dbData.getFloat("amountPaid"));
-                rbean.setDiscount(dbData.getFloat("discount"));
-                rbean.setDatePaid(dbData.getDate("datePaid"));
-                rbean.setDateCreated(dbData.getTimestamp("dateCreated"));
-                rbean.setLastEdittedBy(dbData.getString("lastEdittedBy"));
-                restocksRetrieved.add(rbean);
+               accountStatusBean asbean = new accountStatusBean();
+                asbean.setAccountStatusID(dbData.getInt("accountStatusID"));
+                asbean.setAccountStatusName(dbData.getString("accountStatusName"));
+                accountStatusesRetrieved.add(asbean);
             }
-         request.setAttribute("restocksList", restocksRetrieved);
+         request.setAttribute("accountStatusesList", accountStatusesRetrieved);
+         context.log(""+accountStatusesRetrieved.size());
+         preparedSQL = "select * from AccountType";
+         ps = conn.prepareStatement(preparedSQL);
+         dbData = ps.executeQuery();
+         ArrayList<accountTypeBean> accountTypesRetrieved = new ArrayList<accountTypeBean>();
+         //retrieve the information.
+            while(dbData.next()){
+               accountTypeBean atbean = new accountTypeBean();
+                atbean.setAccountTypeID(dbData.getInt("accountTypeID"));
+                atbean.setAccountTypeName(dbData.getString("accountTypeName"));
+                accountTypesRetrieved.add(atbean);
+            }
+         request.setAttribute("atypeList", accountTypesRetrieved);
+         context.log(""+accountTypesRetrieved.size());
          
-         request.getRequestDispatcher("getRestockOrder.jsp").forward(request,response);
-            
+         if(request.getAttribute("account")!=null){
+             request.setAttribute("account", request.getAttribute("account"));
+             request.getRequestDispatcher("editAccount.jsp").forward(request,response);
+         }
+         else{
+            request.getRequestDispatcher("createAccount.jsp").forward(request,response);
+         }
          
         }
         catch(Exception ex){
             ex.printStackTrace();
-            out.println("error: " + ex);
+            out.println("SQL error: " + ex);
         }
         finally {
             out.close();  // Close the output writer
@@ -133,6 +123,9 @@ public class getRestockOrderServlet extends HttpServlet {
                 out.println("Another SQL error: " + ex);
             }
      }
+        
+        
+    
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -18,6 +18,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -72,6 +73,7 @@ public class createRestockOrderServlet extends HttpServlet {
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
+        HttpSession session = request.getSession();
         
         try {
          Class.forName(context.getInitParameter("jdbcDriver"));
@@ -94,7 +96,9 @@ public class createRestockOrderServlet extends HttpServlet {
          //THIS IS WHERE YOU START CHANGING
          
          String preparedSQL = "insert into RestockOrder(productID, numberOfPiecesOrdered, supplier, purpose, RODateDue, ROName) values(?,?,?,?,?,?)";
-
+         preparedSQL = "insert into RestockOrder(productID, ROName, numberOfPiecesOrdered, supplierID, "
+                 + "purpose, RODateDue, discount, lastEdittedBy) "
+                 + "values(?,?,?,?,?,?,?,?)";
              
          //you don't change this
          PreparedStatement rs = conn.prepareStatement(preparedSQL);
@@ -102,17 +106,22 @@ public class createRestockOrderServlet extends HttpServlet {
          String inputROName = request.getParameter("RONameInput");
          int inputProductID = Integer.parseInt(request.getParameter("pid"));
          int inputPiecesOrdered = Integer.parseInt(request.getParameter("piecesOrderedInput"));
-         String inputSupplier = request.getParameter("supplierInput");
+         int inputSupplier = Integer.parseInt(request.getParameter("supplierIDInput"));
          String inputPurpose = request.getParameter("purposeInput");
          String inputDateDue = request.getParameter("dateDueInput");
+         float inputDiscount = Float.parseFloat(request.getParameter("discountInput"));
+         String lastEdittedBy = ""+session.getAttribute("userName");
          
          
          rs.setInt(1,inputProductID);
-         rs.setInt(2,inputPiecesOrdered);
-         rs.setString(3,inputSupplier);
-         rs.setString(4,inputPurpose);
-         rs.setString(5,inputDateDue);
-         rs.setString(6,inputROName);
+         rs.setString(2,inputROName);
+         rs.setInt(3,inputPiecesOrdered);
+         rs.setInt(4,inputSupplier);
+         rs.setString(5,inputPurpose);
+         rs.setString(6,inputDateDue);
+         rs.setFloat(7,inputDiscount);
+         rs.setString(8,lastEdittedBy);
+         
          rs.executeUpdate();                   //at this point, you have already inserted into the database
          
          String message = "Restock Order successfully created!";

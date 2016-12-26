@@ -33,14 +33,14 @@
             Enter Clinic Name:<input type="text" name="clinicNameInput"><br>
             Enter Clinic Address:<input type="text" name="clinicAddressInput"><br>
             Enter Clinic Province:<select name="chosenProvince">
-                <c:forEach items="${provinceList}" var="prov" begin="0" step="1">
+                <c:forEach items="<%=provinceList%>" var="prov" begin="0" step="1">
                     <option value="${prov.getProvinceID()}">${prov.getProvinceName()}</option>
                 </c:forEach>
             </select><br><br>
             Enter Clinic Phone Number:<input type="text" name="clinicPhoneNumInput"><br>
             Enter Sales Representative:<select name="chosenSalesRep">
                 <c:forEach items="${salesRepList}" var="sr" begin="0" step="1">
-                    <option value="${sr.getSalesRepID()}">${sr.getSalesRepLastName()} ${sr.getSalesRepFirstName()}</option>
+                    <option value="${sr.getSalesRepID()}">${sr.getSalesRepLastName()}, ${sr.getSalesRepFirstName()}</option>
                 </c:forEach>
             </select><br><br>
             <input type="submit" value="Add"><br>

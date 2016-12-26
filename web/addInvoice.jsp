@@ -10,6 +10,7 @@
 <%
     customerBean customer = (customerBean)request.getAttribute("customer");
     ArrayList<clinicBean> clinicsList = (ArrayList<clinicBean>)request.getAttribute("clinicsList");
+    ArrayList<invoiceStatusBean> invStatList = (ArrayList<invoiceStatusBean>)request.getAttribute("invStatList");
 %>
 <!DOCTYPE html>
 <html>
@@ -30,7 +31,7 @@
 
                 <tr>
                         <td>${customer.getPRCID()}</td>
-                        <td>${customer.getCustomerName()}</td>
+                        <td>${customer.getCustomerLastName()}, ${customer.getCustomerFirstName()}</td>
                         <td>${customer.getCustomerMobileNumber()}</td>
                         <td>${customer.getCustomerTelephoneNumber()}</td>
                 </tr>
@@ -57,9 +58,13 @@
             Payment Due Date: <input type="text" name="paymentDueDateInput"><br>
             Date Paid: <input type="text" name="datePaidInput"><br>
             Status: <select name="statusInput">
-                <option value="In Progress">In Progress</option>
-                <option value="Completed">Completed</option>
+                <c:forEach items="${invStatList}" var="invStat" begin="0" step="1">
+                    <option value="${invStat.getStatusID()}">${invStat.getStatusName()}</option>
+                </c:forEach>
             </select><br>
+            Amount Due: <input type="text" name="amountDueInput"><br>
+            Discount: <input type="text" name="DiscountInput"><br>
+            
             <input type="submit" value="Add Invoice">
         </form>
         <br><br>

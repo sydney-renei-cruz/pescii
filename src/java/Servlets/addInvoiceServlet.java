@@ -171,8 +171,10 @@ public class addInvoiceServlet extends HttpServlet {
                 return;
          }
          else{  //if not cancelled, then do what this servlet was made for.
-            String preparedSQL = "insert into Invoice(customerID, clinicID, invoiceDate, deliveryDate, additionalAccessories,"
-                                   + "termsOfPayment, paymentDueDate, datePaid, dateClosed, status, overdueFee, invoiceName) values(?,?,?,?,?,?,?,?,?,?,?,?)";
+            String preparedSQL = "insert into Invoice(customerID, clinicID, invoiceDate, "
+                    + "deliveryDate, termsOfPayment, paymentDueDate, datePaid, dateClosed, "
+                    + "statusID, overdueFee, invoiceName, lastEdittedBy) "
+                    + "values(?,?,?,?,?,?,?,?,?,?,?,?)";
 
             //this is put at the start because it needs to cancel immediately if there are no InvoiceItems
             LinkedList<String> cart;
@@ -203,24 +205,29 @@ public class addInvoiceServlet extends HttpServlet {
             String inputTop = request.getParameter("topInput");
             String inputPaymentDueDate = request.getParameter("paymentDueDateInput");
             String inputDatePaid = request.getParameter("datePaidInput");
-            String inputStatus = request.getParameter("statusInput");
+            int inputStatus = Integer.parseInt(request.getParameter("statusInput"));
             String inputInvoiceName = request.getParameter("invoiceNameInput");
+            float inputAmountDue = 0 + Float.parseFloat(request.getParameter("amountDueInput"));
+            float inputDiscount = 0 + Float.parseFloat(request.getParameter("discountInput"));
+            String lastEdittedBy = ""+session.getAttribute("userName");
 
 
             ps.setInt(1,inputCustomerID);
             ps.setInt(2, inputClinicID);
             ps.setString(3,inputInvoiceDate);
             ps.setString(4,inputDeliveryDate);
-            ps.setString(5,inputAddAcc);
-            ps.setString(6,inputTop);
-            ps.setString(7,inputPaymentDueDate);
-            if(inputDatePaid.equals("")){ps.setString(8,null);}
-            else{ps.setString(8,inputDatePaid);}
-            if(inputStatus.equals("Completed")){ps.setString(9,inputDatePaid);}
-            else{ps.setString(9,null);}
-            ps.setString(10,inputStatus);
-            ps.setFloat(11, 0);
-            ps.setString(12,inputInvoiceName);
+            ps.setString(5,inputTop);
+            ps.setString(6,inputPaymentDueDate);
+            if(inputDatePaid.equals("")){ps.setString(7,null);}
+            else{ps.setString(7,inputDatePaid);}
+            if(inputStatus==1){ps.setString(8,inputDatePaid);}
+            else{ps.setString(8,null);}
+            ps.setInt(9,inputStatus);
+            ps.setFloat(10, 0);
+            ps.setString(11,inputInvoiceName);
+            ps.setFloat(12,inputAmountDue);
+            ps.setFloat(13,inputDiscount);
+            ps.setString(14,lastEdittedBy);
             ps.executeUpdate();                   //at this point, you have already inserted into the database
 
 

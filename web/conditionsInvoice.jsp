@@ -48,6 +48,7 @@
                     <option value="Invoice.paymentDueDate">Payment Deadline</option>
                     <option value="Invoice.datePaid">Date Paid</option>
                     <option value="Invoice.dateClosed">Close Date</option>
+                    <option value="Invoice.dateDelivered">Date Delivered</option>
                     <option value="Invoice.dateCreated">Date Created</option>
             </select>
             <br><br>

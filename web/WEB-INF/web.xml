@@ -17,6 +17,7 @@
         <param-value/>
     </context-param>
     
+    
     <!-- Servlets   -->
     
     <servlet>
@@ -53,7 +54,11 @@
     </servlet>
     <servlet>
         <servlet-name>addSalesRepServlet</servlet-name>
-        <servlet-class>Servlets.addSalesRepServlet</servlet-class> 
+        <servlet-class>Servlets.addSalesRepServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>addSupplierServlet</servlet-name>
+        <servlet-class>Servlets.addSupplierServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>getCustomerServlet</servlet-name>
@@ -96,8 +101,20 @@
         <servlet-class>Servlets.getProvinceServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>getAccountTypeStatus</servlet-name>
-        <servlet-class>Servlets.getAccountTypeStatus</servlet-class>
+        <servlet-name>getAccountTypeStatusServlet</servlet-name>
+        <servlet-class>Servlets.getAccountTypeStatusServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>getProductClassServlet</servlet-name>
+        <servlet-class>Servlets.getProductClassServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>getSupplierServlet</servlet-name>
+        <servlet-class>Servlets.getSupplierServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>getInvoiceStatusServlet</servlet-name>
+        <servlet-class>Servlets.getInvoiceStatusServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>viewCustomerDetailsServlet</servlet-name>
@@ -191,6 +208,10 @@
         <url-pattern>/salesrep.add</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>addSupplierServlet</servlet-name>
+        <url-pattern>/supplier.add</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>getCustomerServlet</servlet-name>
         <url-pattern>/Servlets.getCustomerServlet</url-pattern>
     </servlet-mapping>
@@ -231,8 +252,20 @@
         <url-pattern>/province.get</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>getAccountTypeStatus</servlet-name>
+        <servlet-name>getAccountTypeStatusServlet</servlet-name>
         <url-pattern>/account.getTypeStatus</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getProductClassServlet</servlet-name>
+        <url-pattern>/product.getProductClass</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getSupplierServlet</servlet-name>
+        <url-pattern>/supplier.get</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getInvoiceStatusServlet</servlet-name>
+        <url-pattern>/invoice.getStatus</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>viewCustomerDetailsServlet</servlet-name>
@@ -290,6 +323,8 @@
         <servlet-name>editProductServlet</servlet-name>
         <url-pattern>/product.edit</url-pattern>
     </servlet-mapping>
+    
+    
     <!--Filters-->
     
     <filter>

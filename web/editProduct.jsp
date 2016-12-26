@@ -9,7 +9,8 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
     productBean product = (productBean)request.getAttribute("pbean");
-%>
+    ArrayList<productClassBean> prodClassList = (ArrayList<productClassBean>)request.getAttribute("prodClassList");
+    ArrayList<supplierBean> suppList = (ArrayList<supplierBean>)request.getAttribute("suppliersList");%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -31,15 +32,22 @@
             Restock Price: <input type="text" value="${product.getRestockPrice()}" name="restockPriceInput"><br>
             Low Stock Level <input type="text" value="${product.getLowStock()}" name="lowStockInput"><br>
             Brand: <input type="text" value="${product.getBrand()}" name="brandInput"><br>
-            <b>Product Class</b>
-            From: ${product.getProductClass()}
+            Color: <input type="text" value="${product.getColor()}" name="colorInput"><br><br>
+            <b>Product Class</b><br>
+            From: ${product.getProductClassName()}<br>
             To: <select name="productClassInput">
-                <option value="Dental Unit">Dental Unit</option>
-                <option value="Impression Material">Impression Material</option>
-                <option value="Raw Material">Raw Material</option>
+                <c:forEach items="${prodClassList}" var="pro" begin="0" step="1">
+                        <option value="${pro.getProductClassID()}">${pro.getProductClassName()}</option>
+                </c:forEach>
             </select><br><br>
-            
-            Color: <input type="text" value="${product.getColor()}" name="colorInput"><br>            
+            <b>Supplier</b><br>
+            From: ${product.getSupplierName()}<br>
+            To: <select name="supplierInput">
+                <c:forEach items="<%=suppList%>" var="sup" begin="0" step="1">
+                        <option value="${sup.getSupplierID()}">${sup.getSupplierName()}</option>
+                </c:forEach>
+            </select><br><br>
+                        
             
        
         
@@ -47,9 +55,9 @@
         </form>
 
         <br>
-        <button class="button button-block" type="submit" href="homePage.jsp">Return to Home</button>
+        <a href="homePage.jsp">Return to Home</a>
         <br>
-        <button class="button button-block" type="submit" href="Servlets.logoutServlet">logout</button>
+        <a href="Servlets.logoutServlet">logout</a>
 </div>
     </body>
 </html>

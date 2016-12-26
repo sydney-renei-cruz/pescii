@@ -69,34 +69,51 @@ public class viewRODetailsServlet extends HttpServlet {
          
          //---------------
          //first get the RestockOrder details
-         String preparedSQL = "Select RestockOrder.restockOrderID, Product.productID, Product.productName, RestockOrder.numberOfPiecesOrdered, "
-                    + "RestockOrder.numberOfPiecesReceived, RestockOrder.supplier, RestockOrder.purpose, RestockOrder.RODateDue, "
-                    + "RestockOrder.RODateDelivered, RestockOrder.ROName "
-                    + "from RestockOrder "
-                    + "inner join Product on Product.productID = RestockOrder.productID "
-                    + "where RestockOrder.restockOrderID=?";
+         String preparedSQL = "select RestockOrder.restockOrderID, Product.productID, RestockOrder.productID, "
+                 + "RestockOrder.ROName, RestockOrder.numberOfPiecesOrdered, Product.restockPrice, "
+                 + "RestockOrder.numberOfPiecesReceived, Product.supplierID, RestockOrder.purpose, "
+                 + "RestockOrder.RODateDue, RestockOrder.RODateDelivered, RestockOrder.amountPaid, "
+                 + "RestockOrder.discount, RestockOrder.dateCreated, RestockOrder.lastEdittedBy, "
+                 + "RestockOrder.datePaid, Product.productClassID, ProductClass.productClassID, "
+                 + "ProductClass.productClassName, Supplier.supplierID, Supplier.supplierName, "
+                 + "Product.productName "
+                 + "from RestockOrder "
+                 + "inner join Product on Product.productID = RestockOrder.productID "
+                 + "inner join Supplier on Supplier.supplierID = Product.supplierID "
+                 + "inner join ProductClass on ProductClass.productClassID = Product.productClassID "
+                 + "where RestockOrder.restockOrderID=? "
+                 + "order by RestockOrder.datecreated desc";
          String inputRestockOrderID = request.getParameter("restockID");
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          ps.setString(1, inputRestockOrderID);
+         context.log(preparedSQL);
          
          restockOrderBean rbean = new restockOrderBean();
          ResultSet dbData = ps.executeQuery();
          while(dbData.next()){
             rbean.setRestockOrderID(dbData.getInt("restockOrderID"));
-            rbean.setRestockOrderName(dbData.getString("ROName"));
-            rbean.setProductID(dbData.getInt("productID"));
-            rbean.setProductName(dbData.getString("productName"));
-            rbean.setNumberOfPiecesOrdered(dbData.getInt("numberOfPiecesOrdered"));
-            rbean.setNumberOfPiecesReceived(dbData.getInt("numberOfPiecesReceived"));
-            rbean.setSupplier(dbData.getString("supplier"));
-            rbean.setPurpose(dbData.getString("purpose"));
-            rbean.setRODateDue(dbData.getDate("RODateDue"));
-            rbean.setRODateDelivered(dbData.getDate("RODateDelivered"));
+                rbean.setRestockOrderName(dbData.getString("ROName"));
+                rbean.setProductID(dbData.getInt("productID"));
+                rbean.setProductName(dbData.getString("productName"));
+                rbean.setNumberOfPiecesOrdered(dbData.getInt("numberOfPiecesOrdered"));
+                rbean.setNumberOfPiecesReceived(dbData.getInt("numberOfPiecesReceived"));
+                rbean.setSupplierID(dbData.getInt("supplierID"));
+                rbean.setSupplierName(dbData.getString("supplierName"));
+                rbean.setPurpose(dbData.getString("purpose"));
+                rbean.setRODateDue(dbData.getDate("RODateDue"));
+                rbean.setRODateDelivered(dbData.getDate("RODateDelivered"));
+                rbean.setRestockPrice(dbData.getFloat("restockPrice"));
+                rbean.setAmountPaid(dbData.getFloat("amountPaid"));
+                rbean.setDiscount(dbData.getFloat("discount"));
+                rbean.setDatePaid(dbData.getDate("datePaid"));
+                rbean.setDateCreated(dbData.getTimestamp("dateCreated"));
+                rbean.setLastEdittedBy(dbData.getString("lastEdittedBy"));
          }
          request.setAttribute("restockOrder", rbean);
          context.log("ID IIIIIISSS: " + rbean.getRestockOrderID());
          
          //now you get the Product's details
+         /*
          preparedSQL = "select * from Product where productID = ?";
          int inputProductID = rbean.getProductID();
          ps = conn.prepareStatement(preparedSQL);
@@ -117,7 +134,7 @@ public class viewRODetailsServlet extends HttpServlet {
             pbean.setColor(dbData.getString("color"));
          }
          request.setAttribute("product", pbean);
-         
+         */
          String editRestock = ""+request.getParameter("editRestock");
          if(editRestock.equals("yes")) {
              request.getRequestDispatcher("editRestockOrder.jsp").forward(request,response);

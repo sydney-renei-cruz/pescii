@@ -95,8 +95,10 @@ public class editProductServlet extends HttpServlet {
          
          //---------------
          
-         String preparedSQL = "update Product set productName=?, productDescription=?, productPrice=?, restockPrice=?, "
-                 + "lowStock=?, brand=?, productClass=?, color=? where productID=?";
+         String preparedSQL = "update Product set productName=?, productDescription=?, "
+                 + "productPrice=?, restockPrice=?, lowStock=?, brand=?, productClassID=?, color=?, "
+                 + "supplierID=? "
+                 + "where productID=?";
          
          //int restockOrderID = Integer.parseInt(request.getParameter("restockOrderIDInput"));
          context.log(request.getParameter("productIDInput"));
@@ -107,8 +109,9 @@ public class editProductServlet extends HttpServlet {
          float newRestockPrice = Float.parseFloat(request.getParameter("restockPriceInput"));
          int newLowStock = Integer.parseInt(request.getParameter("lowStockInput"));
          String newBrand = request.getParameter("brandInput");
-         String newProductClass = request.getParameter("productClassInput");
+         int newProductClass = Integer.parseInt(request.getParameter("productClassInput"));
          String newColor = request.getParameter("colorInput");
+         int newSupplier = Integer.parseInt(request.getParameter("supplierInput"));
          
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          ps.setString(1,newProductName);
@@ -117,10 +120,12 @@ public class editProductServlet extends HttpServlet {
          ps.setFloat(4,newRestockPrice);
          ps.setInt(5,newLowStock);
          ps.setString(6,newBrand);
-         ps.setString(7,newProductClass);
+         ps.setInt(7,newProductClass);
          ps.setString(8,newColor);
-         ps.setInt(9,productID);
+         ps.setInt(9, newSupplier);
+         ps.setInt(10,productID);
          
+         context.log(preparedSQL);
          ps.executeUpdate();
          
          String message = "Product successfully editted!";
