@@ -19,7 +19,7 @@
     </head>
     <body>
         <h1>This is the Get Customer page!</h1>
-        <c:if test="${addInvoice != ''}">
+        <c:if test="${addInvoice eq 'yes'}">
             <h3>Select the customer making the invoice.</h3>
         </c:if>
         <table border="1">
@@ -45,7 +45,7 @@
         
         
         <br><br>
-        <a href="conditionsCustomer.jsp">Custom View Customer</a>
+        <a href="salesrep.get?whatFor=searchCustomer">Custom View Customer</a>
         <br><br>
         <a href="homePage.jsp">Return to Home</a>
         <br><br>

@@ -84,7 +84,7 @@
                 <td>${inv.getClinicName()}</td>
                 <td>${inv.getPaymentDueDate()}</td>
                 <td>${inv.getDatePaid()}</td>
-                <td>${inv.getStatus()}</td>
+                <td>${inv.getStatusName()}</td>
                 <td><a href="Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID=<c:out value="${inv.getInvoiceID()}"/>">Edit Invoice</a></td>
             </tr>
         </c:forEach>

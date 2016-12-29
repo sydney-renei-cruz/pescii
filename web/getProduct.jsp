@@ -79,7 +79,7 @@
         </c:if>
         
         <br><br>
-        <a href="conditionsProduct.jsp">Custom View Product</a>
+        <a href="product.getProductClass?search=yes&searchWhat=prod">Custom View Product</a>
         <br><br>
         <a href="homePage.jsp">Return to Home</a>
         <br><br>

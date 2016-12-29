@@ -129,6 +129,7 @@
             <a href="Servlets.getCustomerServlet?forAdd=yes">Add Customer</a><br>
             <a href="Servlets.getCustomerServlet">Edit Customer</a><br>
             <a href="new.get?whatFor=customer">Customers With Overdue Fees</a><br>
+            <a href="salesrep.get?whatFor=searchCustomer">Custom view Customers</a><br>
             <a href="Servlets.getCustomerServlet">View All Customers</a><br><br>
             <a href="addSalesRep.jsp">Add Sales Rep</a><br>
             <a href="salesrep.get">Edit Sales Rep</a><br>
@@ -143,11 +144,11 @@
             <a href="Servlets.getProductServlet?forOther=restock">Add Restock Order</a><br>
             <a href="restockOrder.get">Edit Restock Order</a><br>
             <a href="unfinished.get?getTable=ro">Unfinished RO</a><br>
-            <a href="conditionsRestockOrder.jsp">Custom View RO</a><br>
+            <a href="product.getProductClass?search=yes&searchWhat=ro">Custom View RO</a><br>
             <a href="restockOrder.get">View All Restock Orders</a><br><br>
         </c:if>
         
-        <a href="conditionsProduct.jsp">Custom View Product</a><br>
+        <a href="product.getProductClass?search=yes&searchWhat=prod">Custom View Product</a><br>
         <a href="Servlets.getProductServlet">View Product</a><br>
         
     </body>

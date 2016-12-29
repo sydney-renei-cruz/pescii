@@ -100,6 +100,10 @@ public class getInvoiceStatusServlet extends HttpServlet {
              context.log("now sending to editInvoice.jsp!");
              request.getRequestDispatcher("editInvoice.jsp").forward(request,response);
          }
+         else if((""+request.getAttribute("whatFor")).equals("conditionsInvoice")){
+             request.setAttribute("provList", request.getAttribute("provList"));
+             request.getRequestDispatcher("conditionsInvoice.jsp").forward(request,response);
+         }
          
          
         }

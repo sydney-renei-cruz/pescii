@@ -4,7 +4,13 @@
     Author     : user
 --%>
 
+<%@page import="Beans.*,java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%
+    ArrayList<productClassBean> prodClassList = (ArrayList<productClassBean>)request.getAttribute("prodClassList");
+    ArrayList<supplierBean> suppList = (ArrayList<supplierBean>)request.getAttribute("suppliersList");
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -20,12 +26,22 @@
         <form action="new.get">
             <input type="hidden" name="getWhat" value="customSearch">
             <input type="hidden" name="whatFor" value="restockOrder">
-            Search by Name:<input type="text" name="searchNameInput">
+            Search by Restock Order Name:<input type="text" name="searchNameInput">
             <br><br>
-            Search by Supplier:<input type="text" name="searchSupplierInput">
+            Search by Supplier:<select name="searchSupplierInput">
+                <option value="All">All</option>
+                <c:forEach items="<%=suppList%>" var="sup" begin="0" step="1">
+                        <option value="${sup.getSupplierName()}">${sup.getSupplierName()}</option>
+                </c:forEach>
+            </select>
             <br><br>
             Search by Product Name:<input type="text" name="searchProductNameInput">
             <br><br>
+            Product Class:<br>
+               <c:forEach items="${prodClassList}" var="pro" begin="0" step="1">
+                    <input type="checkbox" name="productClassInput" value="${pro.getProductClassName()}">${pro.getProductClassName()}<br>
+               </c:forEach>
+            <br>
             Search by Date:<select name="searchDateInput">
                     <option value="RODateDue">Expected Arrival Date</option>
                     <option value="RODateDelivered">Date Received</option>

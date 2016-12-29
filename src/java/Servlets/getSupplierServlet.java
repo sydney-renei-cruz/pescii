@@ -99,6 +99,13 @@ public class getSupplierServlet extends HttpServlet {
              request.setAttribute("productClassList", request.getAttribute("productClassList"));
              request.getRequestDispatcher("editProduct.jsp").forward(request,response);
          }
+         else if(!(""+request.getAttribute("searchWhat")).equals("")){
+             context.log("getting suppliers for search Product...");
+             String searchWhat = ""+request.getAttribute("searchWhat");
+             request.setAttribute("prodClassList", request.getAttribute("prodClassList"));
+             if(searchWhat.equalsIgnoreCase("prod")){request.getRequestDispatcher("conditionsProduct.jsp").forward(request,response);}
+             else if(searchWhat.equalsIgnoreCase("ro")){request.getRequestDispatcher("conditionsRestockOrder.jsp").forward(request,response);}
+         }
          else{
             request.getRequestDispatcher("addProduct.jsp").forward(request,response);
          }   

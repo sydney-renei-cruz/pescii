@@ -4,7 +4,13 @@
     Author     : user
 --%>
 
+<%@page import="Beans.*,java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%
+    ArrayList<productClassBean> prodClassList = (ArrayList<productClassBean>)request.getAttribute("prodClassList");
+    ArrayList<supplierBean> suppList = (ArrayList<supplierBean>)request.getAttribute("suppliersList");
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -23,15 +29,28 @@
             Search by Brand:<input type="text" name="searchBrandInput">
             <br><br>
             Product Class:<br>
-                <input type="checkbox" name="productClassInput" value="Dental Unit">Dental Units<br>
+                <!--<input type="checkbox" name="productClassInput" value="Dental Unit">Dental Units<br>
                 <input type="checkbox" name="productClassInput" value="Impression Material">Impression Materials<br>
                 <input type="checkbox" name="productClassInput" value="Raw Material">Raw Materials<br>
+                -->
+                <c:forEach items="${prodClassList}" var="pro" begin="0" step="1">
+                    <input type="checkbox" name="productClassInput" value="${pro.getProductClassName()}">${pro.getProductClassName()}<br>
+                </c:forEach>
                 <br>
             Low Stock:<br>
                 <input type="radio" name="lowStockInput" value="yes">Yes<br>
                 <input type="radio" name="lowStockInput" value="no">No<br>
                 <input type="radio" name="lowStockInput" value="cancel">Both<br>
-                <br>
+                <br><br>
+                
+            Search by Supplier:<select name="searchSupplierInput">
+                <option value="All">All</option>
+                <c:forEach items="<%=suppList%>" var="sup" begin="0" step="1">
+                        <option value="${sup.getSupplierName()}">${sup.getSupplierName()}</option>
+                </c:forEach>
+            </select><br><br>
+            <br><br>    
+                
             <input type="submit" value="Get">    
         </form>
         

@@ -9,6 +9,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
     ArrayList<provinceBean> provList = (ArrayList<provinceBean>)request.getAttribute("provList");
+    ArrayList<invoiceStatusBean> invStatList = (ArrayList<invoiceStatusBean>)request.getAttribute("invStatList");
 %>
 <!DOCTYPE html>
 <html>
@@ -26,22 +27,29 @@
         <form action="new.get">
             <input type="hidden" name="getWhat" value="customSearch">
             <input type="hidden" name="whatFor" value="invoice">
-            Search by Name:<input type="text" name="searchNameInput">
+            Search by Invoice Name:<input type="text" name="searchNameInput">
             <br><br>
-            Search by Status:<select name="searchStatusInput">
-                    <option value="All">All</option>
+            Search by Status:
+                    <!--<option value="All">All</option>
                     <option value="In Progress">In Progress</option>
                     <option value="Completed">Completed</option>
-                    <option value="Cancelled">Cancelled</option>
+                    <option value="Cancelled">Cancelled</option>-->
+                    <c:forEach items="${invStatList}" var="invStat" begin="0" step="1">
+                        <input type="checkbox" name="searchStatusInput" value="${invStat.getStatusName()}">${invStat.getStatusName()}
+                    </c:forEach>
                     
-            </select>
             <br><br>
+            <b>Search by Customer Name:</b><br>
+            Last Name: <input type="text" name="searchCustomerLastNameInput"><br>
+            First Name: <input type="text" name="searchCustomerFirstNameInput"><br>
+            <br>
             Search by Province:<select name="searchProvinceInput">
                     <option value="all">All</option>
                     <c:forEach items="${provList}" var="pro" begin="0" step="1">
-                        <option value="${pro.getProvinceID()}">${pro.getProvinceName()}</option>
+                        <option value="${pro.getProvinceID()}">${pro.getProvinceName()}</option><br>
                     </c:forEach>    
-                </select><br><br>
+                </select>
+            <br><br>
             Search by Date:<select name="searchDateInput">
                     <option value="Invoice.invoiceDate">Invoice Date</option>
                     <option value="Invoice.deliveryDate">Delivery Date</option>

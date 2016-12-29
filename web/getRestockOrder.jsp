@@ -51,7 +51,7 @@
         
         
         <br><br>
-        <a href="conditionsRestockOrder.jsp">Custom View RO</a>
+        <a href="product.getProductClass?search=yes&searchWhat=ro">Custom View RO</a>
         <br><br>
         <a href="homePage.jsp">Return to Home</a>
         <br><br>

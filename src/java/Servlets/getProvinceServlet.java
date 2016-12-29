@@ -90,7 +90,13 @@ public class getProvinceServlet extends HttpServlet {
             request.getRequestDispatcher("addClinic.jsp").forward(request,response);
          }
          else if(whatFor.equals("conditionsInvoice")){
-             request.getRequestDispatcher("conditionsInvoice.jsp").forward(request,response);
+             request.setAttribute("whatFor", "conditionsInvoice");
+             request.getRequestDispatcher("invoice.getStatus").forward(request,response);
+         }
+         else if((""+request.getAttribute("whatFor")).equals("searchCustomer")){
+             context.log("sending provinces and salesReps to conditionsCustomer...");
+             request.setAttribute("salesRepsList", request.getAttribute("salesRepsList"));
+             request.getRequestDispatcher("conditionsCustomer.jsp").forward(request,response);
          }
          
          

@@ -93,10 +93,11 @@ public class getNewEntryServlet extends HttpServlet {
          ResultSet dbData;
          
           if(whatFor.equals("invoice")){
+              forWhere = "where Invoice.dateCreated";
              //this makes the SQL statement for invoices near payment deadlines
                 //that is, those with payment deadlines within 7 days ahead of the current day
              if(getWhat.equals("close")){
-                 forWhere = "Invoice.paymentDueDate";
+                 forWhere = "where Invoice.paymentDueDate";
                  interval = " between now() and date_add(now(), interval 7 day)";
                  status = " and InvoiceStatus.statusName='In Progress' and Invoice.datePaid = null";
                  orderBy = " order by Invoice.paymentDueDate asc";
@@ -104,7 +105,7 @@ public class getNewEntryServlet extends HttpServlet {
              //this sets up the SQL statement for invoices validated, regardless of date
                 //remember: a validated invoice is that which is paid for but not delivered yet
              else if(getWhat.equals("validated")){
-                 forWhere = "Invoice.datePaid";
+                 forWhere = "where Invoice.datePaid";
                  status = " and InvoiceStatus.statusName='In Progress'";
                  interval = "";
                  orderBy = " order by Invoice.deliveryDate asc";
@@ -120,16 +121,42 @@ public class getNewEntryServlet extends HttpServlet {
                      condition = condition + "Invoice.invoiceName like '%"+request.getParameter("searchNameInput")+"%'";
                      compound = "";
                  }
-                 //supplier field
-                 if(!(request.getParameter("searchStatusInput").equals(""))){
-                     if(!(condition.equals(""))){
-                         compound=" and";
-                         if(!(request.getParameter("searchStatusInput").equals("All"))){
-                            condition = condition + compound + " InvoiceStatus.statusName = '"+request.getParameter("searchStatusInput")+"'";
-                         }
-                         compound="";
-                     }
-                 }
+                 //invoice status field
+                 
+                String[] inputStatus = request.getParameterValues("searchStatusInput");
+                String invoiceStatuses="";
+                if(inputStatus!=null){
+                    if(!(condition.equals(""))){
+                        compound=" and ";
+                    }
+                   invoiceStatuses = "(InvoiceStatus.statusName = ";
+                   for(int i=0;i<inputStatus.length;i++){
+                       if(i==0){invoiceStatuses=invoiceStatuses+"'"+inputStatus[i]+"'";}
+                       else{invoiceStatuses=invoiceStatuses+" or InvoiceStatus.statusName = '"+inputStatus[i]+"'";}
+                   }
+                   condition = condition + compound + invoiceStatuses+")";
+                   compound="";
+                }
+                //customer name field
+                if(!request.getParameter("searchCustomerLastNameInput").equals("")){
+                        if(!(condition.equals(""))){
+                            compound=" and";
+                        }
+                        if(!(request.getParameter("searchCustomerLastNameInput").equals("all"))){
+                           condition = condition + compound + " Customer.CustomerLastName like '%"+request.getParameter("searchCustomerLastNameInput")+"%'";
+                        }
+                        compound="";
+                    }
+                if(!request.getParameter("searchCustomerFirstNameInput").equals("")){
+                        if(!(condition.equals(""))){
+                            compound=" and";
+                        }
+                        if(!(request.getParameter("searchCustomerFirstNameInput").equals("all"))){
+                           condition = condition + compound + " Customer.CustomerFirstName like '%"+request.getParameter("searchCustomerFirstNameInput")+"%'";
+                        }
+                        compound="";
+                    }
+                
                  //province field
                  if(!request.getParameter("searchProvinceInput").equals("")){
                      if(!(condition.equals(""))){
@@ -164,7 +191,7 @@ public class getNewEntryServlet extends HttpServlet {
                  orderBy = " order by Invoice.invoiceName";
              }
              
-             
+             if(!condition.equals("")){condition = "where " + condition;}
              preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, "
                  + "Customer.customerFirstName, Customer.customerLastName, "
                  + "Invoice.clinicID, Clinic.clinicName, Clinic.provinceID, "
@@ -179,7 +206,7 @@ public class getNewEntryServlet extends HttpServlet {
                  + "inner join Clinic on Clinic.clinicID = Invoice.clinicID "
                  + "inner join Province on Province.provinceID = Clinic.provinceID "
                  + "inner join InvoiceStatus on InvoiceStatus.statusID = Invoice.statusID "
-                 + "where " + condition + forWhere + searchName + interval + status + orderBy;
+                 + condition + forWhere + searchName + interval + status + orderBy;
              
              
              context.log(preparedSQL);
@@ -222,14 +249,76 @@ public class getNewEntryServlet extends HttpServlet {
          
          //this part is for when a Customer is being searched. Currently not implemented
          else if(whatFor.equals("customer")){
-             preparedSQL = "select Customer.PRCID, Customer.customerFirstName, Customer.customerLastName, Customer.customerMobileNumber, "
-                     + "Customer.customerTelephoneNumber, SalesRep.salesRepFirstName, SalesRep.salesRepLastName, Customer.customerID, "
-                     + "Invoice.invoiceID, Invoice.overdueFee from Customer "
+             
+             //this is for searching with compound conditions
+             if(getWhat.equals("customSearch")){
+                 
+                 interval="";
+                 forWhere="";
+                 
+                //customer name field
+                if(!request.getParameter("searchCustomerLastNameInput").equals("")){
+                        condition = condition + " Customer.CustomerLastName like '%"+request.getParameter("searchCustomerLastNameInput")+"%'";
+                        compound="";
+                    }
+                if(!request.getParameter("searchCustomerFirstNameInput").equals("")){
+                        if(!(condition.equals(""))){
+                            compound=" and";
+                        }
+                        if(!(request.getParameter("searchCustomerFirstNameInput").equals("all"))){
+                           condition = condition + compound + " Customer.CustomerFirstName like '%"+request.getParameter("searchCustomerFirstNameInput")+"%'";
+                        }
+                        compound="";
+                    }
+                //PRCID field
+                if(!request.getParameter("searchPRCIDInput").equals("")){
+                        if(!(condition.equals(""))){
+                            compound=" and";
+                        }
+                        if(!(request.getParameter("searchPRCIDInput").equals("all"))){
+                           condition = condition + compound + " Customer.PRCID like '%"+request.getParameter("searchPRCIDInput")+"%'";
+                        }
+                        compound="";
+                    }
+                
+                 //SalesRep field
+                 if(!request.getParameter("searchSalesRepInput").equals("")){
+                     if(!(condition.equals(""))){
+                         compound=" and";
+                     }
+                     if(!(request.getParameter("searchSalesRepInput").equalsIgnoreCase("all"))){
+                        condition = condition + compound + " SalesRep.salesRepID = '"+request.getParameter("searchSalesRepInput")+"'";
+                     }
+                     compound="";
+                 }
+                 //province field
+                 if(!request.getParameter("searchProvinceInput").equals("")){
+                     if(!(condition.equals(""))){
+                         compound=" and";
+                     }
+                     if(!(request.getParameter("searchProvinceInput").equalsIgnoreCase("all"))){
+                        condition = condition + compound + " Province.provinceID = '"+request.getParameter("searchProvinceInput")+"'";
+                     }
+                     compound="";
+                 }
+                 
+                 forWhere="";
+                 searchName="";
+                 orderBy = " group by Customer.PRCID";
+             }
+             
+             if(!condition.equals("")){condition = "where " + condition;}
+             preparedSQL = "select Customer.PRCID, Customer.customerFirstName, Customer.customerLastName, "
+                     + "Customer.customerMobileNumber, Customer.customerTelephoneNumber, Customer.SalesRepID, "
+                     + "SalesRep.salesRepID, SalesRep.salesRepFirstName, SalesRep.salesRepLastName, "
+                     + "Customer.customerID, Clinic.customerID, Clinic.provinceID, "
+                     + "Province.provinceID, Province.provinceName from Customer "
                      + "inner join SalesRep on SalesRep.salesRepID = Customer.salesRepID "
-                     + "inner join Invoice on Invoice.customerID = Customer.customerID "
-                     + "where Invoice.status = 'In Progress' and Invoice.overdueFee != null "
-                     + "order by Customer.customerLastName asc";
-         
+                     + "inner join Clinic on Clinic.customerID = Customer.customerID "
+                     + "inner join Province on Province.provinceID = Clinic.provinceID "
+                     + condition + forWhere + searchName + interval + orderBy;
+             
+             context.log(preparedSQL);
              ps = conn.prepareStatement(preparedSQL);
              dbData = ps.executeQuery();
              ArrayList<customerBean> customersRetrieved = new ArrayList<customerBean>();
@@ -259,7 +348,7 @@ public class getNewEntryServlet extends HttpServlet {
                      condition = condition + "productName like '%"+request.getParameter("searchNameInput")+"%'";
                      compound = "";
                  }
-             //supplier field
+             //brand field
                  if(!(request.getParameter("searchBrandInput").equals(""))){
                      if(!(condition.equals(""))){
                          compound=" and";
@@ -285,9 +374,6 @@ public class getNewEntryServlet extends HttpServlet {
                 compound="";
              }
              //lowStock field
-             //String lowStockInput = "" + request.getParameter("lowStockInput");
-             //context.log(lowStockInput);
-             //if(!(lowStockInput.equals("")) || lowStockInput!=null || !(lowStockInput.equals("null"))){
              if(request.getParameter("lowStockInput")!=null){
                 if(!(condition.equals(""))){
                     compound=" and";
@@ -299,13 +385,26 @@ public class getNewEntryServlet extends HttpServlet {
                 condition = condition + compound + inputStocks;
                 compound="";
              }
+             //supplier field
+                 if(!(request.getParameter("searchSupplierInput").equals(""))){
+                     if(!(condition.equals(""))){
+                         compound=" and";
+                     }
+                     if(!request.getParameter("searchSupplierInput").equalsIgnoreCase("All")){
+                        condition = condition + compound + " Supplier.supplierName like '%"+request.getParameter("searchSupplierInput")+"%'";
+                         
+                     }
+                     compound="";
+                 }
+                 if(!condition.equals("")){condition = "where " + condition + "order by productName asc";}
+                 else{condition = condition + " order by productName asc";}
              preparedSQL = "select Product.productID, Product.productName, Product.productDescription, "
                  + "Product.productPrice, Product.restockPrice, Product.stocksRemaining, Product.lowStock, "
                  + "Product.brand, Product.productClassID, ProductClass.productClassname, Product.color, "
                  + "Product.supplierID, Supplier.supplierID, Supplier.supplierName from Product "
                  + "inner join ProductClass on ProductClass.productClassID = Product.productClassID "
                  + "inner join Supplier on Supplier.supplierID = Product.supplierID "
-                 + "where " + condition + " order by productName asc";
+                 + condition;
              
              context.log(preparedSQL);
              ps = conn.prepareStatement(preparedSQL);
@@ -337,15 +436,16 @@ public class getNewEntryServlet extends HttpServlet {
           
          //this part is for when an RO is being searched
          else if(whatFor.equals("restockOrder")){
+             forWhere = "where RestockOrder.dateCreated";
             //this is for getting ROs with near delivery dates
             if(getWhat.equals("close")){
-                forWhere="RestockOrder.RODateDue";
+                forWhere="where RestockOrder.RODateDue";
                 interval=" between now() and date_add(now(), interval 7 day) and RestockOrder.RODateDelivered = null";
                 orderBy = " order by RestockOrder.RODateDue asc";
             }
             //this is for getting completed ROs
             else if(getWhat.equals("completed")){
-                forWhere="RestockOrder.RODateDelivered";
+                forWhere="where RestockOrder.RODateDelivered";
                 orderBy = " order by RestockOrder.RODateDelivered";
             }
             //this is for searching with compound conditions
@@ -363,7 +463,10 @@ public class getNewEntryServlet extends HttpServlet {
                      if(!(condition.equals(""))){
                          compound=" and";
                      }
-                     condition = condition + compound + " RestockOrder.supplier like '%"+request.getParameter("searchSupplierInput")+"%'";
+                     if(!request.getParameter("searchSupplierInput").equalsIgnoreCase("All")){
+                        condition = condition + compound + " Supplier.supplierName like '%"+request.getParameter("searchSupplierInput")+"%'";
+                         
+                     }
                      compound="";
                  }
                  //productName field
@@ -373,6 +476,21 @@ public class getNewEntryServlet extends HttpServlet {
                      }
                      condition = condition + compound + " Product.productName like '%"+request.getParameter("searchProductNameInput")+"%'";
                      compound="";
+                 }
+                 //productClass field
+                 String[] inputProductClass = request.getParameterValues("productClassInput");
+                 String productClasses="";
+                 if(inputProductClass!=null){
+                    if(!(condition.equals(""))){
+                        compound=" and ";
+                    }
+                   productClasses = "(ProductClass.productClassName = ";
+                   for(int i=0;i<inputProductClass.length;i++){
+                       if(i==0){productClasses=productClasses+"'"+inputProductClass[i]+"'";}
+                       else{productClasses=productClasses+" or ProductClass.productClassName = '"+inputProductClass[i]+"'";}
+                   }
+                   condition = condition + compound + productClasses+")";
+                   compound="";
                  }
                  //date fields (can be expected date delivered, date created, or date received
                  if(!(request.getParameter("searchDateInput").equals(""))){
@@ -389,7 +507,7 @@ public class getNewEntryServlet extends HttpServlet {
                  searchName="";
                  orderBy = " order by RestockOrder.ROName";
              }
-             
+             if(!condition.equals("")){condition = "where " + condition;}
             preparedSQL = "select RestockOrder.restockOrderID, Product.productID, RestockOrder.productID, "
                  + "RestockOrder.ROName, RestockOrder.numberOfPiecesOrdered, Product.restockPrice, "
                  + "RestockOrder.numberOfPiecesReceived, Product.supplierID, RestockOrder.purpose, "
@@ -402,7 +520,7 @@ public class getNewEntryServlet extends HttpServlet {
                  + "inner join Product on Product.productID = RestockOrder.productID "
                  + "inner join Supplier on Supplier.supplierID = Product.supplierID "
                  + "inner join ProductClass on ProductClass.productClassID = Product.productClassID "
-                 + "where " + condition + forWhere + searchName + interval + orderBy;
+                 + condition + forWhere + searchName + interval + orderBy;
             
             
             context.log(preparedSQL);

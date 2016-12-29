@@ -85,6 +85,11 @@ public class getSalesRepServlet extends HttpServlet {
             }
          request.setAttribute("salesRepsList", salesRepsRetrieved);
          
+         if((""+request.getParameter("whatFor")).equals("searchCustomer")){
+             context.log("getting salesReps for searchCustomer...");
+             request.setAttribute("whatFor","searchCustomer");
+             request.getRequestDispatcher("province.get").forward(request,response);
+         }
          request.getRequestDispatcher("getSalesRep.jsp").forward(request,response);
             
         }
