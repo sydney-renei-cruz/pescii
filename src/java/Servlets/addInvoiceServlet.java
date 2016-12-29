@@ -173,8 +173,8 @@ public class addInvoiceServlet extends HttpServlet {
          else{  //if not cancelled, then do what this servlet was made for.
             String preparedSQL = "insert into Invoice(customerID, clinicID, invoiceDate, "
                     + "deliveryDate, termsOfPayment, paymentDueDate, datePaid, dateClosed, "
-                    + "statusID, overdueFee, invoiceName, lastEdittedBy) "
-                    + "values(?,?,?,?,?,?,?,?,?,?,?,?)";
+                    + "statusID, overdueFee, invoiceName, amountDue, discount, amountPaid, lastEdittedBy) "
+                    + "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
             //this is put at the start because it needs to cancel immediately if there are no InvoiceItems
             LinkedList<String> cart;
@@ -209,6 +209,7 @@ public class addInvoiceServlet extends HttpServlet {
             String inputInvoiceName = request.getParameter("invoiceNameInput");
             float inputAmountDue = 0 + Float.parseFloat(request.getParameter("amountDueInput"));
             float inputDiscount = 0 + Float.parseFloat(request.getParameter("discountInput"));
+            float inputAmountPaid = 0 + Float.parseFloat(request.getParameter("amountPaidInput"));
             String lastEdittedBy = ""+session.getAttribute("userName");
 
 
@@ -227,7 +228,9 @@ public class addInvoiceServlet extends HttpServlet {
             ps.setString(11,inputInvoiceName);
             ps.setFloat(12,inputAmountDue);
             ps.setFloat(13,inputDiscount);
-            ps.setString(14,lastEdittedBy);
+            ps.setFloat(14, inputAmountPaid);
+            ps.setString(15,lastEdittedBy);
+            context.log(preparedSQL);
             ps.executeUpdate();                   //at this point, you have already inserted into the database
 
 

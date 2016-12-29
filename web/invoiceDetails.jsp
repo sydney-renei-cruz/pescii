@@ -50,6 +50,7 @@
                 <th>Invoice Item ID</th>
                 <th>Product Name</th>
                 <th>Quantity Purchased</th>
+                <th>Total Cost</th>
             </tr>
         
         <c:forEach items="${invitemsList}" var="invitem" begin="0" step="1">
@@ -57,6 +58,7 @@
                 <td>${invitem.getInvoiceItemID()}</td>
                 <td><a href="product.getDetails?prodID=<c:out value="${invitem.getProductID()}"/>">${invitem.getProductName()}</a></td>
                 <td>${invitem.getQuantityPurchased()}</td>
+                <td>${invitem.getTotalCost()}</td>
             </tr>
         </c:forEach>
         </table>

@@ -49,6 +49,10 @@
         <servlet-class>Servlets.addToCartServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>removeFromCartServlet</servlet-name>
+        <servlet-class>Servlets.removeFromCartServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>addClinicServlet</servlet-name>
         <servlet-class>Servlets.addClinicServlet</servlet-class>
     </servlet>
@@ -198,6 +202,10 @@
     <servlet-mapping>
         <servlet-name>addToCartServlet</servlet-name>
         <url-pattern>/addToCart</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>removeFromCartServlet</servlet-name>
+        <url-pattern>/removeFromCart</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>addClinicServlet</servlet-name>

@@ -428,6 +428,7 @@ public class getNewEntryServlet extends HttpServlet {
                 productsRetrieved.add(pbean);
             }
             
+            if((""+request.getParameter("forOther")).equals("invoice")){request.setAttribute("forInvoice", "yes");}
             request.setAttribute("productsList", productsRetrieved);
             request.getRequestDispatcher("getProduct.jsp").forward(request,response);
             return;

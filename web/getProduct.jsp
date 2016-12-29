@@ -59,7 +59,7 @@
                     <td>${prod.getColor()}</td>
                     
                     <c:if test="${forInvoice eq 'yes'}">
-                        <td><a href="addToCart?prodName=<c:out value="${prod.getProductName()}"/>&prodID=<c:out value="${prod.getProductID()}"/>">ADD to Cart</a></td>
+                        <td><a href="addToCart?prodName=<c:out value="${prod.getProductName()}"/>&prodID=<c:out value="${prod.getProductID()}"/>&prodPrice=<c:out value="${prod.getProductPrice()}"/>">ADD to Cart</a></td>
                     </c:if>
                     <c:if test="${forRestock eq 'yes'}">
                       <td><a href="product.getDetails?forRestock=yes&prodID=<c:out value="${prod.getProductID()}"/>">ADD to RO</a></td>
@@ -76,10 +76,13 @@
             <br><br>
             <a href="viewCart.jsp">View Cart</a> to add your invoice.<br><br>
             <a href="invoice.add?cancel=yes">Cancel Invoice</a><br><br>
+            <a href="product.getProductClass?search=yes&searchWhat=prod&forOther=invoice">Custom View Product</a>
         </c:if>
         
         <br><br>
-        <a href="product.getProductClass?search=yes&searchWhat=prod">Custom View Product</a>
+        <c:if test="${forInvoice ne 'yes'}">
+            <a href="product.getProductClass?search=yes&searchWhat=prod">Custom View Product</a>
+        </c:if>
         <br><br>
         <a href="homePage.jsp">Return to Home</a>
         <br><br>

@@ -93,6 +93,7 @@ public class getProductClassServlet extends HttpServlet {
          else if((""+request.getParameter("search")).equals("yes")){
              context.log("getting Product Classes for searching...");
              String searchWhat = ""+request.getParameter("searchWhat");
+             if((""+request.getParameter("forOther")).equals("invoice")){request.setAttribute("forOther", "invoice");}
              if(searchWhat.equalsIgnoreCase("prod")){request.setAttribute("searchWhat","prod");}
              else if(searchWhat.equalsIgnoreCase("ro")){request.setAttribute("searchWhat", "ro");}
              request.getRequestDispatcher("supplier.get").forward(request,response);
@@ -103,6 +104,7 @@ public class getProductClassServlet extends HttpServlet {
                  request.setAttribute("forEdit", "yes");
                  context.log("getProductClass for EDIT!!!!!");
              }
+             context.log("getting Suppliers now...");
             request.getRequestDispatcher("supplier.get").forward(request,response);
         }
          

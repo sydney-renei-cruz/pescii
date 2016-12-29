@@ -26,14 +26,16 @@
                 <c:set var="cartSize" value="${sessionScope.cart.size()}"/>
                 <c:set var="cart" value="${sessionScope.cart}"/>
                 <c:set var="prodNames" value="${sessionScope.prodNames}"/>
+                <c:set var="quantity" value="${sessionScope.quantity}"/>
                 <h4>the size is <c:out value="${cartSize}"/></h4>
                 <p>Please enter the quantity you wish to purchase.</p>
                 
                 <!--Now make the table-->
                 <form action="addToCart">
                     <input type="hidden" name="gotQuantity" value="yes">
-                    <c:forEach items="${prodNames}" var="prods" begin="0" step="1">
-                        ${prods}: <input type="text" name="${prods}"><br>
+                    <c:forEach items="${prodNames}" var="prods" begin="0" step="1" varStatus="loop">
+                        <a href="removeFromCart?prodName=<c:out value="${prods}"/>">REMOVE</a>
+                        ${prods}: <input type="text" name="${prods}" value="${quantity[loop.index]}"><br>
                     </c:forEach>
                         <br>
                         <input type="submit" value="Select Customer">
@@ -51,9 +53,9 @@
 
 
         <br><br>
-        <a href="viewCart.jsp">View Cart</a> to add your invoice.<br><br>
+        <!--<a href="viewCart.jsp">View Cart</a> to add your invoice.<br><br>-->
         <a href="invoice.add?cancel=yes">Cancel Invoice</a><br><br>
-        <a href="Servlets.getProductServlet?forInvoice=yes">Return to Products List</a>
+        <a href="Servlets.getProductServlet?forOther=invoice">Return to Products List</a>
         <br><br>
         <a href="homePage.jsp">Return to Home</a>
         <br><br>

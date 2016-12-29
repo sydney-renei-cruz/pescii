@@ -4,7 +4,7 @@
     Author     : user
 --%>
 
-<%@page import="Beans.*,java.util.ArrayList"%>
+<%@page import="Beans.*,java.util.ArrayList, java.util.LinkedList,java.util.Collections"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
@@ -38,7 +38,46 @@
             </table>
             
             <br><br><br>
+        
+        <table border="1">
+                <tr>
+                    <th>Product Name</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total Price</th>
+                </tr>
+                <c:choose>
+                    <c:when test="${sessionScope.cart != null}">
+                        <c:set var="cartSize" value="${sessionScope.cart.size()}"/>
+                        <c:set var="cart" value="${sessionScope.cart}"/>
+                        <c:set var="prodNames" value="${sessionScope.prodNames}"/>
+                        <c:set var="prodPrices" value="${sessionScope.prodPrices}"/>
+                        <c:set var="quantity" value="${sessionScope.quantity}"/>
+                        <c:set var="totalPrices" value="${sessionScope.totalPrices}"/>
+
+                        <c:forEach items="${cart}" var="prods" begin="0" step="1" varStatus="loop">
+                            <tr>
+                                <td><c:out value="${prodNames[loop.index]}"/></td>
+                                <td><c:out value="${prodPrices[loop.index]}"/></td>
+                                <td><c:out value="${quantity[loop.index]}"/></td>
+                                <td><c:out value="${totalPrices[loop.index]}"/></td>
+                            </tr>
+                        </c:forEach>
+                    </c:when>
+
+                    <c:when test="${sessionScope.cart == null}">
+                        <%LinkedList<String> emptyCart = new LinkedList<String>();%>
+                        <c:set var="cartSize" value="0"/>
+                        <p>the size is 0</p>
+                    </c:when>
+                </c:choose>
+                
+                
+        
+                
+            </table>
             
+            <br><br><br>
         
         <form action="invoice.add" method="POST">
             
@@ -63,7 +102,8 @@
                 </c:forEach>
             </select><br>
             Amount Due: <input type="text" name="amountDueInput"><br>
-            Discount: <input type="text" name="DiscountInput"><br>
+            Discount: <input type="text" name="discountInput"><br>
+            Amount Paid: <input type="text" name="amountPaidInput"><br>
             
             <input type="submit" value="Add Invoice">
         </form>

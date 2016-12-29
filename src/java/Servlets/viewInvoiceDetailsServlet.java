@@ -130,7 +130,7 @@ public class viewInvoiceDetailsServlet extends HttpServlet {
          
          //now get the InvoiceItem/s
          preparedSQL = "select InvoiceItem.invoiceItemID, InvoiceItem.invoiceID, Product.productID, "
-                 + "Product.productName, InvoiceItem.quantityPurchased "
+                 + "Product.productName, InvoiceItem.quantityPurchased, Product.productPrice "
                  + "from InvoiceItem "
                  + "inner join Product on Product.productID = InvoiceItem.productID "
                  + "inner join Invoice on Invoice.invoiceID = InvoiceItem.invoiceID "
@@ -148,6 +148,7 @@ public class viewInvoiceDetailsServlet extends HttpServlet {
                 invitembean.setProductID(dbData.getInt("productID"));
                 invitembean.setProductName(dbData.getString("productName"));
                 invitembean.setQuantityPurchased(dbData.getInt("quantityPurchased"));
+                invitembean.setTotalCost(dbData.getInt("quantityPurchased") * dbData.getFloat("productPrice"));
                 invItemsRetrieved.add(invitembean);
             }
          request.setAttribute("invitemsList", invItemsRetrieved);

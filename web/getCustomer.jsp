@@ -45,6 +45,9 @@
         
         
         <br><br>
+        <c:if test="${addInvoice eq 'yes'}">
+            <a href="viewCart.jsp">View Cart</a><br><br>
+        </c:if>
         <a href="salesrep.get?whatFor=searchCustomer">Custom View Customer</a>
         <br><br>
         <a href="homePage.jsp">Return to Home</a>

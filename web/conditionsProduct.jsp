@@ -10,6 +10,7 @@
 <%
     ArrayList<productClassBean> prodClassList = (ArrayList<productClassBean>)request.getAttribute("prodClassList");
     ArrayList<supplierBean> suppList = (ArrayList<supplierBean>)request.getAttribute("suppliersList");
+    String forOther = ""+request.getAttribute("forOther");
 %>
 <!DOCTYPE html>
 <html>
@@ -24,15 +25,15 @@
         
         <form action="new.get">
             <input type="hidden" name="whatFor" value="product">
+            <c:if test="${forOther eq 'invoice'}">
+                <input type="hidden" name="forOther" value="invoice">
+            </c:if>
             Search by Name:<input type="text" name="searchNameInput">
             <br><br>
             Search by Brand:<input type="text" name="searchBrandInput">
             <br><br>
             Product Class:<br>
-                <!--<input type="checkbox" name="productClassInput" value="Dental Unit">Dental Units<br>
-                <input type="checkbox" name="productClassInput" value="Impression Material">Impression Materials<br>
-                <input type="checkbox" name="productClassInput" value="Raw Material">Raw Materials<br>
-                -->
+                
                 <c:forEach items="${prodClassList}" var="pro" begin="0" step="1">
                     <input type="checkbox" name="productClassInput" value="${pro.getProductClassName()}">${pro.getProductClassName()}<br>
                 </c:forEach>

@@ -20,8 +20,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author user
  */
-@WebServlet(name = "addToCartServlet", urlPatterns = {"/addToCartServlet"})
-public class addToCartServlet extends HttpServlet {
+@WebServlet(name = "NewServlet", urlPatterns = {"/NewServlet"})
+public class removeFromCartServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,17 +36,21 @@ public class addToCartServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
+        
         ServletContext context = request.getSession().getServletContext();
         
         LinkedList<String> cart;
         LinkedList<String> prodNames;
         LinkedList<Float> prodPrices;
+        LinkedList<Integer> quantity;
         LinkedList<Float> totalPrices;
+        int foundIndex = 0;
         HttpSession session = request.getSession();
         if (session.getAttribute("cart") == null){
             cart = new LinkedList<String>();
             prodNames = new LinkedList<String>();
             prodPrices = new LinkedList<Float>();
+            quantity = new LinkedList<Integer>();
             totalPrices = new LinkedList<Float>();
             context.log(">>cart created!");
             context.log("----cart size is: " + cart.size());
@@ -55,32 +59,36 @@ public class addToCartServlet extends HttpServlet {
             cart = (LinkedList<String>)(session.getAttribute("cart"));
             prodNames = (LinkedList<String>)(session.getAttribute("prodNames"));
             prodPrices = (LinkedList<Float>)(session.getAttribute("prodPrices"));
+            quantity = (LinkedList<Integer>)(session.getAttribute("quantity"));
             totalPrices = (LinkedList<Float>)(session.getAttribute("totalPrices"));
             context.log("----cart size is: " + cart.size());
         }
-        if(request.getParameter("prodID")!=null){
-            cart.add(request.getParameter("prodID"));
-            prodNames.add(request.getParameter("prodName"));
-            prodPrices.add(0 + Float.parseFloat(request.getParameter("prodPrice")));
-            context.log("->>product added to cart! ID is: " + request.getParameter("prodID"));
-        }
-        if(request.getParameter("gotQuantity")!=null){
-            LinkedList<Integer> quantity = new LinkedList<Integer>();
-            for(int i=0; i<prodNames.size();i++){
-                quantity.add(Integer.parseInt(request.getParameter(prodNames.get(i))));
-                totalPrices.add(quantity.get(i)*prodPrices.get(i));
-                context.log("--->>>quantity is: " + quantity.get(i));
+        if(request.getParameter("prodName")!=null){
+            String prodName = ""+request.getParameter("prodName");
+            
+            for(int i=0;i<prodNames.size();i++){
+                if((""+prodNames.get(i)).equals(prodName)){
+                    foundIndex = i;
+                }
             }
-            session.setAttribute("quantity", quantity);
-            request.getRequestDispatcher("Servlets.getCustomerServlet").forward(request, response);
-            return;
+            
+            cart.remove(foundIndex);
+            prodNames.remove(foundIndex);
+            prodPrices.remove(foundIndex);
+            if(quantity!=null && quantity.size()>foundIndex){quantity.remove(foundIndex);totalPrices.remove(foundIndex);}
+            context.log("->>product removed from cart! size is now: " + cart.size());
         }
+        
         session.setAttribute("cart", cart);
         session.setAttribute("prodNames", prodNames);
         session.setAttribute("prodPrices", prodPrices);
+        session.setAttribute("quantity", quantity);
         session.setAttribute("totalPrices", totalPrices);
         request.setAttribute("forInvoice", "yes");
-        request.getRequestDispatcher("Servlets.getProductServlet").forward(request,response);
+        request.getRequestDispatcher("viewCart.jsp").forward(request,response);
+    
+        
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
