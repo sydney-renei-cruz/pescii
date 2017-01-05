@@ -41,7 +41,8 @@
         </c:forEach>
         </table>
         <br><br>
-        
+        <a href="conditionsSalesRep.jsp">Custom View Sales Rep</a>
+        <br><br>
         <a href="homePage.jsp">Return to Home</a>
         <br><br>
         <a href="Servlets.logoutServlet">logout</a>

@@ -5,16 +5,13 @@
  */
 package Servlets;
 
-import Beans.salesRepBean;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -27,8 +24,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author user
  */
-@WebServlet(name = "getSalesRepServlet", urlPatterns = {"/getSalesRepServlet"})
-public class getSalesRepServlet extends HttpServlet {
+@WebServlet(name = "editSupplierServlet", urlPatterns = {"/editSupplierServlet"})
+public class editSupplierServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,73 +40,6 @@ public class getSalesRepServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        
-        ServletContext context = request.getSession().getServletContext();
-        response.setContentType("text/html");
-        
-        try {
-         Class.forName(context.getInitParameter("jdbcDriver"));
-      } catch(ClassNotFoundException ex) {
-         ex.printStackTrace();
-         out.println("jdbc error: " + ex);
-      }
-        
-        Connection conn = null;
-        Statement stmt = null;
-        
-        try{
-        //Allocate a database Connection object
-         //This uses the pageContext servlet.  Look at Web.xml for the params!
-         //This means we don't need to recompile!
-         
-         conn = DriverManager.getConnection(context.getInitParameter("databaseUrl"), context.getInitParameter("databaseUser"), context.getInitParameter("databasePassword"));
-        
-         //Allocate a Statement object within the Connection
-         stmt = conn.createStatement();
-         
-         //---------------
-         String preparedSQL = "select * from SalesRep order by salesRepLastName asc";
-         PreparedStatement ps = conn.prepareStatement(preparedSQL);
-         context.log(preparedSQL);
-         ResultSet dbData = ps.executeQuery();
-         ArrayList<salesRepBean> salesRepsRetrieved = new ArrayList<salesRepBean>();
-         //retrieve the information.
-            while(dbData.next()){
-               salesRepBean srbean = new salesRepBean();
-                srbean.setSalesRepID(dbData.getInt("salesRepID"));
-                srbean.setSalesRepFirstName(dbData.getString("salesRepFirstName"));
-                srbean.setSalesRepLastName(dbData.getString("salesRepLastName"));
-                srbean.setSalesRepMobileNumber(dbData.getString("salesRepMobileNumber"));
-                srbean.setSalesRepAddress(dbData.getString("salesRepAddress"));
-                salesRepsRetrieved.add(srbean);
-            }
-         request.setAttribute("salesRepsList", salesRepsRetrieved);
-         
-         if((""+request.getParameter("whatFor")).equals("searchCustomer")){
-             context.log("getting salesReps for searchCustomer...");
-             request.setAttribute("whatFor","searchCustomer");
-             request.getRequestDispatcher("province.get").forward(request,response);
-         }
-         request.getRequestDispatcher("getSalesRep.jsp").forward(request,response);
-            
-        }
-        catch(Exception ex){
-            ex.printStackTrace();
-            out.println("SQL error: " + ex);
-        }
-        finally {
-            out.close();  // Close the output writer
-            try {
-              //Close the resources
-              if (stmt != null) stmt.close();
-              if (conn != null) conn.close();
-            }
-            catch (SQLException ex) {
-                ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
-            }
-     }
-        
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -139,6 +69,77 @@ public class getSalesRepServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
+         PrintWriter out = response.getWriter();
+        HttpSession session = request.getSession();
+        ServletContext context = request.getSession().getServletContext();
+        response.setContentType("text/html");
+        
+        try {
+         Class.forName(context.getInitParameter("jdbcDriver"));
+      } catch(ClassNotFoundException ex) {
+         ex.printStackTrace();
+         out.println("jdbc error: " + ex);
+      }
+        
+        Connection conn = null;
+        Statement stmt = null;
+        
+        try{
+        //Allocate a database Connection object
+         //This uses the pageContext servlet.  Look at Web.xml for the params!
+         //This means we don't need to recompile!
+         
+         conn = DriverManager.getConnection(context.getInitParameter("databaseUrl"), context.getInitParameter("databaseUser"), context.getInitParameter("databasePassword"));
+        
+         //Allocate a Statement object within the Connection
+         stmt = conn.createStatement();
+         
+         //---------------
+         
+         String preparedSQL = "update Supplier set supplierName=?, supplierAddress=?, "
+                 + "supplierContactNumber=?, productClassID=?, lastEdittedBy=?"
+                 + " where supplierID=?";
+         
+         //int restockOrderID = Integer.parseInt(request.getParameter("restockOrderIDInput"));
+         context.log(request.getParameter("supplierIDInput"));
+         int supplierID = Integer.parseInt(request.getParameter("supplierIDInput"));
+         String newSupplierName = request.getParameter("supplierNameInput");
+         String newSupplierAddress = request.getParameter("supplierAddressInput");
+         String newSupplierContactNumber = request.getParameter("supplierContactNumberInput");
+         int newProductClass = 0 + Integer.parseInt(request.getParameter("productClassInput"));
+         String lastEdittedBy = ""+session.getAttribute("userName");
+         
+         PreparedStatement ps = conn.prepareStatement(preparedSQL);
+         ps.setString(1,newSupplierName);
+         ps.setString(2,newSupplierAddress);
+         ps.setString(3,newSupplierContactNumber);
+         ps.setInt(4,newProductClass);
+         ps.setString(5,lastEdittedBy);
+         ps.setInt(6,supplierID);
+         
+         ps.executeUpdate();
+         
+         String message = "Supplier successfully editted!";
+         request.setAttribute("message", message);
+         request.getRequestDispatcher("homePage.jsp").forward(request,response);
+         
+        }
+        catch(Exception ex){
+            ex.printStackTrace();
+            out.println("error: " + ex);
+        }
+        finally {
+            out.close();  // Close the output writer
+            try {
+              //Close the resources
+              if (stmt != null) stmt.close();
+              if (conn != null) conn.close();
+            }
+            catch (SQLException ex) {
+                ex.printStackTrace();
+                out.println("Another SQL error: " + ex);
+            }
+     }
     }
 
     /**

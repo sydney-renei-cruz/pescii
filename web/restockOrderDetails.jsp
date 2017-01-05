@@ -41,8 +41,11 @@
         
         <br><br><br>
         
+        <a href="restockOrder.getDetails?editRestock=yes&restockID=<c:out value="${ro.getRestockOrderID()}"/>">Edit</a>
         
         <br><br>
+        <a href="product.getProductClass?search=yes&searchWhat=ro">Custom View RO</a><br>
+        <a href="restockOrder.get">Return to RO list</a><br><br>
         <a href="homePage.jsp">Return to Home</a>
         <br><br>
         <a href="Servlets.logoutServlet">logout</a>

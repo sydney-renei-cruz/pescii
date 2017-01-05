@@ -72,17 +72,23 @@
         </c:forEach>
         </table>
         
-        <c:if test="${forInvoice eq 'yes'}">
-            <br><br>
-            <a href="viewCart.jsp">View Cart</a> to add your invoice.<br><br>
-            <a href="invoice.add?cancel=yes">Cancel Invoice</a><br><br>
-            <a href="product.getProductClass?search=yes&searchWhat=prod&forOther=invoice">Custom View Product</a>
-        </c:if>
-        
         <br><br>
-        <c:if test="${forInvoice ne 'yes'}">
-            <a href="product.getProductClass?search=yes&searchWhat=prod">Custom View Product</a>
-        </c:if>
+        
+        <c:choose>
+            <c:when test="${forInvoice eq 'yes'}">
+                <a href="viewCart.jsp">View Cart</a> to add your invoice.<br><br>
+                <a href="invoice.add?cancel=yes">Cancel Invoice</a><br><br>
+                <a href="product.getProductClass?search=yes&searchWhat=prod&forOther=invoice">Custom View Product</a>
+            </c:when>
+                
+            <c:when test="${forRestock eq 'yes'}">
+                <a href="product.getProductClass?search=yes&searchWhat=prod&forOther=restock">Custom View Product</a>
+            </c:when>    
+            
+            <c:when test="${forInvoice ne 'yes' && forRestock ne 'yes'}">
+                <a href="product.getProductClass?search=yes&searchWhat=prod">Custom View Product</a>
+            </c:when>
+        </c:choose>
         <br><br>
         <a href="homePage.jsp">Return to Home</a>
         <br><br>

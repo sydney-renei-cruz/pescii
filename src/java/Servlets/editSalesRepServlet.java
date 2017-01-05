@@ -18,6 +18,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -69,7 +70,7 @@ public class editSalesRepServlet extends HttpServlet {
             throws ServletException, IOException {
         processRequest(request, response);
          PrintWriter out = response.getWriter();
-        
+        HttpSession session = request.getSession();
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
         
@@ -95,7 +96,9 @@ public class editSalesRepServlet extends HttpServlet {
          
          //---------------
          
-         String preparedSQL = "update SalesRep set salesRepFirstName=?, salesRepLastName=?, salesRepMobileNumber=?, salesRepAddress=? where salesRepID=?";
+         String preparedSQL = "update SalesRep set salesRepFirstName=?, salesRepLastName=?, "
+                 + "salesRepMobileNumber=?, salesRepAddress=?, lastEdittedBy=? "
+                 + "where salesRepID=?";
          
          //int restockOrderID = Integer.parseInt(request.getParameter("restockOrderIDInput"));
          context.log(request.getParameter("srID"));
@@ -104,13 +107,15 @@ public class editSalesRepServlet extends HttpServlet {
          String newSalesRepLastName = request.getParameter("newSalesRepLastNameInput");
          String newSalesRepMobileNumber = request.getParameter("newSalesRepMNInput");
          String newSalesRepAddress = request.getParameter("newSalesRepAddressInput");
+         String lastEdittedBy = ""+session.getAttribute("userName");
          
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          ps.setString(1,newSalesRepFirstName);
          ps.setString(2,newSalesRepLastName);
          ps.setString(3,newSalesRepMobileNumber);
          ps.setString(4,newSalesRepAddress);
-         ps.setInt(5,salesRepID);
+         ps.setString(5,lastEdittedBy);
+         ps.setInt(6,salesRepID);
          
          ps.executeUpdate();
          

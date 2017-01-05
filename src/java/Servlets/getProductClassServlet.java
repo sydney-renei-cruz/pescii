@@ -93,10 +93,19 @@ public class getProductClassServlet extends HttpServlet {
          else if((""+request.getParameter("search")).equals("yes")){
              context.log("getting Product Classes for searching...");
              String searchWhat = ""+request.getParameter("searchWhat");
-             if((""+request.getParameter("forOther")).equals("invoice")){request.setAttribute("forOther", "invoice");}
+             String forOther = ""+request.getParameter("forOther");
+             
+             if(forOther.equals("invoice")){request.setAttribute("forOther", "invoice");}
+             else if(forOther.equals("restock")){request.setAttribute("forOther", "restock");}
+             
              if(searchWhat.equalsIgnoreCase("prod")){request.setAttribute("searchWhat","prod");}
              else if(searchWhat.equalsIgnoreCase("ro")){request.setAttribute("searchWhat", "ro");}
+             
              request.getRequestDispatcher("supplier.get").forward(request,response);
+         }
+         else if((""+request.getAttribute("editSupplier")).equals("yes")){
+             request.setAttribute("supplier", request.getAttribute("supplier"));
+             request.getRequestDispatcher("editSupplier.jsp").forward(request,response);
          }
          else{
              if((""+request.getAttribute("forEdit")).equals("yes")){

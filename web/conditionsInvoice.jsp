@@ -30,10 +30,6 @@
             Search by Invoice Name:<input type="text" name="searchNameInput">
             <br><br>
             Search by Status:
-                    <!--<option value="All">All</option>
-                    <option value="In Progress">In Progress</option>
-                    <option value="Completed">Completed</option>
-                    <option value="Cancelled">Cancelled</option>-->
                     <c:forEach items="${invStatList}" var="invStat" begin="0" step="1">
                         <input type="checkbox" name="searchStatusInput" value="${invStat.getStatusName()}">${invStat.getStatusName()}
                     </c:forEach>

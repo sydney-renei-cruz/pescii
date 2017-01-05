@@ -428,12 +428,157 @@ public class getNewEntryServlet extends HttpServlet {
                 productsRetrieved.add(pbean);
             }
             
-            if((""+request.getParameter("forOther")).equals("invoice")){request.setAttribute("forInvoice", "yes");}
+            String forOther = ""+request.getParameter("forOther");
+            context.log("getNewEntryServlet getting product forOther: "+forOther);
+            if(forOther.equals("invoice")){request.setAttribute("forInvoice", "yes");}
+            else if(forOther.equals("restock")){
+                context.log("getting product for RESTOCK!!!!");
+                request.setAttribute("forRestock", "yes");}
             request.setAttribute("productsList", productsRetrieved);
             request.getRequestDispatcher("getProduct.jsp").forward(request,response);
             return;
          }
          
+         //this part is for when an Account is being searched
+         else if(whatFor.equals("account")){
+             interval="";
+             forWhere="";
+             //userName field
+                 if(!(request.getParameter("userNameInput").equals(""))){
+                     condition = condition + "Account.userName like '%"+request.getParameter("userNameInput")+"%'";
+                     compound = "";
+                 }
+             
+             
+             //accountStatus field
+             String[] inputAccountStatus = request.getParameterValues("accountStatusInput");
+             String accountStatuses="";
+             if(inputAccountStatus!=null){
+                 if(!(condition.equals(""))){
+                     compound=" and ";
+                 }
+                accountStatuses = "(AccountStatus.accountStatusName = ";
+                for(int i=0;i<inputAccountStatus.length;i++){
+                    if(i==0){accountStatuses=accountStatuses+"'"+inputAccountStatus[i]+"'";}
+                    else{accountStatuses=accountStatuses+" or AccountStatus.accountStatusName = '"+inputAccountStatus[i]+"'";}
+                }
+                condition = condition + compound + accountStatuses+")";
+                compound="";
+             }
+             
+             //accountType field
+             String[] inputAccountType = request.getParameterValues("accountTypeInput");
+             String accountTypes="";
+             if(inputAccountType!=null){
+                 if(!(condition.equals(""))){
+                     compound=" and ";
+                 }
+                accountTypes = "(AccountType.accountTypeName = ";
+                for(int i=0;i<inputAccountType.length;i++){
+                    if(i==0){accountTypes=accountTypes+"'"+inputAccountType[i]+"'";}
+                    else{accountTypes=accountTypes+" or AccountType.accountTypeName = '"+inputAccountType[i]+"'";}
+                }
+                condition = condition + compound + accountTypes+")";
+                compound="";
+             }
+             
+             //dateCreated field
+             if(!(searchDateFrom.equals(""))){
+                if(!(condition.equals(""))){
+                    compound=" and ";
+                }
+                interval = " between '" + searchDateFrom + " 00:00:00' and '" + searchDateTo + " 23:59:59'";
+                condition = condition + compound + " Account.dateCreated" + interval;
+                compound="";
+            }
+             
+             
+             
+            if(!condition.equals("")){condition = "where " + condition + "order by userName asc";}
+            else{condition = condition + " order by userName asc";}
+            preparedSQL = "select Account.accountID, Account.userName, Account.password, Account.dateCreated, "
+                     + "AccountStatus.accountStatusName, AccountType.accountTypeName from Account "
+                     + "inner join AccountStatus on AccountStatus.accountStatusID = Account.accountStatus "
+                     + "inner join AccountType on AccountType.accountTypeID = Account.accountType "
+                     + condition;
+             
+             
+             context.log(preparedSQL);
+             ps = conn.prepareStatement(preparedSQL);
+             dbData = ps.executeQuery();
+             ArrayList<accountBean> accountsRetrieved = new ArrayList<accountBean>();
+         //retrieve the information.
+            while(dbData.next()){
+               accountBean abean = new accountBean();
+                abean.setAccountID(dbData.getInt("accountID"));
+                abean.setUserName(dbData.getString("userName"));
+                abean.setPassword(dbData.getString("password"));
+                abean.setAccountStatus(dbData.getString("accountStatusName"));
+                abean.setAccountType(dbData.getString("accountTypeName"));
+                //abean.setDateCreated(dbData.getTimestamp("dateCreated"));
+                abean.setDateCreated(dbData.getTimestamp("dateCreated"));
+                accountsRetrieved.add(abean);
+            }
+            request.setAttribute("accountsList", accountsRetrieved);
+         
+            request.getRequestDispatcher("getAccount.jsp").forward(request,response);
+            return;
+         }
+         
+         
+         //this part is for when a SalesRep is being searched
+         else if(whatFor.equals("salesRep")){
+         
+            interval="";
+            forWhere="";
+            orderBy=" order by SalesRep.salesRepLastName asc";
+           //customer name field
+           if(!request.getParameter("searchSalesRepLastNameInput").equals("")){
+                condition = condition + " SalesRep.salesRepLastName like '%"+request.getParameter("searchSalesRepLastNameInput")+"%'";
+                compound="";
+                orderBy=" order by SalesRep.salesRepLastName asc";
+            }
+           if(!request.getParameter("searchSalesRepFirstNameInput").equals("")){
+                if(!(condition.equals(""))){
+                    compound=" and";
+                }
+                if(!(request.getParameter("searchSalesRepFirstNameInput").equals("all"))){
+                   condition = condition + compound + " SalesRep.salesRepFirstName like '%"+request.getParameter("searchSalesRepFirstNameInput")+"%'";
+                }
+                compound="";
+                orderBy=" order by SalesRep.salesRepFirstName asc";
+            }
+           if(!(searchDateFrom.equals(""))){
+                if(!(condition.equals(""))){
+                    compound=" and ";
+                }
+                interval = " between '" + searchDateFrom + " 00:00:00' and '" + searchDateTo + " 23:59:59'";
+                condition = condition + compound + " SalesRep.dateCreated";
+                compound="";
+            }
+             
+             
+            if(!condition.equals("")){condition = "where " + condition;}
+            preparedSQL = "select * from SalesRep "
+                    + condition + interval + orderBy;
+            ps = conn.prepareStatement(preparedSQL);
+            context.log(preparedSQL);
+            dbData = ps.executeQuery();
+            ArrayList<salesRepBean> salesRepsRetrieved = new ArrayList<salesRepBean>();
+         
+            while(dbData.next()){
+               salesRepBean srbean = new salesRepBean();
+                srbean.setSalesRepID(dbData.getInt("salesRepID"));
+                srbean.setSalesRepFirstName(dbData.getString("salesRepFirstName"));
+                srbean.setSalesRepLastName(dbData.getString("salesRepLastName"));
+                srbean.setSalesRepMobileNumber(dbData.getString("salesRepMobileNumber"));
+                srbean.setSalesRepAddress(dbData.getString("salesRepAddress"));
+                salesRepsRetrieved.add(srbean);
+            }
+            request.setAttribute("salesRepsList", salesRepsRetrieved);
+            request.getRequestDispatcher("getSalesRep.jsp").forward(request,response);
+            return;
+         }
           
          //this part is for when an RO is being searched
          else if(whatFor.equals("restockOrder")){

@@ -129,15 +129,19 @@
             <a href="Servlets.getCustomerServlet?forAdd=yes">Add Customer</a><br>
             <a href="Servlets.getCustomerServlet">Edit Customer</a><br>
             <a href="new.get?whatFor=customer">Customers With Overdue Fees</a><br>
-            <a href="salesrep.get?whatFor=searchCustomer">Custom view Customers</a><br>
+            <a href="salesrep.get?whatFor=searchCustomer">Custom View Customers</a><br>
             <a href="Servlets.getCustomerServlet">View All Customers</a><br><br>
             <a href="addSalesRep.jsp">Add Sales Rep</a><br>
             <a href="salesrep.get">Edit Sales Rep</a><br>
+            <a href="conditionsSalesRep.jsp">Custom View Sales Rep</a><br>
             <a href="salesrep.get">View Sales Rep</a><br><br>
             <a href="account.getTypeStatus">Create Account</a><br>
-            <a href="account.get">Edit Account</a><br><br>
+            <a href="account.get">View All Accounts</a><br>
+            <a href="account.getTypeStatus?forSearch=yes">Custom View Account</a><br><br>
             
-            <a href="product.getProductClass?addSupp=yes">Add Supplier</a><br><br>
+            <a href="product.getProductClass?addSupp=yes">Add Supplier</a><br>
+            <a href="supplier.get?viewSupp=yes">Edit Supplier</a><br>
+            <a href="supplier.get?viewSupp=yes">View Supplier</a><br><br>
             
             <a href="product.getProductClass">Add Product</a><br>
             <a href="Servlets.getProductServlet">Edit Product</a><br>

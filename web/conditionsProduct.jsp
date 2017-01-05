@@ -28,6 +28,10 @@
             <c:if test="${forOther eq 'invoice'}">
                 <input type="hidden" name="forOther" value="invoice">
             </c:if>
+            <c:if test="${forOther eq 'restock'}">
+                <input type="hidden" name="forOther" value="restock">
+            </c:if>
+            
             Search by Name:<input type="text" name="searchNameInput">
             <br><br>
             Search by Brand:<input type="text" name="searchBrandInput">

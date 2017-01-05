@@ -141,6 +141,10 @@
         <servlet-class>Servlets.viewSalesRepDetailsServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>viewSupplierDetailsServlet</servlet-name>
+        <servlet-class>Servlets.viewSupplierDetailsServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>createRestockOrderServlet</servlet-name>
         <servlet-class>Servlets.createRestockOrderServlet</servlet-class>
     </servlet>
@@ -171,6 +175,10 @@
     <servlet>
         <servlet-name>editProductServlet</servlet-name>
         <servlet-class>Servlets.editProductServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>editSupplierServlet</servlet-name>
+        <servlet-class>Servlets.editSupplierServlet</servlet-class>
     </servlet>
     
     <!-- Servlet Mapping-->
@@ -300,6 +308,10 @@
         <url-pattern>/salesrep.getDetails</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>viewSupplierDetailsServlet</servlet-name>
+        <url-pattern>/supplier.getDetails</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>createRestockOrderServlet</servlet-name>
         <url-pattern>/Servlets.createRestockOrderServlet</url-pattern>
     </servlet-mapping>
@@ -330,6 +342,10 @@
     <servlet-mapping>
         <servlet-name>editProductServlet</servlet-name>
         <url-pattern>/product.edit</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>editSupplierServlet</servlet-name>
+        <url-pattern>/supplier.edit</url-pattern>
     </servlet-mapping>
     
     

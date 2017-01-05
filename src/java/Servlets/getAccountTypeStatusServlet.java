@@ -102,6 +102,9 @@ public class getAccountTypeStatusServlet extends HttpServlet {
              request.setAttribute("account", request.getAttribute("account"));
              request.getRequestDispatcher("editAccount.jsp").forward(request,response);
          }
+         if((""+request.getParameter("forSearch")).equals("yes")){
+             request.getRequestDispatcher("conditionsAccount.jsp").forward(request,response);
+         }
          else{
             request.getRequestDispatcher("createAccount.jsp").forward(request,response);
          }

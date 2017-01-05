@@ -42,14 +42,8 @@
         </table>
         <br><br>
         
-        <c:if test="${forInvoice eq 'yes'}">
-            <br><br>
-            <a href="viewCart.jsp">View Cart</a> to add your invoice.
-        </c:if>
-        
-        
-        
-        
+        <a href="account.getTypeStatus?forSearch=yes">Custom View Account</a>
+        <br><br>
         <a href="homePage.jsp">Return to Home</a>
         <br><br>
         <a href="Servlets.logoutServlet">logout</a>
