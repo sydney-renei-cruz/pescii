@@ -17,8 +17,17 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Add Invoice</title>
+    <link type="text/css" rel="stylesheet" href="css/style.css">
+        <script type="text/javascript" src="js/calendar.js"></script>
+        <script type="text/javascript">
+            function init() {
+                calendar.set("date1");
+                calendar.set("date2");
+                calendar.set("date3");
+            }
+        </script>
     </head>
-    <body>
+    <body onload="init()">
         <h1>This is the Add Invoice page!</h1>
         
             <table border="1">
@@ -91,11 +100,11 @@
             <br><br>
             <input type="hidden" name="customerIDInput" value="${customer.getCustomerID()}">
             
-            Enter Delivery Date: <input type="text" name="deliveryDateInput"><br>
+            Enter Delivery Date: <input type="text" name="deliveryDateInput" id="date1"><br>
             Additional Accessories: <input type="text" name="addAccInput"><br>
             Terms of Payment: <input type="text" name="topInput"><br>
-            Payment Due Date: <input type="text" name="paymentDueDateInput"><br>
-            Date Paid: <input type="text" name="datePaidInput"><br>
+            Payment Due Date: <input type="text" name="paymentDueDateInput" id="date2"><br>
+            Date Paid: <input type="text" name="datePaidInput" id="date3"><br>
             Status: <select name="statusInput">
                 <c:forEach items="${invStatList}" var="invStat" begin="0" step="1">
                     <option value="${invStat.getStatusID()}">${invStat.getStatusName()}</option>

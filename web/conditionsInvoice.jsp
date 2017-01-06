@@ -16,8 +16,16 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>PESCII View Invoice</title>
+        <link type="text/css" rel="stylesheet" href="css/style.css">
+        <script type="text/javascript" src="js/calendar.js"></script>
+        <script type="text/javascript">
+            function init() {
+                calendar.set("date1");
+                calendar.set("date2");
+            }
+        </script>
     </head>
-    <body>
+    <body onload="init()">
         <h1>This is the Conditions Invoice page!</h1>
         
         
@@ -56,8 +64,8 @@
                     <option value="Invoice.dateCreated">Date Created</option>
             </select>
             <br><br>
-            From:<input type="text" name="fromDate"><br>
-            To:<input type="text" name="toDate"><br><br>
+            From:<input type="text" name="fromDate" id="date1"><br>
+            To:<input type="text" name="toDate" id="date2"><br><br>
             
             <input type="submit" value="Search"><br><br><br>
         </form>

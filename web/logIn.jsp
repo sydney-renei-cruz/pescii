@@ -23,7 +23,7 @@
             <div class="login">
             <div class="login-triangle"></div>
             <h2 class="login-header">Log In</h2>
-        <form action="Servlets.logInServlet" method="post" orm class="login-container">
+        <form action="Servlets.logInServlet" method="post" class="login-container">
             <p>Enter username:<input type="text" name="usernameInput"></p><br>
             <p>Enter password:<input type="password" name="passwordInput"></p><br>
             <input type="submit" value="Log in" >

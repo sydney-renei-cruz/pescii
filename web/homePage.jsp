@@ -141,6 +141,7 @@
             
             <a href="product.getProductClass?addSupp=yes">Add Supplier</a><br>
             <a href="supplier.get?viewSupp=yes">Edit Supplier</a><br>
+            <a href="product.getProductClass?search=yes&searchWhat=supp">Custom View Supplier</a><br>
             <a href="supplier.get?viewSupp=yes">View Supplier</a><br><br>
             
             <a href="product.getProductClass">Add Product</a><br>

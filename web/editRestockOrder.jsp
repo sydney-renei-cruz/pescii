@@ -17,8 +17,15 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>PESCII Edit RO</title>
+    <link type="text/css" rel="stylesheet" href="css/style.css">
+        <script type="text/javascript" src="js/calendar.js"></script>
+        <script type="text/javascript">
+            function init() {
+                calendar.set("date1");
+            }
+        </script>
     </head>
-    <body>
+    <body onload="init()">
         <h1>This is the Edit Restock Order page!</h1>
           <form action="restock.edit" method="post">
                 Restock Order ID: <input type="hidden" value="${restockOrder.getRestockOrderID()}" name="restockOrderIDInput">${restockOrder.getRestockOrderID()}<br>
@@ -35,7 +42,7 @@
                 Supplier: ${restockOrder.getSupplierName()}<br>
                 Purpose: <input type="text" value="${restockOrder.getPurpose()}" name="purposeInput"><br>
                 Delivery Due Date: ${restockOrder.getRODateDue()}<br>
-                Date Delivered: <input type="text" value="${restockOrder.getRODateDelivered()}" name="roDateDeliveredInput"><br>
+                Date Delivered: <input type="text" value="${restockOrder.getRODateDelivered()}" name="roDateDeliveredInput" id="date1"><br>
                 
                 <br><input type="submit" value="Save Changes">
                 

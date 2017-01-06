@@ -14,8 +14,15 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>PESCII Create RO</title>
+        <link type="text/css" rel="stylesheet" href="css/style.css">
+        <script type="text/javascript" src="js/calendar.js"></script>
+        <script type="text/javascript">
+            function init() {
+                calendar.set("date1");
+            }
+        </script>
     </head>
-    <body>
+    <body onload="init()">
         <h1>This is the Create Restock Order page!</h1>
         <form action="Servlets.createRestockOrderServlet" method="post">
             Enter RO Name: <input type="text" name="RONameInput"><br>
@@ -24,9 +31,8 @@
             Supplier: <%=pbean.getSupplierName()%><input type="hidden" value="<%=pbean.getSupplierID()%>" name="supplierIDInput"><br>
             Enter Quantity Ordered:<input type="text" name="piecesOrderedInput"><br>
             Enter Purpose:<input type="text" name="purposeInput"><br>
-            Enter Date Due:<input type="text" name="dateDueInput"><br>
+            Enter Date Due:<input type="text" name="dateDueInput" id="date1"><br>
             Enter discount:<input type="text" name="discountInput"><br>
-            <!--Enter Supplier:<input type="text" name="supplierInput"><br>-->
             <input type="Submit" value="Create Restock Order">
         </form>
         

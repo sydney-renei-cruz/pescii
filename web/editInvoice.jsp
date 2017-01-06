@@ -17,8 +17,18 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>PESCII Edit Invoice</title>
+        <link type="text/css" rel="stylesheet" href="css/style.css">
+        <script type="text/javascript" src="js/calendar.js"></script>
+        <script type="text/javascript">
+            function init() {
+                calendar.set("date1");
+                calendar.set("date2");
+                calendar.set("date3");
+                calendar.set("date4");
+            }
+        </script>
     </head>
-    <body>
+    <body onload="init()">
         <h1>This is the Edit Invoice page!</h1>
         
         <br><br><br>
@@ -36,7 +46,7 @@
                 <c:when test="${invoice.getStatusName() eq 'In Progress'}">
                     <br>
                     From: ${invoice.getDeliveryDate()}<br>
-                    To: <input type="text" name="deliveryDateInput" value="${invoice.getDeliveryDate()}"><br>
+                    To: <input type="text" name="deliveryDateInput" value="${invoice.getDeliveryDate()}" id="date1"><br>
                 </c:when>
                 <c:when test="${invoice.getStatusName() ne 'In Progress'}">
                     <input type="hidden" value="${invoice.getDeliveryDate()}" name="deliveryDateInput">${invoice.getDeliveryDate()}<br>
@@ -58,7 +68,7 @@
                 <c:when test="${invoice.getDatePaid() eq '0000-00-00'}">
                     <br>
                     From: ${invoice.getPaymentDueDate()}<br>
-                    To: <input type="text" name="paymentDueDateInput" value="${invoice.getPaymentDueDate()}"><br><br>
+                    To: <input type="text" name="paymentDueDateInput" value="${invoice.getPaymentDueDate()}" id="date2"><br><br>
                 </c:when>
                 <c:when test="${invoice.getDatePaid() ne '0000-00-00'}">
                     <input type="hidden" value="${invoice.getPaymentDueDate()}" name="paymentDueDateInput">${invoice.getPaymentDueDate()}<br><br>
@@ -69,7 +79,7 @@
                 <c:when test="${invoice.getDatePaid() eq null}">
                     <br>
                     From: ${invoice.getDatePaid()}<br>
-                    To: <input type="text" name="datePaidInput" value="${invoice.getDatePaid()}"><br><br>
+                    To: <input type="text" name="datePaidInput" value="${invoice.getDatePaid()}" id="date3"><br><br>
                 </c:when>
                 <c:when test="${invoice.getDatePaid() ne null}">
                     <input type="hidden" value="${invoice.getDatePaid()}" name="datePaidInput">${invoice.getDatePaid()}<br><br>
@@ -125,7 +135,7 @@
             Date Delivered:
             <c:choose>
                 <c:when test="${invoice.getStatusName() ne 'Completed'}">
-                    <input type="text" value="${invoice.getDateDelivered()}" name="dateDeliveredInput"><br>
+                    <input type="text" value="${invoice.getDateDelivered()}" name="dateDeliveredInput" id="date4"><br>
                 </c:when>
                 <c:when test="${invoice.getStatusName() eq 'Completed'}">
                     <input type="hidden" value="${invoice.getDateDelivered()}" name="dateDeliveredInput">${invoice.getDateDelivered()}<br>

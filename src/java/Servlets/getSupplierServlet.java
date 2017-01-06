@@ -93,25 +93,28 @@ public class getSupplierServlet extends HttpServlet {
          
          request.setAttribute("prodClassList", request.getAttribute("prodClassList"));
          context.log("FOREDIT EQUAAAAALS: " + request.getAttribute("forEdit"));
+         
+         String searchWhat = ""+request.getAttribute("searchWhat");
+         String forOther = ""+request.getAttribute("forOther");
+         request.setAttribute("prodClassList", request.getAttribute("prodClassList"));
          if((""+request.getAttribute("forEdit")).equals("yes")){
              //request.setAttribute("forEdit", "yes");
              request.setAttribute("product", request.getAttribute("product"));
-             request.setAttribute("productClassList", request.getAttribute("productClassList"));
+             //request.setAttribute("productClassList", request.getAttribute("productClassList"));
              request.getRequestDispatcher("editProduct.jsp").forward(request,response);
          }
-         else if((""+request.getAttribute("searchWhat")).equals("prod")){
+         else if((""+request.getAttribute("searchWhat")).equalsIgnoreCase("prod")){
              context.log("getting suppliers for search Product...");
-             String searchWhat = ""+request.getAttribute("searchWhat");
-             String forOther = ""+request.getAttribute("forOther");
              
              if(forOther.equals("invoice")){request.setAttribute("forOther", "invoice");}
              else if(forOther.equals("restock")){request.setAttribute("forOther", "restock");}
              
-             request.setAttribute("prodClassList", request.getAttribute("prodClassList"));
+             //request.setAttribute("prodClassList", request.getAttribute("prodClassList"));
+             request.getRequestDispatcher("conditionsProduct.jsp").forward(request,response);
              
-             if(searchWhat.equalsIgnoreCase("prod")){request.getRequestDispatcher("conditionsProduct.jsp").forward(request,response);}
-             else if(searchWhat.equalsIgnoreCase("ro")){request.getRequestDispatcher("conditionsRestockOrder.jsp").forward(request,response);}
          }
+         else if(searchWhat.equalsIgnoreCase("ro")){
+             request.getRequestDispatcher("conditionsRestockOrder.jsp").forward(request,response);}
          else if((""+request.getParameter("viewSupp")).equals("yes")){
              context.log("got suppliers for view Supplier.");
              request.getRequestDispatcher("getSupplier.jsp").forward(request,response);

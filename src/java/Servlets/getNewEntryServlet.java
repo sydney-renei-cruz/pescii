@@ -579,6 +579,74 @@ public class getNewEntryServlet extends HttpServlet {
             request.getRequestDispatcher("getSalesRep.jsp").forward(request,response);
             return;
          }
+         
+         //this part is for when a Supplier is being searched
+         else if(whatFor.equals("supplier")){
+         
+            interval="";
+            forWhere="";
+            orderBy=" order by Supplier.supplierName asc";
+           //supplierName field
+           if(!request.getParameter("searchSupplierNameInput").equals("")){
+                condition = condition + " Supplier.supplierName like '%"+request.getParameter("searchSupplierNameInput")+"%'";
+                compound="";
+            }
+           
+           //productClass field
+                 String[] inputProductClass = request.getParameterValues("productClassInput");
+                 String productClasses="";
+                 if(inputProductClass!=null){
+                    if(!(condition.equals(""))){
+                        compound=" and ";
+                    }
+                   productClasses = "(ProductClass.productClassName = ";
+                   for(int i=0;i<inputProductClass.length;i++){
+                       if(i==0){productClasses=productClasses+"'"+inputProductClass[i]+"'";}
+                       else{productClasses=productClasses+" or ProductClass.productClassName = '"+inputProductClass[i]+"'";}
+                   }
+                   condition = condition + compound + productClasses+")";
+                   compound="";
+                 }
+           
+           //dateCreated field
+           if(!(searchDateFrom.equals(""))){
+                if(!(condition.equals(""))){
+                    compound=" and ";
+                }
+                interval = " between '" + searchDateFrom + " 00:00:00' and '" + searchDateTo + " 23:59:59'";
+                compound="";
+            }
+             
+             
+            if(!condition.equals("")){condition = "where " + condition;}
+            preparedSQL = "select Supplier.supplierID, Supplier.supplierName, Supplier.supplierAddress, "
+                 + "Supplier.supplierContactNumber, Supplier.ProductClassID, ProductClass.productClassID, "
+                 + "ProductClass.productClassName, Supplier.dateCreated, Supplier.lastEdittedBy from Supplier "
+                 + "inner join ProductClass on ProductClass.productClassID=Supplier.productClassID "
+                 + condition;
+            ps = conn.prepareStatement(preparedSQL);
+         
+            dbData = ps.executeQuery();
+            ArrayList<supplierBean> suppliersRetrieved = new ArrayList<supplierBean>();
+            //retrieve the information.
+               while(dbData.next()){
+                  supplierBean suppbean = new supplierBean();
+                   suppbean.setSupplierID(dbData.getInt("supplierID"));
+                   suppbean.setSupplierName(dbData.getString("supplierName"));
+                   suppbean.setSupplierAddress(dbData.getString("supplierAddress"));
+                   suppbean.setSupplierContactNumber(dbData.getString("supplierContactNumber"));
+                   suppbean.setProductClassID(dbData.getInt("productClassID"));
+                   suppbean.setProductClassName(dbData.getString("productClassName"));
+                   suppbean.setDateCreated(dbData.getTimestamp("dateCreated"));
+                   suppbean.setLastEdittedBy(dbData.getString("lastEdittedBy"));
+                   suppliersRetrieved.add(suppbean);
+               }
+            request.setAttribute("suppliersList", suppliersRetrieved);
+            request.getRequestDispatcher("getSupplier.jsp").forward(request,response);
+            return;
+         }
+         
+         
           
          //this part is for when an RO is being searched
          else if(whatFor.equals("restockOrder")){

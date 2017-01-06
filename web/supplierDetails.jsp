@@ -34,6 +34,8 @@
         <br><br>
         <a href="supplier.get?viewSupp=yes">Return to Suppliers List</a>
         <br><br>
+        <a href="product.getProductClass?search=yes&searchWhat=supp">Custom View Supplier</a>
+        <br><br>
         <a href="homePage.jsp">Return to Home</a>
         <br><br>
         <a href="Servlets.logoutServlet">logout</a>
