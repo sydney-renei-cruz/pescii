@@ -164,27 +164,39 @@ public class logInServlet extends HttpServlet {
                 context.log("password is: ----->  " + password);
                 context.log("sb is: ------> " + sb.toString());
                 //      correct will become TRUE if a match is found
-                if(dbPassword.equals(sb.toString())){
-                    //status = rs.getBoolean("account_status");
+                    if(dbPassword.equals(sb.toString())){
+                        //status = rs.getBoolean("account_status");
 
-                if((dbData.getInt("accountStatus"))==2){
-                    message = "The specified account is deactivated and unusable.";
-                    //response.sendRedirect("index.jsp");
-                    request.setAttribute("message", message);
-                    request.getRequestDispatcher("logIn.jsp").forward(request, response);
+                    if((dbData.getInt("accountStatus"))==2){
+                        message = "The specified account is deactivated and unusable.";
+                        //response.sendRedirect("index.jsp");
+                        request.setAttribute("message", message);
+                        request.getRequestDispatcher("logIn.jsp").forward(request, response);
 
-                }
-                else{
-                    message = "did it! Username is "+username+"!";
-                    session.setAttribute("accountID", dbData.getInt("accountID"));
-                    session.setAttribute("userName", username);
-                    session.setAttribute("accountType", ""+dbData.getInt("accountType"));
-                    session.setAttribute("state", "logged in");
-                    request.getRequestDispatcher("homePage.jsp").forward(request,response);
-                }
+                    }
+                    else{
+                        message = "did it! Username is "+username+"!";
+                        session.setAttribute("accountID", dbData.getInt("accountID"));
+                        session.setAttribute("userName", username);
+                        session.setAttribute("accountType", ""+dbData.getInt("accountType"));
+                        session.setAttribute("state", "logged in");
 
-                    
-                    //session.setMaxInactiveInterval(30*60);
+                        if(dbData.getInt("accountType")==3){
+                            request.getRequestDispatcher("notif.get?forWhat=invoice").forward(request,response);
+                        }
+                        else if(dbData.getInt("accountType")==4 || dbData.getInt("accountType")==5){
+                            request.getRequestDispatcher("notif.get?forWhat=restock").forward(request,response);
+                        }
+                        else if(dbData.getInt("accountType")==1){
+                            request.getRequestDispatcher("notif.get?forWhat=both").forward(request,response);
+                        }
+                        else{
+                            request.getRequestDispatcher("homePage.jsp").forward(request,response);
+                        }
+                    }
+
+
+                        //session.setMaxInactiveInterval(30*60);
 
                 }
             }            
@@ -199,7 +211,9 @@ public class logInServlet extends HttpServlet {
         }
         catch(Exception ex){
             ex.printStackTrace();
-            out.println("error: " + ex);
+            //out.println("error: " + ex);
+            String message = "Something went wrong. Error: "+ex;
+            request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
             out.close();  // Close the output writer
@@ -210,7 +224,9 @@ public class logInServlet extends HttpServlet {
             }
             catch (SQLException ex) {
                 ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
+                //out.println("Another SQL error: " + ex);
+                String message = "Something went wrong. Error: "+ex;
+                request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }
         

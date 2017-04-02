@@ -83,21 +83,22 @@ public class viewAccountDetailsServlet extends HttpServlet {
          accountBean abean = new accountBean();
          ResultSet dbData = ps.executeQuery();
          while(dbData.next()){
-         //customerBean cbean = new customerBean();
-         abean.setAccountID(dbData.getInt("accountID"));
-         abean.setUserName(dbData.getString("userName"));
-         abean.setPassword(dbData.getString("password"));
-         abean.setAccountStatus(dbData.getString("accountStatusName"));
-         abean.setAccountType(dbData.getString("accountTypeName"));
+            abean.setAccountID(dbData.getInt("accountID"));
+            abean.setUserName(dbData.getString("userName"));
+            abean.setPassword(dbData.getString("password"));
+            abean.setAccountStatus(dbData.getString("accountStatusName"));
+            abean.setAccountType(dbData.getString("accountTypeName"));
          }
          request.setAttribute("account", abean);
-         
+         request.setAttribute("message",""+request.getAttribute("message"));
          request.getRequestDispatcher("account.getTypeStatus").forward(request,response);
          
         }
         catch(Exception ex){
             ex.printStackTrace();
-            out.println("error: " + ex);
+            //out.println("error: " + ex);
+            String message = "Something went wrong. Error: "+ex;
+            request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
             out.close();  // Close the output writer
@@ -108,7 +109,9 @@ public class viewAccountDetailsServlet extends HttpServlet {
             }
             catch (SQLException ex) {
                 ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
+                //out.println("Another SQL error: " + ex);
+                String message = "Something went wrong. Error: "+ex;
+                request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }
     }

@@ -19,6 +19,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -73,7 +74,8 @@ public class addCustomerServlet extends HttpServlet {
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
-        
+        String message="";
+        HttpSession session = request.getSession();
         try {
          Class.forName(context.getInitParameter("jdbcDriver"));
       } catch(ClassNotFoundException ex) {
@@ -97,19 +99,141 @@ public class addCustomerServlet extends HttpServlet {
          //---------------
          //THIS IS WHERE YOU START CHANGING
          
-         String preparedSQL = "insert into Customer(PRCID, customerFirstName, customerMobileNumber, customerTelephoneNumber, salesRepID, customerLastName) values(?,?,?,?,?,?)";
-         String preparedSQL2 = "insert into Clinic(customerID, clinicAddress, clinicPhoneNumber, clinicName, provinceID) values(?,?,?,?,?)";
+         String preparedSQL = "insert into Customer(PRCID, customerFirstName, customerMobileNumber, "
+                 + "customerTelephoneNumber, salesRepID, customerLastName, lastEdittedBy) "
+                 + "values(?,?,?,?,?,?,?)";
+         String preparedSQL2 = "insert into Clinic(customerID, clinicAddress, clinicPhoneNumber, "
+                 + "clinicName, provinceID, lastEdittedBy) "
+                 + "values(?,?,?,?,?,?)";
          
          //you don't change this
          PreparedStatement ps = conn.prepareStatement(preparedSQL, Statement.RETURN_GENERATED_KEYS);
          PreparedStatement ps2 = conn.prepareStatement(preparedSQL2);
          
-         String inputPRCID = request.getParameter("customerIDInput");
-         String inputCustomerFirstName = request.getParameter("customerFirstNameInput");
-         String inputCustomerCelNum = request.getParameter("customerMobileNumberInput");
-         String inputTelNum = request.getParameter("customerTelephoneNumberInput");
-         int inputSalesRepID = Integer.parseInt(request.getParameter("chosenSalesRep"));
-         String inputCustomerLastName = request.getParameter("customerLastNameInput");
+         String inputPRCID="";
+         String inputCustomerFirstName="";
+         String inputCustomerCelNum="";
+         String inputTelNum="";
+         int inputSalesRepID=0;
+         String inputCustomerLastName="";
+         String lastEdittedBy = ""+session.getAttribute("userName");
+         
+         
+         //check the PRCID
+         try{
+             inputPRCID = request.getParameter("customerIDInput");
+             if(inputPRCID.length()>50){
+                 message = "PRCID is too long.";
+                 request.setAttribute("message",message);
+                 request.getRequestDispatcher("salesrep.get?whatFor=addCustomer").forward(request,response);
+                 return;
+             }
+         }
+         catch(Exception e){
+            message = "PRCID was input incorrectly. It should also not be blank.";
+            request.setAttribute("message",message);
+            request.getRequestDispatcher("salesrep.get?whatFor=addCustomer").forward(request,response);
+            return;
+         }
+         
+         //check the CustomerFirstName
+         try{
+             inputCustomerFirstName = request.getParameter("customerFirstNameInput");
+             if(inputCustomerFirstName.length()>100){
+                 message = "Customer First Name is too long.";
+                 request.setAttribute("message",message);
+                 request.getRequestDispatcher("salesrep.get?whatFor=addCustomer").forward(request,response);
+                 return;
+             }
+         }
+         catch(Exception e){
+                 message = "Customer First Name was input incorrectly. It should also not be blank.";
+                 request.setAttribute("message",message);
+                 request.getRequestDispatcher("salesrep.get?whatFor=addCustomer").forward(request,response);
+                 return;
+         }
+         
+         //check CustomerCelNum
+         try{
+             inputCustomerCelNum = request.getParameter("customerMobileNumberInput");
+             if(inputCustomerCelNum.length()>20){
+                 message = "Customer Mobile Number is too long.";
+                 request.setAttribute("message",message);
+                 request.getRequestDispatcher("salesrep.get?whatFor=addCustomer").forward(request,response);
+                 return;
+             }
+             char c;
+             for(int i=0;i<inputCustomerCelNum.length();i++){
+                c = inputCustomerCelNum.charAt(i);
+                if(!Character.isDigit(c)){
+                    message = "Customer Mobile Number should not include letters. It should also not be blank.";
+                    request.setAttribute("message",message);
+                    request.getRequestDispatcher("salesrep.get?whatFor=addCustomer").forward(request,response);
+                    return;
+                }
+            }
+         }
+         catch(Exception e){
+                 message = "Customer Mobile Number was input incorrectly.";
+                 request.setAttribute("message",message);
+                 request.getRequestDispatcher("salesrep.get?whatFor=addCustomer").forward(request,response);
+                 return;
+         }
+         
+         //check telNum
+         try{
+             inputTelNum = request.getParameter("customerTelephoneNumberInput");
+             if(inputTelNum.length()>15){
+                 message = "Customer Telephone Number is too long.";
+                 request.setAttribute("message",message);
+                 request.getRequestDispatcher("salesrep.get?whatFor=addCustomer").forward(request,response);
+                 return;
+             }
+             char c;
+             for(int i=0;i<inputTelNum.length();i++){
+                c = inputTelNum.charAt(i);
+                if(!Character.isDigit(c)){
+                    message = "Customer Telephone Number was input incorrectly. It should also not be blank.";
+                    request.setAttribute("message",message);
+                    request.getRequestDispatcher("salesrep.get?whatFor=addCustomer").forward(request,response);
+                    return;
+                }
+            }
+         }
+         catch(Exception e){
+                 message = "Customer Telephone Number was input incorrectly.";
+                 request.setAttribute("message",message);
+                 request.getRequestDispatcher("salesrep.get?whatFor=addCustomer").forward(request,response);
+                 return;
+         }
+         
+         //check SalesRepIDinputSalesRepID = Integer.parseInt(request.getParameter("chosenSalesRep"));
+         try{
+             inputSalesRepID = Integer.parseInt(request.getParameter("chosenSalesRep"));
+         }
+         catch(Exception e){
+                 message = "SalesRep was input incorrectly.";
+                 request.setAttribute("message",message);
+                 request.getRequestDispatcher("salesrep.get?whatFor=addCustomer").forward(request,response);
+                 return;
+         }
+         
+         //check CustomerLastName
+         try{
+             inputCustomerLastName = request.getParameter("customerLastNameInput");
+             if(inputCustomerLastName.length()>100){
+                 message = "Customer Last Name is too long.";
+                 request.setAttribute("message",message);
+                 request.getRequestDispatcher("salesrep.get?whatFor=addCustomer").forward(request,response);
+                 return;
+             }
+         }
+         catch(Exception e){
+                 message = "Customer Last Name was input incorrectly. It should also not be blank.";
+                 request.setAttribute("message",message);
+                 request.getRequestDispatcher("salesrep.get?whatFor=addCustomer").forward(request,response);
+                 return;
+         }
          
          ps.setString(1,inputPRCID);
          ps.setString(2,inputCustomerFirstName);
@@ -117,23 +241,77 @@ public class addCustomerServlet extends HttpServlet {
          ps.setString(4,inputTelNum);
          ps.setInt(5,inputSalesRepID);
          ps.setString(6,inputCustomerLastName);
+         ps.setString(7,lastEdittedBy);
          ps.executeUpdate();                   //at this point, you have already inserted into the database
          
-         String inputClinicAddress = request.getParameter("clinicAddressInput");
-         String inputClinPhoneNum = request.getParameter("clinicPhoneNumInput");
-         String inputClinicName = request.getParameter("clinicNameInput");
-         String inputProvinceID = request.getParameter("chosenProvince");
+         String inputClinicAddress="";
+         String inputClinPhoneNum="";
+         String inputClinicName="";
+         String provinceID="";
+         
+         //check clinicAddress
+         try{inputClinicAddress = request.getParameter("clinicAddressInput");}
+         catch(Exception e){
+             e.printStackTrace();
+             message = "Clinic address was input incorrectly. It should also not be blank.";
+             request.setAttribute("message",message);
+             request.setAttribute("message",message);
+             request.getRequestDispatcher("salesrep.get?whatFor=addCustomer").forward(request,response);
+             return;
+         }
+         
+         //check clinicPhoneNum
+         try{inputClinPhoneNum = request.getParameter("clinicPhoneNumInput");
+            char c;
+            for(int i=0;i<inputClinPhoneNum.length();i++){
+                c = inputClinPhoneNum.charAt(i);
+                if(Character.isLetter(c)){
+                    message = "Clinic Phone Number was input incorrectly. It should also not be blank.";
+                    request.setAttribute("message",message);
+                    request.getRequestDispatcher("salesrep.get?whatFor=addCustomer").forward(request,response);
+                    return;
+                }
+            }
+         }
+         catch(Exception e){
+             e.printStackTrace();
+             message = "Clinic Phone Number was input incorrectly. It should also not be blank.";
+             request.setAttribute("message",message);
+             request.getRequestDispatcher("salesrep.get?whatFor=addCustomer").forward(request,response);
+             return;
+         }
+         
+         //check clinicName
+         try{inputClinicName = request.getParameter("clinicNameInput");}
+         catch(Exception e){
+             message = "Clinic Name was input incorrectly. It should also not be blank.";
+             request.setAttribute("message",message);
+             request.getRequestDispatcher("salesrep.get?whatFor=addCustomer").forward(request,response);
+             return;
+         }
+         
+         //check provinceID
+         try{provinceID = request.getParameter("chosenProvince");}
+         catch(Exception e){
+             e.printStackTrace();
+             request.setAttribute("message",message);
+             request.getRequestDispatcher("salesrep.get?whatFor=addCustomer").forward(request,response);
+             return;
+         }
+         
+         
          int customerID;
          try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
             if (generatedKeys.next()) {
                 customerID = generatedKeys.getInt(1);
 
                 ps2.setInt(1, customerID);
-                ps2.setString(2, inputClinicAddress);
-                ps2.setString(3, inputClinPhoneNum);
-                ps2.setString(4, inputClinicName);
-                ps.setString(5, inputProvinceID);
-                ps2.executeUpdate();
+                ps.setString(2,inputClinicAddress);
+                ps.setString(3,inputClinPhoneNum);
+                ps.setString(4,inputClinicName);
+                ps.setString(5,provinceID);
+                ps.setString(6,lastEdittedBy);
+                ps.executeUpdate();
                 
             }
             else {
@@ -141,15 +319,17 @@ public class addCustomerServlet extends HttpServlet {
             }
         }
          
-         String message = "Customer successfully created!";
+         message = "Customer successfully created!";
          request.setAttribute("message", message);
-         request.getRequestDispatcher("homePage.jsp").forward(request,response);
+         request.getRequestDispatcher("notif.get").forward(request,response);
             
          
         }
         catch(Exception ex){
             ex.printStackTrace();
-            out.println("error: " + ex);
+            //out.println("error: " + ex);
+            message = "Something went wrong. Error: "+ex;
+            request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
             out.close();  // Close the output writer
@@ -160,7 +340,9 @@ public class addCustomerServlet extends HttpServlet {
             }
             catch (SQLException ex) {
                 ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
+                //out.println("Another SQL error: " + ex);
+                message = "Something went wrong. Error: "+ex;
+                request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }
         

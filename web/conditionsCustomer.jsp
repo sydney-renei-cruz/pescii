@@ -8,6 +8,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
+    String accountType = ""+session.getAttribute("accountType");
     ArrayList<salesRepBean> salesRepList = (ArrayList<salesRepBean>)request.getAttribute("salesRepsList");
     ArrayList<provinceBean> provinceList = (ArrayList<provinceBean>)request.getAttribute("provList");
 %>
@@ -25,10 +26,12 @@
             <input type="hidden" name="getWhat" value="customSearch">
             <input type="hidden" name="whatFor" value="customer">
             <b>Search by Customer Name:</b><br>
-            Last Name: <input type="text" name="searchCustomerLastNameInput"><br>
-            First Name: <input type="text" name="searchCustomerFirstNameInput"><br>
+            Last Name: <input type="text" name="searchCustomerLastNameInput" maxlength="100"><br>
+            First Name: <input type="text" name="searchCustomerFirstNameInput" maxlength="100"><br>
             <br>
-            Search by PRCID: <input type="text" name="searchPRCIDInput"><br>
+            Search by PRCID: <input type="text" name="searchPRCIDInput" maxlength="50"><br>
+            
+            Search by Clinic Name: <input type="text" name="searchClinicNameInput" maxlength="255"><br>
             
             Search by Sales Representative:<select name="searchSalesRepInput">
                 <option value="All">All</option>
@@ -48,10 +51,21 @@
         </form>
         
         
-        
-        
         <br><br>
-        <a href="homePage.jsp">Return to Home</a>
+        <c:choose>
+            <c:when test="${accountType eq 3}">
+                <a href="notif.get?forWhat=invoice">Return to Home</a>
+            </c:when>
+            <c:when test="${(accountType eq 4) || (accountType eq 5)} ">
+                <a href="notif.get?forWhat=restock">Return to Home</a>
+            </c:when>
+            <c:when test="${accountType eq 1}">
+                <a href="notif.get?forWhat=both">Return to Home</a>
+            </c:when>
+            <c:when test="${(accountType ne 3) || (accountType ne 4) || (accountType ne 5) || (accountType ne 1)}">
+                <a href="homePage.jsp">Return to Home</a>
+            </c:when>
+        </c:choose>
         <br><br>
         <a href="Servlets.logoutServlet">logout</a>
         

@@ -105,6 +105,7 @@ public class getCustomerServlet extends HttpServlet {
                 request.setAttribute("addInvoice", "yes");
             }
             
+            /*
             //this is for when the user will add a customer
                 //its for filling in that dropdown list
             if((""+request.getParameter("forAdd")).equals("yes")){
@@ -141,14 +142,16 @@ public class getCustomerServlet extends HttpServlet {
                 
                 
                 request.getRequestDispatcher("addCustomer.jsp").forward(request,response);
-            }
-            else{
+            }*/
+            //else{
                 request.getRequestDispatcher("getCustomer.jsp").forward(request,response);
-            }
+            //}
         }
         catch(Exception ex){
             ex.printStackTrace();
-            out.println("error: " + ex);
+            //out.println("error: " + ex);
+            String message = "Something went wrong. Error: "+ex;
+            request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
             out.close();  // Close the output writer
@@ -159,7 +162,9 @@ public class getCustomerServlet extends HttpServlet {
             }
             catch (SQLException ex) {
                 ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
+                //out.println("Another SQL error: " + ex);
+                String message = "Something went wrong. Error: "+ex;
+                request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }
         

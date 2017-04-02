@@ -18,6 +18,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -91,33 +92,115 @@ public class addSalesRepServlet extends HttpServlet {
          
          //---------------
          //THIS IS WHERE YOU START CHANGING
-         
-         String preparedSQL = "insert into SalesRep(salesRepFirstName, salesRepMobileNumber, salesRepAddress, salesRepLastName) values (?,?,?,?)";
+         HttpSession session = request.getSession();
+         String preparedSQL = "insert into SalesRep(salesRepFirstName, salesRepMobileNumber, salesRepAddress, salesRepLastName, lastEdittedBy) values (?,?,?,?,?)";
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
+         String message;
          
-         String inputSalesRepFirstName = request.getParameter("salesrepFirstNameInput");
-         String inputSalesRepLastName = request.getParameter("salesrepLastNameInput");
-         String inputSalesRepMobileNumber = request.getParameter("salesrepMNInput");
-         String inputSalesRepAddress = request.getParameter("salesrepAddressInput");
+         //check the salesrep first name
+         String inputSalesRepFirstName = "";
+         try{
+             inputSalesRepFirstName = request.getParameter("salesrepFirstNameInput");
+             if(inputSalesRepFirstName.length()>100){
+                 message = "First name is too long.";
+                 request.setAttribute("message",message);
+                request.getRequestDispatcher("addSalesRep.jsp").forward(request,response);
+                return;
+             }
+            }
+            catch(Exception e){
+                message = "First name was input incorrectly. It should also not be blank.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("addSalesRep.jsp").forward(request,response);
+                return;
+            }
          
+         //check the salesrep last name
+         String inputSalesRepLastName = "";
+         try{
+             inputSalesRepLastName = request.getParameter("salesrepLastNameInput");
+             if(inputSalesRepFirstName.length()>100){
+                 message = "Last name is too long.";
+                 request.setAttribute("message",message);
+                request.getRequestDispatcher("addSalesRep.jsp").forward(request,response);
+                return;
+             }
+            }
+            catch(Exception e){
+                message = "Last name was input incorrectly. It should also not be blank.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("addSalesRep.jsp").forward(request,response);
+                return;
+            }
+         
+         //check the salesrep mobile number
+         String inputSalesRepMobileNumber = "";
+         try{
+             inputSalesRepMobileNumber = request.getParameter("salesrepMNInput");
+             if(inputSalesRepMobileNumber.length()>12){
+                 message = "Mobile Number is too long.";
+                 request.setAttribute("message",message);
+                request.getRequestDispatcher("addSalesRep.jsp").forward(request,response);
+                return;
+             }
+             char c;
+             for(int i=0;i<inputSalesRepMobileNumber.length();i++){
+                c = inputSalesRepMobileNumber.charAt(i);
+                if(!Character.isDigit(c)){
+                    message = "Mobile Number was input incorrectly.";
+                    request.setAttribute("message",message);
+                    request.getRequestDispatcher("addSalesRep.jsp").forward(request,response);
+                    return;
+                }
+            }
+         }
+         catch(Exception e){
+                 message = "Mobile Number was input incorrectly.";
+                 request.setAttribute("message",message);
+                request.getRequestDispatcher("addSalesRep.jsp").forward(request,response);
+                return;
+         }
+         
+         
+         String inputSalesRepAddress = "";
+         try{
+             inputSalesRepAddress = request.getParameter("salesrepAddressInput");
+             if(inputSalesRepAddress.length()>255){
+                 message = "Address is too long.";
+                 request.setAttribute("message",message);
+                request.getRequestDispatcher("addSalesRep.jsp").forward(request,response);
+                return;
+             }
+            }
+            catch(Exception e){
+                message = "Address was input incorrectly. It should also not be blank.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("addSalesRep.jsp").forward(request,response);
+                return;
+            }
+         
+         String lastEdittedBy = ""+session.getAttribute("userName");
          
          ps.setString(1,inputSalesRepFirstName);
          ps.setString(2,inputSalesRepMobileNumber);
          ps.setString(3,inputSalesRepAddress);
          ps.setString(4,inputSalesRepLastName);
+         ps.setString(5,lastEdittedBy);
          
          ps.executeUpdate();                   //at this point, you have already inserted into the database
          
          
-         String message = "Sales Rep successfully added!";
+         message = "Sales Rep successfully added!";
          request.setAttribute("message", message);
-         request.getRequestDispatcher("homePage.jsp").forward(request,response);
+         request.getRequestDispatcher("notif.get").forward(request,response);
             
          
         }
-        catch(SQLException ex){
+        catch(Exception ex){
             ex.printStackTrace();
-            out.println("SQL error: " + ex);
+            //out.println("error: " + ex);
+            String message = "Something went wrong. Error: "+ex;
+            request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
             out.close();  // Close the output writer
@@ -128,7 +211,9 @@ public class addSalesRepServlet extends HttpServlet {
             }
             catch (SQLException ex) {
                 ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
+                //out.println("Another SQL error: " + ex);
+                String message = "Something went wrong. Error: "+ex;
+                request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }
     }

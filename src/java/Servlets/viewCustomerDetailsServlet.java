@@ -81,7 +81,17 @@ public class viewCustomerDetailsServlet extends HttpServlet {
                  + "inner join SalesRep on SalesRep.salesRepID = Customer.salesRepID "
                  + "where Customer.customerID=? "
                  + "order by Customer.customerLastName asc ";
-         int inputCustomerID = Integer.parseInt(request.getParameter("custID"));
+         int inputCustomerID = 0;
+         
+         if(request.getParameter("custID") == null){
+             if(request.getAttribute("custID") != null){
+                inputCustomerID = 0 + Integer.parseInt(""+request.getAttribute("custID"));
+             }
+         }
+         else{
+            inputCustomerID = 0 + Integer.parseInt(request.getParameter("custID"));
+         }
+         
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          ps.setInt(1, inputCustomerID);
          
@@ -188,8 +198,11 @@ public class viewCustomerDetailsServlet extends HttpServlet {
          request.setAttribute("invoicesList", invoicesRetrieved);
          context.log("size of invoicesRetrieved is " + invoicesRetrieved.size());
          
-         String forEdit = ""+request.getParameter("forEdit");
+         String forEdit = "";
+         try{forEdit = request.getParameter("forEdit");}
+         catch(Exception e){forEdit = "" + request.getAttribute("forEdit");}
          if(session.getAttribute("cart")!=null){
+             request.setAttribute("message",request.getAttribute("message"));
              request.getRequestDispatcher("invoice.getStatus").forward(request, response);
          }
          else if(forEdit.equals("yes")){
@@ -207,6 +220,11 @@ public class viewCustomerDetailsServlet extends HttpServlet {
                        data.setSalesRepID(dbData.getInt("salesRepID"));
                        salesRepsRetrieved.add(data);
                    }
+             String message = "";
+             try{message = request.getParameter("message");}
+             catch(Exception e){
+                 message = ""+request.getAttribute("message");
+             }
              request.setAttribute("salesRepList", salesRepsRetrieved);
              request.getRequestDispatcher("editCustomer.jsp").forward(request, response);
          }
@@ -216,7 +234,9 @@ public class viewCustomerDetailsServlet extends HttpServlet {
         }
         catch(Exception ex){
             ex.printStackTrace();
-            out.println("error: " + ex);
+            //out.println("error: " + ex);
+            String message = "Something went wrong. Error: "+ex;
+            request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
             out.close();  // Close the output writer
@@ -227,7 +247,9 @@ public class viewCustomerDetailsServlet extends HttpServlet {
             }
             catch (SQLException ex) {
                 ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
+                //out.println("Another SQL error: " + ex);
+                String message = "Something went wrong. Error: "+ex;
+                request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }
         

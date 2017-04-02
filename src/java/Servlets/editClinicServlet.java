@@ -100,12 +100,69 @@ public class editClinicServlet extends HttpServlet {
          String preparedSQL = "update Clinic set clinicAddress=?, clinicPhoneNumber=?, clinicName=?, provinceID=? where clinicID=?";
          String inputClinID = request.getParameter("clinID");
          PreparedStatement ps;
+         String message = "";
 
-
-        String newClinicAddress = request.getParameter("clinicAddressInput");
-        String newClinicPhoneNumber = request.getParameter("clinicPhoneNumberInput");
-        String newClinicName = request.getParameter("clinicNameInput");
-        String provinceID = request.getParameter("chosenProvince");
+        String newClinicAddress = "";
+        try{newClinicAddress = request.getParameter("clinicAddressInput");}
+        catch(Exception e){
+             e.printStackTrace();
+             message = "Clinic address was input incorrectly. It should also not be blank.";
+             request.setAttribute("message",message);
+             request.setAttribute("whatFor","addClinic");
+             request.setAttribute("custID", request.getParameter("customerIDInput"));
+             request.getRequestDispatcher("customer.getClinic").forward(request,response);
+             return;
+         }
+        
+        
+        String newClinicPhoneNumber = "";
+        try{newClinicPhoneNumber = request.getParameter("clinicPhoneNumberInput");
+            char c;
+            for(int i=0;i<newClinicPhoneNumber.length();i++){
+                c = newClinicPhoneNumber.charAt(i);
+                if(!Character.isDigit(c)){
+                    message = "Clinic Phone Number was input incorrectly. It should also not be blank.";
+                    request.setAttribute("message",message);
+                    request.setAttribute("whatFor","addClinic");
+                    request.setAttribute("custID", request.getParameter("customerIDInput"));
+                    request.getRequestDispatcher("customer.getClinic").forward(request,response);
+                    return;
+                }
+            }
+         }
+         catch(Exception e){
+             e.printStackTrace();
+             message = "Clinic Phone Number was input incorrectly. It should also not be blank.";
+             request.setAttribute("message",message);
+             request.setAttribute("whatFor","addClinic");
+             request.setAttribute("custID", request.getParameter("customerIDInput"));
+             request.getRequestDispatcher("customer.getClinic").forward(request,response);
+             return;
+         }
+        
+        //check clinic name
+        String newClinicName = "";
+        try{newClinicName = request.getParameter("clinicNameInput");}
+         catch(Exception e){
+             message = "Clinic Name was input incorrectly. It should also not be blank.";
+             request.setAttribute("message",message);
+             request.setAttribute("whatFor","addClinic");
+             request.setAttribute("custID", request.getParameter("customerIDInput"));
+             request.getRequestDispatcher("customer.getClinic").forward(request,response);
+             return;
+         }
+        
+        //check province
+        String provinceID = "";
+        try{provinceID = request.getParameter("chosenProvince");}
+         catch(Exception e){
+             message = "Province was input incorrectly. Please try again.";
+             request.setAttribute("message",message);
+             request.setAttribute("whatFor","addClinic");
+             request.setAttribute("custID", request.getParameter("customerIDInput"));
+             request.getRequestDispatcher("customer.getClinic").forward(request,response);
+             return;
+         }
 
         ps = conn.prepareStatement(preparedSQL);
         ps.setString(1,newClinicAddress);
@@ -126,7 +183,9 @@ public class editClinicServlet extends HttpServlet {
         }
         catch(Exception ex){
             ex.printStackTrace();
-            out.println("error: " + ex);
+            //out.println("error: " + ex);
+            String message = "Something went wrong. Error: "+ex;
+            request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
             out.close();  // Close the output writer
@@ -137,7 +196,9 @@ public class editClinicServlet extends HttpServlet {
             }
             catch (SQLException ex) {
                 ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
+                //out.println("Another SQL error: " + ex);
+                String message = "Something went wrong. Error: "+ex;
+                request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }
     }

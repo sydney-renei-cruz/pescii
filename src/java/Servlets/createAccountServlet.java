@@ -109,9 +109,73 @@ public class createAccountServlet extends HttpServlet {
          //you don't change this
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          
+         //check the user name
+         String inputUsername = "";
+         try{
+             inputUsername = request.getParameter("usernameInput");
+             if(inputUsername.length()>30){
+                 message = "User name is too long.";
+                 request.setAttribute("message",message);
+                request.getRequestDispatcher("account.getTypeStatus").forward(request,response);
+                return;
+             }
+            }
+            catch(Exception e){
+                message = "User name was input incorrectly. It should also not be blank.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("account.getTypeStatus").forward(request,response);
+                return;
+            }
          
-         String inputUsername = request.getParameter("usernameInput");
-         String inputPassword = request.getParameter("passwordInput");
+         String inputPassword = "";
+         try{
+             inputPassword = request.getParameter("passwordInput");
+             if(inputPassword.length()>255){
+                 message = "Password is too long.";
+                 request.setAttribute("message",message);
+                request.getRequestDispatcher("account.getTypeStatus").forward(request,response);
+                return;
+             }
+             
+             if(inputPassword.length()<8){
+                 message = "Password must be at least 8 characters.";
+                 request.setAttribute("message",message);
+                request.getRequestDispatcher("account.getTypeStatus").forward(request,response);
+                return;
+             }
+             
+             boolean digit = false;
+             boolean character = false;
+             boolean caps = false;
+             char c;
+             for(int i=0;i<inputPassword.length();i++){
+                 c = inputPassword.charAt(i);
+                if(Character.isDigit(c)){
+                    digit = true;
+                }
+                if(!Character.isDigit(c) && !Character.isLetter(c)){
+                    character = true;
+                }
+                if(Character.isUpperCase(c)){
+                    caps = true;
+                }
+             }
+             if(!(digit==true || character==true || caps==false)){
+                 message = "Password must contain at least one digit and one special character.";
+                 request.setAttribute("message",message);
+                request.getRequestDispatcher("account.getTypeStatus").forward(request,response);
+                return;
+            }
+             
+            }
+            catch(Exception e){
+                message = "Password was input incorrectly. It should also not be blank.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("account.getTypeStatus").forward(request,response);
+                return;
+            }
+         
+         
          String inputPassword2 = request.getParameter("password2Input");
          if(!inputPassword.equals(inputPassword2)){
              message = "Passwords did not match";
@@ -125,10 +189,10 @@ public class createAccountServlet extends HttpServlet {
          ResultSet dbData = ps.executeQuery();
          while(dbData.next()){
              if(dbData.getString("userName").equals(inputUsername)){
-                 message = "That username is already in use. Please enter a new one.";
-                 request.setAttribute("message",message);
-                 request.getRequestDispatcher("createAccount.jsp").forward(request,response);
-                 return;
+                message = "That username is already in use. Please enter a new one.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("account.getDetails").forward(request,response);
+                return;
              }
          }
          
@@ -190,9 +254,11 @@ public class createAccountServlet extends HttpServlet {
             
          
         }
-        catch(SQLException ex){
+        catch(Exception ex){
             ex.printStackTrace();
-            out.println("SQL error: " + ex);
+            //out.println("error: " + ex);
+            String message = "Something went wrong. Error: "+ex;
+            request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
             out.close();  // Close the output writer
@@ -203,7 +269,9 @@ public class createAccountServlet extends HttpServlet {
             }
             catch (SQLException ex) {
                 ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
+                //out.println("Another SQL error: " + ex);
+                String message = "Something went wrong. Error: "+ex;
+                request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }
         

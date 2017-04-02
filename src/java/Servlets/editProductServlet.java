@@ -100,18 +100,128 @@ public class editProductServlet extends HttpServlet {
                  + "supplierID=? "
                  + "where productID=?";
          
-         //int restockOrderID = Integer.parseInt(request.getParameter("restockOrderIDInput"));
-         context.log(request.getParameter("productIDInput"));
+         String message = "";
+         
+         //check the product ID
          int productID = Integer.parseInt(request.getParameter("productIDInput"));
-         String newProductName = request.getParameter("productNameInput");
+         
+         
+         //check the product name
+         String newProductName = "";
+         try{
+             newProductName = request.getParameter("productNameInput");
+             if(newProductName.length()>255){
+                message = "Product Name is too long.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("product.getDetails?forEdit=yes&prodID="+productID).forward(request,response);
+                return;
+             }
+            }
+            catch(Exception e){
+                message = "Product Name was input incorrectly. It should also not be blank.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("product.getDetails?forEdit=yes&prodID="+productID).forward(request,response);
+                return;
+            }
+         
+         
          String newProductDescription = request.getParameter("productDescriptionInput");
-         float newProductPrice = Float.parseFloat(request.getParameter("productPriceInput"));
-         float newRestockPrice = Float.parseFloat(request.getParameter("restockPriceInput"));
-         int newLowStock = Integer.parseInt(request.getParameter("lowStockInput"));
-         String newBrand = request.getParameter("brandInput");
-         int newProductClass = Integer.parseInt(request.getParameter("productClassInput"));
+         
+         
+         //check the product price
+         float newProductPrice = 0;
+         try{
+            newProductPrice = Float.parseFloat(request.getParameter("productPriceInput"));
+         }
+         catch(Exception e){
+            message = "Product Price was input incorrectly. It should also not be blank.";
+            request.setAttribute("message",message);
+            request.getRequestDispatcher("product.getDetails?forEdit=yes&prodID="+productID).forward(request,response);
+            return;
+         }
+         
+         //check restock price
+         float newRestockPrice = 0;
+         try{
+                newRestockPrice = Float.parseFloat(request.getParameter("restockPriceInput"));
+            }
+            catch(Exception e){
+                message = "Restock Price was input incorrectly. It should also not be blank.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("product.getDetails?forEdit=yes&prodID="+productID).forward(request,response);
+                return;
+            }
+         
+         
+         //check low stock
+         int newLowStock = 0;
+         try{
+                newLowStock = Integer.parseInt(request.getParameter("lowStockInput"));
+         }
+         catch(Exception e){
+                message = "Low Stock level was input incorrectly. It should also not be blank.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("product.getDetails?forEdit=yes&prodID="+productID).forward(request,response);
+                return;
+            }
+         
+         
+         //check brand
+         String newBrand = "";
+         try{
+             newBrand = request.getParameter("brandInput");
+             if(newBrand.length()>255){
+                 message = "Brand name is too long.";
+                 request.setAttribute("message",message);
+                request.getRequestDispatcher("product.getDetails?forEdit=yes&prodID="+productID).forward(request,response);
+                return;
+             }
+            }
+            catch(Exception e){
+                message = "Brand name was input incorrectly. It should also not be blank.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("product.getDetails?forEdit=yes&prodID="+productID).forward(request,response);
+                return;
+            }
+         
+         //check product lass
+         int newProductClass = 0;
+         try{newProductClass = Integer.parseInt(request.getParameter("productClassInput"));}
+         catch(Exception e){
+                message = "Product Class input incorrectly.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("product.getDetails?forEdit=yes&prodID="+productID).forward(request,response);
+                return;
+         }
+         
+         
+         //check color
          String newColor = request.getParameter("colorInput");
-         int newSupplier = Integer.parseInt(request.getParameter("supplierInput"));
+         try{
+             newColor = request.getParameter("colorInput");
+             if(newColor.length()>20){
+                 message = "Color name is too long.";
+                 request.setAttribute("message",message);
+                request.getRequestDispatcher("product.getDetails?forEdit=yes&prodID="+productID).forward(request,response);
+                return;
+             }
+            }
+            catch(Exception e){
+                message = "Color name was input incorrectly. It should also not be blank.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("product.getDetails?forEdit=yes&prodID="+productID).forward(request,response);
+                return;
+            }
+         
+         //check supplier
+         int newSupplier = 0;
+         try{newSupplier = Integer.parseInt(request.getParameter("supplierInput"));}
+         catch(Exception e){
+                message = "Supplier was input incorrectly.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("product.getDetails?forEdit=yes&prodID="+productID).forward(request,response);
+                return;
+         }
          
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          ps.setString(1,newProductName);
@@ -128,14 +238,16 @@ public class editProductServlet extends HttpServlet {
          context.log(preparedSQL);
          ps.executeUpdate();
          
-         String message = "Product successfully editted!";
+         message = "Product successfully editted!";
          request.setAttribute("message", message);
          request.getRequestDispatcher("homePage.jsp").forward(request,response);
          
         }
         catch(Exception ex){
             ex.printStackTrace();
-            out.println("error: " + ex);
+            //out.println("error: " + ex);
+            String message = "Something went wrong. Error: "+ex;
+            request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
             out.close();  // Close the output writer
@@ -146,7 +258,9 @@ public class editProductServlet extends HttpServlet {
             }
             catch (SQLException ex) {
                 ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
+                //out.println("Another SQL error: " + ex);
+                String message = "Something went wrong. Error: "+ex;
+                request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }
         

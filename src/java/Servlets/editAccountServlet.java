@@ -100,15 +100,87 @@ public class editAccountServlet extends HttpServlet {
          
          //---------------
          String preparedSQL = "update Account set userName=?, password=?, accountStatus=?, accountType=? where accountID=?";
+         String message = "";
          
-         String newUserName = request.getParameter("userNameInput");
-         String password = request.getParameter("newPasswordInput");
+         //check the user name
+         String newUserName = "";
+         try{
+             newUserName = request.getParameter("userNameInput");
+             if(newUserName.length()>30){
+                 message = "User name is too long.";
+                 request.setAttribute("message",message);
+                request.getRequestDispatcher("account.getTypeStatus").forward(request,response);
+                return;
+             }
+            }
+            catch(Exception e){
+                message = "User name was input incorrectly. It should also not be blank.";
+                request.setAttribute("message",message);
+                request.setAttribute("accID", request.getAttribute("accountIDInput"));
+                request.getRequestDispatcher("account.getDetails").forward(request,response);
+                return;
+            }
+         
+         //check password
+         String password = "";
+         try{
+             password = request.getParameter("newPasswordInput");
+             if(password.length()>255){
+                 message = "Password is too long.";
+                 request.setAttribute("message",message);
+                 request.setAttribute("accID", request.getAttribute("accountIDInput"));
+                 request.getRequestDispatcher("account.getDetails").forward(request,response);
+                 return;
+             }
+             
+             if(password.length()<8){
+                 message = "Password must be at least 8 characters.";
+                 request.setAttribute("message",message);
+                 request.setAttribute("accID", request.getAttribute("accountIDInput"));
+                 request.getRequestDispatcher("account.getDetails").forward(request,response);
+                 return;
+             }
+             
+             boolean digit = false;
+             boolean character = false;
+             boolean caps = false;
+             char c;
+             for(int i=0;i<password.length();i++){
+                 c = password.charAt(i);
+                if(Character.isDigit(c)){
+                    digit = true;
+                }
+                if(!Character.isDigit(c) && !Character.isLetter(c)){
+                    character = true;
+                }
+                if(Character.isUpperCase(c)){
+                    caps = true;
+                }
+             }
+             if(!(digit==true || character==true || caps==false)){
+                message = "Password must contain at least one digit and one special character.";
+                request.setAttribute("message",message);
+                request.setAttribute("accID", request.getAttribute("accountIDInput"));
+                request.getRequestDispatcher("account.getDetails").forward(request,response);
+            }
+             
+            }
+            catch(Exception e){
+                message = "Password was input incorrectly. It should also not be blank.";
+                request.setAttribute("message",message);
+                request.setAttribute("accID", request.getAttribute("accountIDInput"));
+                request.getRequestDispatcher("account.getDetails").forward(request,response);
+                return;
+            }
+         
+         
          String password2 = request.getParameter("newPasswordInput2");
          if(!password.equals(password2)){
-             context.log("It didn't match!");
-             request.setAttribute("message","Passwords did not match. No changes made.");
-             request.getRequestDispatcher("homePage.jsp").forward(request,response);
-             return;
+            message = "Passwords did not match";
+            request.setAttribute("message",message);
+            request.setAttribute("accID", request.getAttribute("accountIDInput"));
+            request.getRequestDispatcher("account.getDetails").forward(request,response);
+            return;
          }
          if(password==null || password==""){password = request.getParameter("oldPassword");}
          else{
@@ -173,9 +245,11 @@ public class editAccountServlet extends HttpServlet {
          request.getRequestDispatcher("homePage.jsp").forward(request,response);
          
         }
-        catch(SQLException ex){
+        catch(Exception ex){
             ex.printStackTrace();
-            out.println("SQL error: " + ex);
+            //out.println("error: " + ex);
+            String message = "Something went wrong. Error: "+ex;
+            request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
             out.close();  // Close the output writer
@@ -186,7 +260,9 @@ public class editAccountServlet extends HttpServlet {
             }
             catch (SQLException ex) {
                 ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
+                //out.println("Another SQL error: " + ex);
+                String message = "Something went wrong. Error: "+ex;
+                request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }
         

@@ -8,9 +8,11 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
+    String accountType = ""+session.getAttribute("accountType");
     invoiceBean invoice = (invoiceBean)request.getAttribute("invoice");
     ArrayList<invoiceStatusBean> invStatList = (ArrayList<invoiceStatusBean>)request.getAttribute("invStatList");
     ArrayList<invoiceItemBean> invitemsList = (ArrayList<invoiceItemBean>)request.getAttribute("invitemsList");
+    String message = ""+request.getAttribute("message");
 %>
 <!DOCTYPE html>
 <html>
@@ -31,13 +33,17 @@
     <body onload="init()">
         <h1>This is the Edit Invoice page!</h1>
         
+        <c:if test="${message != ''}">
+            <p>${message}</p><br><br>
+        </c:if>
+        
         <br><br><br>
         <!--show the invoice details so users can have an easier time-->
         <h5>Invoice Details</h5>
         
         <form action="invoice.edit" method="post">
             <p>Invoice ID: <input type="hidden" value="${invoice.getInvoiceID()}" name="invoiceIDInput">${invoice.getInvoiceID()}</p>
-            <p>Invoice Name: <input type="text" value="${invoice.getInvoiceName()}" name="newInvoiceNameInput"><br>
+            <p>Invoice Name: <input type="text" value="${invoice.getInvoiceName()}" name="newInvoiceNameInput" maxlength="255"><br>
             <p>Customer Name: <input type="hidden" value="${invoice.getPRCID()}" name="PRCIDInput">${invoice.getCustomerName()}</p>
             <p>Clinic Name: <input type="hidden" value="${invoice.getClinicID()}" name="clinicIDInput">${invoice.getClinicName()}</p>
             <p><input type="hidden" value="${invoice.getInvoiceDate()}" name="invoiceDateInput">Invoice Date Created: ${invoice.getInvoiceDate()}</p>
@@ -46,7 +52,7 @@
                 <c:when test="${invoice.getStatusName() eq 'In Progress'}">
                     <br>
                     From: ${invoice.getDeliveryDate()}<br>
-                    To: <input type="text" name="deliveryDateInput" value="${invoice.getDeliveryDate()}" id="date1"><br>
+                    To: <input type="text" name="deliveryDateInput" value="${invoice.getDeliveryDate()}" id="date1" maxlength="10"><br>
                 </c:when>
                 <c:when test="${invoice.getStatusName() ne 'In Progress'}">
                     <input type="hidden" value="${invoice.getDeliveryDate()}" name="deliveryDateInput">${invoice.getDeliveryDate()}<br>
@@ -57,7 +63,7 @@
                 <c:when test="${invoice.getStatusName() eq 'In Progress'}">
                     <br>
                     From: ${invoice.getTermsOfPayment()}<br>
-                    To: <input type="text" name="topInput" value="${invoice.getTermsOfPayment()}"><br><br>
+                    To: <input type="text" name="topInput" value="${invoice.getTermsOfPayment()}" maxlength="20"><br><br>
                 </c:when>
                 <c:when test="${invoice.getStatusName() ne 'In Progress'}">
                     <input type="hidden" value="${invoice.getTermsOfPayment()}" name="topInput">${invoice.getTermsOfPayment()}<br><br>
@@ -68,7 +74,7 @@
                 <c:when test="${invoice.getDatePaid() eq '0000-00-00'}">
                     <br>
                     From: ${invoice.getPaymentDueDate()}<br>
-                    To: <input type="text" name="paymentDueDateInput" value="${invoice.getPaymentDueDate()}" id="date2"><br><br>
+                    To: <input type="text" name="paymentDueDateInput" value="${invoice.getPaymentDueDate()}" id="date2" maxlength="10"><br><br>
                 </c:when>
                 <c:when test="${invoice.getDatePaid() ne '0000-00-00'}">
                     <input type="hidden" value="${invoice.getPaymentDueDate()}" name="paymentDueDateInput">${invoice.getPaymentDueDate()}<br><br>
@@ -79,7 +85,7 @@
                 <c:when test="${invoice.getDatePaid() eq null}">
                     <br>
                     From: ${invoice.getDatePaid()}<br>
-                    To: <input type="text" name="datePaidInput" value="${invoice.getDatePaid()}" id="date3"><br><br>
+                    To: <input type="text" name="datePaidInput" value="${invoice.getDatePaid()}" id="date3" maxlength="10"><br><br>
                 </c:when>
                 <c:when test="${invoice.getDatePaid() ne null}">
                     <input type="hidden" value="${invoice.getDatePaid()}" name="datePaidInput">${invoice.getDatePaid()}<br><br>
@@ -135,7 +141,7 @@
             Date Delivered:
             <c:choose>
                 <c:when test="${invoice.getStatusName() ne 'Completed'}">
-                    <input type="text" value="${invoice.getDateDelivered()}" name="dateDeliveredInput" id="date4"><br>
+                    <input type="text" value="${invoice.getDateDelivered()}" name="dateDeliveredInput" id="date4" maxlength="10"><br>
                 </c:when>
                 <c:when test="${invoice.getStatusName() eq 'Completed'}">
                     <input type="hidden" value="${invoice.getDateDelivered()}" name="dateDeliveredInput">${invoice.getDateDelivered()}<br>
@@ -174,7 +180,20 @@
         <br><br>
         <a href="Servlets.getInvoiceServlet">Return to list of Invoices</a>
         <br><br>
-        <a href="homePage.jsp">Return to Home</a>
+        <c:choose>
+            <c:when test="${accountType eq 3}">
+                <a href="notif.get?forWhat=invoice">Return to Home</a>
+            </c:when>
+            <c:when test="${(accountType eq 4) || (accountType eq 5)} ">
+                <a href="notif.get?forWhat=restock">Return to Home</a>
+            </c:when>
+            <c:when test="${accountType eq 1}">
+                <a href="notif.get?forWhat=both">Return to Home</a>
+            </c:when>
+            <c:when test="${(accountType ne 3) || (accountType ne 4) || (accountType ne 5) || (accountType ne 1)}">
+                <a href="homePage.jsp">Return to Home</a>
+            </c:when>
+        </c:choose>
         <br><br>
         <a href="Servlets.logoutServlet">logout</a>
 

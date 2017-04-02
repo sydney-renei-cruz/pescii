@@ -12,6 +12,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -103,13 +106,108 @@ public class createRestockOrderServlet extends HttpServlet {
          //you don't change this
          PreparedStatement rs = conn.prepareStatement(preparedSQL);
          context.log("The productID is ----> " + request.getParameter("pid"));
-         String inputROName = request.getParameter("RONameInput");
-         int inputProductID = Integer.parseInt(request.getParameter("pid"));
-         int inputPiecesOrdered = Integer.parseInt(request.getParameter("piecesOrderedInput"));
+         
+         String message = "";
+         
+         //check product ID
+         int inputProductID = 0;
+         try{inputProductID = Integer.parseInt(request.getParameter("pid"));}
+         catch(Exception e){
+                message = "Restock D is invalid.";
+                request.setAttribute("message",message);
+                request.setAttribute("forRestock", "yes");
+                request.setAttribute("prodID",inputProductID);
+                request.getRequestDispatcher("product.getDetails").forward(request,response);
+                return;
+         }
+         
+         //check RO name
+         String inputROName;
+         try{
+             inputROName = request.getParameter("RONameInput");
+             if(inputROName.length()>255){
+                 message = "Restock Order Name is too long.";
+                 request.setAttribute("message",message);
+                 request.setAttribute("forRestock", "yes");
+                request.setAttribute("prodID",inputProductID);
+                request.getRequestDispatcher("product.getDetails").forward(request,response);
+                return;
+             }
+            }
+            catch(Exception e){
+                message = "Restock Order Name is too long.";
+                request.setAttribute("message",message);
+                request.setAttribute("prodID",inputProductID);
+                request.setAttribute("forRestock", "yes");
+                request.getRequestDispatcher("product.getDetails").forward(request,response);
+                return;
+            }
+         
+         
+         //check the number of pieces ordered
+         int inputPiecesOrdered = 0;
+         try{
+             inputPiecesOrdered = Integer.parseInt(request.getParameter("piecesOrderedInput"));
+         }
+         catch(Exception e){
+                message = "Number of Pieces Ordered is wrong. It must be a whole number.";
+                request.setAttribute("message",message);
+                request.setAttribute("prodID",inputProductID);
+                request.setAttribute("forRestock", "yes");
+                request.getRequestDispatcher("product.getDetails").forward(request,response);
+                return;
+         }
+         
+         
          int inputSupplier = Integer.parseInt(request.getParameter("supplierIDInput"));
          String inputPurpose = request.getParameter("purposeInput");
-         String inputDateDue = request.getParameter("dateDueInput");
-         float inputDiscount = Float.parseFloat(request.getParameter("discountInput"));
+         
+         //check date due
+         String inputDateDue = "";
+         Date date = new Date();
+         try{
+               inputDateDue = request.getParameter("dateDueInput");
+                if(inputDateDue.length()>10){
+                    message = "Due Date format is invalid.";
+                    request.setAttribute("message",message);
+                    request.setAttribute("prodID",inputProductID);
+                    request.setAttribute("forRestock", "yes");
+                    request.getRequestDispatcher("product.getDetails").forward(request,response);
+                    return;
+                 }
+
+                else{
+                    //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    //date = sdf.parse(inputDateDue);
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    dateFormat.setLenient(false);
+                    dateFormat.parse(inputDateDue.trim());
+                }
+             }
+             catch(Exception e){
+                message = "Due Date format is invalid.";
+                request.setAttribute("message",message);
+                request.setAttribute("prodID",inputProductID);
+                request.setAttribute("forRestock", "yes");
+                context.log(""+e);
+                request.getRequestDispatcher("product.getDetails").forward(request,response);
+                return;
+             }
+         
+         //check discount
+         float inputDiscount = 0;
+            try{
+                inputDiscount = Float.parseFloat(request.getParameter("discountInput"));
+            }
+            catch(Exception e){
+                message = "Discount was input incorrectly. It should also not be blank.";
+                request.setAttribute("message",message);
+                request.setAttribute("prodID",inputProductID);
+                request.setAttribute("forRestock", "yes");
+                request.getRequestDispatcher("product.getDetails").forward(request,response);
+                return;
+            }
+         
          String lastEdittedBy = ""+session.getAttribute("userName");
          
          
@@ -124,14 +222,16 @@ public class createRestockOrderServlet extends HttpServlet {
          
          rs.executeUpdate();                   //at this point, you have already inserted into the database
          
-         String message = "Restock Order successfully created!";
+         message = "Restock Order successfully created!";
          request.setAttribute("message", message);
          request.getRequestDispatcher("homePage.jsp").forward(request,response);
          
         }
          catch(Exception ex){
             ex.printStackTrace();
-            out.println("SQL error: " + ex);
+            //out.println("error: " + ex);
+            String message = "Something went wrong. Error: "+ex;
+            request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
             out.close();  // Close the output writer
@@ -142,7 +242,9 @@ public class createRestockOrderServlet extends HttpServlet {
             }
             catch (SQLException ex) {
                 ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
+                //out.println("Another SQL error: " + ex);
+                String message = "Something went wrong. Error: "+ex;
+                request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }
         

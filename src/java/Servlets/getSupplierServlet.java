@@ -94,11 +94,14 @@ public class getSupplierServlet extends HttpServlet {
          request.setAttribute("prodClassList", request.getAttribute("prodClassList"));
          context.log("FOREDIT EQUAAAAALS: " + request.getAttribute("forEdit"));
          
+         request.setAttribute("message", ""+request.getAttribute("message"));
+         
          String searchWhat = ""+request.getAttribute("searchWhat");
          String forOther = ""+request.getAttribute("forOther");
          request.setAttribute("prodClassList", request.getAttribute("prodClassList"));
          if((""+request.getAttribute("forEdit")).equals("yes")){
              //request.setAttribute("forEdit", "yes");
+             request.setAttribute("message",request.getAttribute("message"));
              request.setAttribute("product", request.getAttribute("product"));
              //request.setAttribute("productClassList", request.getAttribute("productClassList"));
              request.getRequestDispatcher("editProduct.jsp").forward(request,response);
@@ -127,7 +130,9 @@ public class getSupplierServlet extends HttpServlet {
         }
         catch(Exception ex){
             ex.printStackTrace();
-            out.println("SQL error: " + ex);
+            //out.println("error: " + ex);
+            String message = "Something went wrong. Error: "+ex;
+            request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
             out.close();  // Close the output writer
@@ -138,7 +143,9 @@ public class getSupplierServlet extends HttpServlet {
             }
             catch (SQLException ex) {
                 ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
+                //out.println("Another SQL error: " + ex);
+                String message = "Something went wrong. Error: "+ex;
+                request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }
     }

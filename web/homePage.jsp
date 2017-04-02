@@ -4,6 +4,7 @@
     Author     : user
 --%>
 
+<%@page import="Beans.*,java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
@@ -11,6 +12,9 @@
     String userName = ""+session.getAttribute("userName");
     String message = ""+request.getAttribute("message");
     String accountType = ""+session.getAttribute("accountType");
+    
+    ArrayList<restockOrderBean> restocksList = (ArrayList<restockOrderBean>)request.getAttribute("restocksList");
+    ArrayList<invoiceBean> invoiceList = (ArrayList<invoiceBean>)request.getAttribute("invoiceList");
 %>
 <!DOCTYPE html>
 <html>
@@ -126,7 +130,7 @@
             <a href="province.get?whatFor=conditionsInvoice">Custom View Invoice</a><br>
             <a href="Servlets.getInvoiceServlet">View All Invoices</a><br><br>
             
-            <a href="Servlets.getCustomerServlet?forAdd=yes">Add Customer</a><br>
+            <a href="salesrep.get?whatFor=addCustomer">Add Customer</a><br>
             <a href="Servlets.getCustomerServlet">Edit Customer</a><br>
             <a href="new.get?whatFor=customer">Customers With Overdue Fees</a><br>
             <a href="salesrep.get?whatFor=searchCustomer">Custom View Customers</a><br>
@@ -151,6 +155,87 @@
             <a href="unfinished.get?getTable=ro">Unfinished RO</a><br>
             <a href="product.getProductClass?search=yes&searchWhat=ro">Custom View RO</a><br>
             <a href="restockOrder.get">View All Restock Orders</a><br><br>
+            
+            
+            <!--Notification section-->
+            <!--Invoice notifs for those with near (within 7 days) payment or delivery deadlines-->
+            <c:if test="${invoiceList.size() eq 0}">
+                <p>You have <b>${invoiceList.size()} invoice/s</b> with deadlines within the next 7 days</p>
+            </c:if>
+            <c:if test="${invoiceList.size() ne 0}">
+                <p>You have <b>${invoiceList.size()} invoice/s</b> with deadlines within the next 7 days</p>
+                <table border="1">
+                    <tr>
+                        <th>Invoice ID</th>
+                        <th>Invoice Name</th>
+                        <th>Customer Name</th>
+                        <th>Clinic Name</th>
+                        <th>Province</th>
+                        <th>Status</th>
+                        <th>Invoice Date</th>
+                        <th>Payment Due Date</th>
+                        <th>Date Paid</th>
+                        <th>Delivery Date</th>
+                    </tr>
+
+                    <c:forEach items="${invoiceList}" var="inv" begin="0" step="1" varStatus="status">
+                        <tr>
+                            <td>${inv.getInvoiceID()}</td>
+                            <td><a href="Servlets.viewInvoiceDetailsServlet?editInvoice=no&invID=<c:out value="${inv.getInvoiceID()}"/>">${inv.getInvoiceName()}</td>
+                            <td>${inv.getCustomerName()}</td>
+                            <td>${inv.getClinicName()}</td>
+                            <td>${inv.getProvinceName()}</td>
+                            <td>${inv.getStatusName()}</td>
+                            <td>${inv.getInvoiceDate()}</td>
+                            <td>${inv.getPaymentDueDate()}</td>
+                            <td>${inv.getDatePaid()}</td>
+                            <td>${inv.getDeliveryDate()}</td>
+                            <td><a href="Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID=<c:out value="${inv.getInvoiceID()}"/>">Edit Invoice</a></td>
+                        </tr>
+                    </c:forEach>
+                </table>
+            </c:if>
+                
+            <!--RestockOrder notifs for those with near (within 7 days) delivery deadlines-->
+            
+            
+            <c:if test="${restocksList.size() eq 0}">
+                <p>You have <b>${restocksList.size()} RO/s</b> with deadlines within the next 7 days</p>
+            </c:if>
+            <c:if test="${restocksList.size() ne 0}">
+                <p>You have <b>${restocksList.size()} RO/s</b> with deadlines within the next 7 days</p>
+                <table border="1">
+                    <tr>
+                        <th>Restock Order ID</th>
+                        <th>Restock Order Name</th>
+                        <th>Product Name</th>
+                        <th>Restock Price</th>
+                        <th>Pieces Ordered</th>
+                        <th>Pieces Received</th>
+                        <th>Supplier</th>
+                        <th>Date Due</th>
+                        <th>Date Delivered</th>
+                    </tr>
+
+                    <c:forEach items="${restocksList}" var="ro" begin="0" step="1" varStatus="status">
+                        <tr>
+                            <td>${ro.getRestockOrderID()}</td>
+                            <td><a href="restockOrder.getDetails?restockID=<c:out value="${ro.getRestockOrderID()}"/>">${ro.getRestockOrderName()}</td>
+                            <td>${ro.getProductName()}</td>
+                            <td>${ro.getRestockPrice()}</td>
+                            <td>${ro.getNumberOfPiecesOrdered()}</td>
+                            <td>${ro.getNumberOfPiecesReceived()}</td>
+                            <td>${ro.getSupplierName()}</td>
+                            <td>${ro.getRODateDue()}</td>
+                            <td>${ro.getRODateDelivered()}</td>
+                            <td><a href="restockOrder.getDetails?editRestock=yes&restockID=<c:out value="${ro.getRestockOrderID()}"/>">Edit</td>
+                        </tr>
+                    </c:forEach>
+                </table>
+            </c:if>
+            
+            
+            
         </c:if>
         
         <a href="product.getProductClass?search=yes&searchWhat=prod">Custom View Product</a><br>

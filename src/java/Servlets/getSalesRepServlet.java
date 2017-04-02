@@ -43,7 +43,7 @@ public class getSalesRepServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        
+        String message="";
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
         
@@ -85,17 +85,27 @@ public class getSalesRepServlet extends HttpServlet {
             }
          request.setAttribute("salesRepsList", salesRepsRetrieved);
          
+         String whatFor=""+request.getParameter("whatFor");
          if((""+request.getParameter("whatFor")).equals("searchCustomer")){
              context.log("getting salesReps for searchCustomer...");
              request.setAttribute("whatFor","searchCustomer");
              request.getRequestDispatcher("province.get").forward(request,response);
          }
-         request.getRequestDispatcher("getSalesRep.jsp").forward(request,response);
-            
+         else if(whatFor.equals("addCustomer")){
+             context.log("getting salesReps for addCustomer...");
+             request.setAttribute("whatFor","addCustomer");
+             request.setAttribute("message",""+request.getAttribute("message"));
+             request.getRequestDispatcher("province.get").forward(request,response);
+         }
+         else{
+            request.getRequestDispatcher("getSalesRep.jsp").forward(request,response);
+         }
         }
         catch(Exception ex){
             ex.printStackTrace();
-            out.println("SQL error: " + ex);
+            //out.println("error: " + ex);
+            message = "Something went wrong. Error: "+ex;
+            request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
             out.close();  // Close the output writer
@@ -106,7 +116,9 @@ public class getSalesRepServlet extends HttpServlet {
             }
             catch (SQLException ex) {
                 ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
+                //out.println("Another SQL error: " + ex);
+                message = "Something went wrong. Error: "+ex;
+                request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }
         

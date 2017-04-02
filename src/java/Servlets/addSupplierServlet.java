@@ -96,11 +96,82 @@ public class addSupplierServlet extends HttpServlet {
          String preparedSQL = "insert into Supplier(supplierName, supplierAddress, "
                  + "supplierContactNumber, productClassID, lastEdittedBy) values (?,?,?,?,?)";
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
+         String message = "";
          
-         String inputSupplierName = request.getParameter("supplierNameInput");
-         String inputSupplierAddress = request.getParameter("supplierAddressInput");
-         String inputSupplierContactNumber = request.getParameter("supplierContactNumberInput");
-         int inputProductClassID = Integer.parseInt(request.getParameter("productClassInput"));
+         //check the supplier name
+         String inputSupplierName = "";
+         try{
+             inputSupplierName = request.getParameter("supplierNameInput");
+             if(inputSupplierName.length()>100){
+                 message = "Supplier name is too long.";
+                 request.setAttribute("message",message);
+                request.getRequestDispatcher("product.getProductClass?addSupp=yes").forward(request,response);
+                return;
+             }
+            }
+        catch(Exception e){
+            message = "Supplier name was input incorrectly. It should also not be blank.";
+            request.setAttribute("message",message);
+            request.getRequestDispatcher("product.getProductClass?addSupp=yes").forward(request,response);
+            return;
+        }
+         
+         //check the supplier address
+        String inputSupplierAddress = "";
+        try{
+             inputSupplierAddress = request.getParameter("supplierAddressInput");
+             if(inputSupplierAddress.length()>255){
+                 message = "Supplier address is too long.";
+                 request.setAttribute("message",message);
+                request.getRequestDispatcher("product.getProductClass?addSupp=yes").forward(request,response);
+                return;
+             }
+            }
+        catch(Exception e){
+            message = "Supplier address was input incorrectly. It should also not be blank.";
+            request.setAttribute("message",message);
+            request.getRequestDispatcher("product.getProductClass?addSupp=yes").forward(request,response);
+            return;
+        }
+        
+        //check the supplier contact number
+         String inputSupplierContactNumber = "";
+         try{
+             inputSupplierContactNumber = request.getParameter("supplierContactNumberInput");
+             if(inputSupplierContactNumber.length()>12){
+                 message = "Contact Number is too long.";
+                 request.setAttribute("message",message);
+                request.getRequestDispatcher("product.getProductClass?addSupp=yes").forward(request,response);
+                return;
+             }
+             char c;
+             for(int i=0;i<inputSupplierContactNumber.length();i++){
+                c = inputSupplierContactNumber.charAt(i);
+                if(!Character.isDigit(c)){
+                    message = "Contact Number was input incorrectly.";
+                    request.setAttribute("message",message);
+                    request.getRequestDispatcher("product.getProductClass?addSupp=yes").forward(request,response);
+                    return;
+                }
+            }
+         }
+         catch(Exception e){
+                message = "Contact Number was input incorrectly.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("product.getProductClass?addSupp=yes").forward(request,response);
+                return;
+         }
+         
+         //no need to check these, but whatever, right?
+         int inputProductClassID = 0;
+         try{inputProductClassID = Integer.parseInt(request.getParameter("productClassInput"));}
+         catch(Exception e){
+                message = "Contact Number was input incorrectly.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("product.getProductClass?addSupp=yes").forward(request,response);
+                return;
+         }
+         
          String lastEdittedBy = ""+session.getAttribute("userName");
          
          
@@ -113,15 +184,17 @@ public class addSupplierServlet extends HttpServlet {
          ps.executeUpdate();                   //at this point, you have already inserted into the database
          
          
-         String message = "Supplier successfully added!";
+         message = "Supplier successfully added!";
          request.setAttribute("message", message);
          request.getRequestDispatcher("homePage.jsp").forward(request,response);
             
          
         }
-        catch(SQLException ex){
+        catch(Exception ex){
             ex.printStackTrace();
-            out.println("SQL error: " + ex);
+            //out.println("error: " + ex);
+            String message = "Something went wrong. Error: "+ex;
+            request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
             out.close();  // Close the output writer
@@ -132,7 +205,9 @@ public class addSupplierServlet extends HttpServlet {
             }
             catch (SQLException ex) {
                 ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
+                //out.println("Another SQL error: " + ex);
+                String message = "Something went wrong. Error: "+ex;
+                request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }
     }

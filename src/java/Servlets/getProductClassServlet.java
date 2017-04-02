@@ -83,16 +83,20 @@ public class getProductClassServlet extends HttpServlet {
          
          String searchWhat = ""+request.getParameter("searchWhat");
          String forOther = ""+request.getParameter("forOther");
-             
          
+         request.setAttribute("message", ""+request.getAttribute("message"));
+         
+         //this is for searching invoices
          if(request.getParameter("product")!=null){
              request.setAttribute("product", request.getAttribute("product"));
              request.getRequestDispatcher("conditionsInvoice.jsp").forward(request,response);
          }
+         //this is for adding supplier
          else if((""+request.getParameter("addSupp")).equals("yes")){
              context.log("MADE IT TO SUPPPPP!!!");
              request.getRequestDispatcher("addSupplier.jsp").forward(request,response);
          }
+         //this is for searching in general. Not sure if it's obsolete haha
          else if((""+request.getParameter("search")).equals("yes")){
              context.log("getting Product Classes for searching...");
              
@@ -108,11 +112,12 @@ public class getProductClassServlet extends HttpServlet {
              request.getRequestDispatcher("supplier.get").forward(request,response);
              return;
          }
+         //this is for edit supplier
          else if((""+request.getAttribute("editSupplier")).equals("yes")){
              request.setAttribute("supplier", request.getAttribute("supplier"));
              request.getRequestDispatcher("editSupplier.jsp").forward(request,response);
          }
-         
+         //otherwise, this servlet is called for editing product(?)
          else{
              if((""+request.getAttribute("forEdit")).equals("yes")){
                  request.setAttribute("product", request.getAttribute("product"));
@@ -120,6 +125,7 @@ public class getProductClassServlet extends HttpServlet {
                  context.log("getProductClass for EDIT!!!!!");
              }
              context.log("getting Suppliers now...");
+             request.setAttribute("message",request.getAttribute("message"));
             request.getRequestDispatcher("supplier.get").forward(request,response);
         }
          
@@ -127,7 +133,9 @@ public class getProductClassServlet extends HttpServlet {
         }
         catch(Exception ex){
             ex.printStackTrace();
-            out.println("SQL error: " + ex);
+            //out.println("error: " + ex);
+            String message = "Something went wrong. Error: "+ex;
+            request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
             out.close();  // Close the output writer
@@ -138,7 +146,9 @@ public class getProductClassServlet extends HttpServlet {
             }
             catch (SQLException ex) {
                 ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
+                //out.println("Another SQL error: " + ex);
+                String message = "Something went wrong. Error: "+ex;
+                request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }
     }

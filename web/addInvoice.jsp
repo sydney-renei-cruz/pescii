@@ -8,9 +8,11 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
+    String accountType = ""+session.getAttribute("accountType");
     customerBean customer = (customerBean)request.getAttribute("customer");
     ArrayList<clinicBean> clinicsList = (ArrayList<clinicBean>)request.getAttribute("clinicsList");
     ArrayList<invoiceStatusBean> invStatList = (ArrayList<invoiceStatusBean>)request.getAttribute("invStatList");
+    String message = ""+request.getAttribute("message");
 %>
 <!DOCTYPE html>
 <html>
@@ -30,6 +32,11 @@
     <body onload="init()">
         <h1>This is the Add Invoice page!</h1>
         
+        <!--this is the error message-->
+        <c:if test="${message ne '' || message ne null || message ne 'null'}">
+            <p>${message}</p><br><br>
+        </c:if>
+            
             <table border="1">
                 <tr>
                     <th>PRC ID</th>
@@ -82,15 +89,13 @@
                 </c:choose>
                 
                 
-        
-                
             </table>
             
             <br><br><br>
         
         <form action="invoice.add" method="POST">
             
-            Enter Invoice Name: <input type="text" name="invoiceNameInput"><br>
+            Enter Invoice Name: <input type="text" name="invoiceNameInput" maxlength="255" required><br>
             Select Clinic: <select name="chosenClinic">
                 <c:forEach items="${clinicsList}" var="clin" begin="0" step="1">
                     <option value="${clin.getClinicID()}">${clin.getClinicAddress()}</option>
@@ -100,26 +105,25 @@
             <br><br>
             <input type="hidden" name="customerIDInput" value="${customer.getCustomerID()}">
             
-            Enter Delivery Date: <input type="text" name="deliveryDateInput" id="date1"><br>
-            Additional Accessories: <input type="text" name="addAccInput"><br>
-            Terms of Payment: <input type="text" name="topInput"><br>
-            Payment Due Date: <input type="text" name="paymentDueDateInput" id="date2"><br>
+            Enter Delivery Date: <input type="text" name="deliveryDateInput" id="date1" required><br>
+            Terms of Payment: <input type="text" name="topInput" maxlength="20" required><br>
+            Payment Due Date: <input type="text" name="paymentDueDateInput" id="date2" required><br>
             Date Paid: <input type="text" name="datePaidInput" id="date3"><br>
             Status: <select name="statusInput">
                 <c:forEach items="${invStatList}" var="invStat" begin="0" step="1">
                     <option value="${invStat.getStatusID()}">${invStat.getStatusName()}</option>
                 </c:forEach>
             </select><br>
-            Amount Due: <input type="text" name="amountDueInput"><br>
-            Discount: <input type="text" name="discountInput"><br>
-            Amount Paid: <input type="text" name="amountPaidInput"><br>
+            Amount Due: <input type="text" name="amountDueInput" value="0" required><br>
+            Discount: <input type="text" name="discountInput" value="0"><br>
+            Amount Paid: <input type="text" name="amountPaidInput" value="0"><br>
             
             <input type="submit" value="Add Invoice">
         </form>
         <br><br>
         <a href="Servlets.getCustomerServlet">Return to Customer List</a>
         <br><br>
-        <a href="homePage.jsp">Return to Home</a>
+        <a href="notif.get">Return to Home</a>
         <br><br>
         <a href="Servlets.logoutServlet">logout</a>
 

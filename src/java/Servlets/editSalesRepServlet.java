@@ -100,13 +100,105 @@ public class editSalesRepServlet extends HttpServlet {
                  + "salesRepMobileNumber=?, salesRepAddress=?, lastEdittedBy=? "
                  + "where salesRepID=?";
          
-         //int restockOrderID = Integer.parseInt(request.getParameter("restockOrderIDInput"));
-         context.log(request.getParameter("srID"));
-         int salesRepID = Integer.parseInt(request.getParameter("srID"));
-         String newSalesRepFirstName = request.getParameter("newSalesRepFirstNameInput");
-         String newSalesRepLastName = request.getParameter("newSalesRepLastNameInput");
-         String newSalesRepMobileNumber = request.getParameter("newSalesRepMNInput");
-         String newSalesRepAddress = request.getParameter("newSalesRepAddressInput");
+         String message = "";
+         
+         //check salesrep ID
+         int salesRepID = 0;
+         try{salesRepID = Integer.parseInt(request.getParameter("srID"));}
+         catch(Exception e){
+                message = "Sales Representative ID is invalid.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("salesrep.getDetails?srID="+salesRepID).forward(request,response);
+                return;
+         }
+         
+         
+         //check first name
+         String newSalesRepFirstName = "";
+         try{
+             newSalesRepFirstName = request.getParameter("newSalesRepFirstNameInput");
+             if(newSalesRepFirstName.length()>100){
+                 message = "First name is too long.";
+                 request.setAttribute("message",message);
+                request.getRequestDispatcher("salesrep.getDetails?srID="+salesRepID).forward(request,response);
+                return;
+             }
+            }
+            catch(Exception e){
+                message = "First name was input incorrectly. It should also not be blank.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("salesrep.getDetails?srID="+salesRepID).forward(request,response);
+                return;
+            }
+         
+         
+         //check last name
+         String newSalesRepLastName = "";
+         try{
+             newSalesRepLastName = request.getParameter("newSalesRepLastNameInput");
+             if(newSalesRepLastName.length()>100){
+                message = "Last name is too long.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("salesrep.getDetails?srID="+salesRepID).forward(request,response);
+                return;
+             }
+            }
+            catch(Exception e){
+                message = "Last name was input incorrectly. It should also not be blank.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("salesrep.getDetails?srID="+salesRepID).forward(request,response);
+                return;
+            }
+         
+         
+         //check mobile number
+         String newSalesRepMobileNumber = "";
+         try{
+             newSalesRepMobileNumber = request.getParameter("newSalesRepMNInput");
+             if(newSalesRepMobileNumber.length()>12){
+                 message = "Mobile Number is too long.";
+                 request.setAttribute("message",message);
+                request.getRequestDispatcher("salesrep.getDetails?srID="+salesRepID).forward(request,response);
+                return;
+             }
+             char c;
+             for(int i=0;i<newSalesRepMobileNumber.length();i++){
+                c = newSalesRepMobileNumber.charAt(i);
+                if(!Character.isDigit(c)){
+                    message = "Mobile Number was input incorrectly.";
+                    request.setAttribute("message",message);
+                    request.getRequestDispatcher("salesrep.getDetails?srID="+salesRepID).forward(request,response);
+                    return;
+                }
+            }
+         }
+         catch(Exception e){
+                message = "Mobile Number was input incorrectly.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("salesrep.getDetails?srID="+salesRepID).forward(request,response);
+                return;
+         }
+         
+         
+         //check address
+         String newSalesRepAddress = "";
+         try{
+             newSalesRepAddress = request.getParameter("newSalesRepAddressInput");
+             if(newSalesRepAddress.length()>255){
+                message = "Address is too long.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("salesrep.getDetails?srID="+salesRepID).forward(request,response);
+                return;
+             }
+            }
+            catch(Exception e){
+                message = "Address was input incorrectly. It should also not be blank.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("salesrep.getDetails?srID="+salesRepID).forward(request,response);
+                return;
+            }
+         
+         
          String lastEdittedBy = ""+session.getAttribute("userName");
          
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
@@ -119,14 +211,16 @@ public class editSalesRepServlet extends HttpServlet {
          
          ps.executeUpdate();
          
-         String message = "Sales Rep successfully editted!";
+         message = "Sales Rep successfully editted!";
          request.setAttribute("message", message);
          request.getRequestDispatcher("homePage.jsp").forward(request,response);
          
         }
         catch(Exception ex){
             ex.printStackTrace();
-            out.println("error: " + ex);
+            //out.println("error: " + ex);
+            String message = "Something went wrong. Error: "+ex;
+            request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
             out.close();  // Close the output writer
@@ -137,7 +231,9 @@ public class editSalesRepServlet extends HttpServlet {
             }
             catch (SQLException ex) {
                 ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
+                //out.println("Another SQL error: " + ex);
+                String message = "Something went wrong. Error: "+ex;
+                request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }
         

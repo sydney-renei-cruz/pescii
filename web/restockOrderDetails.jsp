@@ -9,7 +9,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
-    //productBean product = (productBean)request.getAttribute("product");
+    String accountType = ""+session.getAttribute("accountType");
     restockOrderBean restockOrder = (restockOrderBean)request.getAttribute("restockOrder");
 %>
 <!DOCTYPE html>
@@ -44,9 +44,24 @@
         <a href="restockOrder.getDetails?editRestock=yes&restockID=<c:out value="${ro.getRestockOrderID()}"/>">Edit</a>
         
         <br><br>
-        <a href="product.getProductClass?search=yes&searchWhat=ro">Custom View RO</a><br>
-        <a href="restockOrder.get">Return to RO list</a><br><br>
-        <a href="homePage.jsp">Return to Home</a>
+        <a href="product.getProductClass?search=yes&searchWhat=ro">Custom View RO</a>
+        <br>
+        <a href="restockOrder.get">Return to RO list</a>
+        <br><br>
+        <c:choose>
+            <c:when test="${accountType eq 3}">
+                <a href="notif.get?forWhat=invoice">Return to Home</a>
+            </c:when>
+            <c:when test="${(accountType eq 4) || (accountType eq 5)} ">
+                <a href="notif.get?forWhat=restock">Return to Home</a>
+            </c:when>
+            <c:when test="${accountType eq 1}">
+                <a href="notif.get?forWhat=both">Return to Home</a>
+            </c:when>
+            <c:when test="${(accountType ne 3) || (accountType ne 4) || (accountType ne 5) || (accountType ne 1)}">
+                <a href="homePage.jsp">Return to Home</a>
+            </c:when>
+        </c:choose>
         <br><br>
         <a href="Servlets.logoutServlet">logout</a>
     </body>

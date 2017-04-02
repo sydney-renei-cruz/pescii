@@ -24,8 +24,8 @@
             <div class="login-triangle"></div>
             <h2 class="login-header">Log In</h2>
         <form action="Servlets.logInServlet" method="post" class="login-container">
-            <p>Enter username:<input type="text" name="usernameInput"></p><br>
-            <p>Enter password:<input type="password" name="passwordInput"></p><br>
+            <p>Enter username:<input type="text" name="usernameInput" maxlength="30"></p><br>
+            <p>Enter password:<input type="password" name="passwordInput" maxlength="255"></p><br>
             <input type="submit" value="Log in" >
         </form>    
     </div>

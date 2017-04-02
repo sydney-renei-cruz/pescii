@@ -82,12 +82,15 @@ public class viewSalesRepDetailsServlet extends HttpServlet {
          srbean.setSalesRepAddress(dbData.getString("salesRepAddress"));
          request.setAttribute("srbean", srbean);
          
+         request.setAttribute("message",request.getAttribute("message"));
          request.getRequestDispatcher("editSalesRep.jsp").forward(request,response);
             
         }
         catch(Exception ex){
             ex.printStackTrace();
-            out.println("SQL error: " + ex);
+            //out.println("error: " + ex);
+            String message = "Something went wrong. Error: "+ex;
+            request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
             out.close();  // Close the output writer
@@ -98,7 +101,9 @@ public class viewSalesRepDetailsServlet extends HttpServlet {
             }
             catch (SQLException ex) {
                 ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
+                //out.println("Another SQL error: " + ex);
+                String message = "Something went wrong. Error: "+ex;
+                request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }
     }

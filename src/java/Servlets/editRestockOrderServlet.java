@@ -102,24 +102,110 @@ public class editRestockOrderServlet extends HttpServlet {
          stmt = conn.createStatement();
          
          //---------------
-         //first get the invoice details
-         //String preparedSQL = "update RestockOrder set numberOfPiecesOrdered=?, numberOfPiecesReceived=?, supplier=?, purpose=?, RODateCreated=?, RODateDelivered=?"
-         //                       + "where restockOrderID=?";
          String message = "Restock Order successfully editted!";
          String preparedSQL = "update RestockOrder set ROname=?,numberOfPiecesOrdered=?, "
                  + "numberOfPiecesReceived=?, amountPaid=?, purpose=?, RODateDelivered=?, "
                  + "lastEdittedBy=? "
                  + "where restockOrderID=?";
          
-         //int restockOrderID = Integer.parseInt(request.getParameter("restockOrderIDInput"));
          int productID = Integer.parseInt(request.getParameter("productIDInput"));
+         
+         
+         //check RO ID
+         int inputRestockOrderID = 0;
+         try{inputRestockOrderID = Integer.parseInt(request.getParameter("restockOrderIDInput"));}
+         catch(Exception e){
+                message = "Restock Oder ID is invalid.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("restockOrder.getDetails?editRestock=yes&restockID="+inputRestockOrderID).forward(request,response);
+                return;
+         }
+         
+         //check the RO name
          String newROName = request.getParameter("newRONameInput");
-         int newNumberOfPiecesOrdered = 0 + Integer.parseInt(request.getParameter("numberOfPiecesOrderedInput"));
-         int newNumberOfPiecesReceived = 0 + Integer.parseInt(request.getParameter("numberOfPiecesReceivedInput"));
-         float newAmountPaid = 0 + Float.parseFloat(request.getParameter("amountPaidInput"));
+         try{
+             newROName = request.getParameter("RONameInput");
+             if(newROName.length()>255){
+                message = "Restock Order Name is too long.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("restockOrder.getDetails?editRestock=yes&restockID="+inputRestockOrderID).forward(request,response);
+                return;
+             }
+            }
+            catch(Exception e){
+                message = "Restock Order Name is too long.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("restockOrder.getDetails?editRestock=yes&restockID="+inputRestockOrderID).forward(request,response);
+                return;
+            }
+         
+         
+         //check number of pieces ordered
+         int newNumberOfPiecesOrdered = 0;
+         try{
+             newNumberOfPiecesOrdered = Integer.parseInt(request.getParameter("numberOfPiecesOrderedInput"));
+         }
+         catch(Exception e){
+                message = "Number of Pieces Ordered is wrong. It must be a whole number.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("restockOrder.getDetails?editRestock=yes&restockID="+inputRestockOrderID).forward(request,response);
+                return;
+         }
+         
+         
+         //check number of pieces received
+         int newNumberOfPiecesReceived = 0;
+         try{
+             newNumberOfPiecesReceived = Integer.parseInt(request.getParameter("numberOfPiecesReceivedInput"));
+         }
+         catch(Exception e){
+                message = "Number of Pieces Received is wrong. It must be a whole number.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("restockOrder.getDetails?editRestock=yes&restockID="+inputRestockOrderID).forward(request,response);
+                return;
+         }
+         
+         
+         //check amount paid
+         float newAmountPaid = 0;
+         try{
+             newAmountPaid = Float.parseFloat(request.getParameter("amountPaidInput"));
+         }
+         catch(Exception e){
+                message = "Amount Paid is invalid.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("restockOrder.getDetails?editRestock=yes&restockID="+inputRestockOrderID).forward(request,response);
+                return;
+         }
+         
+         
+         //check purpose
          String newPurpose = request.getParameter("purposeInput");
-         String newRODateDelivered = request.getParameter("roDateDeliveredInput");
-         int inputRestockOrderID = 0 + Integer.parseInt(request.getParameter("restockOrderIDInput"));
+         
+         
+         //check RO date delivered
+         String newRODateDelivered = "";
+         try{
+                newRODateDelivered = request.getParameter("roDateDeliveredInput");
+                if(newRODateDelivered.length()>10){
+                    message = "Date Delivered format is invalid.";
+                    request.setAttribute("message",message);
+                request.getRequestDispatcher("restockOrder.getDetails?editRestock=yes&restockID="+inputRestockOrderID).forward(request,response);
+                return;
+                 }
+
+                else if((!(newRODateDelivered.equals("")) || newRODateDelivered != null)){
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    Date date = sdf.parse(newRODateDelivered);
+                }
+             }
+             catch(Exception e){
+                message = "Date Delivered format is invalid.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("restockOrder.getDetails?editRestock=yes&restockID="+inputRestockOrderID).forward(request,response);
+                return;
+             }
+         
          String lastEdittedBy = ""+session.getAttribute("userName");
          
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
@@ -155,9 +241,11 @@ public class editRestockOrderServlet extends HttpServlet {
          request.getRequestDispatcher("homePage.jsp").forward(request,response);
          
         }
-        catch(SQLException ex){
+        catch(Exception ex){
             ex.printStackTrace();
-            out.println("SQL error: " + ex);
+            //out.println("error: " + ex);
+            String message = "Something went wrong. Error: "+ex;
+            request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
             out.close();  // Close the output writer
@@ -168,7 +256,9 @@ public class editRestockOrderServlet extends HttpServlet {
             }
             catch (SQLException ex) {
                 ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
+                //out.println("Another SQL error: " + ex);
+                String message = "Something went wrong. Error: "+ex;
+                request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }
     }

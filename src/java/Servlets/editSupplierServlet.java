@@ -100,13 +100,94 @@ public class editSupplierServlet extends HttpServlet {
                  + "supplierContactNumber=?, productClassID=?, lastEdittedBy=?"
                  + " where supplierID=?";
          
-         //int restockOrderID = Integer.parseInt(request.getParameter("restockOrderIDInput"));
-         context.log(request.getParameter("supplierIDInput"));
-         int supplierID = Integer.parseInt(request.getParameter("supplierIDInput"));
-         String newSupplierName = request.getParameter("supplierNameInput");
-         String newSupplierAddress = request.getParameter("supplierAddressInput");
-         String newSupplierContactNumber = request.getParameter("supplierContactNumberInput");
-         int newProductClass = 0 + Integer.parseInt(request.getParameter("productClassInput"));
+         String message = "";
+         
+         //check the supplier ID
+         int supplierID = 0;
+         try{supplierID = Integer.parseInt(request.getParameter("supplierIDInput"));}
+         catch(Exception e){
+             message = "Supplier ID is invalid.";
+            request.setAttribute("message",message);
+            request.getRequestDispatcher("homePage.jsp").forward(request,response);
+            return;
+        }
+         
+         //check supplier name
+         String newSupplierName = "";
+         try{
+             newSupplierName = request.getParameter("supplierNameInput");
+             if(newSupplierName.length()>100){
+                message = "Supplier name is too long.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("supplier.getDetails?forEdit=yes&suppID="+supplierID).forward(request,response);
+                return;
+             }
+            }
+        catch(Exception e){
+            message = "Supplier name was input incorrectly. It should also not be blank.";
+            request.setAttribute("message",message);
+            request.getRequestDispatcher("supplier.getDetails?forEdit=yes&suppID="+supplierID).forward(request,response);
+            return;
+        }
+         
+         
+         //check supplier address
+         String newSupplierAddress = "";
+         try{
+             newSupplierAddress = request.getParameter("supplierAddressInput");
+             if(newSupplierAddress.length()>255){
+                message = "Supplier address is too long.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("supplier.getDetails?forEdit=yes&suppID="+supplierID).forward(request,response);
+                return;
+             }
+            }
+        catch(Exception e){
+            message = "Supplier address was input incorrectly. It should also not be blank.";
+            request.setAttribute("message",message);
+            request.getRequestDispatcher("supplier.getDetails?forEdit=yes&suppID="+supplierID).forward(request,response);
+            return;
+        }
+         
+         
+         //check supplier contact number
+         String newSupplierContactNumber = "";
+         try{
+             newSupplierContactNumber = request.getParameter("supplierContactNumberInput");
+             if(newSupplierContactNumber.length()>12){
+                message = "Contact Number is too long.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("supplier.getDetails?forEdit=yes&suppID="+supplierID).forward(request,response);
+                return;
+             }
+             char c;
+             for(int i=0;i<newSupplierContactNumber.length();i++){
+                c = newSupplierContactNumber.charAt(i);
+                if(!Character.isDigit(c)){
+                    message = "Contact Number was input incorrectly.";
+                    request.setAttribute("message",message);
+                    request.getRequestDispatcher("supplier.getDetails?forEdit=yes&suppID="+supplierID).forward(request,response);
+                    return;
+                }
+            }
+         }
+         catch(Exception e){
+                message = "Contact Number was input incorrectly.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("supplier.getDetails?forEdit=yes&suppID="+supplierID).forward(request,response);
+                return;
+         }
+         
+         
+         //check product class
+         int newProductClass = 0;
+         try{newProductClass = Integer.parseInt(request.getParameter("productClassInput"));}
+         catch(Exception e){
+            message = "Product Class was input incorrectly.";
+            request.setAttribute("message",message);
+            request.getRequestDispatcher("supplier.getDetails?forEdit=yes&suppID="+supplierID).forward(request,response);
+            return;
+         }
          String lastEdittedBy = ""+session.getAttribute("userName");
          
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
@@ -119,14 +200,16 @@ public class editSupplierServlet extends HttpServlet {
          
          ps.executeUpdate();
          
-         String message = "Supplier successfully editted!";
+         message = "Supplier successfully editted!";
          request.setAttribute("message", message);
          request.getRequestDispatcher("homePage.jsp").forward(request,response);
          
         }
         catch(Exception ex){
             ex.printStackTrace();
-            out.println("error: " + ex);
+            //out.println("error: " + ex);
+            String message = "Something went wrong. Error: "+ex;
+            request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
             out.close();  // Close the output writer
@@ -137,7 +220,9 @@ public class editSupplierServlet extends HttpServlet {
             }
             catch (SQLException ex) {
                 ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
+                //out.println("Another SQL error: " + ex);
+                String message = "Something went wrong. Error: "+ex;
+                request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }
     }

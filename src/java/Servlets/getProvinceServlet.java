@@ -84,26 +84,45 @@ public class getProvinceServlet extends HttpServlet {
          
          
          String whatFor = "" + request.getParameter("whatFor");
+         if(request.getParameter("whatFor")==null){
+             context.log("so there was a misinput, huh?");
+             whatFor = "" + request.getAttribute("whatFor");
+         }
          if(whatFor.equals("addClinic")){
             String customerID = ""+request.getParameter("custID");
+            if(request.getParameter("custID")==null){
+                customerID = "" + request.getAttribute("custID");
+                context.log("customer ID from getProv is "+customerID);
+                request.setAttribute("message", request.getAttribute("message"));
+            }
             request.setAttribute("custID", customerID);
+            context.log("2nd to final custID is "+customerID);
             request.getRequestDispatcher("addClinic.jsp").forward(request,response);
          }
          else if(whatFor.equals("conditionsInvoice")){
              request.setAttribute("whatFor", "conditionsInvoice");
              request.getRequestDispatcher("invoice.getStatus").forward(request,response);
          }
-         else if((""+request.getAttribute("whatFor")).equals("searchCustomer")){
+         else if(whatFor.equals("searchCustomer")){
              context.log("sending provinces and salesReps to conditionsCustomer...");
              request.setAttribute("salesRepsList", request.getAttribute("salesRepsList"));
              request.getRequestDispatcher("conditionsCustomer.jsp").forward(request,response);
          }
+         else if(whatFor.equals("addCustomer")){
+             context.log("sending provinces and salesReps to conditionsCustomer...");
+             request.setAttribute("salesRepsList", request.getAttribute("salesRepsList"));
+             request.setAttribute("message",""+request.getAttribute("message"));
+             request.getRequestDispatcher("addCustomer.jsp").forward(request,response);
+         }
+         
          
          
         }
         catch(Exception ex){
             ex.printStackTrace();
-            out.println("SQL error: " + ex);
+            //out.println("error: " + ex);
+            String message = "Something went wrong. Error: "+ex;
+            request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
             out.close();  // Close the output writer
@@ -114,7 +133,9 @@ public class getProvinceServlet extends HttpServlet {
             }
             catch (SQLException ex) {
                 ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
+                //out.println("Another SQL error: " + ex);
+                String message = "Something went wrong. Error: "+ex;
+                request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }
         

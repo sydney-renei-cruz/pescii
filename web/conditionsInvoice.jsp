@@ -8,6 +8,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
+    String accountType = ""+session.getAttribute("accountType");
     ArrayList<provinceBean> provList = (ArrayList<provinceBean>)request.getAttribute("provList");
     ArrayList<invoiceStatusBean> invStatList = (ArrayList<invoiceStatusBean>)request.getAttribute("invStatList");
 %>
@@ -35,7 +36,7 @@
         <form action="new.get">
             <input type="hidden" name="getWhat" value="customSearch">
             <input type="hidden" name="whatFor" value="invoice">
-            Search by Invoice Name:<input type="text" name="searchNameInput">
+            Search by Invoice Name:<input type="text" name="searchNameInput" maxlength="255">
             <br><br>
             Search by Status:
                     <c:forEach items="${invStatList}" var="invStat" begin="0" step="1">
@@ -44,8 +45,8 @@
                     
             <br><br>
             <b>Search by Customer Name:</b><br>
-            Last Name: <input type="text" name="searchCustomerLastNameInput"><br>
-            First Name: <input type="text" name="searchCustomerFirstNameInput"><br>
+            Last Name: <input type="text" name="searchCustomerLastNameInput" maxlength="100"><br>
+            First Name: <input type="text" name="searchCustomerFirstNameInput" maxlength="100"><br>
             <br>
             Search by Province:<select name="searchProvinceInput">
                     <option value="all">All</option>
@@ -64,8 +65,8 @@
                     <option value="Invoice.dateCreated">Date Created</option>
             </select>
             <br><br>
-            From:<input type="text" name="fromDate" id="date1"><br>
-            To:<input type="text" name="toDate" id="date2"><br><br>
+            From:<input type="text" name="fromDate" id="date1" maxlength="10"><br>
+            To:<input type="text" name="toDate" id="date2" maxlength="10"><br><br>
             
             <input type="submit" value="Search"><br><br><br>
         </form>
@@ -83,12 +84,21 @@
         </form>
         
         
-        
-        
-        
-        
         <br><br>
-        <a href="homePage.jsp">Return to Home</a>
+        <c:choose>
+            <c:when test="${accountType eq 3}">
+                <a href="notif.get?forWhat=invoice">Return to Home</a>
+            </c:when>
+            <c:when test="${(accountType eq 4) || (accountType eq 5)} ">
+                <a href="notif.get?forWhat=restock">Return to Home</a>
+            </c:when>
+            <c:when test="${accountType eq 1}">
+                <a href="notif.get?forWhat=both">Return to Home</a>
+            </c:when>
+            <c:when test="${(accountType ne 3) || (accountType ne 4) || (accountType ne 5) || (accountType ne 1)}">
+                <a href="homePage.jsp">Return to Home</a>
+            </c:when>
+        </c:choose>
         <br><br>
         <a href="Servlets.logoutServlet">logout</a>
 

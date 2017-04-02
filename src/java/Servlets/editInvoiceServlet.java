@@ -107,22 +107,207 @@ public class editInvoiceServlet extends HttpServlet {
                  + "discount=?, amountPaid=?, dateDelivered=?, lastEdittedBy=? "
                  + "where invoiceID=?";
          
-         int invoiceID = Integer.parseInt(request.getParameter("invoiceIDInput"));
-         String newInvoiceName = request.getParameter("newInvoiceNameInput");
-         String newDeliveryDate = request.getParameter("deliveryDateInput");
-         String newTop = request.getParameter("topInput");
-         String newPaymentDueDate = request.getParameter("paymentDueDateInput");
-         String newDatePaid = request.getParameter("datePaidInput");
-         int newStatus = Integer.parseInt(request.getParameter("statusInput"));
+         String message = "";
+         
+         int invoiceID = 0;
+         try{invoiceID = Integer.parseInt(request.getParameter("invoiceIDInput"));}
+         catch(Exception e){
+                message = "Invoice ID format is invalid.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+                return;
+         }
+         
+         
+         
+         //check the inoice name
+         String newInvoiceName = "";
+         try{
+            newInvoiceName = request.getParameter("newInvoiceNameInput");
+            if(newInvoiceName.length()>255){
+                message = "Invoice Name is too long.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+                return;
+            }
+        }
+        catch(Exception e){
+            message = "Invoice Name was input incorrectly. It should also not be blank.";
+            request.setAttribute("message",message);
+            request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+            return;
+        }
+         
+         Date date = new Date();
+         
+         //check the delivery date
+         String newDeliveryDate = "";
+         try{
+                newDeliveryDate = request.getParameter("deliveryDateInput");
+                if(newDeliveryDate.length()>10){
+                    message = "Delivery Date format is invalid.";
+                    request.setAttribute("message",message);
+                    request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+                    return;
+                 }
+
+                else{
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    date = sdf.parse(newDeliveryDate);
+                }
+        }
+        catch(Exception e){
+           message = "Delivery Date format is invalid.";
+           request.setAttribute("message",message);
+           request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+           return;
+        }
+         
+         //check terms of payment
+         String newTop = "";
+         try{
+             newTop = request.getParameter("topInput");
+             if(newTop.length()>20){
+                 message = "Terms of Payment is too long.";
+                 request.setAttribute("message",message);
+                 request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+                 return;
+             }
+            }
+            catch(Exception e){
+                message = "Terms of Payment was input incorrectly. It should also not be blank.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+                return;
+            }
+         
+         //check payment due date
+         String newPaymentDueDate = "";
+         try{
+                newPaymentDueDate = request.getParameter("paymentDueDateInput");
+                if(newPaymentDueDate.length()>10){
+                    message = "Payment Due Date format is invalid.";
+                    request.setAttribute("message",message);
+                request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+                return;
+                 }
+
+                else{
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    date = sdf.parse(newPaymentDueDate);
+                }
+             }
+             catch(Exception e){
+                message = "Payment Due Date format is invalid.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+                return;
+             }
+         
+         //check date paid
+         String newDatePaid = "";
+         try{
+                newDatePaid = request.getParameter("datePaidInput");
+                if(newDatePaid.length()>10){
+                    message = "Date Paid format is invalid.";
+                    request.setAttribute("message",message);
+                    request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+                    return;
+                 }
+
+                else if((!(newDatePaid.equals("")) || newDatePaid != null)){
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    date = sdf.parse(newDatePaid);
+                }
+             }
+             catch(Exception e){
+                message = "Date Paid format is invalid.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+                return;
+             }
+         
+         //check invoice status
+         int newStatus = 0;
+         try{newStatus = Integer.parseInt(request.getParameter("statusInput"));}
+         catch(Exception e){
+                message = "Invoice Status is invalid.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+                return;
+         }
+         
+         //no need to check, since it'll just set it to the current day
          String newDateClosed = "";
          if(newStatus!=2){
-            Date date = new Date();
+            date = new Date();
             newDateClosed = new SimpleDateFormat("yyyy-MM-dd").format(date);
          }
-         float newAmountDue = 0 + Float.parseFloat(request.getParameter("amountDueInput"));
-         float newDiscount = 0 + Float.parseFloat(request.getParameter("discountInput"));
-         float newAmountPaid = 0 + Float.parseFloat(request.getParameter("amountPaidInput"));
+         
+         
+         //check the amount due
+         float newAmountDue = 0;
+         try{
+                newAmountDue = Float.parseFloat(request.getParameter("amountDueInput"));
+            }
+            catch(Exception e){
+                message = "Amount Due was input incorrectly. It should also not be blank.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+                return;
+            }
+         
+         
+         //check the new discount
+         float newDiscount = 0;
+         try{
+                newDiscount = Float.parseFloat(request.getParameter("discountInput"));
+            }
+            catch(Exception e){
+                message = "Discount was input incorrectly.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+                return;
+            }
+         
+         
+         //check the amount paid
+         float newAmountPaid = 0;
+         try{
+                newAmountPaid = Float.parseFloat(request.getParameter("amountPaidInput"));
+            }
+            catch(Exception e){
+                message = "Amount Paid was input incorrectly.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+                return;
+            }
+         
+         
+         //check date delivered
          String newDateDelivered = request.getParameter("dateDeliveredInput");
+         try{
+                newDateDelivered = request.getParameter("dateDeliveredInput");
+                if(newDateDelivered.length()>10){
+                    message = "Date Delivered format is invalid.";
+                    request.setAttribute("message",message);
+                    request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+                    return;
+                 }
+
+                else if((!(newDateDelivered.equals("")) || newDateDelivered != null)){
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    date = sdf.parse(newDateDelivered);
+                }
+             }
+             catch(Exception e){
+                message = "Date Delivered format is invalid.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+                return;
+             }
+         
+         
          String lastEdittedBy = ""+session.getAttribute("userName");
          
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
@@ -190,7 +375,9 @@ public class editInvoiceServlet extends HttpServlet {
         }
         catch(Exception ex){
             ex.printStackTrace();
-            out.println("error: " + ex);
+            //out.println("error: " + ex);
+            String message = "Something went wrong. Error: "+ex;
+            request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
             out.close();  // Close the output writer
@@ -201,7 +388,9 @@ public class editInvoiceServlet extends HttpServlet {
             }
             catch (SQLException ex) {
                 ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
+                //out.println("Another SQL error: " + ex);
+                String message = "Something went wrong. Error: "+ex;
+                request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }
         

@@ -70,16 +70,7 @@ public class viewInvoiceDetailsServlet extends HttpServlet {
          
          //---------------
          //first get the invoice details
-         String /*preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID,"
-                 + " Customer.customerFirstName, Customer.customerLastName, Invoice.clinicID, Clinic.clinicName, Invoice.invoiceDate, "
-                 + "Invoice.deliveryDate, Invoice.additionalAccessories, Invoice.termsOfPayment, "
-                 + "Invoice.paymentDueDate, Invoice.datePaid, Invoice.dateClosed, Invoice.status, "
-                 + "Invoice.overdueFee from Invoice "
-                 + "inner join Customer on Customer.customerID = Invoice.customerID "
-                 + "inner join Clinic on Clinic.clinicID = Invoice.clinicID "
-                 + "where invoiceID = ?";
-         */
-         preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, "
+         String preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, "
                  + "Customer.customerFirstName, Customer.customerLastName, "
                  + "Invoice.clinicID, Clinic.clinicName, Clinic.provinceID, "
                  + "Province.provinceID, Province.provinceName, Province.provinceDivision, "
@@ -153,8 +144,13 @@ public class viewInvoiceDetailsServlet extends HttpServlet {
             }
          request.setAttribute("invitemsList", invItemsRetrieved);
          String editInvoice = "" + request.getParameter("editInvoice");
+         try{editInvoice = request.getParameter("editInvoice");}
+         catch(Exception e){
+             editInvoice = ""+request.getAttribute("editInvoice");
+         }
          context.log("-->Editting Invoice?"+editInvoice);
          if(editInvoice.equals("yes")){
+            String message = ""+request.getAttribute("message");
             request.setAttribute("editInvoice","yes");
             request.getRequestDispatcher("invoice.getStatus").forward(request, response);
          }
@@ -163,9 +159,11 @@ public class viewInvoiceDetailsServlet extends HttpServlet {
          }   
          
         }
-        catch(SQLException ex){
+        catch(Exception ex){
             ex.printStackTrace();
-            out.println("SQL error: " + ex);
+            //out.println("error: " + ex);
+            String message = "Something went wrong. Error: "+ex;
+            request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
             out.close();  // Close the output writer
@@ -176,7 +174,9 @@ public class viewInvoiceDetailsServlet extends HttpServlet {
             }
             catch (SQLException ex) {
                 ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
+                //out.println("Another SQL error: " + ex);
+                String message = "Something went wrong. Error: "+ex;
+                request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }
         

@@ -265,9 +265,7 @@ public class getNewEntryServlet extends HttpServlet {
                         if(!(condition.equals(""))){
                             compound=" and";
                         }
-                        if(!(request.getParameter("searchCustomerFirstNameInput").equals("all"))){
-                           condition = condition + compound + " Customer.CustomerFirstName like '%"+request.getParameter("searchCustomerFirstNameInput")+"%'";
-                        }
+                        condition = condition + compound + " Customer.CustomerFirstName like '%"+request.getParameter("searchCustomerFirstNameInput")+"%'";
                         compound="";
                     }
                 //PRCID field
@@ -275,12 +273,17 @@ public class getNewEntryServlet extends HttpServlet {
                         if(!(condition.equals(""))){
                             compound=" and";
                         }
-                        if(!(request.getParameter("searchPRCIDInput").equals("all"))){
-                           condition = condition + compound + " Customer.PRCID like '%"+request.getParameter("searchPRCIDInput")+"%'";
-                        }
+                        condition = condition + compound + " Customer.PRCID like '%"+request.getParameter("searchPRCIDInput")+"%'";
                         compound="";
                     }
-                
+                //clinicName field
+                if(!request.getParameter("searchClinicNameInput").equals("")){
+                        if(!(condition.equals(""))){
+                            compound=" and";
+                        }
+                        condition = condition + compound + " Clinic.clinicName like '%"+request.getParameter("searchClinicNameInput")+"%'";
+                        compound="";
+                }
                  //SalesRep field
                  if(!request.getParameter("searchSalesRepInput").equals("")){
                      if(!(condition.equals(""))){
@@ -311,7 +314,7 @@ public class getNewEntryServlet extends HttpServlet {
              preparedSQL = "select Customer.PRCID, Customer.customerFirstName, Customer.customerLastName, "
                      + "Customer.customerMobileNumber, Customer.customerTelephoneNumber, Customer.SalesRepID, "
                      + "SalesRep.salesRepID, SalesRep.salesRepFirstName, SalesRep.salesRepLastName, "
-                     + "Customer.customerID, Clinic.customerID, Clinic.provinceID, "
+                     + "Customer.customerID, Clinic.customerID, Clinic.provinceID, Clinic.clinicName, "
                      + "Province.provinceID, Province.provinceName from Customer "
                      + "inner join SalesRep on SalesRep.salesRepID = Customer.salesRepID "
                      + "inner join Clinic on Clinic.customerID = Customer.customerID "
@@ -774,7 +777,9 @@ public class getNewEntryServlet extends HttpServlet {
         }
         catch(Exception ex){
             ex.printStackTrace();
-            out.println("error: " + ex);
+            //out.println("error: " + ex);
+            String message = "Something went wrong. Error: "+ex;
+            request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
             out.close();  // Close the output writer
@@ -785,7 +790,9 @@ public class getNewEntryServlet extends HttpServlet {
             }
             catch (SQLException ex) {
                 ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
+                //out.println("Another SQL error: " + ex);
+                String message = "Something went wrong. Error: "+ex;
+                request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }
         

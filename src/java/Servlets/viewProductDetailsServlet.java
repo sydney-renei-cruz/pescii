@@ -78,7 +78,44 @@ public class viewProductDetailsServlet extends HttpServlet {
                  + "inner join ProductClass on ProductClass.productClassID = Product.productClassID "
                  + "inner join Supplier on Supplier.supplierID = Product.supplierID "
                  + "where productID = ? order by productName asc";
-         String inputProductID = request.getParameter("prodID");
+         String inputProductID = "";
+         String forRestock = "";
+         String forEdit = "";
+         String forInvoice = "";
+         String message = "";
+         try{
+             if(request.getParameter("prodID")!=null){
+                inputProductID = request.getParameter("prodID");
+             }
+             else{
+                inputProductID = ""+request.getAttribute("prodID");
+             }
+             if(request.getParameter("forInvoice")!=null){
+                 forInvoice = request.getParameter("forInvoice");
+             }
+             else{
+                 forInvoice = ""+request.getAttribute("forInvoice");
+             }
+             if(request.getParameter("forRestock")!=null){
+                 forRestock = request.getParameter("forRestock");
+             }
+             else{
+                 forRestock = ""+request.getAttribute("forRestock");
+             }
+             if(request.getParameter("forEdit")!=null){
+                 forEdit = request.getParameter("forEdit");
+             }
+             else{
+                 forEdit = ""+request.getAttribute("forEdit");
+             }
+             if(request.getAttribute("message")!=null){
+                 message = ""+request.getAttribute("message");
+             }
+             
+         }
+         catch(Exception e){
+             request.getRequestDispatcher("errorPage.jsp").forward(request,response);
+         }
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          ps.setString(1, inputProductID);
          
@@ -102,16 +139,16 @@ public class viewProductDetailsServlet extends HttpServlet {
             pbean.setLastEdittedBy(dbData.getString("lastEdittedBy"));
          }
          request.setAttribute("product", pbean);
-         
-         String forInvoice = "" + request.getParameter("forInvoice");
+         request.setAttribute("message",message);
          if(forInvoice.equals("yes") || session.getAttribute("cart")!=null){
             request.setAttribute("forInvoice", "yes");
          }
-         if((""+request.getParameter("forRestock")).equals("yes")){
+         if(forRestock.equals("yes")){
              request.getRequestDispatcher("createRestockOrder.jsp").forward(request,response);
              return;
          }
-         if((""+request.getParameter("forEdit")).equals("yes")){
+         if(forEdit.equals("yes")){
+             request.setAttribute("message",request.getAttribute("message"));
              request.setAttribute("forEdit", ""+request.getParameter("forEdit"));
              request.getRequestDispatcher("product.getProductClass").forward(request,response);
              return;
@@ -121,7 +158,9 @@ public class viewProductDetailsServlet extends HttpServlet {
         }
         catch(Exception ex){
             ex.printStackTrace();
-            out.println("error: " + ex);
+            //out.println("error: " + ex);
+            String message = "Something went wrong. Error: "+ex;
+            request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
             out.close();  // Close the output writer
@@ -132,7 +171,9 @@ public class viewProductDetailsServlet extends HttpServlet {
             }
             catch (SQLException ex) {
                 ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
+                //out.println("Another SQL error: " + ex);
+                String message = "Something went wrong. Error: "+ex;
+                request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }
     }

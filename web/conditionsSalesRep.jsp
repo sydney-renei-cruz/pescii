@@ -4,7 +4,12 @@
     Author     : user
 --%>
 
+<%@page import="Beans.*,java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%
+    String accountType = ""+session.getAttribute("accountType");
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -27,24 +32,35 @@
         <form action="new.get">
             <input type="hidden" name="whatFor" value="salesRep">
             
-            Search by First Name:<input type="text" name="searchSalesRepFirstNameInput">
+            Search by First Name:<input type="text" name="searchSalesRepFirstNameInput" maxlength="100">
             <br><br>
-            Search by Last Name:<input type="text" name="searchSalesRepLastNameInput">
+            Search by Last Name:<input type="text" name="searchSalesRepLastNameInput" maxlength="100">
             <br><br>
             <b>Search by Date Created</b>
             <br><br>
-            From:<input type="text" name="fromDate" id="date1"><br>
-            To:<input type="text" name="toDate" id="date2"><br>
+            From:<input type="text" name="fromDate" id="date1" maxlength="10"><br>
+            To:<input type="text" name="toDate" id="date2" maxlength="10"><br>
             <br><br>    
                 
             <input type="submit" value="Get">    
         </form>
         
         
-        
-        
         <br><br>
-        <a href="homePage.jsp">Return to Home</a>
+        <c:choose>
+            <c:when test="${accountType eq 3}">
+                <a href="notif.get?forWhat=invoice">Return to Home</a>
+            </c:when>
+            <c:when test="${(accountType eq 4) || (accountType eq 5)} ">
+                <a href="notif.get?forWhat=restock">Return to Home</a>
+            </c:when>
+            <c:when test="${accountType eq 1}">
+                <a href="notif.get?forWhat=both">Return to Home</a>
+            </c:when>
+            <c:when test="${(accountType ne 3) || (accountType ne 4) || (accountType ne 5) || (accountType ne 1)}">
+                <a href="homePage.jsp">Return to Home</a>
+            </c:when>
+        </c:choose>
         <br><br>
         <a href="Servlets.logoutServlet">logout</a>
         

@@ -121,6 +121,10 @@
         <servlet-class>Servlets.getInvoiceStatusServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>getNotifServlet</servlet-name>
+        <servlet-class>Servlets.getNotifServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>viewCustomerDetailsServlet</servlet-name>
         <servlet-class>Servlets.viewCustomerDetailsServlet</servlet-class>
     </servlet>
@@ -282,6 +286,10 @@
     <servlet-mapping>
         <servlet-name>getInvoiceStatusServlet</servlet-name>
         <url-pattern>/invoice.getStatus</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getNotifServlet</servlet-name>
+        <url-pattern>/notif.get</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>viewCustomerDetailsServlet</servlet-name>

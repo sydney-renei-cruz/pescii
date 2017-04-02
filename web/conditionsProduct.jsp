@@ -8,6 +8,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
+    String accountType = ""+session.getAttribute("accountType");
     ArrayList<productClassBean> prodClassList = (ArrayList<productClassBean>)request.getAttribute("prodClassList");
     ArrayList<supplierBean> suppList = (ArrayList<supplierBean>)request.getAttribute("suppliersList");
     String forOther = ""+request.getAttribute("forOther");
@@ -32,9 +33,9 @@
                 <input type="hidden" name="forOther" value="restock">
             </c:if>
             
-            Search by Name:<input type="text" name="searchNameInput">
+            Search by Name:<input type="text" name="searchNameInput"  maxlength="255">
             <br><br>
-            Search by Brand:<input type="text" name="searchBrandInput">
+            Search by Brand:<input type="text" name="searchBrandInput"  maxlength="50">
             <br><br>
             Product Class:<br>
                 
@@ -60,10 +61,21 @@
         </form>
         
         
-        
-        
         <br><br>
-        <a href="homePage.jsp">Return to Home</a>
+        <c:choose>
+            <c:when test="${accountType eq 3}">
+                <a href="notif.get?forWhat=invoice">Return to Home</a>
+            </c:when>
+            <c:when test="${(accountType eq 4) || (accountType eq 5)} ">
+                <a href="notif.get?forWhat=restock">Return to Home</a>
+            </c:when>
+            <c:when test="${accountType eq 1}">
+                <a href="notif.get?forWhat=both">Return to Home</a>
+            </c:when>
+            <c:when test="${(accountType ne 3) || (accountType ne 4) || (accountType ne 5) || (accountType ne 1)}">
+                <a href="homePage.jsp">Return to Home</a>
+            </c:when>
+        </c:choose>
         <br><br>
         <a href="Servlets.logoutServlet">logout</a>
         

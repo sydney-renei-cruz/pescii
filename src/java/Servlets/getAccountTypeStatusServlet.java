@@ -97,8 +97,10 @@ public class getAccountTypeStatusServlet extends HttpServlet {
             }
          request.setAttribute("atypeList", accountTypesRetrieved);
          context.log(""+accountTypesRetrieved.size());
+         request.setAttribute("message", ""+request.getAttribute("message"));
          
          if(request.getAttribute("account")!=null){
+             request.setAttribute("message",""+request.getAttribute("message"));
              request.setAttribute("account", request.getAttribute("account"));
              request.getRequestDispatcher("editAccount.jsp").forward(request,response);
          }
@@ -112,7 +114,9 @@ public class getAccountTypeStatusServlet extends HttpServlet {
         }
         catch(Exception ex){
             ex.printStackTrace();
-            out.println("SQL error: " + ex);
+            //out.println("error: " + ex);
+            String message = "Something went wrong. Error: "+ex;
+            request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
             out.close();  // Close the output writer
@@ -123,7 +127,9 @@ public class getAccountTypeStatusServlet extends HttpServlet {
             }
             catch (SQLException ex) {
                 ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
+                //out.println("Another SQL error: " + ex);
+                String message = "Something went wrong. Error: "+ex;
+                request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }
         

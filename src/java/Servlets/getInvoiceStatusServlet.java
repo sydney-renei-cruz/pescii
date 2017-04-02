@@ -88,6 +88,7 @@ public class getInvoiceStatusServlet extends HttpServlet {
              
              request.setAttribute("customer", request.getAttribute("customer"));
              request.setAttribute("clinicsList", request.getAttribute("clinicsList"));
+             request.setAttribute("message",request.getAttribute("message"));
              //request.setAttribute("invoicesList", invoicesList);
              //request.getRequestDispatcher("invoice.getStatus").forward(request, response);
              request.getRequestDispatcher("addInvoice.jsp").forward(request,response);
@@ -97,6 +98,7 @@ public class getInvoiceStatusServlet extends HttpServlet {
          if((""+request.getAttribute("editInvoice")).equals("yes")){
              request.setAttribute("invoice", request.getAttribute("invoice"));
              request.setAttribute("invitemsList", request.getAttribute("invitemsList"));
+             request.setAttribute("message",request.getAttribute("message"));
              context.log("now sending to editInvoice.jsp!");
              request.getRequestDispatcher("editInvoice.jsp").forward(request,response);
          }
@@ -109,7 +111,9 @@ public class getInvoiceStatusServlet extends HttpServlet {
         }
         catch(Exception ex){
             ex.printStackTrace();
-            out.println("error: " + ex);
+            //out.println("error: " + ex);
+            String message = "Something went wrong. Error: "+ex;
+            request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
             out.close();  // Close the output writer
@@ -120,7 +124,9 @@ public class getInvoiceStatusServlet extends HttpServlet {
             }
             catch (SQLException ex) {
                 ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
+                //out.println("Another SQL error: " + ex);
+                String message = "Something went wrong. Error: "+ex;
+                request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }
     }
