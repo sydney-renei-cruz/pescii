@@ -29,7 +29,8 @@
                 <th>Province</th>
                 <th>Status</th>
                 <th>Invoice Date</th>
-                <th>Payment Due Date</
+                <th>Payment Due Date</th>
+                <th>Date Paid</th>
                 <th>Delivery Date</th>
             </tr>
         

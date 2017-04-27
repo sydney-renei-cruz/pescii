@@ -57,9 +57,10 @@
             <a href="Servlets.getProductServlet?forOther=invoice">Create Invoice</a><br>
             <a href="Servlets.getInvoiceServlet">Edit Invoice</a><br>
             <a href="unfinished.get?getTable=invoice">Unfinished Invoices</a><br>
-            <a href="conditionsInvoice.jsp">Custom View Invoice</a><br>
+            <a href="province.get?whatFor=conditionsInvoice">Custom View Invoice</a><br>
             <a href="Servlets.getInvoiceServlet">View All Invoices</a><br><br>
-            <a href="Servlets.getCustomerServlet">View Customer</a><br><br>
+            <a href="Servlets.getCustomerServlet">View All Customers</a><br>
+            <a href="salesrep.get?whatFor=searchCustomer">Custom View Customers</a><br><br>
             <a href="account.get">Edit Account</a><br><br>
         </c:if>
         
@@ -68,9 +69,10 @@
                 - the Secretary can create Accounts, but can only change the account type when editting
         -->    
         <c:if test="${accountType == '2'}">
-            <a href="Servlets.getCustomerServlet?forAdd=yes">Add Customer</a><br>
+            <a href="salesrep.get?whatFor=addCustomer">Add Customer</a><br>
             <a href="Servlets.getCustomerServlet">Edit Customer</a><br>
-            <a href="new.get?whatFor=customer">Customers With Overdue Fees</a><br>
+            <a href="new.get?whatFor=customer&getWhat=overdue">Customers With Overdue Fees</a><br>
+            <a href="salesrep.get?whatFor=searchCustomer">Custom View Customers</a><br>
             <a href="Servlets.getCustomerServlet">View All Customers</a><br><br>
             
             <a href="unfinished.get?getTable=invoice">Unfinished Invoices</a><br>
@@ -97,11 +99,11 @@
                     - check document for which fields IM can edit
         -->
         <c:if test="${accountType == '4'}">
-            <a href="addProduct.jsp">Add Product</a><br>
-            <a href="editProduct.jsp">Edit Product</a><br><br>
+            <a href="product.getProductClass">Add Product</a><br>
+            <a href="Servlets.getProductServlet">Edit Product</a><br>
             
             <a href="unfinished.get?getTable=ro">Unfinished RO</a><br>
-            <a href="conditionsRestockOrder.jsp">Custom View RO</a><br>
+            <a href="product.getProductClass?search=yes&searchWhat=ro">Custom View RO</a><br>
             <a href="restockOrder.get">View All Restock Orders</a><br><br>
             
             <a href="account.get">Edit Account</a><br><br>
@@ -112,7 +114,7 @@
                     - again, check the document to see which fields the Auditor can edit
         -->
         <c:if test="${accountType == '5'}">
-            <a href="Servlets.getProductServlet?forOther=restock">Add Restock Order</a><br>
+            <!--<a href="Servlets.getProductServlet?forOther=restock">Add Restock Order</a><br>-->
             <a href="restockOrder.get">Edit Restock Order</a><br>
             <a href="unfinished.get?getTable=ro">Unfinished RO</a><br>
             <a href="conditionsRestockOrder.jsp">Custom View RO</a><br>
@@ -138,7 +140,7 @@
             <a href="addSalesRep.jsp">Add Sales Rep</a><br>
             <a href="salesrep.get">Edit Sales Rep</a><br>
             <a href="conditionsSalesRep.jsp">Custom View Sales Rep</a><br>
-            <a href="salesrep.get">View Sales Rep</a><br><br>
+            <a href="salesrep.get">View Sales Reps</a><br><br>
             <a href="account.getTypeStatus">Create Account</a><br>
             <a href="account.get">View All Accounts</a><br>
             <a href="account.getTypeStatus?forSearch=yes">Custom View Account</a><br><br>
@@ -146,7 +148,7 @@
             <a href="product.getProductClass?addSupp=yes">Add Supplier</a><br>
             <a href="supplier.get?viewSupp=yes">Edit Supplier</a><br>
             <a href="product.getProductClass?search=yes&searchWhat=supp">Custom View Supplier</a><br>
-            <a href="supplier.get?viewSupp=yes">View Supplier</a><br><br>
+            <a href="supplier.get?viewSupp=yes">View All Suppliers</a><br><br>
             
             <a href="product.getProductClass">Add Product</a><br>
             <a href="Servlets.getProductServlet">Edit Product</a><br>

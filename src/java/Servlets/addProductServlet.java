@@ -127,6 +127,12 @@ public class addProductServlet extends HttpServlet {
          float inputProductPrice = 0;
          try{
             inputProductPrice = Float.parseFloat(request.getParameter("productPriceInput"));
+            if(inputProductPrice<0){
+                message = "Product Price was input incorrectly. It should also not be blank.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("product.getProductClass").forward(request,response);
+                return;
+            }
          }
          catch(Exception e){
             message = "Product Price was input incorrectly. It should also not be blank.";
@@ -139,6 +145,12 @@ public class addProductServlet extends HttpServlet {
          float inputRestockPrice = 0;
             try{
                 inputRestockPrice = Float.parseFloat(request.getParameter("restockPriceInput"));
+                if(inputRestockPrice<0){
+                    message = "Restock Price was input incorrectly. It should also not be blank.";
+                    request.setAttribute("message",message);
+                    request.getRequestDispatcher("product.getProductClass").forward(request,response);
+                    return;
+                }
             }
             catch(Exception e){
                 message = "Restock Price was input incorrectly. It should also not be blank.";
@@ -151,6 +163,12 @@ public class addProductServlet extends HttpServlet {
          int inputLowStock = 0;
          try{
                 inputLowStock = Integer.parseInt(request.getParameter("lowStockInput"));
+                if(inputLowStock<0){
+                    message = "Low Stock level was input incorrectly. It should also not be blank.";
+                    request.setAttribute("message",message);
+                    request.getRequestDispatcher("product.getProductClass").forward(request,response);
+                    return;
+                }
          }
          catch(Exception e){
                 message = "Low Stock level was input incorrectly. It should also not be blank.";

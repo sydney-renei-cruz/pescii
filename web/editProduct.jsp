@@ -62,6 +62,12 @@
         </form>
 
         <br><br>
+        <a href="product.getDetails?prodID=<c:out value="${product.getProductID()}"/>">Return to Product details</a>
+        <br><br>
+        <a href="Servlets.getProductServlet">Go to Products list</a>
+        <br><br>
+        <a href="product.getProductClass?search=yes&searchWhat=prod">Custom View Product</a>
+        <br><br>
         <c:choose>
             <c:when test="${accountType eq 3}">
                 <a href="notif.get?forWhat=invoice">Return to Home</a>

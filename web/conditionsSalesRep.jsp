@@ -47,6 +47,8 @@
         
         
         <br><br>
+        <a href="salesrep.get">View Sales Reps</a>
+        <br><br>
         <c:choose>
             <c:when test="${accountType eq 3}">
                 <a href="notif.get?forWhat=invoice">Return to Home</a>

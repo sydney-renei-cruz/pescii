@@ -69,7 +69,9 @@ public class getClinicServlet extends HttpServlet {
          //---------------
          
          String preparedSQL = "select Clinic.clinicID, Customer.PRCID, Clinic.clinicAddress, Clinic.clinicPhoneNumber, Clinic.clinicName, "
-                 + "Province.provinceName, Province.provinceDivision from Clinic "
+                 + "Province.provinceName, Province.provinceDivision, "
+                 + "Clinic.customerID, Customer.customerFirstName, Customer.customerLastName "
+                 + "from Clinic "
                  + "inner join Customer on Customer.customerID = Clinic.customerID "
                  + "inner join Province on Province.provinceID = Clinic.provinceID and clinicID=?";
          String inputClinID = request.getParameter("clinID");
@@ -81,11 +83,14 @@ public class getClinicServlet extends HttpServlet {
          while(dbData.next()){
            cbean.setClinicID(dbData.getString("clinicID"));
            cbean.setPRCID(dbData.getString("PRCID"));
+           cbean.setCustomerFirstName(dbData.getString("customerFirstName"));
+           cbean.setCustomerLastName(dbData.getString("customerLastName"));
            cbean.setClinicAddress(dbData.getString("clinicAddress"));
            cbean.setClinicPhoneNumber(dbData.getString("clinicPhoneNumber"));
            cbean.setClinicName(dbData.getString("clinicName"));
            cbean.setProvinceName(dbData.getString("provinceName"));
            cbean.setProvinceDivision(dbData.getString("provinceDivision"));
+           cbean.setCustomerID(dbData.getString("customerID"));
          }
          request.setAttribute("clinic", cbean);
          

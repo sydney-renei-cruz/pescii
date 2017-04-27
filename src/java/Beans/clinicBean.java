@@ -17,6 +17,9 @@ public class clinicBean implements Serializable{
     
     public String clinicID;
     public String PRCID;
+    public String customerID;
+    public String customerFirstName;
+    public String customerLastName;
     public String clinicAddress;
     public String clinicPhoneNumber;
     public String clinicName;
@@ -27,10 +30,13 @@ public class clinicBean implements Serializable{
     public String lastEdittedBy;
     public Date lastEdittedDate;
     
-    public clinicBean(String clinid, String cid, String clinadd, String clinphonenum, String clinname, 
+    public clinicBean(String clinid, String cid, String custFirstName, String custLastName, String custID, String clinadd, String clinphonenum, String clinname, 
             int provid, String provName, String provDiv, Timestamp dc, String leb, Date led){
         this.clinicID=clinid;
         this.PRCID=cid;
+        this.customerID=custID;
+        this.customerFirstName=custFirstName;
+        this.customerLastName=custLastName;
         this.clinicAddress=clinadd;
         this.clinicPhoneNumber=clinphonenum;
         this.clinicName=clinname;
@@ -46,6 +52,9 @@ public class clinicBean implements Serializable{
     
     public void setClinicID(String clinid){this.clinicID=clinid;}
     public void setPRCID(String cid){this.PRCID=cid;}
+    public void setCustomerID(String custID){this.customerID=custID;}
+    public void setCustomerFirstName(String custFirstName){this.customerFirstName=custFirstName;}
+    public void setCustomerLastName(String custLastName){this.customerLastName=custLastName;}
     public void setClinicAddress(String clinadd){this.clinicAddress=clinadd;}
     public void setClinicPhoneNumber(String clinphonenum){this.clinicPhoneNumber=clinphonenum;}
     public void setClinicName(String clinname){this.clinicName=clinname;}
@@ -58,6 +67,9 @@ public class clinicBean implements Serializable{
     
     public String getClinicID(){return this.clinicID;}
     public String getPRCID(){return this.PRCID;}
+    public String getCustomerID(){return this.customerID;}
+    public String getCustomerFirstName(){return this.customerFirstName;}
+    public String getCustomerLastName(){return this.customerLastName;}
     public String getClinicAddress(){return this.clinicAddress;}
     public String getClinicPhoneNumber(){return this.clinicPhoneNumber;}
     public String getClinicName(){return this.clinicName;}

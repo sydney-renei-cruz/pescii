@@ -58,6 +58,7 @@
         </form>
         
         <br><br>
+        <a href="account.get">View All Accounts</a><br><br>
         <c:choose>
             <c:when test="${accountType eq 3}">
                 <a href="notif.get?forWhat=invoice">Return to Home</a>

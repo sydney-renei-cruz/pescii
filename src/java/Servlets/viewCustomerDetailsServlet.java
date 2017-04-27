@@ -199,8 +199,13 @@ public class viewCustomerDetailsServlet extends HttpServlet {
          context.log("size of invoicesRetrieved is " + invoicesRetrieved.size());
          
          String forEdit = "";
-         try{forEdit = request.getParameter("forEdit");}
+         try{forEdit = request.getParameter("forEdit");
+            if(forEdit==null){
+                forEdit = "" + request.getAttribute("forEdit");
+            }
+         }
          catch(Exception e){forEdit = "" + request.getAttribute("forEdit");}
+         context.log("for Edit is: "+forEdit);
          if(session.getAttribute("cart")!=null){
              request.setAttribute("message",request.getAttribute("message"));
              request.getRequestDispatcher("invoice.getStatus").forward(request, response);

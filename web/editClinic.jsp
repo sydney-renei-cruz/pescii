@@ -26,8 +26,10 @@
             <p>${message}</p><br><br>
         </c:if>
         
+        Customer Name: ${clinic.getCustomerLastName()}, ${clinic.getCustomerFirstName()}<br>
+            
         <form action="customer.editClinic" method="post">
-                Clinic ID: <input type="hidden" value="${clinic.getClinicID()}" name="clinID">${clinic.getClinicID()}<br>
+                <input type="hidden" value="${clinic.getClinicID()}" name="clinID">
                 PRCID: ${clinic.getPRCID()}<br>
                 Clinic Name: <input type="text" value="${clinic.getClinicName()}" name="clinicNameInput" maxlength="255"><br>
                 Clinic Address: <input type="text" value="${clinic.getClinicAddress()}" name="clinicAddressInput" maxlength="255"><br>
@@ -43,6 +45,8 @@
                 
         </form>
         
+        <br><br>
+        <a href="Servlets.viewCustomerDetailsServlet?custID=<c:out value="${clinic.getCustomerID()}"/>">Return to Customer Details</a>
         <br><br>
         <c:choose>
             <c:when test="${accountType eq 3}">

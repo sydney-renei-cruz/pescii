@@ -363,6 +363,14 @@ public class addInvoiceServlet extends HttpServlet {
             float inputAmountDue = 0;
             try{
                 inputAmountDue = Float.parseFloat(request.getParameter("amountDueInput"));
+                if(inputAmountDue<0){
+                    message = "Amount Due was input incorrectly. It should also not be blank.";
+                    request.setAttribute("message",message);
+                    request.setAttribute("custID",inputCustomerID);
+                    request.getRequestDispatcher("Servlets.viewCustomerDetailsServlet").forward(request,response);
+                    return;
+                }
+                
             }
             catch(Exception e){
                 message = "Amount Due was input incorrectly. It should also not be blank.";
@@ -377,6 +385,13 @@ public class addInvoiceServlet extends HttpServlet {
             float inputDiscount = 0;
             try{
                 inputDiscount = Float.parseFloat(request.getParameter("discountInput"));
+                if(inputDiscount<0){
+                    message = "Discount was input incorrectly.";
+                    request.setAttribute("message",message);
+                    request.setAttribute("custID",inputCustomerID);
+                    request.getRequestDispatcher("Servlets.viewCustomerDetailsServlet").forward(request,response);
+                    return;
+                }
             }
             catch(Exception e){
                 message = "Discount was input incorrectly.";
@@ -390,6 +405,13 @@ public class addInvoiceServlet extends HttpServlet {
             float inputAmountPaid = 0;
             try{
                 inputAmountPaid = Float.parseFloat(request.getParameter("amountPaidInput"));
+                if(inputAmountPaid<0){
+                    message = "Amount Paid was input incorrectly.";
+                    request.setAttribute("message",message);
+                    request.setAttribute("custID",inputCustomerID);
+                    request.getRequestDispatcher("Servlets.viewCustomerDetailsServlet").forward(request,response);
+                    return;
+                }
             }
             catch(Exception e){
                 message = "Amount Paid was input incorrectly.";

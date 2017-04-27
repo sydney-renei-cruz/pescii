@@ -144,6 +144,12 @@ public class editRestockOrderServlet extends HttpServlet {
          int newNumberOfPiecesOrdered = 0;
          try{
              newNumberOfPiecesOrdered = Integer.parseInt(request.getParameter("numberOfPiecesOrderedInput"));
+             if(newNumberOfPiecesOrdered < 0){
+                message = "Number of Pieces Ordered is wrong. It must be a whole number.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("restockOrder.getDetails?editRestock=yes&restockID="+inputRestockOrderID).forward(request,response);
+                return;
+             }
          }
          catch(Exception e){
                 message = "Number of Pieces Ordered is wrong. It must be a whole number.";
@@ -157,6 +163,12 @@ public class editRestockOrderServlet extends HttpServlet {
          int newNumberOfPiecesReceived = 0;
          try{
              newNumberOfPiecesReceived = Integer.parseInt(request.getParameter("numberOfPiecesReceivedInput"));
+             if(newNumberOfPiecesReceived < 0){
+                message = "Number of Pieces Received is wrong. It must be a whole number.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("restockOrder.getDetails?editRestock=yes&restockID="+inputRestockOrderID).forward(request,response);
+                return;
+             }
          }
          catch(Exception e){
                 message = "Number of Pieces Received is wrong. It must be a whole number.";
@@ -170,6 +182,12 @@ public class editRestockOrderServlet extends HttpServlet {
          float newAmountPaid = 0;
          try{
              newAmountPaid = Float.parseFloat(request.getParameter("amountPaidInput"));
+             if(newAmountPaid < 0){
+                message = "Amount Paid is invalid.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("restockOrder.getDetails?editRestock=yes&restockID="+inputRestockOrderID).forward(request,response);
+                return;
+             }
          }
          catch(Exception e){
                 message = "Amount Paid is invalid.";

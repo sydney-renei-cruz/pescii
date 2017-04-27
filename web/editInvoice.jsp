@@ -47,10 +47,9 @@
             <p>Customer Name: <input type="hidden" value="${invoice.getPRCID()}" name="PRCIDInput">${invoice.getCustomerName()}</p>
             <p>Clinic Name: <input type="hidden" value="${invoice.getClinicID()}" name="clinicIDInput">${invoice.getClinicName()}</p>
             <p><input type="hidden" value="${invoice.getInvoiceDate()}" name="invoiceDateInput">Invoice Date Created: ${invoice.getInvoiceDate()}</p>
-            Delivery Due Date:<br>
+            <b>Delivery Due Date:</b><br>
             <c:choose>
                 <c:when test="${invoice.getStatusName() eq 'In Progress'}">
-                    <br>
                     From: ${invoice.getDeliveryDate()}<br>
                     To: <input type="text" name="deliveryDateInput" value="${invoice.getDeliveryDate()}" id="date1" maxlength="10"><br>
                 </c:when>
@@ -58,10 +57,10 @@
                     <input type="hidden" value="${invoice.getDeliveryDate()}" name="deliveryDateInput">${invoice.getDeliveryDate()}<br>
                 </c:when>
             </c:choose>
-            Terms of Payment:
+            <br>
+            <b>Terms of Payment:</b><br>
             <c:choose>
                 <c:when test="${invoice.getStatusName() eq 'In Progress'}">
-                    <br>
                     From: ${invoice.getTermsOfPayment()}<br>
                     To: <input type="text" name="topInput" value="${invoice.getTermsOfPayment()}" maxlength="20"><br><br>
                 </c:when>
@@ -69,10 +68,9 @@
                     <input type="hidden" value="${invoice.getTermsOfPayment()}" name="topInput">${invoice.getTermsOfPayment()}<br><br>
                 </c:when>
             </c:choose>      
-            Payment Due Date:        
+            <b>Payment Due Date:</b><br>        
             <c:choose>
                 <c:when test="${invoice.getDatePaid() eq '0000-00-00'}">
-                    <br>
                     From: ${invoice.getPaymentDueDate()}<br>
                     To: <input type="text" name="paymentDueDateInput" value="${invoice.getPaymentDueDate()}" id="date2" maxlength="10"><br><br>
                 </c:when>
@@ -107,7 +105,7 @@
                     <input type="hidden" value="${invoice.getStatusID()}" name="statusInput">${invoice.getStatusName()}<br>
                 </c:when>
             </c:choose>
-            
+            <br>
             Amount Due:
             <c:choose>
                 <c:when test="${invoice.getStatusName() ne 'Completed'}">
@@ -150,7 +148,15 @@
                     
                     
                     
-            <p>Overdue Fee: ${invoice.getOverdueFee()}</p>
+            Overdue Fee:
+            <c:choose>
+                <c:when test="${invoice.getStatusName() eq 'In Progress'}">
+                    <input type="text" value="${invoice.getOverdueFee()}" name="overdueFeeInput"><br>
+                </c:when>
+                <c:when test="${invoice.getStatusName() ne 'In Progress'}">
+                    <input type="hidden" value="${invoice.getOverdueFee()}" name="overdueFeeInput">${invoice.getOverdueFee()}<br>
+                </c:when>
+            </c:choose>
             <br><input type="submit" value="Save Changes">
         </form>
         

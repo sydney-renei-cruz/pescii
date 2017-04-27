@@ -46,6 +46,10 @@
         </form>
             
         <br><br>
+        <a href="Servlets.viewCustomerDetailsServlet?custID=<c:out value="${customer.getCustomerID()}"/>">Return to Customer Details</a>
+        <br><br>
+        <a href="salesrep.get?whatFor=searchCustomer">Custom View Customers</a>
+        <br><br>
         <c:choose>
             <c:when test="${accountType eq 3}">
                 <a href="notif.get?forWhat=invoice">Return to Home</a>

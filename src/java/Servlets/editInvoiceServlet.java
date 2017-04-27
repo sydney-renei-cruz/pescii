@@ -104,7 +104,7 @@ public class editInvoiceServlet extends HttpServlet {
          //first get the invoice details
          String preparedSQL = "update Invoice set invoiceName=?, deliveryDate=?, termsOfPayment=?, "
                  + "paymentDueDate=?, datePaid=?, dateClosed=?, statusID=?, amountDue=?, "
-                 + "discount=?, amountPaid=?, dateDelivered=?, lastEdittedBy=? "
+                 + "discount=?, amountPaid=?, dateDelivered=?, lastEdittedBy=?, overDueFee=? "
                  + "where invoiceID=?";
          
          String message = "";
@@ -249,6 +249,12 @@ public class editInvoiceServlet extends HttpServlet {
          float newAmountDue = 0;
          try{
                 newAmountDue = Float.parseFloat(request.getParameter("amountDueInput"));
+                if(newAmountDue < 0){
+                    message = "Amount Due was input incorrectly. It should also not be blank.";
+                    request.setAttribute("message",message);
+                    request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+                    return;
+                }
             }
             catch(Exception e){
                 message = "Amount Due was input incorrectly. It should also not be blank.";
@@ -262,6 +268,12 @@ public class editInvoiceServlet extends HttpServlet {
          float newDiscount = 0;
          try{
                 newDiscount = Float.parseFloat(request.getParameter("discountInput"));
+                if(newDiscount < 0){
+                    message = "Discount was input incorrectly.";
+                    request.setAttribute("message",message);
+                    request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+                    return;
+                }
             }
             catch(Exception e){
                 message = "Discount was input incorrectly.";
@@ -275,6 +287,12 @@ public class editInvoiceServlet extends HttpServlet {
          float newAmountPaid = 0;
          try{
                 newAmountPaid = Float.parseFloat(request.getParameter("amountPaidInput"));
+                if(newAmountPaid < 0){
+                    message = "Amount Paid was input incorrectly.";
+                    request.setAttribute("message",message);
+                    request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+                    return;
+                }
             }
             catch(Exception e){
                 message = "Amount Paid was input incorrectly.";
@@ -306,6 +324,24 @@ public class editInvoiceServlet extends HttpServlet {
                 request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
                 return;
              }
+         
+         //check the overdue fee
+         float newOverdueFee = 0;
+         try{
+                newOverdueFee = Float.parseFloat(request.getParameter("overdueFeeInput"));
+                if(newOverdueFee < 0){
+                    message = "Overdue fee was input incorrectly. It should also not be blank.";
+                    request.setAttribute("message",message);
+                    request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+                    return;
+                }
+            }
+            catch(Exception e){
+                message = "Overdue fee was input incorrectly. It should also not be blank.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+                return;
+            }
          
          
          String lastEdittedBy = ""+session.getAttribute("userName");

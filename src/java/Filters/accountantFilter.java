@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -37,7 +38,10 @@ public class accountantFilter implements Filter {
             response.sendRedirect(request.getContextPath() + "/logIn.jsp");
         } 
         else if(!session.getAttribute("accountType").equals("3")){
+            ServletContext context = request.getSession().getServletContext();
+            context.log("not accountant, so checking if admin!");
             if(session.getAttribute("accountType").equals("1")){
+                context.log("not accountant, but an admin");
                 chain.doFilter(request, response);
             }
             else{

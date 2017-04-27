@@ -79,11 +79,14 @@
                 <input type="radio" name="getWhat" value="new">New Invoice<br>
                 <input type="radio" name="getWhat" value="validated">Validated Invoices<br>
                 <input type="radio" name="getWhat" value="close">Invoices near payment deadlines<br>
+                <input type="radio" name="getWhat" value="overduePay">Overdue Payments<br>
                 <br>
             <input type="submit" value="Get">    
         </form>
         
         
+        <br><br>
+        <a href="Servlets.getInvoiceServlet">View All Invoices</a>
         <br><br>
         <c:choose>
             <c:when test="${accountType eq 3}">

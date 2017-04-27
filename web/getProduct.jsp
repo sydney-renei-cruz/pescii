@@ -106,7 +106,14 @@
             </c:when>
         </c:choose>
         <br><br>
-        <a href="Servlets.logoutServlet">logout</a>
+        <!--THIS PART OF THE CODE CHECKS IF IT SHOULD DISPLAY THE LOG IN OR LOGOUT LINK-->
+        <c:if test="${state == 'logged in'}">
+            <a href="Servlets.logoutServlet">log out</a><br><br>
+        </c:if>
+            
+        <c:if test="${state ne 'logged in'}">
+            <a href="logIn.jsp">log in</a><br><br>
+        </c:if>
         
     </body>
 </html>

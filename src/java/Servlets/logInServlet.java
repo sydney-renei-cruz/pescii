@@ -116,6 +116,7 @@ public class logInServlet extends HttpServlet {
          String message = "";
          HttpSession session = request.getSession();
          String dbPassword = "";       
+         Boolean match = false;
          
          //10 salts here
          String[] salts = new String[10];
@@ -144,7 +145,7 @@ public class logInServlet extends HttpServlet {
          else { //if the account is found
             dbData.next();
             dbPassword = dbData.getString("password");
-         context.log("The username is -----> " + dbData.getString("userName"));
+            context.log("The username is -----> " + dbData.getString("userName"));
             
          }
          
@@ -163,49 +164,57 @@ public class logInServlet extends HttpServlet {
 
                 context.log("password is: ----->  " + password);
                 context.log("sb is: ------> " + sb.toString());
-                //      correct will become TRUE if a match is found
+                //      match will become TRUE if a match is found
                     if(dbPassword.equals(sb.toString())){
                         //status = rs.getBoolean("account_status");
+                        match = true;
 
-                    if((dbData.getInt("accountStatus"))==2){
-                        message = "The specified account is deactivated and unusable.";
-                        //response.sendRedirect("index.jsp");
-                        request.setAttribute("message", message);
-                        request.getRequestDispatcher("logIn.jsp").forward(request, response);
+                        if((dbData.getInt("accountStatus"))==2){
+                            message = "The specified account is deactivated and unusable.";
+                            //response.sendRedirect("index.jsp");
+                            request.setAttribute("message", message);
+                            request.getRequestDispatcher("logIn.jsp").forward(request, response);
 
-                    }
-                    else{
-                        message = "did it! Username is "+username+"!";
-                        session.setAttribute("accountID", dbData.getInt("accountID"));
-                        session.setAttribute("userName", username);
-                        session.setAttribute("accountType", ""+dbData.getInt("accountType"));
-                        session.setAttribute("state", "logged in");
-
-                        if(dbData.getInt("accountType")==3){
-                            request.getRequestDispatcher("notif.get?forWhat=invoice").forward(request,response);
-                        }
-                        else if(dbData.getInt("accountType")==4 || dbData.getInt("accountType")==5){
-                            request.getRequestDispatcher("notif.get?forWhat=restock").forward(request,response);
-                        }
-                        else if(dbData.getInt("accountType")==1){
-                            request.getRequestDispatcher("notif.get?forWhat=both").forward(request,response);
                         }
                         else{
-                            request.getRequestDispatcher("homePage.jsp").forward(request,response);
+                            //message = "did it! Username is "+username+"!";
+                            session.setAttribute("accountID", dbData.getInt("accountID"));
+                            session.setAttribute("userName", username);
+                            session.setAttribute("accountType", ""+dbData.getInt("accountType"));
+                            session.setAttribute("state", "logged in");
+
+                            if(dbData.getInt("accountType")==3){
+                                request.getRequestDispatcher("notif.get?forWhat=invoice").forward(request,response);
+                            }
+                            else if(dbData.getInt("accountType")==4 || dbData.getInt("accountType")==5){
+                                request.getRequestDispatcher("notif.get?forWhat=restock").forward(request,response);
+                            }
+                            else if(dbData.getInt("accountType")==1){
+                                request.getRequestDispatcher("notif.get?forWhat=both").forward(request,response);
+                            }
+                            else{
+                                request.getRequestDispatcher("homePage.jsp").forward(request,response);
+                            }
                         }
-                    }
 
 
-                        //session.setMaxInactiveInterval(30*60);
+                            //session.setMaxInactiveInterval(30*60);
 
                 }
+                    
             }            
-            
+            /*
             if(!dbData.previous()){
                 session.setAttribute("error_message", "Incorrect username or password");
                 response.sendRedirect("logIn.jsp");
+                return;
             }
-            
+            */
+            if(match==false){
+                message = "Password or username is incorrect.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("logIn.jsp").forward(request,response);
+            }
             
          
         }

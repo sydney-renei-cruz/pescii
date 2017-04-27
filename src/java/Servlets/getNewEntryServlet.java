@@ -97,18 +97,46 @@ public class getNewEntryServlet extends HttpServlet {
              //this makes the SQL statement for invoices near payment deadlines
                 //that is, those with payment deadlines within 7 days ahead of the current day
              if(getWhat.equals("close")){
-                 forWhere = "where Invoice.paymentDueDate";
+                 forWhere = "";
+                 interval = "";
+                 status = "";
+                 orderBy = "";
+                 /*forWhere = "where Invoice.paymentDueDate";
                  interval = " between now() and date_add(now(), interval 7 day)";
                  status = " and InvoiceStatus.statusName='In Progress' and Invoice.datePaid = null";
                  orderBy = " order by Invoice.paymentDueDate asc";
+                 */
+                condition = " Invoice.paymentDueDate between now() and date_add(now(), interval 7 day) "
+                        + "and InvoiceStatus.statusName='In Progress' and Invoice.datePaid is null "
+                        + "order by Invoice.paymentDueDate asc";
              }
              //this sets up the SQL statement for invoices validated, regardless of date
                 //remember: a validated invoice is that which is paid for but not delivered yet
              else if(getWhat.equals("validated")){
-                 forWhere = "where Invoice.datePaid";
-                 status = " and InvoiceStatus.statusName='In Progress'";
+                 forWhere = "";
                  interval = "";
+                 status = "";
+                 orderBy = "";
+                /* forWhere = "where Invoice.datePaid";
+                 status = " and InvoiceStatus.statusName='In Progress'";
+                 interval = "!=''";
                  orderBy = " order by Invoice.deliveryDate asc";
+                 */
+                 condition = " InvoiceStatus.statusName='In Progress' and Invoice.datePaid is not null order by Invoice.deliveryDate asc";
+             }
+             //this sets up the SQL statement for incomplete invoices with payment dates past deadline
+                //remember: a validated invoice is that which is paid for but not delivered yet
+             else if(getWhat.equals("overduePay")){
+                 forWhere = "";
+                 interval = "";
+                 status = "";
+                 orderBy = "";
+                /* forWhere = "where Invoice.datePaid";
+                 status = " and InvoiceStatus.statusName='In Progress'";
+                 interval = "!=''";
+                 orderBy = " order by Invoice.deliveryDate asc";
+                 */
+                 condition = " InvoiceStatus.statusName='In Progress' and Invoice.datePaid is null and Invoice.paymentDueDate < Curdate() order by Invoice.deliveryDate asc";
              }
              
              //this is for searching with compound conditions
@@ -249,7 +277,12 @@ public class getNewEntryServlet extends HttpServlet {
          
          //this part is for when a Customer is being searched. Currently not implemented
          else if(whatFor.equals("customer")){
-             
+             if(getWhat.equals("overdue")){
+                 interval="";
+                 forWhere="";
+                 condition = " Invoice.paymentDueDate between now() and date_add(now(), interval 7 day) "
+                        + "and InvoiceStatus.statusName='In Progress' and Invoice.datePaid is null ";
+             }
              //this is for searching with compound conditions
              if(getWhat.equals("customSearch")){
                  
@@ -307,7 +340,7 @@ public class getNewEntryServlet extends HttpServlet {
                  
                  forWhere="";
                  searchName="";
-                 orderBy = " group by Customer.PRCID";
+                 //orderBy = " group by Clinic.clinicName";
              }
              
              if(!condition.equals("")){condition = "where " + condition;}
@@ -315,10 +348,14 @@ public class getNewEntryServlet extends HttpServlet {
                      + "Customer.customerMobileNumber, Customer.customerTelephoneNumber, Customer.SalesRepID, "
                      + "SalesRep.salesRepID, SalesRep.salesRepFirstName, SalesRep.salesRepLastName, "
                      + "Customer.customerID, Clinic.customerID, Clinic.provinceID, Clinic.clinicName, "
-                     + "Province.provinceID, Province.provinceName from Customer "
+                     + "Province.provinceID, Province.provinceName "
+                     //+ "Invoice.invoiceID, InvoiceStatus.statusID "
+                     + "from Customer "
                      + "inner join SalesRep on SalesRep.salesRepID = Customer.salesRepID "
                      + "inner join Clinic on Clinic.customerID = Customer.customerID "
                      + "inner join Province on Province.provinceID = Clinic.provinceID "
+                     //+ "inner join Invoice on Invoice.customerID = Customer.customerID "
+                     //+ "inner join InvoiceStatus on InvoiceStatus.statusID = Invoice.statusID "
                      + condition + forWhere + searchName + interval + orderBy;
              
              context.log(preparedSQL);

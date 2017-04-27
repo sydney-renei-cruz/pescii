@@ -132,6 +132,12 @@ public class editProductServlet extends HttpServlet {
          float newProductPrice = 0;
          try{
             newProductPrice = Float.parseFloat(request.getParameter("productPriceInput"));
+            if(newProductPrice < 0){
+                message = "Product Price was input incorrectly. It should also not be blank.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("product.getDetails?forEdit=yes&prodID="+productID).forward(request,response);
+                return;
+            }
          }
          catch(Exception e){
             message = "Product Price was input incorrectly. It should also not be blank.";
@@ -144,6 +150,12 @@ public class editProductServlet extends HttpServlet {
          float newRestockPrice = 0;
          try{
                 newRestockPrice = Float.parseFloat(request.getParameter("restockPriceInput"));
+                if(newRestockPrice < 0){
+                    message = "Restock Price was input incorrectly. It should also not be blank.";
+                    request.setAttribute("message",message);
+                    request.getRequestDispatcher("product.getDetails?forEdit=yes&prodID="+productID).forward(request,response);
+                    return;
+                }
             }
             catch(Exception e){
                 message = "Restock Price was input incorrectly. It should also not be blank.";
@@ -157,6 +169,12 @@ public class editProductServlet extends HttpServlet {
          int newLowStock = 0;
          try{
                 newLowStock = Integer.parseInt(request.getParameter("lowStockInput"));
+                if(newLowStock < 0){
+                    message = "Low Stock level was input incorrectly. It should also not be blank.";
+                    request.setAttribute("message",message);
+                    request.getRequestDispatcher("product.getDetails?forEdit=yes&prodID="+productID).forward(request,response);
+                    return;
+                }
          }
          catch(Exception e){
                 message = "Low Stock level was input incorrectly. It should also not be blank.";

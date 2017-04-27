@@ -148,6 +148,14 @@ public class createRestockOrderServlet extends HttpServlet {
          int inputPiecesOrdered = 0;
          try{
              inputPiecesOrdered = Integer.parseInt(request.getParameter("piecesOrderedInput"));
+             if(inputPiecesOrdered<0){
+                message = "Number of Pieces Ordered is wrong. It must be a whole number.";
+                request.setAttribute("message",message);
+                request.setAttribute("prodID",inputProductID);
+                request.setAttribute("forRestock", "yes");
+                request.getRequestDispatcher("product.getDetails").forward(request,response);
+                return;
+             }
          }
          catch(Exception e){
                 message = "Number of Pieces Ordered is wrong. It must be a whole number.";
@@ -198,6 +206,14 @@ public class createRestockOrderServlet extends HttpServlet {
          float inputDiscount = 0;
             try{
                 inputDiscount = Float.parseFloat(request.getParameter("discountInput"));
+                if(inputDiscount<0){
+                    message = "Discount was input incorrectly. It should also not be blank.";
+                    request.setAttribute("message",message);
+                    request.setAttribute("prodID",inputProductID);
+                    request.setAttribute("forRestock", "yes");
+                    request.getRequestDispatcher("product.getDetails").forward(request,response);
+                    return;
+                }
             }
             catch(Exception e){
                 message = "Discount was input incorrectly. It should also not be blank.";

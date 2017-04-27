@@ -30,25 +30,37 @@
         <h1>This is the Edit Restock Order page!</h1>
           <form action="restock.edit" method="post">
                 Restock Order ID: <input type="hidden" value="${restockOrder.getRestockOrderID()}" name="restockOrderIDInput">${restockOrder.getRestockOrderID()}<br>
-                Restock Order Name: <input type="text" value="${restockOrder.getRestockOrderName()}" name="newRONameInput" maxlength="255"><br>
-                Product Ordered: <input type="hidden" value="${restockOrder.getProductID()}" name="productIDInput">${restockOrder.getProductName()}<br>
-                Number of Pieces Ordered: <input type="text" value="${restockOrder.getNumberOfPiecesOrdered()}" name="numberOfPiecesOrderedInput"><br>
-                Number of Pieces Received: <input type="text" value="${restockOrder.getNumberOfPiecesReceived()}" name="numberOfPiecesReceivedInput"><br>
+                
+                <!--these can only be set by the inventory manager-->
+                <c:if test="${accountType == '4' || accountType == '1'}">
+                    Restock Order Name: <input type="text" value="${restockOrder.getRestockOrderName()}" name="newRONameInput" maxlength="255"><br>
+                    Product Ordered: <input type="hidden" value="${restockOrder.getProductID()}" name="productIDInput">${restockOrder.getProductName()}<br>
+                    Number of Pieces Ordered: <input type="text" value="${restockOrder.getNumberOfPiecesOrdered()}" name="numberOfPiecesOrderedInput"><br>
+                    Purpose: <br><textarea name="purposeInput" rows="5" cols="50">${restockOrder.getPurpose()}</textarea><br>
+                </c:if>
+                
                 <c:set var="totalPrice" value="${restockOrder.getRestockPrice() * restockOrder.getNumberOfPiecesOrdered()}"/>
                 <p>Original Price: <fmt:formatNumber pattern="0.00" value="${totalPrice}" type="number"/></p>
                 Discount: ${restockOrder.getDiscount()}<br>
                 <c:set var="totalPrice" value="${restockOrder.getRestockPrice() * restockOrder.getNumberOfPiecesOrdered() - restockOrder.getDiscount()}"/>
                 <p>Discounted Price: <fmt:formatNumber pattern="0.00" value="${totalPrice}" type="number"/></p>
-                Amount Paid:<input type="text" value="${restockOrder.getAmountPaid()}" name="amountPaidInput"><br>
-                Supplier: ${restockOrder.getSupplierName()}<br>
-                Purpose: <br><textarea name="purposeInput" rows="5" cols="50">${restockOrder.getPurpose()}</textarea><br>
                 Delivery Due Date: ${restockOrder.getRODateDue()}<br>
-                Date Delivered: <input type="text" value="${restockOrder.getRODateDelivered()}" name="roDateDeliveredInput" id="date1" maxlength="10"><br>
+                Supplier: ${restockOrder.getSupplierName()}<br>
                 
+                <!--these can only be set by the auditor-->
+                <c:if test="${accountType == '5' || accountType == '1'}">
+                Number of Pieces Received: <input type="text" value="${restockOrder.getNumberOfPiecesReceived()}" name="numberOfPiecesReceivedInput"><br>
+                Amount Paid:<input type="text" value="${restockOrder.getAmountPaid()}" name="amountPaidInput"><br>
+                Date Delivered: <input type="text" value="${restockOrder.getRODateDelivered()}" name="roDateDeliveredInput" id="date1" maxlength="10"><br>
+                </c:if>
                 <br><input type="submit" value="Save Changes">
                 
         </form>
             
+        <br><br>
+        <a href="restockOrder.getDetails?restockID=<c:out value="${restockOrder.getRestockOrderID()}"/>">Return to RO Details</a>
+        <br><br>
+        <a href="restockOrder.get">Return to RO list</a>
         <br><br>
         <c:choose>
             <c:when test="${accountType eq 3}">

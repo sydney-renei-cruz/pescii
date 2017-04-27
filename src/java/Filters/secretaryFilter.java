@@ -39,9 +39,9 @@ public class secretaryFilter implements Filter {
         } 
         else if(!session.getAttribute("accountType").equals("2")){
             ServletContext context = request.getSession().getServletContext();
-            context.log("HEEEEEERE!");
+            context.log("Not Secretary, so checking if admin!");
             if(session.getAttribute("accountType").equals("1")){
-                context.log("YOOOO!");
+                context.log("not secretary, but admin!");
                 chain.doFilter(request, response);
             }
             else{

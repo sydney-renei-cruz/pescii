@@ -35,8 +35,9 @@
         
             
         <br><br>
-            
-            
+        <a href="Servlets.viewCustomerDetailsServlet?forEdit=yes&custID=<c:out value="${customer.getCustomerID()}"/>">Edit</a>    
+        <br><br>
+        
         <!-- this is the table for the clinics-->
         <h5>Clinics</h5>
         <table border="1">
@@ -93,6 +94,8 @@
         
         <br><br>
         <a href="Servlets.getCustomerServlet">Return to Customer List</a>
+        <br><br>
+        <a href="salesrep.get?whatFor=searchCustomer">Custom View Customers</a>
         <br><br>
         <c:choose>
             <c:when test="${accountType eq 3}">

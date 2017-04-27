@@ -16,9 +16,9 @@
     </head>
     <body>
         <h1>This is the log in page!</h1>
-        
+        <a href="homePage.jsp">Return to Home</a><br>
         <c:if test="${message != ''}">
-            <p>${message}</p><br><br>
+            <p>${message}</p><br><br> 
         </c:if>
             <div class="login">
             <div class="login-triangle"></div>
@@ -31,5 +31,6 @@
     </div>
         <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
 
+       
     </body>
 </html>

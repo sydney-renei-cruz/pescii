@@ -23,8 +23,8 @@
         <h1>This is the Add Customer page!</h1>
         
         <!--this is the error message-->
-        <c:if test="${message ne '' || message ne null || message ne 'null'}">
-            <p>${message}</p><br><br>
+        <c:if test="${message ne '' && message ne null && message ne 'null'}">
+            ${message}<br><br>
         </c:if>
         
         <form action="Servlets.addCustomerServlet" method="post">

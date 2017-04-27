@@ -52,6 +52,8 @@
         
         
         <br><br>
+        <a href="Servlets.getCustomerServlet">View All Customers</a>
+        <br><br>
         <c:choose>
             <c:when test="${accountType eq 3}">
                 <a href="notif.get?forWhat=invoice">Return to Home</a>

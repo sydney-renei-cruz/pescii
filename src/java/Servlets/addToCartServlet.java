@@ -38,6 +38,8 @@ public class addToCartServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         ServletContext context = request.getSession().getServletContext();
         
+        String message = "";
+        
         LinkedList<String> cart;
         LinkedList<String> prodNames;
         LinkedList<Float> prodPrices;
@@ -67,7 +69,14 @@ public class addToCartServlet extends HttpServlet {
         if(request.getParameter("gotQuantity")!=null){
             LinkedList<Integer> quantity = new LinkedList<Integer>();
             for(int i=0; i<prodNames.size();i++){
+                try{
                 quantity.add(Integer.parseInt(request.getParameter(prodNames.get(i))));
+                }
+                catch(Exception e){
+                    message = "Product quantity was input incorrectly. Please use whole numbers.";
+                    request.setAttribute("message",message);
+                    request.getRequestDispatcher("viewCart.jsp").forward(request,response);
+                }
                 totalPrices.add(quantity.get(i)*prodPrices.get(i));
                 context.log("--->>>quantity is: " + quantity.get(i));
             }

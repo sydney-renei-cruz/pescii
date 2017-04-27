@@ -368,20 +368,15 @@
         <url-pattern>/addInvoice.jsp</url-pattern>
         <url-pattern>/editInvoice.jsp</url-pattern>
         <url-pattern>/getInvoice.jsp</url-pattern>
+        <url-pattern>/invoiceDetails.jsp</url-pattern>
         <url-pattern>/getCustomer.jsp</url-pattern>
-    </filter-mapping>
-    <filter>
-        <filter-name>secretaryFilter</filter-name>
-        <filter-class>Filters.secretaryFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>secretaryFilter</filter-name>
-        <url-pattern>/addCustomer.jsp</url-pattern>
-        <url-pattern>/editCustomer.jsp</url-pattern>
-        <url-pattern>/getCustomer.jsp</url-pattern>
-        <url-pattern>/getInvoice.jsp</url-pattern>
-        <url-pattern>/createAccount.jsp</url-pattern>
-        <url-pattern>/getRestockOrder.jsp</url-pattern>
+        <url-pattern>/customerDetails.jsp</url-pattern>
+        <url-pattern>/viewCart.jsp</url-pattern>
+        <url-pattern>/editAccount.jsp</url-pattern>
+        <url-pattern>/getAccount.jsp</url-pattern>
+        <url-pattern>/getSalesRep.jsp</url-pattern>
+        <url-pattern>/conditionsCustomer.jsp</url-pattern>
+        <url-pattern>/conditionsInvoice.jsp</url-pattern>
     </filter-mapping>
     <filter>
         <filter-name>IMFilter</filter-name>
@@ -394,7 +389,61 @@
         <url-pattern>/createRestockOrder.jsp</url-pattern>
         <url-pattern>/editRestockOrder.jsp</url-pattern>
         <url-pattern>/getRestockOrder.jsp</url-pattern>
+        <url-pattern>/restockOrderDetails.jsp</url-pattern>
+        <url-pattern>/conditionsRestockOrder.jsp</url-pattern>
+        <url-pattern>/addSupplier.jsp</url-pattern>
+        <url-pattern>/editSupplier.jsp</url-pattern>
+        <url-pattern>/getSupplier.jsp</url-pattern>
+        <url-pattern>/conditionsSupplier.jsp</url-pattern>
+        <url-pattern>/editAccount.jsp</url-pattern>
+        <url-pattern>/getAccount.jsp</url-pattern>
     </filter-mapping>
+    <filter>
+        <filter-name>secretaryFilter</filter-name>
+        <filter-class>Filters.secretaryFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>secretaryFilter</filter-name>
+        <url-pattern>/addClinic.jsp</url-pattern>
+        <url-pattern>/addCustomer.jsp</url-pattern>
+        <url-pattern>/addInvoice.jsp</url-pattern>
+        <url-pattern>/addProduct.jsp</url-pattern>
+        <url-pattern>/addSalesRep.jsp</url-pattern>
+        <url-pattern>/addSupplier.jsp</url-pattern>
+        <url-pattern>/conditionsAccount.jsp</url-pattern>
+        <url-pattern>/conditionsCustomer.jsp</url-pattern>
+        <url-pattern>/conditionsInvoice.jsp</url-pattern>
+        <!--no filter for conditionsProduct.jsp-->
+        <url-pattern>/conditionsRestockOrder.jsp</url-pattern>
+        <url-pattern>/conditionsSalesRep.jsp</url-pattern>
+        <url-pattern>/conditionsSupplier.jsp</url-pattern>
+        <url-pattern>/createAccount.jsp</url-pattern>
+        <url-pattern>/createRestockOrder.jsp</url-pattern>
+        <url-pattern>/customerDetails.jsp</url-pattern>
+        <url-pattern>/editAccount.jsp</url-pattern>
+        <url-pattern>/editClinic.jsp</url-pattern>
+        <url-pattern>/editCustomer.jsp</url-pattern>
+        <url-pattern>/editInvoice.jsp</url-pattern>
+        <url-pattern>/editProduct.jsp</url-pattern>
+        <url-pattern>/editRestockOrder.jsp</url-pattern>
+        <url-pattern>/editSalesRep.jsp</url-pattern>
+        <url-pattern>/editSupplier.jsp</url-pattern>
+        <url-pattern>/getAccount.jsp</url-pattern>
+        <url-pattern>/getCustomer.jsp</url-pattern>
+        <url-pattern>/getInvoice.jsp</url-pattern>
+        <!--no filter for getProduct.jsp-->
+        <url-pattern>/getRestockOrder.jsp</url-pattern>
+        <url-pattern>/getSalesRep.jsp</url-pattern>
+        <url-pattern>/getSupplier.jsp</url-pattern>
+        <!--no filter for homePage.jsp-->
+        <url-pattern>/invoiceDetails.jsp</url-pattern>
+        <!--no filter for logIn.jsp-->
+        <!--no filter for productDetails.jsp-->
+        <url-pattern>/restockOrderDetails.jsp</url-pattern>
+        <url-pattern>/supplierDetails.jsp</url-pattern>
+        <!--<url-pattern>/viewCart.jsp</url-pattern>-->
+    </filter-mapping>
+    
     <session-config>
         <session-timeout>
             30

@@ -46,8 +46,10 @@
         
         <c:choose>
             <c:when test="${forInvoice ne 'yes'}">
-                <a href="Servlets.getProductServlet">Go to Products list</a><br>
-                <a href="product.getDetails?forEdit=yes&prodID=<c:out value="${product.getProductID()}"/>">Edit Product</a>
+                <a href="product.getDetails?forEdit=yes&prodID=<c:out value="${product.getProductID()}"/>">Edit</a><br><br>
+                <a href="Servlets.getProductServlet">Go to Products list</a><br><br>
+                <a href="product.getProductClass?search=yes&searchWhat=prod">Custom View Product</a><br>
+               
             </c:when>
             <c:when test="${forInvoice eq 'yes'}">
                 <a href="Servlets.getProductServlet?forInvoice=yes">Return to Products list</a><br>

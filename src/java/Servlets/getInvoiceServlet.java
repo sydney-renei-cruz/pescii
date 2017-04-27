@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author user
  */
-@WebServlet(name = "viewInvoiceServlet", urlPatterns = {"/viewInvoiceServlet"})
+@WebServlet(name = "getInvoiceServlet", urlPatterns = {"/getInvoiceServlet"})
 public class getInvoiceServlet extends HttpServlet {
 
     /**

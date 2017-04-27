@@ -39,7 +39,7 @@
                     <td>${cust.getCustomerFirstName()}</td>
                     <td>${cust.getCustomerMobileNumber()}</td>
                     <td>${cust.getCustomerTelephoneNumber()}</td>
-                    <td><a href="Servlets.viewCustomerDetailsServlet?forEdit=yes&custID=<c:out value="${cust.getCustomerID()}"/>">Edit</td>
+                    <td><a href="Servlets.viewCustomerDetailsServlet?forEdit=yes&custID=<c:out value="${cust.getCustomerID()}"/>">Edit</a></td>
             </tr>
         </c:forEach>
         </table>
