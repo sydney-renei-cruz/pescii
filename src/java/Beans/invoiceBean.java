@@ -18,6 +18,7 @@ public class invoiceBean implements Serializable{
     public int invoiceID;
     public String invoiceName;
     public String PRCID;
+    public int customerID;
     public String customerName;
     public int clinicID;
     public String clinicName;
@@ -40,7 +41,7 @@ public class invoiceBean implements Serializable{
     public Date lastEdittedDate;
     public Date dateDelivered;
     
-    public invoiceBean(int iid, String iname, String cid, String custName, int clinid, String clinName, String provName, 
+    public invoiceBean(int iid, String iname, String cid, int custID, String custName, int clinid, String clinName, String provName, 
                         String provDiv, Date invdate, Date deldate,
                         String tofpay, Date payduedate, Date dpaid, Date dclosed, int statID, 
                         String statName, float overfee, float ad, float ap, float disc, Timestamp dcreated,
@@ -48,6 +49,7 @@ public class invoiceBean implements Serializable{
         this.invoiceID=iid;
         this.invoiceName=iname;
         this.PRCID=cid;
+        this.customerID=custID;
         this.customerName=custName;
         this.clinicID=clinid;
         this.clinicName=clinName;
@@ -76,6 +78,7 @@ public class invoiceBean implements Serializable{
     public void setInvoiceID(int iid){this.invoiceID=iid;}
     public void setInvoiceName(String iname){this.invoiceName=iname;}
     public void setPRCID(String cid){this.PRCID=cid;}
+    public void setCustomerID(int custID){this.customerID=custID;}
     public void setCustomerName(String custName){this.customerName=custName;}
     public void setClinicID(int clinid){this.clinicID=clinid;}
     public void setClinicName(String clinName){this.clinicName=clinName;}
@@ -101,6 +104,7 @@ public class invoiceBean implements Serializable{
     public int getInvoiceID(){return this.invoiceID;}
     public String getInvoiceName(){return this.invoiceName;}
     public String getPRCID(){return this.PRCID;}
+    public int getCustomerID(){return this.customerID;}
     public String getCustomerName(){return this.customerName;}
     public int getClinicID(){return this.clinicID;}
     public String getClinicName(){return this.clinicName;}

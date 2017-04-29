@@ -49,7 +49,6 @@
         <c:forEach items="${roitemsList}" var="roitem" begin="0" step="1">
             <tr>
                 <td><a href="product.getDetails?prodID=<c:out value="${roitem.getProductID()}"/>">${roitem.getProductName()}</a></td>
-                <td>${roitem.getSupplierName()}</td>
                 <td>${roitem.getQuantityPurchased()}</td>
                 <td>${roitem.getQuantityReceived()}</td>
                 <td>${roitem.getTotalCost()}</td>

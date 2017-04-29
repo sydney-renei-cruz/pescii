@@ -27,7 +27,7 @@
         <p>Invoice ID: ${invoice.getInvoiceID()}</p>
         <p>Invoice Name: ${invoice.getInvoiceName()}</p>
         <p>Customer PRCID: ${invoice.getPRCID()}</p>
-        <p>Customer Name: ${invoice.getCustomerName()}</p>
+        <p>Customer Name: <a href="Servlets.viewCustomerDetailsServlet?viewDetails=yes&custID=<c:out value="${invoice.getCustomerID()}"/>">${invoice.getCustomerName()}</a></p>
         <p>Clinic Name: ${invoice.getClinicName()}</p>
         <p>Province: ${invoice.getProvinceName()}</p>
         <p>Invoice Date: ${invoice.getDateCreated()}</p>

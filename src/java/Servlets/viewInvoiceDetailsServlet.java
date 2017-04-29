@@ -70,7 +70,7 @@ public class viewInvoiceDetailsServlet extends HttpServlet {
          
          //---------------
          //first get the invoice details
-         String preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, "
+         String preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, Customer.customerID, "
                  + "Customer.customerFirstName, Customer.customerLastName, "
                  + "Invoice.clinicID, Clinic.clinicName, Clinic.provinceID, "
                  + "Province.provinceID, Province.provinceName, Province.provinceDivision, "
@@ -96,6 +96,7 @@ public class viewInvoiceDetailsServlet extends HttpServlet {
                 invBean.setInvoiceID(dbData.getInt("invoiceID"));
                 invBean.setInvoiceName(dbData.getString("invoiceName"));
                 invBean.setPRCID(dbData.getString("PRCID"));
+                invBean.setCustomerID(dbData.getInt("customerID"));
                 invBean.setCustomerName(dbData.getString("customerLastName")+", "+dbData.getString("customerFirstName"));
                 invBean.setClinicID(dbData.getInt("clinicID"));
                 invBean.setClinicName(dbData.getString("clinicName"));
@@ -143,13 +144,13 @@ public class viewInvoiceDetailsServlet extends HttpServlet {
                 invItemsRetrieved.add(invitembean);
             }
          request.setAttribute("invitemsList", invItemsRetrieved);
-         String editInvoice = "" + request.getParameter("editInvoice");
+         String editInvoice = "";
          try{editInvoice = request.getParameter("editInvoice");}
          catch(Exception e){
              editInvoice = ""+request.getAttribute("editInvoice");
          }
          context.log("-->Editting Invoice?"+editInvoice);
-         if(editInvoice.equals("yes")){
+         if(editInvoice!=null && editInvoice.equals("yes")){
             String message = ""+request.getAttribute("message");
             request.setAttribute("editInvoice","yes");
             request.getRequestDispatcher("invoice.getStatus").forward(request, response);
