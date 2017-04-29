@@ -11,7 +11,6 @@
     //productBean pbean = (productBean)request.getAttribute("product");
     ArrayList<restockOrderStatusBean> rosList = (ArrayList<restockOrderStatusBean>)request.getAttribute("roStatList");
     String message = ""+request.getAttribute("message");
-    LinkedList<String> supps = (LinkedList<String>)session.getAttribute("ROsuppNames");
 %>
 <!DOCTYPE html>
 <html>
@@ -31,11 +30,9 @@
         <c:if test="${message != ''}">
             <p>${message}</p><br><br>
         </c:if>
-        <%=supps.get(0)%>
         <table border="1">
                 <tr>
                     <th>Product Name</th>
-                    <th>Supplier</th>
                     <th>Restock Price</th>
                     <th>Quantity Ordered</th>
                     <th>Total Price</th>
@@ -45,7 +42,6 @@
                         <c:set var="cartSize" value="${sessionScope.ROcart.size()}"/>
                         <c:set var="cart" value="${sessionScope.ROcart}"/>
                         <c:set var="prodNames" value="${sessionScope.ROprodNames}"/>
-                        <c:set var="suppNames" value="${session.Scope.ROsuppNames}"/>
                         <c:set var="prodPrices" value="${sessionScope.ROprodPrices}"/>
                         <c:set var="quantity" value="${sessionScope.ROquantity}"/>
                         <c:set var="totalPrices" value="${sessionScope.ROtotalPrices}"/>
@@ -53,7 +49,6 @@
                         <c:forEach items="${cart}" var="prods" begin="0" step="1" varStatus="loop">
                             <tr>
                                 <td><c:out value="${prodNames[loop.index]}"/></td>
-                                <td><c:out value="${suppNames[loop.index]}"/></td>
                                 <td><c:out value="${prodPrices[loop.index]}"/></td>
                                 <td><c:out value="${quantity[loop.index]}"/></td>
                                 <td><c:out value="${totalPrices[loop.index]}"/></td>
@@ -72,14 +67,14 @@
             </table>
             
         <br><br><br>    
-            
+        <c:set var="rostatList" value="${requestScope.roStatList}"/>    
         <form action="Servlets.createRestockOrderServlet" method="post">
             Enter RO Name: <input type="text" name="RONameInput" maxlength="255" required><br>
             Enter Purpose:<br><textarea name="purposeInput" rows="5" cols="50"></textarea><br>
             Enter Date Due:<input type="text" name="dateDueInput" id="date1" maxlength="10" required><br>
             Enter discount:<input type="text" name="discountInput" value="0"><br>
             Status:<select name="statusInput">
-                <c:forEach items="${rosList}" var="rStatList" begin="0" step="1">
+                <c:forEach items="${rostatList}" var="rStatList" begin="0" step="1">
                     <option value="${rStatList.getStatusID()}">${rStatList.getStatusName()}</option>
                 </c:forEach>
             </select><br>

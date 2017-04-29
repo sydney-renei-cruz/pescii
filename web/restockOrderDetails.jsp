@@ -24,6 +24,7 @@
         
         <br><br>
         <p>Restock Order Name: ${restockOrder.getRestockOrderName()}</p>
+        <p>Supplier: ${restockOrder.getSupplierName()}</p>
         <p>Total Price: <fmt:formatNumber pattern="0.00" value="${totalPrice}" type="number"/></p>
         <p>Amount Paid: ${restockOrder.getAmountPaid()}</p>
         <p>Discount: ${restockOrder.getDiscount()}</p>
@@ -40,7 +41,6 @@
         <table border="1">
             <tr>
                 <th>Product Name</th>
-                <th>Supplier</th>
                 <th>Quantity Purchased</th>
                 <th>Quantity Received</th>
                 <th>Total Cost</th>
@@ -61,7 +61,7 @@
         <a href="restockOrder.getDetails?editRestock=yes&restockID=<c:out value="${restockOrder.getRestockOrderID()}"/>">Edit</a>
         
         <br><br>
-        <a href="product.getProductClass?search=yes&searchWhat=ro">Custom View RO</a><br>
+        <a href="restockOrder.getStatus">Search RO</a><br>
         <br>
         <a href="restockOrder.get">Return to RO list</a>
         <br><br>

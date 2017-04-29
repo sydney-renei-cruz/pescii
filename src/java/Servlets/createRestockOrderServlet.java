@@ -58,8 +58,6 @@ public class createRestockOrderServlet extends HttpServlet {
                 request.setAttribute("message", message);
                 session.setAttribute("ROcart", null);
                 session.setAttribute("ROprodNames", null);
-                session.setAttribute("ROsuppIDs", null);
-                session.setAttribute("ROsuppNames", null);
                 session.setAttribute("ROquantity", null);
                 session.setAttribute("ROtotalPrices", null);
                 session.setAttribute("cartType", null);
@@ -131,8 +129,6 @@ public class createRestockOrderServlet extends HttpServlet {
                 request.setAttribute("message", message);
                 session.setAttribute("ROcart", null);
                 session.setAttribute("ROprodNames", null);
-                session.setAttribute("ROsuppIDs", null);
-                session.setAttribute("ROsuppNames", null);
                 session.setAttribute("ROquantity", null);
                 session.setAttribute("ROtotalPrices", null);
                 session.setAttribute("cartType", null);
@@ -148,23 +144,19 @@ public class createRestockOrderServlet extends HttpServlet {
                  + "purpose, RODateDue, discount, lastEdittedBy) "
                  + "values(?,?,?,?,?,?,?,?)";
              */
-         String preparedSQL = "insert into RestockOrder(ROName, purpose, RODateDue, discount, lastEdittedBy, statusID) "
-                 + "values(?,?,?,?,?,?)";
+         String preparedSQL = "insert into RestockOrder(ROName, purpose, RODateDue, discount, lastEdittedBy, statusID, supplierID) "
+                 + "values(?,?,?,?,?,?,?)";
          //you don't change this
          //PreparedStatement rs = conn.prepareStatement(preparedSQL);
          
           //this is put at the start because it needs to cancel immediately if there are no InvoiceItems
             LinkedList<String> cart;
             LinkedList<String> prodNames;
-            LinkedList<String> suppIDs;
-            LinkedList<String> suppNames;
             LinkedList<Integer> quantity;
             if(session.getAttribute("ROcart")!=null && (""+session.getAttribute("cartType")).equals("restock")){
                context.log("so the ROcart isn't null");
                cart = (LinkedList<String>)(session.getAttribute("ROcart"));
                prodNames = (LinkedList<String>)(session.getAttribute("ROprodNames"));
-               suppIDs = (LinkedList<String>)(session.getAttribute("ROsuppIDs"));
-               suppNames = (LinkedList<String>)(session.getAttribute("ROsuppNames"));
                quantity = (LinkedList<Integer>)(session.getAttribute("ROquantity"));
             }
             else{
@@ -261,6 +253,16 @@ public class createRestockOrderServlet extends HttpServlet {
                    request.getRequestDispatcher("restockOrder.getStatus").forward(request,response);
                    return;
             }
+            //check status ID
+            int inputSupplierID = 0;
+            try{inputSupplierID = Integer.parseInt(""+session.getAttribute("suppID"));}
+            catch(Exception e){
+                   message = "Restock Order Supplier is invalid.";
+                   request.setAttribute("message",message);
+                   request.setAttribute("forRestock", "yes");
+                   request.getRequestDispatcher("restockOrder.getStatus").forward(request,response);
+                   return;
+            }
             
          
          String lastEdittedBy = ""+session.getAttribute("userName");
@@ -272,6 +274,7 @@ public class createRestockOrderServlet extends HttpServlet {
          ps.setFloat(4,inputDiscount);
          ps.setString(5,lastEdittedBy);
          ps.setInt(6,inputStatusID);
+         ps.setInt(7,inputSupplierID);
          
          ps.executeUpdate();                   //at this point, you have already inserted into the database
          
@@ -295,22 +298,19 @@ public class createRestockOrderServlet extends HttpServlet {
                    PreparedStatement ps2;
                    Integer inputRestockOrderID = generatedKeys.getInt(1);
                    String inputProductID;
-                   String inputSupplierID;
                    String inputQuantityPurchased;
                    for(int i=0;i<cart.size();i++){
                        //you gotta insert into the table for every product in the cart
-                       preparedSQL2 = "insert into RestockOrderItem(RestockOrderID, productID, quantityPurchased, supplierID) "
-                                       + "values(?,?,?,?)";
+                       preparedSQL2 = "insert into RestockOrderItem(RestockOrderID, productID, quantityPurchased) "
+                                       + "values(?,?,?)";
                        ps2 = conn.prepareStatement(preparedSQL2);
 
                        inputProductID = cart.get(i);
-                       inputSupplierID = suppIDs.get(i);
                        inputQuantityPurchased = ""+quantity.get(i);
 
                        ps2.setInt(1, inputRestockOrderID);
                        ps2.setInt(2, Integer.parseInt(inputProductID));
                        ps2.setInt(3, Integer.parseInt(inputQuantityPurchased));
-                       ps2.setInt(4, Integer.parseInt(inputSupplierID));
                        ps2.executeUpdate();
                        context.log("You've updated: " + inputProductID);
                    }

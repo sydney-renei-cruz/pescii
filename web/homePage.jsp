@@ -173,10 +173,9 @@
             </c:choose>
             <a href="restockOrder.get">Edit Restock Order</a><br>
             <a href="unfinished.get?getTable=ro">View Unfinished RO</a><br>
-            <a href="product.getProductClass?search=yes&searchWhat=ro">Search RO</a><br>
+            <a href="restockOrder.getStatus">Search RO</a><br>
             <a href="restockOrder.get">View All Restock Orders</a><br><br>
             
-            <a href="restockOrder.getStatus?test=yes">CHECK ROSTATUS</a><br><br>
             
         </c:if>
         

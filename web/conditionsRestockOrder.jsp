@@ -37,20 +37,14 @@
             <input type="hidden" name="whatFor" value="restockOrder">
             Search by Restock Order Name:<input type="text" name="searchNameInput" maxlength="255">
             <br><br>
-            Search by Supplier:<select name="searchSupplierInput">
+            Search by Supplier:<input type="text" name="searchSupplierInput" maxlength="255"><!--<select name="searchSupplierInput">
                 <option value="All">All</option>
-                <c:forEach items="<%=suppList%>" var="sup" begin="0" step="1">
+                <!--c:forEach items="<%=suppList%>" var="sup" begin="0" step="1">
                         <option value="${sup.getSupplierName()}">${sup.getSupplierName()}</option>
-                </c:forEach>
+                <!--/c:forEach>
             </select>
+           -->
             <br><br>
-            Search by Product Name:<input type="text" name="searchProductNameInput" maxlength="255">
-            <br><br>
-            Product Class:<br>
-               <c:forEach items="${prodClassList}" var="pro" begin="0" step="1">
-                    <input type="checkbox" name="productClassInput" value="${pro.getProductClassName()}">${pro.getProductClassName()}<br>
-               </c:forEach>
-            <br>
             Search by Date:<select name="searchDateInput">
                     <option value="RODateDue">Expected Arrival Date</option>
                     <option value="RODateDelivered">Date Received</option>
@@ -59,6 +53,12 @@
             From:<input type="text" name="fromDate" id="date1" maxlength="10"><br>
             To:<input type="text" name="toDate" id="date2" maxlength="10"><br><br>
             
+            <c:set var="rostatList" value="${requestScope.roStatList}"/> 
+            Search by Status:
+                <c:forEach items="${rostatList}" var="rStatList" begin="0" step="1">
+                    <input type="checkbox" name="searchStatusInput" value="${rStatList.getStatusName()}">${rStatList.getStatusName()}
+                </c:forEach>
+            <br><br>
             <input type="submit" value="Search"><br><br><br>
         </form>
         

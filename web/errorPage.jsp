@@ -9,7 +9,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
     String accountType = ""+session.getAttribute("accountType");
-    ArrayList<restockOrderStatusBean> rosList = (ArrayList<restockOrderStatusBean>)request.getAttribute("roStatList");
     String message = ""+request.getAttribute("message");
 %>
 <!DOCTYPE html>
@@ -21,11 +20,10 @@
     <body>
         <h1>This is the Error Page!</h1>
         
-        Status:<select name="statusInput">
-                <c:forEach items="${rosList}" var="rStatList" begin="0" step="1">
-                    <option value="${rStatList.getStatusID()}">${rStatList.getStatusName()}</option>
-                </c:forEach>
-            </select><br>
+        <!--this is the error message-->
+        <c:if test="${message ne '' || message ne null || message ne 'null'}">
+            <p>${message}</p><br><br>
+        </c:if>
             
         <br><br>
         <c:choose>

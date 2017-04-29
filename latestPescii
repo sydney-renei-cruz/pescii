@@ -298,7 +298,7 @@ CREATE TABLE `Product` (
 
 LOCK TABLES `Product` WRITE;
 /*!40000 ALTER TABLE `Product` DISABLE KEYS */;
-INSERT INTO `Product` VALUES (1,'Dental Chair','Standard dental chair',200000,175000,8,6,'Zhermack',1,'White','2016-12-23 05:28:39','admin',1),(2,'Hose','attached to Dental Chairs to spray water',2000,1500,13,5,'Denta',3,'White','2016-12-29 02:38:55','admin',1),(3,'testProd1','qwe',10,5,50,50,'testBrand',3,'black','2017-04-25 10:48:55','inventory',2);
+INSERT INTO `Product` VALUES (1,'Dental Chair','Standard dental chair',200000,175000,11,6,'Zhermack',1,'White','2016-12-23 05:28:39','admin',1),(2,'Hose','attached to Dental Chairs to spray water',2000,1500,16,5,'Denta',3,'White','2016-12-29 02:38:55','admin',1),(3,'testProd1','qwe',10,5,50,50,'testBrand',3,'black','2017-04-25 10:48:55','inventory',2);
 /*!40000 ALTER TABLE `Product` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -369,8 +369,14 @@ CREATE TABLE `RestockOrder` (
   `dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `lastEdittedBy` varchar(50) NOT NULL,
   `datePaid` date DEFAULT NULL,
-  PRIMARY KEY (`restockOrderID`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+  `statusID` int(11) NOT NULL DEFAULT '2',
+  `supplierID` int(11) NOT NULL,
+  PRIMARY KEY (`restockOrderID`),
+  KEY `statusID` (`statusID`),
+  KEY `supplierID` (`supplierID`),
+  CONSTRAINT `RestockOrder_ibfk_1` FOREIGN KEY (`statusID`) REFERENCES `RestockOrderStatus` (`statusID`),
+  CONSTRAINT `RestockOrder_ibfk_2` FOREIGN KEY (`supplierID`) REFERENCES `Supplier` (`supplierID`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -379,7 +385,7 @@ CREATE TABLE `RestockOrder` (
 
 LOCK TABLES `RestockOrder` WRITE;
 /*!40000 ALTER TABLE `RestockOrder` DISABLE KEYS */;
-INSERT INTO `RestockOrder` VALUES (1,'testRO1','nothing','2017-04-30',NULL,0,0,'2017-04-28 15:42:34','admin',NULL),(2,'testRO1','nothing','2017-04-30',NULL,0,0,'2017-04-28 15:44:34','admin',NULL),(3,'testRO1','nothing','2017-04-30',NULL,0,0,'2017-04-28 15:47:47','admin',NULL),(4,'testRO1','nothing','2017-04-30',NULL,0,0,'2017-04-28 15:57:53','admin',NULL),(5,'testRO1','no reason','2017-04-30',NULL,0,0,'2017-04-28 16:14:24','admin',NULL),(6,'testRO2-edited','none-edited','2017-04-30','2017-04-29',100,100,'2017-04-28 16:20:26','admin','2017-04-29');
+INSERT INTO `RestockOrder` VALUES (1,'testRO1','RO now has supplier','2017-04-30','2017-04-29',0,0,'2017-04-29 10:36:54','admin','2017-04-29',3,1),(2,'testRO1','now has supplier','2017-04-30',NULL,0,0,'2017-04-29 10:38:57','admin',NULL,2,1);
 /*!40000 ALTER TABLE `RestockOrder` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -396,15 +402,12 @@ CREATE TABLE `RestockOrderItem` (
   `productID` int(11) NOT NULL,
   `quantityPurchased` int(11) NOT NULL DEFAULT '0',
   `quantityReceived` int(11) NOT NULL DEFAULT '0',
-  `supplierID` int(11) NOT NULL,
   PRIMARY KEY (`ROIID`),
   KEY `RestockOrderID` (`RestockOrderID`),
   KEY `productID` (`productID`),
-  KEY `supplierID` (`supplierID`),
   CONSTRAINT `RestockOrderItem_ibfk_1` FOREIGN KEY (`RestockOrderID`) REFERENCES `RestockOrder` (`restockOrderID`),
-  CONSTRAINT `RestockOrderItem_ibfk_2` FOREIGN KEY (`productID`) REFERENCES `Product` (`productID`),
-  CONSTRAINT `RestockOrderItem_ibfk_3` FOREIGN KEY (`supplierID`) REFERENCES `Supplier` (`supplierID`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+  CONSTRAINT `RestockOrderItem_ibfk_2` FOREIGN KEY (`productID`) REFERENCES `Product` (`productID`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -413,7 +416,7 @@ CREATE TABLE `RestockOrderItem` (
 
 LOCK TABLES `RestockOrderItem` WRITE;
 /*!40000 ALTER TABLE `RestockOrderItem` DISABLE KEYS */;
-INSERT INTO `RestockOrderItem` VALUES (1,2,1,50,0,1),(2,3,1,50,0,1),(3,4,1,50,0,1),(4,5,3,50,0,2),(5,6,1,4,3,1),(6,6,2,10,10,1);
+INSERT INTO `RestockOrderItem` VALUES (1,2,1,1,0),(2,2,2,3,0);
 /*!40000 ALTER TABLE `RestockOrderItem` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -437,7 +440,7 @@ CREATE TABLE `RestockOrderStatus` (
 
 LOCK TABLES `RestockOrderStatus` WRITE;
 /*!40000 ALTER TABLE `RestockOrderStatus` DISABLE KEYS */;
-INSERT INTO `RestockOrderStatus` VALUES (1,'Complete'),(2,'In Progress'),(3,'Cancelled');
+INSERT INTO `RestockOrderStatus` VALUES (1,'Completed'),(2,'In Progress'),(3,'Cancelled');
 /*!40000 ALTER TABLE `RestockOrderStatus` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -510,4 +513,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-29 14:23:15
+-- Dump completed on 2017-04-29 19:56:40

@@ -19,6 +19,8 @@ public class restockOrderBean implements Serializable{
     public String ROName;
     public int statusID;
     public String statusName;
+    public int supplierID;
+    public String supplierName;
     public String purpose;
     public Date RODateDue;
     public Date RODateDelivered;
@@ -37,6 +39,8 @@ public class restockOrderBean implements Serializable{
         this.ROName=ron;
         this.statusID=statID;
         this.statusName=statName;
+        this.supplierID=supID;
+        this.supplierName=supName;
         this.purpose=purp;
         this.RODateDue=rod;
         this.RODateDelivered=rodd;
@@ -55,6 +59,8 @@ public class restockOrderBean implements Serializable{
     public void setRestockOrderName(String ron){this.ROName=ron;}
     public void setStatusID(int statID){this.statusID=statID;}
     public void setStatusName(String statName){this.statusName=statName;}
+    public void setSupplierID(int supID){this.supplierID=supID;}
+    public void setSupplierName(String supName){this.supplierName=supName;}
     public void setPurpose(String purp){this.purpose=purp;}
     public void setRODateDue(Date rod){this.RODateDue=rod;}
     public void setRODateDelivered(Date rodd){this.RODateDelivered=rodd;}
@@ -70,6 +76,8 @@ public class restockOrderBean implements Serializable{
     public String getRestockOrderName(){return this.ROName;}
     public int getStatusID(){return this.statusID;}
     public String getStatusName(){return this.statusName;}
+    public int getSupplierID(){return this.supplierID;}
+    public String getSupplierName(){return this.supplierName;}
     public String getPurpose(){return this.purpose;}
     public Date getRODateDue(){return this.RODateDue;}
     public Date getRODateDelivered(){return this.RODateDelivered;}

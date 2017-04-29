@@ -85,11 +85,7 @@ public class getROStatus extends HttpServlet {
          request.setAttribute("message",request.getAttribute("message"));
          
          context.log("Now in the getROStatusServlet!");
-         if(request.getParameter("test")!=null){
-             context.log("heading to errorPage.jsp...");
-             request.getRequestDispatcher("errorPage.jsp").forward(request,response);
-             return;
-         }
+         String cartType = ""+session.getAttribute("cartType");
          
          if(session.getAttribute("ROcart")!=null && (""+session.getAttribute("cartType")).equals("restock")){
              request.setAttribute("ROquantity", request.getAttribute("ROquantity"));
@@ -100,7 +96,7 @@ public class getROStatus extends HttpServlet {
          
          
          
-         else if(session.getAttribute("cartType").equals("restock")){
+         else if(cartType.equals("restock")){
              
          }
          context.log("edit Restock is: "+request.getAttribute("editRestock"));
@@ -113,6 +109,7 @@ public class getROStatus extends HttpServlet {
          }
          
          else{// if((""+request.getAttribute("whatFor")).equals("conditionsRestockOrder")){
+             context.log("going to Search RO...");
              request.getRequestDispatcher("conditionsRestockOrder.jsp").forward(request,response);
          }
          

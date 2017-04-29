@@ -74,11 +74,24 @@
         Delivery Due Date: <input type="text" value="${restockOrder.getRODateDue()}" name="roDeliveryDueDateInput" id="date1" maxlength="10"><br>
         Amount Paid:<input type="text" value="${restockOrder.getAmountPaid()}" name="amountPaidInput"><br>
         Date Delivered: <input type="text" value="${restockOrder.getRODateDelivered()}" name="roDateDeliveredInput" id="date2" maxlength="10"><br>
-        Status: <select name="statusInput">
-                <c:forEach items="${ROStatList}" var="roStat" begin="0" step="1">
-                    <option value="${roStat.getStatusID()}">${roStat.getStatusName()}</option>
-                </c:forEach>
-       </select><br>
+        
+        <c:set var="rostatList" value="${requestScope.roStatList}"/>  
+        <b>Status:</b>
+            <c:choose>
+                <c:when test="${restockOrder.getStatusName() ne 'Completed'}">
+                    <br>
+                    From: ${restockOrder.getStatusName()}<br>
+                    To: 
+                    <select name="statusInput">
+                         <c:forEach items="${roStatList}" var="roStat" begin="0" step="1">
+                            <option value="${roStat.getStatusID()}">${roStat.getStatusName()}</option>
+                        </c:forEach>
+                    </select><br>
+                </c:when>
+                <c:when test="${restockOrder.getStatusName() eq 'Completed'}">
+                    <input type="hidden" value="${restockOrder.getStatusID()}" name="statusInput">${restockOrder.getStatusName()}<br>
+                </c:when>
+            </c:choose>
         <br>
         <input type="submit" value="Save Changes">
         </form> 

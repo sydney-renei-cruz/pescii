@@ -198,7 +198,9 @@ public class getNotifServlet extends HttpServlet {
          */
          preparedSQL = "select RestockOrder.*, RestockOrderStatus.statusName from "
                  + "RestockOrder "
-                 + "inner join RestockOrderStatus on RestockOrderStatus.statusID=RestockOrder.statusID;";
+                 + "inner join RestockOrderStatus on RestockOrderStatus.statusID=RestockOrder.statusID "
+                 + "where RestockOrderStatus.statusName='In Progress' and RestockOrder.RODateDue between now() and date_add(now(), interval 7 day) "
+                 + "order by RestockOrder.RODateDue asc";
          
          
          ps = conn.prepareStatement(preparedSQL);

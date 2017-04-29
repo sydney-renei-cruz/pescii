@@ -84,9 +84,10 @@ public class viewRODetailsServlet extends HttpServlet {
                  + "inner join ProductClass on ProductClass.productClassID = Product.productClassID "
                  + "where RestockOrder.restockOrderID=? "
                  + "order by RestockOrder.datecreated desc";*/
-         String preparedSQL = "select RestockOrder.*, RestockOrderStatus.statusName from "
+         String preparedSQL = "select RestockOrder.*, RestockOrderStatus.statusName, Supplier.supplierName from "
                  + "RestockOrder "
                  + "inner join RestockOrderStatus on RestockOrderStatus.statusID=RestockOrder.statusID "
+                 + "inner join Supplier on Supplier.supplierID=RestockOrder.supplierID "
                  + "where restockOrderID=?";
          String inputRestockOrderID = request.getParameter("restockID");
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
@@ -101,6 +102,8 @@ public class viewRODetailsServlet extends HttpServlet {
                 rbean.setRestockOrderName(dbData.getString("ROName"));
                 rbean.setStatusID(dbData.getInt("statusID"));
                 rbean.setStatusName(dbData.getString("statusName"));
+                rbean.setSupplierID(dbData.getInt("supplierID"));
+                rbean.setSupplierName(dbData.getString("supplierName"));
                 rbean.setPurpose(dbData.getString("purpose"));
                 rbean.setRODateDue(dbData.getDate("RODateDue"));
                 rbean.setRODateDelivered(dbData.getDate("RODateDelivered"));
@@ -117,11 +120,10 @@ public class viewRODetailsServlet extends HttpServlet {
          //now get the RestockOrderItems
          preparedSQL = "select RestockOrderItem.ROIID, RestockOrderItem.RestockOrderID, Product.productID, "
                  + "Product.productName, RestockOrderItem.quantityPurchased, RestockOrderItem.quantityReceived, "
-                 + "Product.supplierID, Supplier.supplierName, Product.restockPrice "
+                 + "Product.restockPrice "
                  + "from RestockOrderItem "
                  + "inner join Product on Product.productID = RestockOrderItem.productID "
                  + "inner join RestockOrder on RestockOrder.RestockOrderID = RestockOrderItem.RestockOrderID "
-                 + "inner join Supplier on Supplier.supplierID = RestockOrderItem.supplierID "
                  + "where RestockOrder.restockOrderID = ?";
          ps = conn.prepareStatement(preparedSQL);
          ps.setString(1,inputRestockOrderID);
@@ -135,8 +137,6 @@ public class viewRODetailsServlet extends HttpServlet {
                 roitembean.setRestockOrderID(dbData.getInt("RestockOrderID"));
                 roitembean.setProductID(dbData.getInt("productID"));
                 roitembean.setProductName(dbData.getString("productName"));
-                roitembean.setSupplierID(dbData.getInt("supplierID"));
-                roitembean.setSupplierName(dbData.getString("supplierName"));
                 roitembean.setQuantityPurchased(dbData.getInt("quantityPurchased"));
                 roitembean.setQuantityReceived(dbData.getInt("quantityReceived"));
                 roitembean.setTotalCost(dbData.getInt("quantityPurchased") * dbData.getFloat("restockPrice"));

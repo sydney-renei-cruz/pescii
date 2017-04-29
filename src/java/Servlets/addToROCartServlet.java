@@ -42,8 +42,6 @@ public class addToROCartServlet extends HttpServlet {
         
         LinkedList<String> ROcart;
         LinkedList<String> ROprodNames;
-        LinkedList<String> ROsuppNames;
-        LinkedList<String> ROsuppIDs;
         LinkedList<Float> ROprodPrices;
         LinkedList<Float> ROtotalPrices;
         HttpSession session = request.getSession();
@@ -53,8 +51,6 @@ public class addToROCartServlet extends HttpServlet {
         if (session.getAttribute("ROcart") == null){
             ROcart = new LinkedList<String>();    //this contains the productID
             ROprodNames = new LinkedList<String>();
-            ROsuppNames = new LinkedList<String>();
-            ROsuppIDs = new LinkedList<String>();
             ROprodPrices = new LinkedList<Float>();
             ROtotalPrices = new LinkedList<Float>();
             context.log(">>cart created!");
@@ -63,8 +59,6 @@ public class addToROCartServlet extends HttpServlet {
         else{
             ROcart = (LinkedList<String>)(session.getAttribute("ROcart"));
             ROprodNames = (LinkedList<String>)(session.getAttribute("ROprodNames"));
-            ROsuppNames = (LinkedList<String>)(session.getAttribute("ROsuppNames"));
-            ROsuppIDs = (LinkedList<String>)(session.getAttribute("ROsuppIDs"));
             ROprodPrices = (LinkedList<Float>)(session.getAttribute("ROprodPrices"));
             ROtotalPrices = (LinkedList<Float>)(session.getAttribute("ROtotalPrices"));
             context.log("----The ROcart size is: " + ROcart.size());
@@ -72,8 +66,6 @@ public class addToROCartServlet extends HttpServlet {
         if(request.getParameter("prodID")!=null){
             ROcart.add(request.getParameter("prodID"));
             ROprodNames.add(request.getParameter("prodName"));
-            ROsuppNames.add(request.getParameter("suppName"));
-            ROsuppIDs.add(request.getParameter("suppID"));
             ROprodPrices.add(0 + Float.parseFloat(request.getParameter("prodPrice")));
             context.log("->>product added to ROcart! ID is: " + request.getParameter("prodID"));
         }
@@ -108,7 +100,6 @@ public class addToROCartServlet extends HttpServlet {
             }
             session.setAttribute("ROquantity", ROquantity);
             context.log("cartType in addToCartServlet is: "+session.getAttribute("cartType"));
-            context.log("suppliers are:"+ROsuppNames.get(0));
             //request.getRequestDispatcher("createRestockOrder.jsp").forward(request,response);
             request.getRequestDispatcher("restockOrder.getStatus").forward(request,response);
             
@@ -117,8 +108,6 @@ public class addToROCartServlet extends HttpServlet {
         
             session.setAttribute("ROcart", ROcart);
             session.setAttribute("ROprodNames", ROprodNames);
-            session.setAttribute("ROsuppNames", ROsuppNames);
-            session.setAttribute("ROsuppIDs", ROsuppIDs);
             session.setAttribute("ROprodPrices", ROprodPrices);
             session.setAttribute("ROtotalPrices", ROtotalPrices);
             request.setAttribute("forRestock", "yes");

@@ -47,7 +47,7 @@
         
         
         <br><br>
-        <a href="product.getProductClass?search=yes&searchWhat=ro">Custom View RO</a>
+        <a href="restockOrder.getStatus">Search RO</a><br>
         <br><br>
         <c:choose>
             <c:when test="${accountType eq 3}">
