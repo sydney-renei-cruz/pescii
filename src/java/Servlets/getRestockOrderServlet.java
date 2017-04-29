@@ -86,7 +86,7 @@ public class getRestockOrderServlet extends HttpServlet {
     
          String preparedSQL = "select RestockOrder.*, RestockOrderStatus.statusName "
                  + "from RestockOrder "
-                 + "inner join RestockOrderStatus on RestockOrderStatus.statusID=RestockOrder.statusID;";
+                 + "inner join RestockOrderStatus on RestockOrderStatus.statusID=RestockOrder.statusID";
          
          
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
@@ -105,7 +105,7 @@ public class getRestockOrderServlet extends HttpServlet {
                 rbean.setPurpose(dbData.getString("purpose"));
                 rbean.setRODateDue(dbData.getDate("RODateDue"));
                 rbean.setRODateDelivered(dbData.getDate("RODateDelivered"));
-                //rbean.setRestockPrice(dbData.getFloat("restockPrice"));
+                rbean.setRestockPrice(dbData.getFloat("restockPrice"));
                 rbean.setAmountPaid(dbData.getFloat("amountPaid"));
                 rbean.setDiscount(dbData.getFloat("discount"));
                 rbean.setDatePaid(dbData.getDate("datePaid"));

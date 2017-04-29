@@ -73,11 +73,6 @@
             Enter Purpose:<br><textarea name="purposeInput" rows="5" cols="50"></textarea><br>
             Enter Date Due:<input type="text" name="dateDueInput" id="date1" maxlength="10" required><br>
             Enter discount:<input type="text" name="discountInput" value="0"><br>
-            Status:<select name="statusInput">
-                <c:forEach items="${rostatList}" var="rStatList" begin="0" step="1">
-                    <option value="${rStatList.getStatusID()}">${rStatList.getStatusName()}</option>
-                </c:forEach>
-            </select><br>
             <input type="Submit" value="Create Restock Order">
         </form>
         

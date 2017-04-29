@@ -27,9 +27,11 @@
         </c:if>
         
         Customer Name: ${clinic.getCustomerLastName()}, ${clinic.getCustomerFirstName()}<br>
-            
+        
+        <c:set var="customerID" value="${requestScope.custID}"/>
         <form action="customer.editClinic" method="post">
                 <input type="hidden" value="${clinic.getClinicID()}" name="clinID">
+                <input type='hidden' value='${customerID}' name='custID'>
                 PRCID: ${clinic.getPRCID()}<br>
                 Clinic Name: <input type="text" value="${clinic.getClinicName()}" name="clinicNameInput" maxlength="255"><br>
                 Clinic Address: <input type="text" value="${clinic.getClinicAddress()}" name="clinicAddressInput" maxlength="255"><br>

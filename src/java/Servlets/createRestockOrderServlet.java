@@ -144,7 +144,7 @@ public class createRestockOrderServlet extends HttpServlet {
                  + "purpose, RODateDue, discount, lastEdittedBy) "
                  + "values(?,?,?,?,?,?,?,?)";
              */
-         String preparedSQL = "insert into RestockOrder(ROName, purpose, RODateDue, discount, lastEdittedBy, statusID, supplierID) "
+         String preparedSQL = "insert into RestockOrder(ROName, purpose, RODateDue, discount, lastEdittedBy, supplierID, restockPrice) "
                  + "values(?,?,?,?,?,?,?)";
          //you don't change this
          //PreparedStatement rs = conn.prepareStatement(preparedSQL);
@@ -153,11 +153,13 @@ public class createRestockOrderServlet extends HttpServlet {
             LinkedList<String> cart;
             LinkedList<String> prodNames;
             LinkedList<Integer> quantity;
+            LinkedList<Float> ROtotalPrices;
             if(session.getAttribute("ROcart")!=null && (""+session.getAttribute("cartType")).equals("restock")){
                context.log("so the ROcart isn't null");
                cart = (LinkedList<String>)(session.getAttribute("ROcart"));
                prodNames = (LinkedList<String>)(session.getAttribute("ROprodNames"));
                quantity = (LinkedList<Integer>)(session.getAttribute("ROquantity"));
+               ROtotalPrices = (LinkedList<Float>)(session.getAttribute("ROtotalPrices"));
             }
             else{
                 message = "You have no products selected. Invoice could not be created";
@@ -244,16 +246,6 @@ public class createRestockOrderServlet extends HttpServlet {
             }
             
             //check status ID
-            int inputStatusID = 0;
-            try{inputStatusID = Integer.parseInt(request.getParameter("statusInput"));}
-            catch(Exception e){
-                   message = "Restock Order Status is invalid.";
-                   request.setAttribute("message",message);
-                   request.setAttribute("forRestock", "yes");
-                   request.getRequestDispatcher("restockOrder.getStatus").forward(request,response);
-                   return;
-            }
-            //check status ID
             int inputSupplierID = 0;
             try{inputSupplierID = Integer.parseInt(""+session.getAttribute("suppID"));}
             catch(Exception e){
@@ -268,13 +260,20 @@ public class createRestockOrderServlet extends HttpServlet {
          String lastEdittedBy = ""+session.getAttribute("userName");
          context.log("now in createRestockOrderServlet 4!");
          
+          float total = 0;
+            for(int i=0;i<cart.size();i++){
+                total = total + ROtotalPrices.get(i);
+                context.log("Total price is now: " + total);
+            }
+         
+         
          ps.setString(1,inputROName);
          ps.setString(2,inputPurpose);
          ps.setString(3,inputDateDue);
          ps.setFloat(4,inputDiscount);
          ps.setString(5,lastEdittedBy);
-         ps.setInt(6,inputStatusID);
-         ps.setInt(7,inputSupplierID);
+         ps.setInt(6,inputSupplierID);
+         ps.setFloat(7,total);
          
          ps.executeUpdate();                   //at this point, you have already inserted into the database
          

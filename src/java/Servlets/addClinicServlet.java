@@ -192,7 +192,8 @@ public class addClinicServlet extends HttpServlet {
          
          message = "Clinic successfully added!";
          request.setAttribute("message", message);
-         request.getRequestDispatcher("notif.get").forward(request,response);
+         request.setAttribute("custID",inputCustomerID);
+         request.getRequestDispatcher("anotherCustomerClinic.jsp").forward(request,response);
             
          
         }

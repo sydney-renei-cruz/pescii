@@ -27,11 +27,6 @@
     <body>
         <h1>This is the homePage!</h1>
         
-        <c:if test="${userName == ''}">
-            <p>Welcome, ${userName}!</p><br>
-            <p>Your account type is ${accountType}.</p><br>     <!-- this is to be removed later on-->
-        </c:if>
-        
         
         <!--THIS PART OF THE CODE CHECKS IF IT SHOULD DISPLAY THE LOG IN OR LOGOUT LINK-->
         <c:if test="${state == 'logged in'}">
@@ -74,26 +69,26 @@
         <c:if test="${accountType == '2'}">
             <a href="salesrep.get?whatFor=addCustomer">Add Customer</a><br>
             <a href="Servlets.getCustomerServlet">Edit Customer</a><br>
-            <a href="new.get?whatFor=customer&getWhat=overdue">View Customers With Overdue Fees</a><br>
             <a href="salesrep.get?whatFor=searchCustomer">Search Customers</a><br>
             <a href="Servlets.getCustomerServlet">View All Customers</a><br><br>
             
-            <a href="unfinished.get?getTable=invoice">Unfinished Invoices</a><br>
+            <a href="unfinished.get?getTable=invoice">View Unfinished Invoices</a><br>
             <a href="province.get?whatFor=conditionsInvoice">Search Invoice</a><br>
             <a href="Servlets.getInvoiceServlet">View All Invoices</a><br><br>
             
             <a href="addSalesRep.jsp">Add Sales Rep</a><br>
             <a href="salesrep.get">Edit Sales Rep</a><br>
             <a href="conditionsSalesRep.jsp">Search Sales Reps</a><br>
-            <a href="salesrep.get">View All Sales Rep</a><br><br>
+            <a href="salesrep.get">View All Sales Reps</a><br><br>
             
             <a href="unfinished.get?getTable=ro">View Unfinished RO</a><br>
             <a href="conditionsRestockOrder.jsp">Search RO</a><br>
             <a href="restockOrder.get">View All Restock Orders</a><br><br>
             
             
-            <a href="createAccount.jsp">Create Account</a><br>
-            <a href="account.get">Edit Account</a><br><br>
+            <a href="account.getTypeStatus">Create Account</a><br>
+            <a href="account.getTypeStatus?forSearch=yes">Search Accounts</a><br>
+            <a href="account.get">View All Accounts</a><br><br>
         </c:if>    
         
         <!--this is the Inventory Manager Section
@@ -106,9 +101,17 @@
             <a href="product.getProductClass">Add Product</a><br>
             <a href="Servlets.getProductServlet">Edit Product</a><br>
             
-            <a href="Servlets.getProductServlet?forOther=restock">Add Restock Order</a><br>
+            <c:choose>
+                <c:when test="${(suppID eq null || suppID eq 'null' || suppID eq '')}">
+                    <a href="supplier.get?viewSupp=yes&forRestock=yes">Create Restock Order</a><br>      
+                </c:when>
+                <c:when test="${cartType eq 'restock' && (suppID ne null && suppID ne 'null' && suppID ne '')}">
+                    <a href="Servlets.getProductServlet?forOther=restock">Create Restock Order</a><br>      
+                </c:when>
+            </c:choose>
+            <a href="restockOrder.get">Edit Restock Order</a><br>
             <a href="unfinished.get?getTable=ro">View Unfinished RO</a><br>
-            <a href="product.getProductClass?search=yes&searchWhat=ro">Search RO</a><br>
+            <a href="restockOrder.getStatus">Search RO</a><br>
             <a href="restockOrder.get">View All Restock Orders</a><br><br>
             
             <a href="product.getProductClass?addSupp=yes">Add Supplier</a><br>
@@ -138,13 +141,12 @@
         <c:if test="${accountType == '1'}">
             <a href="Servlets.getProductServlet?forOther=invoice">Create Invoice</a><br>
             <a href="Servlets.getInvoiceServlet">Edit Invoice</a><br>
-            <a href="unfinished.get?getTable=invoice">Unfinished Invoices</a><br>
+            <a href="unfinished.get?getTable=invoice">View Unfinished Invoices</a><br>
             <a href="province.get?whatFor=conditionsInvoice">Search Invoice</a><br>
             <a href="Servlets.getInvoiceServlet">View All Invoices</a><br><br>
             
             <a href="salesrep.get?whatFor=addCustomer">Add Customer</a><br>
             <a href="Servlets.getCustomerServlet">Edit Customer</a><br>
-            <a href="new.get?whatFor=customer">Customers With Overdue Fees</a><br>
             <a href="salesrep.get?whatFor=searchCustomer">Search Customers</a><br>
             <a href="Servlets.getCustomerServlet">View All Customers</a><br><br>
             <a href="addSalesRep.jsp">Add Sales Rep</a><br>

@@ -304,14 +304,14 @@ public class addCustomerServlet extends HttpServlet {
          try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
             if (generatedKeys.next()) {
                 customerID = generatedKeys.getInt(1);
-
+                request.setAttribute("custID",customerID);
                 ps2.setInt(1, customerID);
-                ps.setString(2,inputClinicAddress);
-                ps.setString(3,inputClinPhoneNum);
-                ps.setString(4,inputClinicName);
-                ps.setString(5,provinceID);
-                ps.setString(6,lastEdittedBy);
-                ps.executeUpdate();
+                ps2.setString(2,inputClinicAddress);
+                ps2.setString(3,inputClinPhoneNum);
+                ps2.setString(4,inputClinicName);
+                ps2.setString(5,provinceID);
+                ps2.setString(6,lastEdittedBy);
+                ps2.executeUpdate();
                 
             }
             else {
@@ -321,7 +321,8 @@ public class addCustomerServlet extends HttpServlet {
          
          message = "Customer successfully created!";
          request.setAttribute("message", message);
-         request.getRequestDispatcher("notif.get").forward(request,response);
+         //request.getRequestDispatcher("notif.get").forward(request,response);
+         request.getRequestDispatcher("anotherCustomerClinic.jsp").forward(request,response);
             
          
         }

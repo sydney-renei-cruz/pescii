@@ -121,7 +121,7 @@
                 <c:when test="${invoice.getStatusName() ne 'Completed'}">
                     <input type="text" value="${invoice.getDiscount()}" name="discountInput"><br>
                 </c:when>
-                <c:when test="${invoice.getStatusName() eq 'CompletstatusInputed'}">
+                <c:when test="${invoice.getStatusName() eq 'Completed'}">
                     <input type="hidden" value="${invoice.getDiscount()}" name="discountInput">${invoice.getDiscount()}<br>
                 </c:when>
             </c:choose>

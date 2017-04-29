@@ -39,25 +39,40 @@
         
 
         <form action="restock.edit" method="post">
-            ROID: ${restockOrder.getRestockOrderID()}<input type="hidden" value="${restockOrder.getRestockOrderID()}" name="restockOrderIDInput">
+            <input type="hidden" value="${restockOrder.getRestockOrderID()}" name="restockOrderIDInput">
 
-            Restock Order Name: <input type="text" value="${restockOrder.getRestockOrderName()}" name="newRONameInput" maxlength="255"><br>
-            Purpose: <br><textarea name="purposeInput" rows="5" cols="50">${restockOrder.getPurpose()}</textarea><br>
-            
+            <c:choose>
+                <c:when test="${accountType eq '4' || accountType eq '1'}">
+                    Restock Order Name: <input type="text" value="${restockOrder.getRestockOrderName()}" name="newRONameInput" maxlength="255"><br>
+                    Purpose: <br><textarea name="purposeInput" rows="5" cols="50">${restockOrder.getPurpose()}</textarea><br>
+                </c:when>
+                <c:when test="${accountType eq '5'}">
+                    Restock Order Name: ${restockOrder.getRestockOrderName()}<br>
+                    Purpose: <br>${restockOrder.getPurpose()}<br>
+                </c:when>
+            </c:choose>
+                    
+                    
             <table border="1">
                 <tr>
                     <th>Product Name</th>
                     <th>Pieces Ordered</th>
                     <th>Pieces Received</th>
-                    <th>Supplier</th>
                 </tr>
 
                 <c:forEach items="${roitemsList}" var="ro" begin="0" step="1" varStatus="status">
                     <tr>
                         <td><a href="restockOrder.getDetails?restockID=<c:out value="${ro.getProductID()}"/>">${ro.getProductName()}</a></td>
-                        <td><input type="text" name="QO" value="${ro.getQuantityPurchased()}"></td>
-                        <td><input type="text" name="QR" value="${ro.getQuantityReceived()}"></td>
-                        <td>${ro.getSupplierName()}</td>
+                        <c:choose>
+                            <c:when test="${accountType eq '4' || accountType eq '1'}">
+                                <td><input type="text" name="QO" value="${ro.getQuantityPurchased()}"></td>
+                                <td>${ro.getQuantityReceived()}</td>
+                            </c:when>
+                            <c:when test="${accountType eq '5'}">
+                                <td>${ro.getQuantityPurchased()}</td>
+                                <td><input type="text" name="QR" value="${ro.getQuantityReceived()}"></td>
+                            </c:when>
+                        </c:choose>
                     </tr>
                 </c:forEach>
             </table>
@@ -69,31 +84,41 @@
             
         
 
-
-        Discount: <input type="text" value="${restockOrder.getDiscount()}" name="discountInput"><br>
-        Delivery Due Date: <input type="text" value="${restockOrder.getRODateDue()}" name="roDeliveryDueDateInput" id="date1" maxlength="10"><br>
-        Amount Paid:<input type="text" value="${restockOrder.getAmountPaid()}" name="amountPaidInput"><br>
-        Date Delivered: <input type="text" value="${restockOrder.getRODateDelivered()}" name="roDateDeliveredInput" id="date2" maxlength="10"><br>
-        
-        <c:set var="rostatList" value="${requestScope.roStatList}"/>  
-        <b>Status:</b>
+            Original Price: ${restockOrder.getRestockPrice()}<br>
             <c:choose>
-                <c:when test="${restockOrder.getStatusName() ne 'Completed'}">
-                    <br>
-                    From: ${restockOrder.getStatusName()}<br>
-                    To: 
-                    <select name="statusInput">
-                         <c:forEach items="${roStatList}" var="roStat" begin="0" step="1">
-                            <option value="${roStat.getStatusID()}">${roStat.getStatusName()}</option>
-                        </c:forEach>
-                    </select><br>
+                <c:when test="${accountType eq '4' || accountType eq '1'}">
+                    Discount: <input type="text" value="${restockOrder.getDiscount()}" name="discountInput"><br>
+                    Amount Paid:<input type="text" value="${restockOrder.getAmountPaid()}" name="amountPaidInput"><br>
+                    Delivery Due Date: <input type="text" value="${restockOrder.getRODateDue()}" name="roDeliveryDueDateInput" id="date1" maxlength="10"><br>
                 </c:when>
-                <c:when test="${restockOrder.getStatusName() eq 'Completed'}">
-                    <input type="hidden" value="${restockOrder.getStatusID()}" name="statusInput">${restockOrder.getStatusName()}<br>
+                <c:when test="${accountType eq '5'}">
+                    Discount: ${restockOrder.getDiscount()}<br>
+                    Amount Paid: ${restockOrder.getAmountPaid()}<br>
+                    Delivery Due Date: ${restockOrder.getRODateDue()}<br>
+                    Date Delivered: <input type="text" value="${restockOrder.getRODateDelivered()}" name="roDateDeliveredInput" id="date2" maxlength="10"><br>
                 </c:when>
             </c:choose>
-        <br>
-        <input type="submit" value="Save Changes">
+
+            
+            <c:set var="rostatList" value="${requestScope.roStatList}"/>  
+            <b>Status:</b>
+                <c:choose>
+                    <c:when test="${restockOrder.getStatusName() ne 'Completed'}">
+                        <br>
+                        From: ${restockOrder.getStatusName()}<br>
+                        To: 
+                        <select name="statusInput">
+                             <c:forEach items="${roStatList}" var="roStat" begin="0" step="1">
+                                <option value="${roStat.getStatusID()}">${roStat.getStatusName()}</option>
+                            </c:forEach>
+                        </select><br>
+                    </c:when>
+                    <c:when test="${restockOrder.getStatusName() eq 'Completed'}">
+                        <input type="hidden" value="${restockOrder.getStatusID()}" name="statusInput">${restockOrder.getStatusName()}<br>
+                    </c:when>
+                </c:choose>
+            <br>
+            <input type="submit" value="Save Changes">
         </form> 
         
         <br><br>

@@ -109,7 +109,7 @@ public class editClinicServlet extends HttpServlet {
              message = "Clinic address was input incorrectly. It should also not be blank.";
              request.setAttribute("message",message);
              request.setAttribute("whatFor","addClinic");
-             request.setAttribute("custID", request.getParameter("customerIDInput"));
+             request.setAttribute("custID", request.getParameter("custID"));
              request.getRequestDispatcher("customer.getClinic").forward(request,response);
              return;
          }
@@ -124,7 +124,7 @@ public class editClinicServlet extends HttpServlet {
                     message = "Clinic Phone Number was input incorrectly. It should also not be blank.";
                     request.setAttribute("message",message);
                     request.setAttribute("whatFor","addClinic");
-                    request.setAttribute("custID", request.getParameter("customerIDInput"));
+                    request.setAttribute("custID", request.getParameter("custID"));
                     request.getRequestDispatcher("customer.getClinic").forward(request,response);
                     return;
                 }
@@ -135,7 +135,7 @@ public class editClinicServlet extends HttpServlet {
              message = "Clinic Phone Number was input incorrectly. It should also not be blank.";
              request.setAttribute("message",message);
              request.setAttribute("whatFor","addClinic");
-             request.setAttribute("custID", request.getParameter("customerIDInput"));
+             request.setAttribute("custID", request.getParameter("custID"));
              request.getRequestDispatcher("customer.getClinic").forward(request,response);
              return;
          }
@@ -147,7 +147,7 @@ public class editClinicServlet extends HttpServlet {
              message = "Clinic Name was input incorrectly. It should also not be blank.";
              request.setAttribute("message",message);
              request.setAttribute("whatFor","addClinic");
-             request.setAttribute("custID", request.getParameter("customerIDInput"));
+             request.setAttribute("custID", request.getParameter("custID"));
              request.getRequestDispatcher("customer.getClinic").forward(request,response);
              return;
          }
@@ -159,7 +159,7 @@ public class editClinicServlet extends HttpServlet {
              message = "Province was input incorrectly. Please try again.";
              request.setAttribute("message",message);
              request.setAttribute("whatFor","addClinic");
-             request.setAttribute("custID", request.getParameter("customerIDInput"));
+             request.setAttribute("custID", request.getParameter("custID"));
              request.getRequestDispatcher("customer.getClinic").forward(request,response);
              return;
          }
@@ -176,7 +176,8 @@ public class editClinicServlet extends HttpServlet {
         context.log("--->Clinic successfully updated. ClinicID is: "+inputClinID);
 
         request.setAttribute("message", "Clinic successfully editted!");
-        request.getRequestDispatcher("homePage.jsp").forward(request,response);
+        request.setAttribute("custID", request.getParameter("custID"));
+        request.getRequestDispatcher("anotherCustomerClinic.jsp").forward(request,response);
          
          
          

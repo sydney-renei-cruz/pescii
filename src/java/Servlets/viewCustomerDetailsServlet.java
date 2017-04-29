@@ -89,9 +89,10 @@ public class viewCustomerDetailsServlet extends HttpServlet {
              }
          }
          else{
+            context.log("customer ID in viewCustomerDetailsServlet is: "+request.getParameter("custID"));
             inputCustomerID = 0 + Integer.parseInt(request.getParameter("custID"));
          }
-         
+         context.log("customer ID in viewCustomerDetailsServlet is: "+request.getParameter("custID"));
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          ps.setInt(1, inputCustomerID);
          

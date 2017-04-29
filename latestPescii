@@ -117,7 +117,7 @@ CREATE TABLE `Clinic` (
   KEY `provinceID` (`provinceID`),
   CONSTRAINT `Clinic_ibfk_1` FOREIGN KEY (`customerID`) REFERENCES `Customer` (`customerID`),
   CONSTRAINT `Clinic_ibfk_2` FOREIGN KEY (`provinceID`) REFERENCES `Province` (`provinceID`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -126,7 +126,7 @@ CREATE TABLE `Clinic` (
 
 LOCK TABLES `Clinic` WRITE;
 /*!40000 ALTER TABLE `Clinic` DISABLE KEYS */;
-INSERT INTO `Clinic` VALUES (12,3461,'3K Rojumar Corp. Bldg., Grace Park','3237094','GC Tejada Dental Clinic','2016-10-17 07:46:50',84,'admin'),(13,3462,'192 Nadurata st. 8th avenue, West Grace Park','7826967','MJCR Ortho Dental Clinic','2016-10-17 07:49:27',84,'admin'),(14,3463,'363 Rizal ave., Extension Caloocan','3665537','Dr. Tung Dental Clinic','2016-10-17 07:51:03',84,'admin'),(15,3464,'3/F Victory Central Mall Monumento','3321066','Toothlink Dental Clinic','2016-10-17 07:52:42',84,'admin'),(16,3465,'31 Gov. Pascual Avenue, Tinajeros','4349549','Dental Clinic','2016-10-17 07:54:44',84,'admin'),(17,3461,'217 M.H. Del Pilar St., 11th Ave., Grace Park','4849883','Mouth Fresh Dental Clinic','2016-10-17 07:56:17',84,'admin'),(18,3466,'Ermita, Manila','7392330','Physician\'s Diagnostic Services Center','2016-11-17 09:54:41',84,'admin'),(20,3467,'1234','1234a','1234','2017-01-07 11:30:16',36,'admin');
+INSERT INTO `Clinic` VALUES (12,3461,'3K Rojumar Corp. Bldg., Grace Park','3237094','GC Tejada Dental Clinic','2016-10-17 07:46:50',84,'admin'),(13,3462,'192 Nadurata st. 8th avenue, West Grace Park','7826967','MJCR Ortho Dental Clinic','2016-10-17 07:49:27',84,'admin'),(14,3463,'363 Rizal ave., Extension Caloocan','3665537','Dr. Tung Dental Clinic','2016-10-17 07:51:03',84,'admin'),(15,3464,'3/F Victory Central Mall Monumento','3321066','Toothlink Dental Clinic','2016-10-17 07:52:42',84,'admin'),(16,3465,'31 Gov. Pascual Avenue, Tinajeros','4349549','Dental Clinic','2016-10-17 07:54:44',84,'admin'),(17,3461,'217 M.H. Del Pilar St., 11th Ave., Grace Park','4849883','Mouth Fresh Dental Clinic','2016-10-17 07:56:17',84,'admin'),(18,3466,'Ermita, Manila','7392330','Physician\'s Diagnostic Services Center','2016-11-17 09:54:41',84,'admin'),(20,3467,'1234','1234a','1234','2017-01-07 11:30:16',36,'admin'),(21,3471,'Hillsborough Alabang, West Service Road, Muntinlupa City','9892930','Reys Clinic','2017-04-29 17:39:32',84,'admin'),(22,3472,'Hillsborough Alabang, West Service Road, Muntinlupa City','9892930','Reys Clinic','2017-04-29 17:39:55',84,'admin'),(23,3473,'Pear Drive, Pasig City','5834219','Rees Clinic','2017-04-29 17:43:16',84,'admin'),(24,3471,'somewhere','1234567','Reys Clinic 2','2017-04-29 18:02:26',84,'admin');
 /*!40000 ALTER TABLE `Clinic` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -150,7 +150,7 @@ CREATE TABLE `Customer` (
   PRIMARY KEY (`customerID`),
   KEY `salesRepID` (`salesRepID`),
   CONSTRAINT `salesRepID` FOREIGN KEY (`salesRepID`) REFERENCES `SalesRep` (`salesRepID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3469 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3474 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -159,7 +159,7 @@ CREATE TABLE `Customer` (
 
 LOCK TABLES `Customer` WRITE;
 /*!40000 ALTER TABLE `Customer` DISABLE KEYS */;
-INSERT INTO `Customer` VALUES ('7925','Bert','09178570467','7822127','2016-10-17 07:46:50',1,3461,'Tejada',NULL),('7736','Glenda','09174133290','3669314','2016-10-17 07:49:26',2,3462,'Rusuello',NULL),('5480','Eugene','09067133582','3665537','2016-10-17 07:51:03',3,3463,'Tung',NULL),('9935','Leah','09173231026','3321066','2016-10-17 07:52:42',5,3464,'Cruz',NULL),('8239','Rommel','09167827495','4349549','2016-10-17 07:54:44',6,3465,'Caponpon',NULL),('2643','Mazzini','09232911209','7392330','2016-11-17 09:54:41',6,3466,'Giuseppe',NULL),('123','123','1234','1234','2017-01-07 11:30:15',1,3467,'444','admin'),('123','123','123','1234','2017-01-07 11:43:22',5,3468,'123','admin');
+INSERT INTO `Customer` VALUES ('7925','Bert','09178570467','7822127','2016-10-17 07:46:50',1,3461,'Tejada',NULL),('7736','Glenda','09174133290','3669314','2016-10-17 07:49:26',2,3462,'Rusuello',NULL),('5480','Eugene','09067133582','3665537','2016-10-17 07:51:03',3,3463,'Tung',NULL),('9935','Leah','09173231026','3321066','2016-10-17 07:52:42',5,3464,'Cruz',NULL),('8239','Rommel','09167827495','4349549','2016-10-17 07:54:44',6,3465,'Caponpon',NULL),('2643','Mazzini','09232911209','7392330','2016-11-17 09:54:41',6,3466,'Giuseppe',NULL),('123','123','1234','1234','2017-01-07 11:30:15',1,3467,'444','admin'),('123','123','123','1234','2017-01-07 11:43:22',5,3468,'123','admin'),('4423','Jas','09162738954','9892930','2017-04-29 17:39:32',2,3471,'Reys','admin'),('4423','Jas','09162738954','9892930','2017-04-29 17:39:55',1,3472,'Reys','admin'),('5742','Jast','09173829133','5834219','2017-04-29 17:43:16',6,3473,'Rees','admin');
 /*!40000 ALTER TABLE `Customer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -205,7 +205,7 @@ CREATE TABLE `Invoice` (
 
 LOCK TABLES `Invoice` WRITE;
 /*!40000 ALTER TABLE `Invoice` DISABLE KEYS */;
-INSERT INTO `Invoice` VALUES (1,3465,16,'2016-12-26','2016-12-31','Cash','2016-12-30','2016-12-26','2016-12-26',1,0,'2016-12-26 09:34:53','Dental Chair - Caponpon',18000,2000,'admin',18000,'2016-12-26'),(2,3464,15,'2016-12-29','2016-12-31','Cash','2016-12-30','2016-12-29','2016-12-29',1,0,'2016-12-29 02:52:59','Hose - Cruz Leah',1700,300,'admin',1700,'2016-12-31'),(3,3462,13,'2017-01-23','2017-01-26','Cash','2017-01-25',NULL,NULL,2,0,'2017-01-23 08:14:23','Glenda - Dental Chair',0,50000,'admin',150000,NULL),(4,3466,18,'2017-03-08','2017-03-09','Cash','2017-03-09',NULL,NULL,2,0,'2017-03-08 08:45:46','TestInvoice',0,0,'admin',20000,NULL),(5,3462,13,'2017-03-08','2017-03-10','Cash','2017-03-10',NULL,'2017-04-25',3,0,'2017-03-08 09:01:33','test invoice 2',1500,0,'accountant',1500,'2017-04-19'),(6,3461,12,'2017-04-29','2017-04-30','Cash','2017-04-30',NULL,NULL,2,0,'2017-04-28 16:39:39','testInvoice3',0,6000,'admin',200000,NULL);
+INSERT INTO `Invoice` VALUES (1,3465,16,'2016-12-26','2016-12-31','Cash','2016-12-30','2016-12-26','2016-12-26',1,0,'2016-12-26 09:34:53','Dental Chair - Caponpon',18000,2000,'admin',18000,'2016-12-26'),(2,3464,15,'2016-12-29','2016-12-31','Cash','2016-12-30','2016-12-29','2016-12-29',1,0,'2016-12-29 02:52:59','Hose - Cruz Leah',1700,300,'admin',1700,'2016-12-31'),(3,3462,13,'2017-01-23','2017-01-26','Cash','2017-01-25','2017-04-30','2017-04-30',1,2000,'2017-01-23 08:14:23','Glenda - Dental Chair',102000,50000,'admin',150000,'2017-04-30'),(4,3466,18,'2017-03-08','2017-03-09','Cash','2017-03-09',NULL,NULL,2,0,'2017-03-08 08:45:46','TestInvoice',0,0,'admin',20000,NULL),(5,3462,13,'2017-03-08','2017-03-10','Cash','2017-03-10',NULL,'2017-04-25',3,0,'2017-03-08 09:01:33','test invoice 2',1500,0,'accountant',1500,'2017-04-19'),(6,3461,12,'2017-04-29','2017-04-30','Cash','2017-04-30',NULL,NULL,2,0,'2017-04-28 16:39:39','testInvoice3',0,6000,'admin',200000,NULL);
 /*!40000 ALTER TABLE `Invoice` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -298,7 +298,7 @@ CREATE TABLE `Product` (
 
 LOCK TABLES `Product` WRITE;
 /*!40000 ALTER TABLE `Product` DISABLE KEYS */;
-INSERT INTO `Product` VALUES (1,'Dental Chair','Standard dental chair',200000,175000,11,6,'Zhermack',1,'White','2016-12-23 05:28:39','admin',1),(2,'Hose','attached to Dental Chairs to spray water',2000,1500,16,5,'Denta',3,'White','2016-12-29 02:38:55','admin',1),(3,'testProd1','qwe',10,5,50,50,'testBrand',3,'black','2017-04-25 10:48:55','inventory',2);
+INSERT INTO `Product` VALUES (1,'Dental Chair','Standard dental chair',200000,175000,10,6,'Zhermack',1,'White','2016-12-23 05:28:39','admin',1),(2,'Hose','attached to Dental Chairs to spray water',2000,1500,16,5,'Denta',3,'White','2016-12-29 02:38:55','admin',1),(3,'testProd1','qwe',10,5,50,50,'testBrand',3,'black','2017-04-25 10:48:55','inventory',2);
 /*!40000 ALTER TABLE `Product` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -371,6 +371,7 @@ CREATE TABLE `RestockOrder` (
   `datePaid` date DEFAULT NULL,
   `statusID` int(11) NOT NULL DEFAULT '2',
   `supplierID` int(11) NOT NULL,
+  `restockPrice` float NOT NULL DEFAULT '0',
   PRIMARY KEY (`restockOrderID`),
   KEY `statusID` (`statusID`),
   KEY `supplierID` (`supplierID`),
@@ -385,7 +386,7 @@ CREATE TABLE `RestockOrder` (
 
 LOCK TABLES `RestockOrder` WRITE;
 /*!40000 ALTER TABLE `RestockOrder` DISABLE KEYS */;
-INSERT INTO `RestockOrder` VALUES (1,'testRO1','RO now has supplier','2017-04-30','2017-04-29',0,0,'2017-04-29 10:36:54','admin','2017-04-29',3,1),(2,'testRO1','now has supplier','2017-04-30',NULL,0,0,'2017-04-29 10:38:57','admin',NULL,2,1);
+INSERT INTO `RestockOrder` VALUES (1,'testRO1','RO now has supplier','2017-04-30','2017-04-29',0,0,'2017-04-29 10:36:54','admin','2017-04-29',3,1,0),(2,'testRO1','now has supplier','2017-04-30',NULL,0,0,'2017-04-29 10:38:57','admin',NULL,2,1,0);
 /*!40000 ALTER TABLE `RestockOrder` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -513,4 +514,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-29 19:56:40
+-- Dump completed on 2017-04-30  2:05:41

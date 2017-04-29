@@ -123,7 +123,7 @@
         <br><br>
         <a href="invoice.add?cancel=yes">Cancel Invoice</a>
         <br><br>
-        <a href="Servlets.getCustomerServlet">Return to list of customers</a>
+        <a href="Servlets.getCustomerServlet">Change Customer</a>
         <br><br>
         <a href="notif.get">Return to Home</a>
         <br><br>

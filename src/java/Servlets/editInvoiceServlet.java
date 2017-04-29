@@ -345,7 +345,10 @@ public class editInvoiceServlet extends HttpServlet {
          
          
          String lastEdittedBy = ""+session.getAttribute("userName");
-         
+         preparedSQL = "update Invoice set invoiceName=?, deliveryDate=?, termsOfPayment=?, "
+                 + "paymentDueDate=?, datePaid=?, dateClosed=?, statusID=?, amountDue=?, "
+                 + "discount=?, amountPaid=?, dateDelivered=?, lastEdittedBy=?, overDueFee=? "
+                 + "where invoiceID=?";
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          ps.setString(1,newInvoiceName);
          ps.setString(2,newDeliveryDate);
@@ -356,13 +359,14 @@ public class editInvoiceServlet extends HttpServlet {
          else{ps.setString(5,newDatePaid);}
          if(newDateClosed.equals("")){ps.setString(6,null);}
          else{ps.setString(6,newDateClosed);}
-         ps.setFloat(7,newStatus);
+         ps.setInt(7,newStatus);
          ps.setFloat(8,newAmountDue);
          ps.setFloat(9,newDiscount);
          ps.setFloat(10,newAmountPaid);
          ps.setString(11,newDateDelivered);
          ps.setString(12,lastEdittedBy);
-         ps.setInt(13,invoiceID);
+         ps.setFloat(13,newOverdueFee);
+         ps.setInt(14,invoiceID);
          
          
          ps.executeUpdate();

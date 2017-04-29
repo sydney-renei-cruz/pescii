@@ -35,7 +35,7 @@
         <c:forEach items="${customersList}" var="cust" begin="0" step="1" varStatus="status">
             <tr>
                     <td>${cust.getPRCID()}</td>
-                    <td><a href="Servlets.viewCustomerDetailsServlet?custID=<c:out value="${cust.getCustomerID()}"/>">${cust.getCustomerLastName()}</a></td>
+                    <td><a href="Servlets.viewCustomerDetailsServlet?viewDetails=yes&custID=<c:out value="${cust.getCustomerID()}"/>">${cust.getCustomerLastName()}</a></td>
                     <td>${cust.getCustomerFirstName()}</td>
                     <td>${cust.getCustomerMobileNumber()}</td>
                     <td>${cust.getCustomerTelephoneNumber()}</td>

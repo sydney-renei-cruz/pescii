@@ -68,7 +68,7 @@ public class getClinicServlet extends HttpServlet {
          
          //---------------
          
-         String preparedSQL = "select Clinic.clinicID, Customer.PRCID, Clinic.clinicAddress, Clinic.clinicPhoneNumber, Clinic.clinicName, "
+         String preparedSQL = "select Clinic.clinicID, Customer.customerID, Customer.PRCID, Clinic.clinicAddress, Clinic.clinicPhoneNumber, Clinic.clinicName, "
                  + "Province.provinceName, Province.provinceDivision, "
                  + "Clinic.customerID, Customer.customerFirstName, Customer.customerLastName "
                  + "from Clinic "
@@ -83,6 +83,7 @@ public class getClinicServlet extends HttpServlet {
          while(dbData.next()){
            cbean.setClinicID(dbData.getString("clinicID"));
            cbean.setPRCID(dbData.getString("PRCID"));
+           request.setAttribute("custID", dbData.getString("customerID"));
            cbean.setCustomerFirstName(dbData.getString("customerFirstName"));
            cbean.setCustomerLastName(dbData.getString("customerLastName"));
            cbean.setClinicAddress(dbData.getString("clinicAddress"));
@@ -109,7 +110,6 @@ public class getClinicServlet extends HttpServlet {
             }
             context.log("province list size is: "+provincesRetrieved.size());
          request.setAttribute("provList", provincesRetrieved);
-         
          request.getRequestDispatcher("editClinic.jsp").forward(request,response);
 
         }

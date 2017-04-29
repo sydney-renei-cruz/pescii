@@ -220,8 +220,9 @@ public class editCustomerServlet extends HttpServlet {
          
          context.log("--->Customer successfully updated. CustomerID is: "+inputCustomerID);
          
+         request.setAttribute("custID",inputCustomerID);
          request.setAttribute("message", "Customer successfully editted!");
-         request.getRequestDispatcher("homePage.jsp").forward(request,response);
+         request.getRequestDispatcher("anotherCustomerClinic.jsp").forward(request,response);
          
         }
         catch(Exception ex){
