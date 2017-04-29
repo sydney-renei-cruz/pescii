@@ -84,7 +84,7 @@ public class getInvoiceStatusServlet extends HttpServlet {
          request.setAttribute("invStatList", invoiceStatusRetrieved);
          
          
-         if(session.getAttribute("cart")!=null){
+         if(session.getAttribute("cart")!=null && (""+session.getAttribute("cartType")).equals("invoice")){
              
              request.setAttribute("customer", request.getAttribute("customer"));
              request.setAttribute("clinicsList", request.getAttribute("clinicsList"));

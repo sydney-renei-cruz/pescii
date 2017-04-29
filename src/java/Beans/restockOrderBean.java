@@ -17,12 +17,8 @@ public class restockOrderBean implements Serializable{
     
     public int restockOrderID;
     public String ROName;
-    public int productID;
-    public String productName;
-    public int numberOfPiecesOrdered;
-    public int numberOfPiecesReceived;
-    public int supplierID;
-    public String supplierName;
+    public int statusID;
+    public String statusName;
     public String purpose;
     public Date RODateDue;
     public Date RODateDelivered;
@@ -34,17 +30,13 @@ public class restockOrderBean implements Serializable{
     public String lastEdittedBy;
     public Date lastEdittedDate;
     
-    public restockOrderBean(int roid, String ron, int pid, String pn, int nopo, int nopr, int supID,
-                            String supName, String purp, Date rod, Date rodd, float rp, float ap,
+    public restockOrderBean(int roid, String ron,int supID,
+                            String supName, int statID, String statName, String purp, Date rod, Date rodd, float rp, float ap,
                             float disc, Date dp, Timestamp dc, String leb, Date led){
         this.restockOrderID=roid;
         this.ROName=ron;
-        this.productID=pid;
-        this.productName=pn;
-        this.numberOfPiecesOrdered=nopo;
-        this.numberOfPiecesReceived=nopr;
-        this.supplierID=supID;
-        this.supplierName=supName;
+        this.statusID=statID;
+        this.statusName=statName;
         this.purpose=purp;
         this.RODateDue=rod;
         this.RODateDelivered=rodd;
@@ -61,12 +53,8 @@ public class restockOrderBean implements Serializable{
     
     public void setRestockOrderID(int roid){this.restockOrderID=roid;}
     public void setRestockOrderName(String ron){this.ROName=ron;}
-    public void setProductID(int pid){this.productID=pid;}
-    public void setProductName(String pn){this.productName=pn;}
-    public void setNumberOfPiecesOrdered(int nopo){this.numberOfPiecesOrdered=nopo;}
-    public void setNumberOfPiecesReceived(int nopr){this.numberOfPiecesReceived=nopr;}
-    public void setSupplierID(int supID){this.supplierID=supID;}
-    public void setSupplierName(String supName){this.supplierName=supName;}
+    public void setStatusID(int statID){this.statusID=statID;}
+    public void setStatusName(String statName){this.statusName=statName;}
     public void setPurpose(String purp){this.purpose=purp;}
     public void setRODateDue(Date rod){this.RODateDue=rod;}
     public void setRODateDelivered(Date rodd){this.RODateDelivered=rodd;}
@@ -80,12 +68,8 @@ public class restockOrderBean implements Serializable{
 
     public int getRestockOrderID(){return this.restockOrderID;}
     public String getRestockOrderName(){return this.ROName;}
-    public int getProductID(){return this.productID;}
-    public String getProductName(){return this.productName;}
-    public int getNumberOfPiecesOrdered(){return this.numberOfPiecesOrdered;}
-    public int getNumberOfPiecesReceived(){return this.numberOfPiecesReceived;}
-    public int getSupplierID(){return this.supplierID;}
-    public String getSupplierName(){return this.supplierName;}
+    public int getStatusID(){return this.statusID;}
+    public String getStatusName(){return this.statusName;}
     public String getPurpose(){return this.purpose;}
     public Date getRODateDue(){return this.RODateDue;}
     public Date getRODateDelivered(){return this.RODateDelivered;}

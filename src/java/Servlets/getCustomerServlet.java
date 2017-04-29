@@ -101,7 +101,7 @@ public class getCustomerServlet extends HttpServlet {
                 customersRetrieved.add(data);
             }
             request.setAttribute("customersList", customersRetrieved);
-            if(session.getAttribute("cart")!=null){
+            if(session.getAttribute("cart")!=null && (""+session.getAttribute("cartType")).equals("invoice")){
                 request.setAttribute("addInvoice", "yes");
             }
             

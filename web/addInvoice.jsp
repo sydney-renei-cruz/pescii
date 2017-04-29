@@ -121,7 +121,9 @@
             <input type="submit" value="Add Invoice">
         </form>
         <br><br>
-        <a href="Servlets.getCustomerServlet">Return to Customer List</a>
+        <a href="invoice.add?cancel=yes">Cancel Invoice</a>
+        <br><br>
+        <a href="Servlets.getCustomerServlet">Return to list of customers</a>
         <br><br>
         <a href="notif.get">Return to Home</a>
         <br><br>

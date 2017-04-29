@@ -51,7 +51,7 @@
             Search by Province:<select name="searchProvinceInput">
                     <option value="all">All</option>
                     <c:forEach items="${provList}" var="pro" begin="0" step="1">
-                        <option value="${pro.getProvinceID()}">${pro.getProvinceName()}</option><br>
+                        <option value="${pro.getProvinceID()}">${pro.getProvinceName()}</option>
                     </c:forEach>    
                 </select>
             <br><br>
@@ -76,10 +76,10 @@
             <input type="hidden" name="whatFor" value="invoice">
             
             <b>Shortcuts</b><br>
-                <input type="radio" name="getWhat" value="new">New Invoice<br>
-                <input type="radio" name="getWhat" value="validated">Validated Invoices<br>
-                <input type="radio" name="getWhat" value="close">Invoices near payment deadlines<br>
-                <input type="radio" name="getWhat" value="overduePay">Overdue Payments<br>
+                <input type="radio" name="getWhat" value="new">View New Invoices<br>
+                <input type="radio" name="getWhat" value="validated">View Incomplete Invoices<br>
+                <input type="radio" name="getWhat" value="close">View Invoices near payment deadlines<br>
+                <input type="radio" name="getWhat" value="overduePay">View Invoices with Overdue Payments<br>
                 <br>
             <input type="submit" value="Get">    
         </form>

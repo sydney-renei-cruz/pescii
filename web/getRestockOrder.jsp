@@ -22,28 +22,23 @@
         
         <table border="1">
             <tr>
-                <th>Restock Order ID</th>
                 <th>Restock Order Name</th>
-                <th>Product Name</th>
-                <th>Restock Price</th>
-                <th>Pieces Ordered</th>
-                <th>Pieces Received</th>
-                <th>Supplier</th>
                 <th>Date Due</th>
                 <th>Date Delivered</th>
+                <th>Amount Paid</th>
+                <th>Discount</th>
+                <th>Date Paid</th>
+                <th>Date Created</th>
             </tr>
         
         <c:forEach items="${restocksList}" var="ro" begin="0" step="1" varStatus="status">
             <tr>
-                <td>${ro.getRestockOrderID()}</td>
                 <td><a href="restockOrder.getDetails?restockID=<c:out value="${ro.getRestockOrderID()}"/>">${ro.getRestockOrderName()}</a></td>
-                <td>${ro.getProductName()}</td>
-                <td>${ro.getRestockPrice()}</td>
-                <td>${ro.getNumberOfPiecesOrdered()}</td>
-                <td>${ro.getNumberOfPiecesReceived()}</td>
-                <td>${ro.getSupplierName()}</td>
                 <td>${ro.getRODateDue()}</td>
                 <td>${ro.getRODateDelivered()}</td>
+                <td>${ro.getDiscount()}</td>
+                <td>${ro.getDatePaid()}</td>
+                <td>${ro.getDateCreated()}</td>
                 <td><a href="restockOrder.getDetails?editRestock=yes&restockID=<c:out value="${ro.getRestockOrderID()}"/>">Edit</td>
             </tr>
             

@@ -39,7 +39,7 @@
                     <td>${cust.getCustomerFirstName()}</td>
                     <td>${cust.getCustomerMobileNumber()}</td>
                     <td>${cust.getCustomerTelephoneNumber()}</td>
-                    <td><a href="Servlets.viewCustomerDetailsServlet?forEdit=yes&custID=<c:out value="${cust.getCustomerID()}"/>">Edit</a></td>
+                    <td><a href="Servlets.viewCustomerDetailsServlet?editWhat=cust&forEdit=yes&custID=<c:out value="${cust.getCustomerID()}"/>">Edit</a></td>
             </tr>
         </c:forEach>
         </table>
@@ -47,9 +47,12 @@
         
         <br><br>
         <c:if test="${addInvoice eq 'yes'}">
-            <a href="viewCart.jsp">View Cart</a><br><br>
+            <a href="viewCart.jsp">View Cart</a>
+            <br><br>
+            <a href="invoice.add?cancel=yes">Cancel Invoice</a>
+            <br><br>
         </c:if>
-        <a href="salesrep.get?whatFor=searchCustomer">Custom View Customer</a>
+        <a href="salesrep.get?whatFor=searchCustomer">Search Customers</a>
         <br><br>
         <c:choose>
             <c:when test="${accountType eq 3}">

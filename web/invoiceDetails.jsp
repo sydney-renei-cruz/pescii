@@ -66,6 +66,8 @@
         <br><br>
         <a href="Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID=<c:out value="${invoice.getInvoiceID()}"/>">Edit Invoice</a>
         <br><br>
+        <a href="province.get?whatFor=conditionsInvoice">Search Invoice</a><br>
+        <br><br>
         <a href="Servlets.getInvoiceServlet">Return to list of Invoices</a>
         <br><br>
         <c:choose>

@@ -69,7 +69,7 @@ public class getRestockOrderServlet extends HttpServlet {
          
          //---------------
          //THIS IS WHERE YOU START CHANGING
-         String preparedSQL = "select RestockOrder.restockOrderID, Product.productID, RestockOrder.productID, "
+         /*String preparedSQL = "select RestockOrder.restockOrderID, Product.productID, RestockOrder.productID, "
                  + "RestockOrder.ROName, RestockOrder.numberOfPiecesOrdered, Product.restockPrice, "
                  + "RestockOrder.numberOfPiecesReceived, Product.supplierID, RestockOrder.purpose, "
                  + "RestockOrder.RODateDue, RestockOrder.RODateDelivered, RestockOrder.amountPaid, "
@@ -82,6 +82,12 @@ public class getRestockOrderServlet extends HttpServlet {
                  + "inner join Supplier on Supplier.supplierID = Product.supplierID "
                  + "inner join ProductClass on ProductClass.productClassID = Product.productClassID "
                  + "order by RestockOrder.datecreated desc";
+         */
+    
+         String preparedSQL = "select RestockOrder.*, RestockOrderStatus.statusName "
+                 + "from RestockOrder "
+                 + "inner join RestockOrderStatus on RestockOrderStatus.statusID=RestockOrder.statusID;";
+         
          
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          context.log(preparedSQL);
@@ -94,16 +100,12 @@ public class getRestockOrderServlet extends HttpServlet {
                restockOrderBean rbean = new restockOrderBean();
                 rbean.setRestockOrderID(dbData.getInt("restockOrderID"));
                 rbean.setRestockOrderName(dbData.getString("ROName"));
-                rbean.setProductID(dbData.getInt("productID"));
-                rbean.setProductName(dbData.getString("productName"));
-                rbean.setNumberOfPiecesOrdered(dbData.getInt("numberOfPiecesOrdered"));
-                rbean.setNumberOfPiecesReceived(dbData.getInt("numberOfPiecesReceived"));
-                rbean.setSupplierID(dbData.getInt("supplierID"));
-                rbean.setSupplierName(dbData.getString("supplierName"));
+                rbean.setStatusID(dbData.getInt("statusID"));
+                rbean.setStatusName(dbData.getString("statusName"));
                 rbean.setPurpose(dbData.getString("purpose"));
                 rbean.setRODateDue(dbData.getDate("RODateDue"));
                 rbean.setRODateDelivered(dbData.getDate("RODateDelivered"));
-                rbean.setRestockPrice(dbData.getFloat("restockPrice"));
+                //rbean.setRestockPrice(dbData.getFloat("restockPrice"));
                 rbean.setAmountPaid(dbData.getFloat("amountPaid"));
                 rbean.setDiscount(dbData.getFloat("discount"));
                 rbean.setDatePaid(dbData.getDate("datePaid"));

@@ -14,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -69,7 +70,7 @@ public class viewRODetailsServlet extends HttpServlet {
          
          //---------------
          //first get the RestockOrder details
-         String preparedSQL = "select RestockOrder.restockOrderID, Product.productID, RestockOrder.productID, "
+        /* String preparedSQL = "select RestockOrder.restockOrderID, Product.productID, RestockOrder.productID, "
                  + "RestockOrder.ROName, RestockOrder.numberOfPiecesOrdered, Product.restockPrice, "
                  + "RestockOrder.numberOfPiecesReceived, Product.supplierID, RestockOrder.purpose, "
                  + "RestockOrder.RODateDue, RestockOrder.RODateDelivered, RestockOrder.amountPaid, "
@@ -82,9 +83,14 @@ public class viewRODetailsServlet extends HttpServlet {
                  + "inner join Supplier on Supplier.supplierID = Product.supplierID "
                  + "inner join ProductClass on ProductClass.productClassID = Product.productClassID "
                  + "where RestockOrder.restockOrderID=? "
-                 + "order by RestockOrder.datecreated desc";
+                 + "order by RestockOrder.datecreated desc";*/
+         String preparedSQL = "select RestockOrder.*, RestockOrderStatus.statusName from "
+                 + "RestockOrder "
+                 + "inner join RestockOrderStatus on RestockOrderStatus.statusID=RestockOrder.statusID "
+                 + "where restockOrderID=?";
          String inputRestockOrderID = request.getParameter("restockID");
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
+         
          ps.setString(1, inputRestockOrderID);
          context.log(preparedSQL);
          
@@ -93,16 +99,12 @@ public class viewRODetailsServlet extends HttpServlet {
          while(dbData.next()){
             rbean.setRestockOrderID(dbData.getInt("restockOrderID"));
                 rbean.setRestockOrderName(dbData.getString("ROName"));
-                rbean.setProductID(dbData.getInt("productID"));
-                rbean.setProductName(dbData.getString("productName"));
-                rbean.setNumberOfPiecesOrdered(dbData.getInt("numberOfPiecesOrdered"));
-                rbean.setNumberOfPiecesReceived(dbData.getInt("numberOfPiecesReceived"));
-                rbean.setSupplierID(dbData.getInt("supplierID"));
-                rbean.setSupplierName(dbData.getString("supplierName"));
+                rbean.setStatusID(dbData.getInt("statusID"));
+                rbean.setStatusName(dbData.getString("statusName"));
                 rbean.setPurpose(dbData.getString("purpose"));
                 rbean.setRODateDue(dbData.getDate("RODateDue"));
                 rbean.setRODateDelivered(dbData.getDate("RODateDelivered"));
-                rbean.setRestockPrice(dbData.getFloat("restockPrice"));
+                //rbean.setRestockPrice(dbData.getFloat("restockPrice"));
                 rbean.setAmountPaid(dbData.getFloat("amountPaid"));
                 rbean.setDiscount(dbData.getFloat("discount"));
                 rbean.setDatePaid(dbData.getDate("datePaid"));
@@ -111,6 +113,36 @@ public class viewRODetailsServlet extends HttpServlet {
          }
          request.setAttribute("restockOrder", rbean);
          context.log("ID IIIIIISSS: " + rbean.getRestockOrderID());
+         
+         //now get the RestockOrderItems
+         preparedSQL = "select RestockOrderItem.ROIID, RestockOrderItem.RestockOrderID, Product.productID, "
+                 + "Product.productName, RestockOrderItem.quantityPurchased, RestockOrderItem.quantityReceived, "
+                 + "Product.supplierID, Supplier.supplierName, Product.restockPrice "
+                 + "from RestockOrderItem "
+                 + "inner join Product on Product.productID = RestockOrderItem.productID "
+                 + "inner join RestockOrder on RestockOrder.RestockOrderID = RestockOrderItem.RestockOrderID "
+                 + "inner join Supplier on Supplier.supplierID = RestockOrderItem.supplierID "
+                 + "where RestockOrder.restockOrderID = ?";
+         ps = conn.prepareStatement(preparedSQL);
+         ps.setString(1,inputRestockOrderID);
+         
+         dbData = ps.executeQuery();
+         ArrayList<restockOrderItemBean> ROItemsRetrieved = new ArrayList<restockOrderItemBean>();
+         //retrieve the information.
+            while(dbData.next()){
+                restockOrderItemBean roitembean = new restockOrderItemBean();
+                roitembean.setRestockOrderItemID(dbData.getInt("ROIID"));
+                roitembean.setRestockOrderID(dbData.getInt("RestockOrderID"));
+                roitembean.setProductID(dbData.getInt("productID"));
+                roitembean.setProductName(dbData.getString("productName"));
+                roitembean.setSupplierID(dbData.getInt("supplierID"));
+                roitembean.setSupplierName(dbData.getString("supplierName"));
+                roitembean.setQuantityPurchased(dbData.getInt("quantityPurchased"));
+                roitembean.setQuantityReceived(dbData.getInt("quantityReceived"));
+                roitembean.setTotalCost(dbData.getInt("quantityPurchased") * dbData.getFloat("restockPrice"));
+                ROItemsRetrieved.add(roitembean);
+            }
+         request.setAttribute("roitemsList", ROItemsRetrieved);
          
          //now you get the Product's details
          /*
@@ -137,7 +169,9 @@ public class viewRODetailsServlet extends HttpServlet {
          */
          String editRestock = ""+request.getParameter("editRestock");
          if(editRestock.equals("yes")) {
-             request.getRequestDispatcher("editRestockOrder.jsp").forward(request,response);
+             //request.getRequestDispatcher("editRestockOrder.jsp").forward(request,response);
+             request.setAttribute("editRestock",editRestock);
+             request.getRequestDispatcher("restockOrder.getStatus").forward(request,response);
          }
          else{
              request.getRequestDispatcher("restockOrderDetails.jsp").forward(request,response);

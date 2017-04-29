@@ -69,6 +69,28 @@ public class getProductServlet extends HttpServlet {
          //Allocate a Statement object within the Connection
          stmt = conn.createStatement();
          
+         //check what you're getting a product list for: either invoice or restock creation
+         String forOther = ""+ request.getParameter("forOther");
+         String cartType = "";
+         context.log("session's cartType: "+session.getAttribute("cartType"));
+         context.log("forOther in getProductServlet is: "+forOther);
+         /*if((session.getAttribute("cartType")==null && forOther!=null) || 
+                 ((!(forOther.equals(session.getAttribute("cartType")))) && session.getAttribute("cartType")!=null && forOther!=null)){
+             cartType = forOther;
+             session.setAttribute("cartType",forOther);
+         }*/
+         if(forOther!=null && !forOther.equals("") && !forOther.equals("null")){
+             context.log("forOther was null. forOther = "+forOther);
+             context.log("meanwhile, cartType is: "+session.getAttribute("cartType"));
+             cartType = forOther;
+             session.setAttribute("cartType",forOther);
+         }
+         else {
+             cartType = ""+session.getAttribute("cartType");
+         }
+         
+         context.log("cart type in getProductServlet is: "+session.getAttribute("cartType"));
+         
          //---------------
          //THIS IS WHERE YOU START CHANGING
          String preparedSQL = "select Product.productID, Product.productName, Product.productDescription, "
@@ -78,30 +100,100 @@ public class getProductServlet extends HttpServlet {
                  + "inner join ProductClass on ProductClass.productClassID = Product.productClassID "
                  + "inner join Supplier on Supplier.supplierID = Product.supplierID "
                  + "order by Product.productName asc";
-         
-         if(session.getAttribute("cart")!=null){
-             context.log(preparedSQL);
-             LinkedList<String> cart = (LinkedList<String>)(session.getAttribute("cart"));
-             String prodIDs = "";
-             context.log(""+cart.size());
-             if(cart.size()>0){
-                 prodIDs = " where productID!="+cart.get(0);
-                 if(cart.size()>1){
-                    for(int i=1;i<cart.size();i++){
-                        prodIDs = prodIDs + " and productID!=" + cart.get(i);
-                    }
-                 }
-             }
-             preparedSQL = "select Product.productID, Product.productName, Product.productDescription, "
-                 + "Product.productPrice, Product.restockPrice, Product.stocksRemaining, Product.lowStock, "
-                 + "Product.brand, Product.productClassID, ProductClass.productClassname, Product.color, "
-                 + "Product.supplierID, Supplier.supplierID, Supplier.supplierName from Product "
-                 + "inner join ProductClass on ProductClass.productClassID = Product.productClassID "
-                 + "inner join Supplier on Supplier.supplierID = Product.supplierID "
-                 + prodIDs + " order by productName asc";
-             context.log(preparedSQL);
-         }
+         context.log(preparedSQL);
+         //PreparedStatement ps = conn.prepareStatement(preparedSQL);
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
+         //change the products retrieved depending on the cart.
+            //this is for the invoice cart
+         if(cartType.equals("invoice")){
+            if(session.getAttribute("cart")!=null){
+                context.log(preparedSQL);
+                LinkedList<String> cart = (LinkedList<String>)(session.getAttribute("cart"));
+                String prodIDs = "";
+                context.log(""+cart.size());
+                if(cart.size()>0){
+                    prodIDs = " where productID!="+cart.get(0);
+                    if(cart.size()>1){
+                       for(int i=1;i<cart.size();i++){
+                           prodIDs = prodIDs + " and productID!=" + cart.get(i);
+                       }
+                    }
+                }
+                preparedSQL = "select Product.productID, Product.productName, Product.productDescription, "
+                    + "Product.productPrice, Product.restockPrice, Product.stocksRemaining, Product.lowStock, "
+                    + "Product.brand, Product.productClassID, ProductClass.productClassname, Product.color, "
+                    + "Product.supplierID, Supplier.supplierID, Supplier.supplierName from Product "
+                    + "inner join ProductClass on ProductClass.productClassID = Product.productClassID "
+                    + "inner join Supplier on Supplier.supplierID = Product.supplierID "
+                    + prodIDs + " order by productName asc";
+                context.log(preparedSQL);
+                //ps = conn.prepareStatement(preparedSQL);
+            }
+         }
+         
+            //this is for the RO cart
+            context.log("cartType is: "+cartType);
+            context.log("cartType == restock? "+cartType.equals("restock"));
+         if(cartType.equals("restock")){
+            String suppID = "";
+            try{
+            if(session.getAttribute("suppID")==null){
+                suppID = request.getParameter("suppID");
+                session.setAttribute("suppID",suppID);
+            }
+            else{
+                suppID = ""+session.getAttribute("suppID");
+            }
+
+            }
+            catch(Exception e){
+                e.printStackTrace();
+                //out.println("error: " + ex);
+                String message = "Something went wrong: No Supplier Selected.";
+                request.getRequestDispatcher("errorPage.jsp").forward(request,response);
+                return;
+            }
+            context.log("suppID in getProductServlet is: "+suppID);
+            
+            if(session.getAttribute("ROcart")!=null){
+                context.log("getting products for RO!");
+                LinkedList<String> ROcart = (LinkedList<String>)(session.getAttribute("ROcart"));
+                
+                String prodIDs = "";
+                context.log(""+ROcart.size());
+                if(ROcart.size()>0){
+                    prodIDs = " where productID!="+ROcart.get(0);
+                    if(ROcart.size()>1){
+                       for(int i=1;i<ROcart.size();i++){
+                           prodIDs = prodIDs + " and productID!=" + ROcart.get(i);
+                       }
+                    }
+                }
+                preparedSQL = "select Product.productID, Product.productName, Product.productDescription, "
+                    + "Product.productPrice, Product.restockPrice, Product.stocksRemaining, Product.lowStock, "
+                    + "Product.brand, Product.productClassID, ProductClass.productClassname, Product.color, "
+                    + "Product.supplierID, Supplier.supplierID, Supplier.supplierName from Product "
+                    + "inner join ProductClass on ProductClass.productClassID = Product.productClassID "
+                    + "inner join Supplier on Supplier.supplierID = Product.supplierID "
+                    + prodIDs + " and Product.supplierID=? order by productName asc";
+                context.log(preparedSQL);
+            }
+            
+            else if(session.getAttribute("ROCart")==null){
+            preparedSQL = "select Product.productID, Product.productName, Product.productDescription, "
+                    + "Product.productPrice, Product.restockPrice, Product.stocksRemaining, Product.lowStock, "
+                    + "Product.brand, Product.productClassID, ProductClass.productClassname, Product.color, "
+                    + "Product.supplierID, Supplier.supplierID, Supplier.supplierName from Product "
+                    + "inner join ProductClass on ProductClass.productClassID = Product.productClassID "
+                    + "inner join Supplier on Supplier.supplierID = Product.supplierID "
+                    + "where Product.supplierID=? order by productName asc";
+                context.log(preparedSQL);
+            }
+                ps = conn.prepareStatement(preparedSQL);
+                ps.setString(1,suppID);
+         }
+         
+         
          
          
          
@@ -127,8 +219,8 @@ public class getProductServlet extends HttpServlet {
             }
          request.setAttribute("productsList", productsRetrieved);
          
-         String forOther = ""+ request.getParameter("forOther");
-         if(forOther.equals("invoice") || session.getAttribute("cart")!=null){
+         
+         if((cartType.equals("invoice")/* && session.getAttribute("cart")!=null)*/)){
              request.setAttribute("forInvoice", "yes");
          }
          else if(forOther.equals("restock")){

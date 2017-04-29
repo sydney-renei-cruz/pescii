@@ -46,9 +46,11 @@
         </form>
             
         <br><br>
-        <a href="Servlets.viewCustomerDetailsServlet?custID=<c:out value="${customer.getCustomerID()}"/>">Return to Customer Details</a>
+        <a href="Servlets.viewCustomerDetailsServlet?viewDetails=yes&custID=<c:out value="${customer.getCustomerID()}"/>">Return to Customer Details</a>
         <br><br>
-        <a href="salesrep.get?whatFor=searchCustomer">Custom View Customers</a>
+        <a href="Servlets.getCustomerServlet">Return to list of customers</a>
+        <br><br>
+        <a href="salesrep.get?whatFor=searchCustomer">Search Customers</a>
         <br><br>
         <c:choose>
             <c:when test="${accountType eq 3}">

@@ -93,9 +93,9 @@
         </table>
         
         <br><br>
-        <a href="Servlets.getCustomerServlet">Return to Customer List</a>
+        <a href="Servlets.getCustomerServlet">Return to list of customers</a>
         <br><br>
-        <a href="salesrep.get?whatFor=searchCustomer">Custom View Customers</a>
+        <a href="salesrep.get?whatFor=searchCustomer">Search Customers</a>
         <br><br>
         <c:choose>
             <c:when test="${accountType eq 3}">

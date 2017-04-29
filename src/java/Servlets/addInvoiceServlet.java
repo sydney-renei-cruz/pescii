@@ -81,6 +81,7 @@ public class addInvoiceServlet extends HttpServlet {
                 session.setAttribute("cart", null);
                 session.setAttribute("prodNames", null);
                 session.setAttribute("quantity", null);
+                session.setAttribute("cartType", null);
                 request.getRequestDispatcher("notif.get").forward(request,response);
                 return;
          }
@@ -533,6 +534,8 @@ public class addInvoiceServlet extends HttpServlet {
             session.setAttribute("cart", null);
             session.setAttribute("prodNames", null);
             session.setAttribute("quantity", null);
+            session.setAttribute("totalPrices", null);
+            session.setAttribute("cartType", null);
             request.getRequestDispatcher("notif.get").forward(request,response);
 
            }

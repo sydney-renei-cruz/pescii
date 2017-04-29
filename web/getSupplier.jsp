@@ -10,6 +10,7 @@
 <%
     String accountType = ""+session.getAttribute("accountType");
     ArrayList<supplierBean> suppliersList = (ArrayList<supplierBean>)request.getAttribute("suppliersList");
+    String cartType = ""+session.getAttribute("accountType");
 %>
 <!DOCTYPE html>
 <html>
@@ -36,6 +37,7 @@
                     <td>${sr.getSupplierAddress()}</td>
                     <td>${sr.getSupplierContactNumber()}</td>
                     <td>${sr.getProductClassName()}</td>
+                    <td><a href="Servlets.getProductServlet?forOther=restock&suppID=<c:out value="${sr.getSupplierID()}"/>">Select for RO</a></td>
                     <td><a href="supplier.getDetails?forEdit=yes&suppID=<c:out value="${sr.getSupplierID()}"/>">Edit</a></td>
             </tr>
             
@@ -43,6 +45,10 @@
         </table>
         <br><br>
         <a href="product.getProductClass?search=yes&searchWhat=supp">Custom View Supplier</a>
+        <br><br>
+        <c:if test="${cartType eq 'restock'}">
+            <a href="Servlets.createRestockOrderServlet?cancel=yes">Cancel Restock Order</a>
+        </c:if>
         <br><br>
         <c:choose>
             <c:when test="${accountType eq 3}">

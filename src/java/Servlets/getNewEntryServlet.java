@@ -149,8 +149,8 @@ public class getNewEntryServlet extends HttpServlet {
                      condition = condition + "Invoice.invoiceName like '%"+request.getParameter("searchNameInput")+"%'";
                      compound = "";
                  }
-                 //invoice status field
-                 
+                
+                //invoice status field
                 String[] inputStatus = request.getParameterValues("searchStatusInput");
                 String invoiceStatuses="";
                 if(inputStatus!=null){
@@ -786,12 +786,12 @@ public class getNewEntryServlet extends HttpServlet {
                   restockOrderBean rbean = new restockOrderBean();
                 rbean.setRestockOrderID(dbData.getInt("restockOrderID"));
                 rbean.setRestockOrderName(dbData.getString("ROName"));
-                rbean.setProductID(dbData.getInt("productID"));
-                rbean.setProductName(dbData.getString("productName"));
-                rbean.setNumberOfPiecesOrdered(dbData.getInt("numberOfPiecesOrdered"));
-                rbean.setNumberOfPiecesReceived(dbData.getInt("numberOfPiecesReceived"));
-                rbean.setSupplierID(dbData.getInt("supplierID"));
-                rbean.setSupplierName(dbData.getString("supplierName"));
+                //rbean.setProductID(dbData.getInt("productID"));
+                //rbean.setProductName(dbData.getString("productName"));
+                //rbean.setNumberOfPiecesOrdered(dbData.getInt("numberOfPiecesOrdered"));
+                //rbean.setNumberOfPiecesReceived(dbData.getInt("numberOfPiecesReceived"));
+                //rbean.setSupplierID(dbData.getInt("supplierID"));
+                //rbean.setSupplierName(dbData.getString("supplierName"));
                 rbean.setPurpose(dbData.getString("purpose"));
                 rbean.setRODateDue(dbData.getDate("RODateDue"));
                 rbean.setRODateDelivered(dbData.getDate("RODateDelivered"));

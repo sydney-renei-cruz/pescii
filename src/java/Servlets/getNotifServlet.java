@@ -149,7 +149,7 @@ public class getNotifServlet extends HttpServlet {
          
          
          //get notifs for RestockOrders
-         if(forWhat.equals("restock") || forWhat.equals("both")){
+         if(forWhat.equals("restock") || forWhat.equals("both")){/*
             preparedSQL = "select RestockOrder.restockOrderID, Product.productID, RestockOrder.productID, "
                     + "RestockOrder.ROName, RestockOrder.numberOfPiecesOrdered, Product.restockPrice, "
                     + "RestockOrder.numberOfPiecesReceived, Product.supplierID, RestockOrder.purpose, "
@@ -177,12 +177,12 @@ public class getNotifServlet extends HttpServlet {
                   restockOrderBean rbean = new restockOrderBean();
                    rbean.setRestockOrderID(dbData.getInt("restockOrderID"));
                    rbean.setRestockOrderName(dbData.getString("ROName"));
-                   rbean.setProductID(dbData.getInt("productID"));
+                   //rbean.setProductID(dbData.getInt("productID"));
                    rbean.setProductName(dbData.getString("productName"));
-                   rbean.setNumberOfPiecesOrdered(dbData.getInt("numberOfPiecesOrdered"));
-                   rbean.setNumberOfPiecesReceived(dbData.getInt("numberOfPiecesReceived"));
-                   rbean.setSupplierID(dbData.getInt("supplierID"));
-                   rbean.setSupplierName(dbData.getString("supplierName"));
+                   //rbean.setNumberOfPiecesOrdered(dbData.getInt("numberOfPiecesOrdered"));
+                   //rbean.setNumberOfPiecesReceived(dbData.getInt("numberOfPiecesReceived"));
+                   //rbean.setSupplierID(dbData.getInt("supplierID"));
+                   //rbean.setSupplierName(dbData.getString("supplierName"));
                    rbean.setPurpose(dbData.getString("purpose"));
                    rbean.setRODateDue(dbData.getDate("RODateDue"));
                    rbean.setRODateDelivered(dbData.getDate("RODateDelivered"));
@@ -195,6 +195,37 @@ public class getNotifServlet extends HttpServlet {
                    restocksRetrieved.add(rbean);
                }
             request.setAttribute("restocksList", restocksRetrieved);
+         */
+         preparedSQL = "select RestockOrder.*, RestockOrderStatus.statusName from "
+                 + "RestockOrder "
+                 + "inner join RestockOrderStatus on RestockOrderStatus.statusID=RestockOrder.statusID;";
+         
+         
+         ps = conn.prepareStatement(preparedSQL);
+         context.log(preparedSQL);
+         
+         
+         dbData = ps.executeQuery();
+         ArrayList<restockOrderBean> restocksRetrieved = new ArrayList<restockOrderBean>();
+         //retrieve the information.
+            while(dbData.next()){
+               restockOrderBean rbean = new restockOrderBean();
+                rbean.setRestockOrderID(dbData.getInt("restockOrderID"));
+                rbean.setRestockOrderName(dbData.getString("ROName"));
+                rbean.setStatusID(dbData.getInt("statusID"));
+                rbean.setStatusName(dbData.getString("statusName"));
+                rbean.setPurpose(dbData.getString("purpose"));
+                rbean.setRODateDue(dbData.getDate("RODateDue"));
+                rbean.setRODateDelivered(dbData.getDate("RODateDelivered"));
+                //rbean.setRestockPrice(dbData.getFloat("restockPrice"));
+                rbean.setAmountPaid(dbData.getFloat("amountPaid"));
+                rbean.setDiscount(dbData.getFloat("discount"));
+                rbean.setDatePaid(dbData.getDate("datePaid"));
+                rbean.setDateCreated(dbData.getTimestamp("dateCreated"));
+                rbean.setLastEdittedBy(dbData.getString("lastEdittedBy"));
+                restocksRetrieved.add(rbean);
+            }
+         request.setAttribute("restocksList", restocksRetrieved);
          }
          
          request.getRequestDispatcher("homePage.jsp").forward(request,response);

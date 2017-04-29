@@ -45,8 +45,10 @@ public class addToCartServlet extends HttpServlet {
         LinkedList<Float> prodPrices;
         LinkedList<Float> totalPrices;
         HttpSession session = request.getSession();
+        
+        String cartSession = ""+session.getAttribute("cartType");
         if (session.getAttribute("cart") == null){
-            cart = new LinkedList<String>();
+            cart = new LinkedList<String>();    //this contains the productID
             prodNames = new LinkedList<String>();
             prodPrices = new LinkedList<Float>();
             totalPrices = new LinkedList<Float>();
@@ -70,26 +72,37 @@ public class addToCartServlet extends HttpServlet {
             LinkedList<Integer> quantity = new LinkedList<Integer>();
             for(int i=0; i<prodNames.size();i++){
                 try{
-                quantity.add(Integer.parseInt(request.getParameter(prodNames.get(i))));
+                    quantity.add(Integer.parseInt(request.getParameter(prodNames.get(i))));
+                    if(Integer.parseInt(request.getParameter(prodNames.get(i)))<0){
+                        message = "Product quantity was input incorrectly. Please use whole numbers.";
+                        request.setAttribute("message",message);
+                        context.log("returning to viewCart.jsp 1");
+                        request.getRequestDispatcher("viewCart.jsp").forward(request,response);
+                        return;
+                    }
                 }
                 catch(Exception e){
                     message = "Product quantity was input incorrectly. Please use whole numbers.";
                     request.setAttribute("message",message);
+                    context.log("returning to viewCart.jsp 2");
                     request.getRequestDispatcher("viewCart.jsp").forward(request,response);
+                    return;
                 }
                 totalPrices.add(quantity.get(i)*prodPrices.get(i));
                 context.log("--->>>quantity is: " + quantity.get(i));
             }
             session.setAttribute("quantity", quantity);
+            context.log("cartType in addToCartServlet is: "+session.getAttribute("cartType"));
             request.getRequestDispatcher("Servlets.getCustomerServlet").forward(request, response);
             return;
         }
-        session.setAttribute("cart", cart);
-        session.setAttribute("prodNames", prodNames);
-        session.setAttribute("prodPrices", prodPrices);
-        session.setAttribute("totalPrices", totalPrices);
-        request.setAttribute("forInvoice", "yes");
-        request.getRequestDispatcher("Servlets.getProductServlet").forward(request,response);
+            context.log("cartType in addToCartServlet 2 is: "+session.getAttribute("cartType"));
+            session.setAttribute("cart", cart);
+            session.setAttribute("prodNames", prodNames);
+            session.setAttribute("prodPrices", prodPrices);
+            session.setAttribute("totalPrices", totalPrices);
+            request.setAttribute("forInvoice", "yes");
+            request.getRequestDispatcher("Servlets.getProductServlet").forward(request,response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

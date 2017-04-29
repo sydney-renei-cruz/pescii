@@ -67,7 +67,7 @@ public class viewProductDetailsServlet extends HttpServlet {
         
          //Allocate a Statement object within the Connection
          stmt = conn.createStatement();
-         
+         context.log("you're in the viewProductDetailsServlet!");
          //---------------
          //first get the customer details
          String preparedSQL = "select Product.productID, Product.productName, Product.productDescription, "
@@ -79,9 +79,10 @@ public class viewProductDetailsServlet extends HttpServlet {
                  + "inner join Supplier on Supplier.supplierID = Product.supplierID "
                  + "where productID = ? order by productName asc";
          String inputProductID = "";
-         String forRestock = "";
+         //String forRestock = "";
          String forEdit = "";
-         String forInvoice = "";
+         //String forInvoice = "";
+         String cartSession="";
          String message = "";
          try{
              if(request.getParameter("prodID")!=null){
@@ -90,6 +91,7 @@ public class viewProductDetailsServlet extends HttpServlet {
              else{
                 inputProductID = ""+request.getAttribute("prodID");
              }
+             /*
              if(request.getParameter("forInvoice")!=null){
                  forInvoice = request.getParameter("forInvoice");
              }
@@ -102,6 +104,9 @@ public class viewProductDetailsServlet extends HttpServlet {
              else{
                  forRestock = ""+request.getAttribute("forRestock");
              }
+             */
+             cartSession = ""+session.getAttribute("cartType");
+             
              if(request.getParameter("forEdit")!=null){
                  forEdit = request.getParameter("forEdit");
              }
@@ -116,6 +121,7 @@ public class viewProductDetailsServlet extends HttpServlet {
          catch(Exception e){
              request.getRequestDispatcher("errorPage.jsp").forward(request,response);
          }
+         context.log("you're in the viewProductDetailsServlet! 2");
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          ps.setString(1, inputProductID);
          
@@ -140,11 +146,14 @@ public class viewProductDetailsServlet extends HttpServlet {
          }
          request.setAttribute("product", pbean);
          request.setAttribute("message",message);
-         if(forInvoice.equals("yes") || session.getAttribute("cart")!=null){
+         //if(forInvoice.equals("yes") || session.getAttribute("cart")!=null){
+         if(cartSession.equals("invoice")){
             request.setAttribute("forInvoice", "yes");
          }
-         if(forRestock.equals("yes")){
-             request.getRequestDispatcher("createRestockOrder.jsp").forward(request,response);
+         //if(forRestock.equals("yes")){
+         if(cartSession.equals("restock")){
+             //request.getRequestDispatcher("restockOrder.getStatus").forward(request,response);
+             request.setAttribute("forRestock", "yes");
              return;
          }
          if(forEdit.equals("yes")){

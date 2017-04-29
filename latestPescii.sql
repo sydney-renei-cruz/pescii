@@ -196,7 +196,7 @@ CREATE TABLE `Invoice` (
   CONSTRAINT `Invoice_ibfk_2` FOREIGN KEY (`clinicID`) REFERENCES `Clinic` (`clinicID`),
   CONSTRAINT `Invoice_ibfk_3` FOREIGN KEY (`customerID`) REFERENCES `Customer` (`customerID`),
   CONSTRAINT `Invoice_ibfk_4` FOREIGN KEY (`statusID`) REFERENCES `InvoiceStatus` (`statusID`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -205,7 +205,7 @@ CREATE TABLE `Invoice` (
 
 LOCK TABLES `Invoice` WRITE;
 /*!40000 ALTER TABLE `Invoice` DISABLE KEYS */;
-INSERT INTO `Invoice` VALUES (1,3465,16,'2016-12-26','2016-12-31','Cash','2016-12-30','2016-12-26','2016-12-26',1,0,'2016-12-26 09:34:53','Dental Chair - Caponpon',18000,2000,'admin',18000,'2016-12-26'),(2,3464,15,'2016-12-29','2016-12-31','Cash','2016-12-30','2016-12-29','2016-12-29',1,0,'2016-12-29 02:52:59','Hose - Cruz Leah',1700,300,'admin',1700,'2016-12-31'),(3,3462,13,'2017-01-23','2017-01-26','Cash','2017-01-25',NULL,NULL,2,0,'2017-01-23 08:14:23','Glenda - Dental Chair',0,50000,'admin',150000,NULL),(4,3466,18,'2017-03-08','2017-03-09','Cash','2017-03-09',NULL,NULL,2,0,'2017-03-08 08:45:46','TestInvoice',0,0,'admin',20000,NULL),(5,3462,13,'2017-03-08','2017-03-10','Cash','2017-03-10','2017-03-10',NULL,2,0,'2017-03-08 09:01:33','test invoice 2',1500,0,'admin',1500,NULL);
+INSERT INTO `Invoice` VALUES (1,3465,16,'2016-12-26','2016-12-31','Cash','2016-12-30','2016-12-26','2016-12-26',1,0,'2016-12-26 09:34:53','Dental Chair - Caponpon',18000,2000,'admin',18000,'2016-12-26'),(2,3464,15,'2016-12-29','2016-12-31','Cash','2016-12-30','2016-12-29','2016-12-29',1,0,'2016-12-29 02:52:59','Hose - Cruz Leah',1700,300,'admin',1700,'2016-12-31'),(3,3462,13,'2017-01-23','2017-01-26','Cash','2017-01-25',NULL,NULL,2,0,'2017-01-23 08:14:23','Glenda - Dental Chair',0,50000,'admin',150000,NULL),(4,3466,18,'2017-03-08','2017-03-09','Cash','2017-03-09',NULL,NULL,2,0,'2017-03-08 08:45:46','TestInvoice',0,0,'admin',20000,NULL),(5,3462,13,'2017-03-08','2017-03-10','Cash','2017-03-10',NULL,'2017-04-25',3,0,'2017-03-08 09:01:33','test invoice 2',1500,0,'accountant',1500,'2017-04-19'),(6,3461,12,'2017-04-29','2017-04-30','Cash','2017-04-30',NULL,NULL,2,0,'2017-04-28 16:39:39','testInvoice3',0,6000,'admin',200000,NULL);
 /*!40000 ALTER TABLE `Invoice` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -226,7 +226,7 @@ CREATE TABLE `InvoiceItem` (
   KEY `productID` (`productID`),
   CONSTRAINT `InvoiceItem_ibfk_1` FOREIGN KEY (`invoiceID`) REFERENCES `Invoice` (`invoiceID`),
   CONSTRAINT `InvoiceItem_ibfk_2` FOREIGN KEY (`productID`) REFERENCES `Product` (`productID`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -235,7 +235,7 @@ CREATE TABLE `InvoiceItem` (
 
 LOCK TABLES `InvoiceItem` WRITE;
 /*!40000 ALTER TABLE `InvoiceItem` DISABLE KEYS */;
-INSERT INTO `InvoiceItem` VALUES (1,1,1,1),(2,2,2,2),(3,3,1,1),(4,4,1,1),(5,5,2,1);
+INSERT INTO `InvoiceItem` VALUES (1,1,1,1),(2,2,2,2),(3,3,1,1),(4,4,1,1),(5,5,2,1),(6,6,1,1),(7,6,2,3);
 /*!40000 ALTER TABLE `InvoiceItem` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -289,7 +289,7 @@ CREATE TABLE `Product` (
   KEY `supplierID` (`supplierID`),
   CONSTRAINT `Product_ibfk_1` FOREIGN KEY (`productClassID`) REFERENCES `ProductClass` (`productClassID`),
   CONSTRAINT `Product_ibfk_2` FOREIGN KEY (`supplierID`) REFERENCES `Supplier` (`supplierID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -298,7 +298,7 @@ CREATE TABLE `Product` (
 
 LOCK TABLES `Product` WRITE;
 /*!40000 ALTER TABLE `Product` DISABLE KEYS */;
-INSERT INTO `Product` VALUES (1,'Dental Chair','Standard dental chair',200000,175000,6,6,'Zhermack',1,'White','2016-12-23 05:28:39','admin',1),(2,'Hose','attached to Dental Chairs to spray water',2000,1500,5,5,'Denta',3,'White','2016-12-29 02:38:55','admin',1);
+INSERT INTO `Product` VALUES (1,'Dental Chair','Standard dental chair',200000,175000,8,6,'Zhermack',1,'White','2016-12-23 05:28:39','admin',1),(2,'Hose','attached to Dental Chairs to spray water',2000,1500,13,5,'Denta',3,'White','2016-12-29 02:38:55','admin',1),(3,'testProd1','qwe',10,5,50,50,'testBrand',3,'black','2017-04-25 10:48:55','inventory',2);
 /*!40000 ALTER TABLE `Product` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -360,11 +360,7 @@ DROP TABLE IF EXISTS `RestockOrder`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `RestockOrder` (
   `restockOrderID` int(11) NOT NULL AUTO_INCREMENT,
-  `productID` int(11) DEFAULT NULL,
   `ROName` varchar(255) DEFAULT NULL,
-  `numberOfPiecesOrdered` int(11) NOT NULL DEFAULT '0',
-  `numberOfPiecesReceived` int(11) NOT NULL DEFAULT '0',
-  `supplierID` int(11) DEFAULT NULL,
   `purpose` text,
   `RODateDue` date NOT NULL,
   `RODateDelivered` date DEFAULT NULL,
@@ -373,12 +369,8 @@ CREATE TABLE `RestockOrder` (
   `dateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `lastEdittedBy` varchar(50) NOT NULL,
   `datePaid` date DEFAULT NULL,
-  PRIMARY KEY (`restockOrderID`),
-  KEY `productID` (`productID`),
-  KEY `supplierID` (`supplierID`),
-  CONSTRAINT `RestockOrder_ibfk_1` FOREIGN KEY (`productID`) REFERENCES `Product` (`productID`),
-  CONSTRAINT `RestockOrder_ibfk_2` FOREIGN KEY (`supplierID`) REFERENCES `Supplier` (`supplierID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+  PRIMARY KEY (`restockOrderID`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -387,8 +379,66 @@ CREATE TABLE `RestockOrder` (
 
 LOCK TABLES `RestockOrder` WRITE;
 /*!40000 ALTER TABLE `RestockOrder` DISABLE KEYS */;
-INSERT INTO `RestockOrder` VALUES (1,1,'zhermack dental chair RO',10,10,1,'Replenish stocks','2016-12-31','2016-10-31',17500000,0,'2016-12-24 07:42:57','admin',NULL),(2,2,'Hose 2016-12-29',10,10,1,'Replenish stocks','2016-12-31','2016-12-29',15000,0,'2016-12-29 02:40:36','admin',NULL),(3,1,'zhermack dental chair RO 2',1,0,1,'another chair RO','2017-03-30',NULL,0,0,'2017-03-28 11:04:11','admin',NULL);
+INSERT INTO `RestockOrder` VALUES (1,'testRO1','nothing','2017-04-30',NULL,0,0,'2017-04-28 15:42:34','admin',NULL),(2,'testRO1','nothing','2017-04-30',NULL,0,0,'2017-04-28 15:44:34','admin',NULL),(3,'testRO1','nothing','2017-04-30',NULL,0,0,'2017-04-28 15:47:47','admin',NULL),(4,'testRO1','nothing','2017-04-30',NULL,0,0,'2017-04-28 15:57:53','admin',NULL),(5,'testRO1','no reason','2017-04-30',NULL,0,0,'2017-04-28 16:14:24','admin',NULL),(6,'testRO2-edited','none-edited','2017-04-30','2017-04-29',100,100,'2017-04-28 16:20:26','admin','2017-04-29');
 /*!40000 ALTER TABLE `RestockOrder` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `RestockOrderItem`
+--
+
+DROP TABLE IF EXISTS `RestockOrderItem`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `RestockOrderItem` (
+  `ROIID` int(11) NOT NULL AUTO_INCREMENT,
+  `RestockOrderID` int(11) NOT NULL,
+  `productID` int(11) NOT NULL,
+  `quantityPurchased` int(11) NOT NULL DEFAULT '0',
+  `quantityReceived` int(11) NOT NULL DEFAULT '0',
+  `supplierID` int(11) NOT NULL,
+  PRIMARY KEY (`ROIID`),
+  KEY `RestockOrderID` (`RestockOrderID`),
+  KEY `productID` (`productID`),
+  KEY `supplierID` (`supplierID`),
+  CONSTRAINT `RestockOrderItem_ibfk_1` FOREIGN KEY (`RestockOrderID`) REFERENCES `RestockOrder` (`restockOrderID`),
+  CONSTRAINT `RestockOrderItem_ibfk_2` FOREIGN KEY (`productID`) REFERENCES `Product` (`productID`),
+  CONSTRAINT `RestockOrderItem_ibfk_3` FOREIGN KEY (`supplierID`) REFERENCES `Supplier` (`supplierID`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `RestockOrderItem`
+--
+
+LOCK TABLES `RestockOrderItem` WRITE;
+/*!40000 ALTER TABLE `RestockOrderItem` DISABLE KEYS */;
+INSERT INTO `RestockOrderItem` VALUES (1,2,1,50,0,1),(2,3,1,50,0,1),(3,4,1,50,0,1),(4,5,3,50,0,2),(5,6,1,4,3,1),(6,6,2,10,10,1);
+/*!40000 ALTER TABLE `RestockOrderItem` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `RestockOrderStatus`
+--
+
+DROP TABLE IF EXISTS `RestockOrderStatus`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `RestockOrderStatus` (
+  `statusID` int(11) NOT NULL AUTO_INCREMENT,
+  `statusName` varchar(30) NOT NULL,
+  PRIMARY KEY (`statusID`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `RestockOrderStatus`
+--
+
+LOCK TABLES `RestockOrderStatus` WRITE;
+/*!40000 ALTER TABLE `RestockOrderStatus` DISABLE KEYS */;
+INSERT INTO `RestockOrderStatus` VALUES (1,'Complete'),(2,'In Progress'),(3,'Cancelled');
+/*!40000 ALTER TABLE `RestockOrderStatus` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -416,7 +466,7 @@ CREATE TABLE `SalesRep` (
 
 LOCK TABLES `SalesRep` WRITE;
 /*!40000 ALTER TABLE `SalesRep` DISABLE KEYS */;
-INSERT INTO `SalesRep` VALUES (1,'Jasteen','09174831392','','Reyes',NULL,'0000-00-00 00:00:00'),(2,'Reyes','09072983477','','Jasteen',NULL,'0000-00-00 00:00:00'),(3,'Chlyde','09064920399','','Ranada',NULL,'0000-00-00 00:00:00'),(4,'Kyle','09231948832','','Danao',NULL,'0000-00-00 00:00:00'),(5,'Josh','09183933321','','Cruz',NULL,'0000-00-00 00:00:00'),(6,'Justine','09876543211','','Reyes',NULL,'0000-00-00 00:00:00');
+INSERT INTO `SalesRep` VALUES (1,'Jasteen','09174831392','','Reyes',NULL,'0000-00-00 00:00:00'),(2,'Reyes','09072983477','','Jasteen',NULL,'0000-00-00 00:00:00'),(3,'Chlyde','09064920399','','Ranada',NULL,'0000-00-00 00:00:00'),(4,'Kyle','09231948832','','Danao',NULL,'0000-00-00 00:00:00'),(5,'Josh','09183933321','','Cruz','secretary','0000-00-00 00:00:00'),(6,'Justine','09876543211','','Reyes',NULL,'0000-00-00 00:00:00');
 /*!40000 ALTER TABLE `SalesRep` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -460,4 +510,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-04-05 17:48:39
+-- Dump completed on 2017-04-29 14:23:15

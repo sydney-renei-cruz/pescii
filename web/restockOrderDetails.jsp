@@ -11,6 +11,7 @@
 <%
     String accountType = ""+session.getAttribute("accountType");
     restockOrderBean restockOrder = (restockOrderBean)request.getAttribute("restockOrder");
+    ArrayList<restockOrderItemBean> roitemsList = (ArrayList<restockOrderItemBean>)request.getAttribute("roitemsList");
 %>
 <!DOCTYPE html>
 <html>
@@ -22,25 +23,41 @@
         <h1>This is the Restock Order Details Page!</h1>
         
         <br><br>
-        <p>Restock Order ID: ${restockOrder.getRestockOrderID()}</p>
         <p>Restock Order Name: ${restockOrder.getRestockOrderName()}</p>
-        <p>Product Ordered: <a href="product.getDetails?forInvoice=no&prodID=<c:out value="${restockOrder.getProductID()}"/>">${restockOrder.getProductName()}</a></p>
-        <p>Unit Price: ${restockOrder.getRestockPrice()}</p>
-        <p>Quantity Ordered: ${restockOrder.getNumberOfPiecesOrdered()}</p>
-        <c:set var="totalPrice" value="${restockOrder.getRestockPrice() * restockOrder.getNumberOfPiecesOrdered()}"/>
         <p>Total Price: <fmt:formatNumber pattern="0.00" value="${totalPrice}" type="number"/></p>
-        <p>Quantity Received: ${restockOrder.getNumberOfPiecesReceived()}</p>
         <p>Amount Paid: ${restockOrder.getAmountPaid()}</p>
         <p>Discount: ${restockOrder.getDiscount()}</p>
-        <p>Supplier: ${restockOrder.getSupplierName()}</p>
         <p>Date Due: ${restockOrder.getRODateDue()}</p>
         <p>Date Received: ${restockOrder.getRODateDelivered()}</p>
         <p>Purpose: ${restockOrder.getPurpose()}</p>
         <p>Date Created: ${restockOrder.getDateCreated()}</p>
         <p>Last Editted By: ${restockOrder.getLastEdittedBy()}</p>
         
-        <br><br><br>
         
+        <!--Restock Order Items-->
+        <br><br><br>
+        <h5>Restock Order Items</h5>
+        <table border="1">
+            <tr>
+                <th>Product Name</th>
+                <th>Supplier</th>
+                <th>Quantity Purchased</th>
+                <th>Quantity Received</th>
+                <th>Total Cost</th>
+            </tr>
+        
+        <c:forEach items="${roitemsList}" var="roitem" begin="0" step="1">
+            <tr>
+                <td><a href="product.getDetails?prodID=<c:out value="${roitem.getProductID()}"/>">${roitem.getProductName()}</a></td>
+                <td>${roitem.getSupplierName()}</td>
+                <td>${roitem.getQuantityPurchased()}</td>
+                <td>${roitem.getQuantityReceived()}</td>
+                <td>${roitem.getTotalCost()}</td>
+            </tr>
+        </c:forEach>
+        </table>
+        
+        <br><br>
         <a href="restockOrder.getDetails?editRestock=yes&restockID=<c:out value="${restockOrder.getRestockOrderID()}"/>">Edit</a>
         
         <br><br>

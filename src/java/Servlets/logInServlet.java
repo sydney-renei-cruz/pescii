@@ -189,7 +189,7 @@ public class logInServlet extends HttpServlet {
                             else if(dbData.getInt("accountType")==4 || dbData.getInt("accountType")==5){
                                 request.getRequestDispatcher("notif.get?forWhat=restock").forward(request,response);
                             }
-                            else if(dbData.getInt("accountType")==1){
+                            else if(dbData.getInt("accountType")==1 || dbData.getInt("accountType")==2){
                                 request.getRequestDispatcher("notif.get?forWhat=both").forward(request,response);
                             }
                             else{

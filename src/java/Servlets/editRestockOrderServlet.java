@@ -17,6 +17,7 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -103,19 +104,19 @@ public class editRestockOrderServlet extends HttpServlet {
          
          //---------------
          String message = "Restock Order successfully editted!";
-         String preparedSQL = "update RestockOrder set ROname=?,numberOfPiecesOrdered=?, "
-                 + "numberOfPiecesReceived=?, amountPaid=?, purpose=?, RODateDelivered=?, "
+         String preparedSQL = "update RestockOrder set ROName=?, purpose=?, RODateDue=?, RODateDelivered=?, "
+                 + "amountPaid=?, discount=?, datePaid =?, "
                  + "lastEdittedBy=? "
                  + "where restockOrderID=?";
          
-         int productID = Integer.parseInt(request.getParameter("productIDInput"));
+         //int productID = Integer.parseInt(request.getParameter("productIDInput"));
          
          
          //check RO ID
          int inputRestockOrderID = 0;
          try{inputRestockOrderID = Integer.parseInt(request.getParameter("restockOrderIDInput"));}
          catch(Exception e){
-                message = "Restock Oder ID is invalid.";
+                message = "Restock Order ID is invalid.";
                 request.setAttribute("message",message);
                 request.getRequestDispatcher("restockOrder.getDetails?editRestock=yes&restockID="+inputRestockOrderID).forward(request,response);
                 return;
@@ -124,7 +125,7 @@ public class editRestockOrderServlet extends HttpServlet {
          //check the RO name
          String newROName = request.getParameter("newRONameInput");
          try{
-             newROName = request.getParameter("RONameInput");
+             newROName = request.getParameter("newRONameInput");
              if(newROName.length()>255){
                 message = "Restock Order Name is too long.";
                 request.setAttribute("message",message);
@@ -133,49 +134,11 @@ public class editRestockOrderServlet extends HttpServlet {
              }
             }
             catch(Exception e){
-                message = "Restock Order Name is too long.";
+                message = "Restock Order Name is invalid.";
                 request.setAttribute("message",message);
                 request.getRequestDispatcher("restockOrder.getDetails?editRestock=yes&restockID="+inputRestockOrderID).forward(request,response);
                 return;
             }
-         
-         
-         //check number of pieces ordered
-         int newNumberOfPiecesOrdered = 0;
-         try{
-             newNumberOfPiecesOrdered = Integer.parseInt(request.getParameter("numberOfPiecesOrderedInput"));
-             if(newNumberOfPiecesOrdered < 0){
-                message = "Number of Pieces Ordered is wrong. It must be a whole number.";
-                request.setAttribute("message",message);
-                request.getRequestDispatcher("restockOrder.getDetails?editRestock=yes&restockID="+inputRestockOrderID).forward(request,response);
-                return;
-             }
-         }
-         catch(Exception e){
-                message = "Number of Pieces Ordered is wrong. It must be a whole number.";
-                request.setAttribute("message",message);
-                request.getRequestDispatcher("restockOrder.getDetails?editRestock=yes&restockID="+inputRestockOrderID).forward(request,response);
-                return;
-         }
-         
-         
-         //check number of pieces received
-         int newNumberOfPiecesReceived = 0;
-         try{
-             newNumberOfPiecesReceived = Integer.parseInt(request.getParameter("numberOfPiecesReceivedInput"));
-             if(newNumberOfPiecesReceived < 0){
-                message = "Number of Pieces Received is wrong. It must be a whole number.";
-                request.setAttribute("message",message);
-                request.getRequestDispatcher("restockOrder.getDetails?editRestock=yes&restockID="+inputRestockOrderID).forward(request,response);
-                return;
-             }
-         }
-         catch(Exception e){
-                message = "Number of Pieces Received is wrong. It must be a whole number.";
-                request.setAttribute("message",message);
-                request.getRequestDispatcher("restockOrder.getDetails?editRestock=yes&restockID="+inputRestockOrderID).forward(request,response);
-                return;
-         }
          
          
          //check amount paid
@@ -196,6 +159,23 @@ public class editRestockOrderServlet extends HttpServlet {
                 return;
          }
          
+         //check discount
+         float newDiscount = 0;
+         try{
+             newDiscount = Float.parseFloat(request.getParameter("discountInput"));
+             if(newDiscount < 0){
+                message = "Discount is invalid.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("restockOrder.getDetails?editRestock=yes&restockID="+inputRestockOrderID).forward(request,response);
+                return;
+             }
+         }
+         catch(Exception e){
+                message = "Discount is invalid.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("restockOrder.getDetails?editRestock=yes&restockID="+inputRestockOrderID).forward(request,response);
+                return;
+         }
          
          //check purpose
          String newPurpose = request.getParameter("purposeInput");
@@ -224,32 +204,134 @@ public class editRestockOrderServlet extends HttpServlet {
                 return;
              }
          
+         //check newRODateDue
+         String newRODateDue = "";
+         try{
+                newRODateDue = request.getParameter("roDeliveryDueDateInput");
+                if(newRODateDue.length()>10){
+                    message = "Delivery Due Date format is invalid.";
+                    request.setAttribute("message",message);
+                request.getRequestDispatcher("restockOrder.getDetails?editRestock=yes&restockID="+inputRestockOrderID).forward(request,response);
+                return;
+                 }
+
+                else if((!(newRODateDue.equals("")) || newRODateDue != null)){
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    Date date = sdf.parse(newRODateDue);
+                }
+             }
+             catch(Exception e){
+                message = "Delivery Due Date format is invalid.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("restockOrder.getDetails?editRestock=yes&restockID="+inputRestockOrderID).forward(request,response);
+                return;
+             }
+         
          String lastEdittedBy = ""+session.getAttribute("userName");
+         
+         //check status ID
+        int newStatusID = 0;
+        try{newStatusID = Integer.parseInt(request.getParameter("statusInput"));}
+        catch(Exception e){
+               message = "Restock Order Status is invalid.";
+               request.setAttribute("message",message);
+               request.setAttribute("forRestock", "yes");
+               request.getRequestDispatcher("restockOrder.getStatus").forward(request,response);
+               return;
+        }
+         
+         
+         context.log("now updating the Restock Order!");
+         preparedSQL = "update RestockOrder set ROName=?, purpose=?, RODateDue=?, RODateDelivered=?, "
+                 + "amountPaid=?, discount=?, datePaid =?, "
+                 + "lastEdittedBy=?, statusID=? "
+                 + "where restockOrderID=?";
+         
          
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          ps.setString(1,newROName);
-         ps.setInt(2,newNumberOfPiecesOrdered);
-         ps.setInt(3,newNumberOfPiecesReceived);
-         ps.setFloat(4,newAmountPaid);
-         ps.setString(5,newPurpose);
-         if(newRODateDelivered.equals("") || newRODateDelivered==null){ps.setString(6,null);}
-         else{ps.setString(6,newRODateDelivered);}
-         ps.setString(7,lastEdittedBy);
-         ps.setInt(8,inputRestockOrderID);
+         ps.setString(2,newPurpose);
+         ps.setString(3,newRODateDue);
+         if(newRODateDelivered.equals("") || newRODateDelivered==null){ps.setString(4,null);}
+         else{ps.setString(4,newRODateDelivered);}
+         ps.setFloat(5,newAmountPaid);
+         ps.setFloat(6,newDiscount);
+         if(newRODateDelivered.equals("") || newRODateDelivered==null){ps.setString(7,null);}
+         else{ps.setString(7,newRODateDelivered);}
+         ps.setString(8,lastEdittedBy);
+         ps.setInt(9,newStatusID);
+         ps.setInt(10,inputRestockOrderID);
          
          ps.executeUpdate();
          
          context.log("--->Restock Order successfully updated. RestockID is: "+inputRestockOrderID);
          
+         
+         int roitems = Integer.parseInt(request.getParameter("roitems"));
+         String[] qo = request.getParameterValues("QO");
+         String[] qr = request.getParameterValues("QR");
+         String[] roiidInput = request.getParameterValues("ROIID");
+         String[] pidInput = request.getParameterValues("pid");
+         
          if(!newRODateDelivered.equals("")){
             //now update the product if an RODateDelivered was entered
 
-           
-            preparedSQL = "update Product set stocksRemaining = stocksRemaining + "+newNumberOfPiecesReceived+" where productID=?";
-            ps = conn.prepareStatement(preparedSQL);
-            ps.setInt(1,productID);
-
-            ps.executeUpdate();
+            LinkedList<Integer> ROquantity = new LinkedList<Integer>();
+            for(int i=0; i<roitems;i++){
+                try{
+                    int quantityPurchased = Integer.parseInt(qo[i]);
+                    int quantityReceived = Integer.parseInt(qr[i]);
+                    int roiid = Integer.parseInt(roiidInput[i]);
+                    int pid = Integer.parseInt(pidInput[i]);
+                    
+                    if(quantityPurchased<0){
+                        context.log("QP was negative");
+                        message = "Quantity Purchased was input incorrectly. Please use whole numbers.";
+                        request.setAttribute("message",message);
+                        request.getRequestDispatcher("restockOrder.getDetails?editRestock=yes&restockID="+inputRestockOrderID).forward(request,response);
+                        return;
+                    }
+                    if(quantityReceived<0){
+                        context.log("QR was negative");
+                        message = "Quantity Received was input incorrectly. Please use whole numbers.";
+                        request.setAttribute("message",message);
+                        request.getRequestDispatcher("restockOrder.getDetails?editRestock=yes&restockID="+inputRestockOrderID).forward(request,response);
+                        return;
+                    }
+                    
+                    context.log("now updating the ROItems!");
+                    preparedSQL = "update RestockOrderItem set quantityPurchased=?, quantityReceived=? where RestockOrderID=? and ROIID=?";
+                    ps = conn.prepareStatement(preparedSQL);
+                    ps.setInt(1,quantityPurchased);
+                    ps.setInt(2,quantityReceived);
+                    ps.setInt(3,inputRestockOrderID);
+                    ps.setInt(4,roiid);
+                    ps.executeUpdate();
+                    
+                    if(quantityReceived!=quantityPurchased){
+                        context.log("now updating the inventory!");
+                        if(quantityReceived<quantityPurchased){
+                            preparedSQL = "update Product set stocksRemaining = stocksRemaining - "+(quantityPurchased-quantityReceived)+" where productID=?";
+                        }
+                        else if(quantityReceived>quantityPurchased){
+                            preparedSQL = "update Product set stocksRemaining = stocksRemaining + "+(quantityReceived-quantityPurchased)+" where productID=?";
+                        }
+                        ps = conn.prepareStatement(preparedSQL);
+                        ps.setInt(1,pid);
+                        ps.executeUpdate();
+                    }
+                    
+                }
+                catch(Exception e){
+                    context.log(""+e);
+                    message = "Quantity was input incorrectly. Please use whole numbers.";
+                    request.setAttribute("message",message);
+                    request.getRequestDispatcher("restockOrder.getDetails?editRestock=yes&restockID="+inputRestockOrderID).forward(request,response);
+                    return;
+                }
+            }
+            
+            
             message = "Restock Order successfully editted! Inventory updated.";
          }
          

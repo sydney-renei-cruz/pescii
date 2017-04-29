@@ -66,9 +66,9 @@
             <input type="hidden" name="whatFor" value="restockOrder">
             
             <b>Shortcuts</b><br>
-                <input type="radio" name="getWhat" value="new">New Restock Orders<br>
-                <input type="radio" name="getWhat" value="completed">Recently completed Restock Orders<br>
-                <input type="radio" name="getWhat" value="close">Restock Orders near deadlines<br>
+                <input type="radio" name="getWhat" value="new">View New Restock Orders<br>
+                <input type="radio" name="getWhat" value="completed">View Recently Completed Restock Orders<br>
+                <input type="radio" name="getWhat" value="close">View Restock Orders Arriving Soon<br>
                 <br>
             <input type="submit" value="Get">    
         </form>

@@ -11,7 +11,10 @@
 <%
     String accountType = ""+session.getAttribute("accountType");
     restockOrderBean restockOrder = (restockOrderBean)request.getAttribute("restockOrder");
-    productBean product = (productBean)request.getAttribute("product");
+    //productBean product = (productBean)request.getAttribute("product");
+    ArrayList<restockOrderItemBean> roitemsList = (ArrayList<restockOrderItemBean>)request.getAttribute("roitemsList");
+    ArrayList<restockOrderStatusBean> ROStatList = (ArrayList<restockOrderStatusBean>)request.getAttribute("roStatList");
+    String message = ""+request.getAttribute("message");
 %>
 <!DOCTYPE html>
 <html>
@@ -23,40 +26,63 @@
         <script type="text/javascript">
             function init() {
                 calendar.set("date1");
+                calendar.set("date2");
             }
         </script>
     </head>
     <body onload="init()">
         <h1>This is the Edit Restock Order page!</h1>
-          <form action="restock.edit" method="post">
-                Restock Order ID: <input type="hidden" value="${restockOrder.getRestockOrderID()}" name="restockOrderIDInput">${restockOrder.getRestockOrderID()}<br>
-                
-                <!--these can only be set by the inventory manager-->
-                <c:if test="${accountType == '4' || accountType == '1'}">
-                    Restock Order Name: <input type="text" value="${restockOrder.getRestockOrderName()}" name="newRONameInput" maxlength="255"><br>
-                    Product Ordered: <input type="hidden" value="${restockOrder.getProductID()}" name="productIDInput">${restockOrder.getProductName()}<br>
-                    Number of Pieces Ordered: <input type="text" value="${restockOrder.getNumberOfPiecesOrdered()}" name="numberOfPiecesOrderedInput"><br>
-                    Purpose: <br><textarea name="purposeInput" rows="5" cols="50">${restockOrder.getPurpose()}</textarea><br>
-                </c:if>
-                
-                <c:set var="totalPrice" value="${restockOrder.getRestockPrice() * restockOrder.getNumberOfPiecesOrdered()}"/>
-                <p>Original Price: <fmt:formatNumber pattern="0.00" value="${totalPrice}" type="number"/></p>
-                Discount: ${restockOrder.getDiscount()}<br>
-                <c:set var="totalPrice" value="${restockOrder.getRestockPrice() * restockOrder.getNumberOfPiecesOrdered() - restockOrder.getDiscount()}"/>
-                <p>Discounted Price: <fmt:formatNumber pattern="0.00" value="${totalPrice}" type="number"/></p>
-                Delivery Due Date: ${restockOrder.getRODateDue()}<br>
-                Supplier: ${restockOrder.getSupplierName()}<br>
-                
-                <!--these can only be set by the auditor-->
-                <c:if test="${accountType == '5' || accountType == '1'}">
-                Number of Pieces Received: <input type="text" value="${restockOrder.getNumberOfPiecesReceived()}" name="numberOfPiecesReceivedInput"><br>
-                Amount Paid:<input type="text" value="${restockOrder.getAmountPaid()}" name="amountPaidInput"><br>
-                Date Delivered: <input type="text" value="${restockOrder.getRODateDelivered()}" name="roDateDeliveredInput" id="date1" maxlength="10"><br>
-                </c:if>
-                <br><input type="submit" value="Save Changes">
-                
-        </form>
+        <c:if test="${message ne '' || message ne null || message ne 'null'}">
+            <p>${message}</p><br><br>
+        </c:if>
+        
+        
+
+        <form action="restock.edit" method="post">
+            ROID: ${restockOrder.getRestockOrderID()}<input type="hidden" value="${restockOrder.getRestockOrderID()}" name="restockOrderIDInput">
+
+            Restock Order Name: <input type="text" value="${restockOrder.getRestockOrderName()}" name="newRONameInput" maxlength="255"><br>
+            Purpose: <br><textarea name="purposeInput" rows="5" cols="50">${restockOrder.getPurpose()}</textarea><br>
             
+            <table border="1">
+                <tr>
+                    <th>Product Name</th>
+                    <th>Pieces Ordered</th>
+                    <th>Pieces Received</th>
+                    <th>Supplier</th>
+                </tr>
+
+                <c:forEach items="${roitemsList}" var="ro" begin="0" step="1" varStatus="status">
+                    <tr>
+                        <td><a href="restockOrder.getDetails?restockID=<c:out value="${ro.getProductID()}"/>">${ro.getProductName()}</a></td>
+                        <td><input type="text" name="QO" value="${ro.getQuantityPurchased()}"></td>
+                        <td><input type="text" name="QR" value="${ro.getQuantityReceived()}"></td>
+                        <td>${ro.getSupplierName()}</td>
+                    </tr>
+                </c:forEach>
+            </table>
+            <c:forEach items="${roitemsList}" var="ro" begin="0" step="1" varStatus="status">
+                <input type="hidden" value="${ro.getRestockOrderItemID()}" name="ROIID">
+                <input type="hidden" value="${ro.getProductID()}" name="pid">
+            </c:forEach>
+            <input type="hidden" value="${roitemsList.size()}" name="roitems">
+            
+        
+
+
+        Discount: <input type="text" value="${restockOrder.getDiscount()}" name="discountInput"><br>
+        Delivery Due Date: <input type="text" value="${restockOrder.getRODateDue()}" name="roDeliveryDueDateInput" id="date1" maxlength="10"><br>
+        Amount Paid:<input type="text" value="${restockOrder.getAmountPaid()}" name="amountPaidInput"><br>
+        Date Delivered: <input type="text" value="${restockOrder.getRODateDelivered()}" name="roDateDeliveredInput" id="date2" maxlength="10"><br>
+        Status: <select name="statusInput">
+                <c:forEach items="${ROStatList}" var="roStat" begin="0" step="1">
+                    <option value="${roStat.getStatusID()}">${roStat.getStatusName()}</option>
+                </c:forEach>
+       </select><br>
+        <br>
+        <input type="submit" value="Save Changes">
+        </form> 
+        
         <br><br>
         <a href="restockOrder.getDetails?restockID=<c:out value="${restockOrder.getRestockOrderID()}"/>">Return to RO Details</a>
         <br><br>

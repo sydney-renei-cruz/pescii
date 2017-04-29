@@ -49,8 +49,16 @@
         <servlet-class>Servlets.addToCartServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>addToROCartServlet</servlet-name>
+        <servlet-class>Servlets.addToROCartServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>removeFromCartServlet</servlet-name>
         <servlet-class>Servlets.removeFromCartServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>removeFromROCartServlet</servlet-name>
+        <servlet-class>Servlets.removeFromROCartServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>addClinicServlet</servlet-name>
@@ -123,6 +131,10 @@
     <servlet>
         <servlet-name>getNotifServlet</servlet-name>
         <servlet-class>Servlets.getNotifServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>getROStatus</servlet-name>
+        <servlet-class>Servlets.getROStatus</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>viewCustomerDetailsServlet</servlet-name>
@@ -216,8 +228,16 @@
         <url-pattern>/addToCart</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>addToROCartServlet</servlet-name>
+        <url-pattern>/addToROCart</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>removeFromCartServlet</servlet-name>
         <url-pattern>/removeFromCart</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>removeFromROCartServlet</servlet-name>
+        <url-pattern>/removeFromROCart</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>addClinicServlet</servlet-name>
@@ -290,6 +310,10 @@
     <servlet-mapping>
         <servlet-name>getNotifServlet</servlet-name>
         <url-pattern>/notif.get</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getROStatus</servlet-name>
+        <url-pattern>/restockOrder.getStatus</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>viewCustomerDetailsServlet</servlet-name>

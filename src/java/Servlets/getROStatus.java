@@ -27,8 +27,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author user
  */
-@WebServlet(name = "getSupplierServlet", urlPatterns = {"/getSupplierServlet"})
-public class getSupplierServlet extends HttpServlet {
+@WebServlet(name = "getROStatus", urlPatterns = {"/getROStatus"})
+public class getROStatus extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -69,69 +69,53 @@ public class getSupplierServlet extends HttpServlet {
          stmt = conn.createStatement();
          
          //---------------
-         String preparedSQL = "select Supplier.supplierID, Supplier.supplierName, Supplier.supplierAddress, "
-                 + "Supplier.supplierContactNumber, Supplier.ProductClassID, ProductClass.productClassID, "
-                 + "ProductClass.productClassName, Supplier.dateCreated, Supplier.lastEdittedBy from Supplier "
-                 + "inner join ProductClass on ProductClass.productClassID=Supplier.productClassID "
-                 + "order by supplierName asc";
+         String preparedSQL = "select * from RestockOrderStatus order by statusName asc";
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          
          ResultSet dbData = ps.executeQuery();
-         ArrayList<supplierBean> suppliersRetrieved = new ArrayList<supplierBean>();
+         ArrayList<restockOrderStatusBean> restockOrderStatusRetrieved = new ArrayList<restockOrderStatusBean>();
          //retrieve the information.
             while(dbData.next()){
-               supplierBean suppbean = new supplierBean();
-                suppbean.setSupplierID(dbData.getInt("supplierID"));
-                suppbean.setSupplierName(dbData.getString("supplierName"));
-                suppbean.setSupplierAddress(dbData.getString("supplierAddress"));
-                suppbean.setSupplierContactNumber(dbData.getString("supplierContactNumber"));
-                suppbean.setProductClassID(dbData.getInt("productClassID"));
-                suppbean.setProductClassName(dbData.getString("productClassName"));
-                suppbean.setDateCreated(dbData.getTimestamp("dateCreated"));
-                suppbean.setLastEdittedBy(dbData.getString("lastEdittedBy"));
-                suppliersRetrieved.add(suppbean);
+               restockOrderStatusBean roStatBean = new restockOrderStatusBean();
+               roStatBean.setStatusID(dbData.getInt("statusID"));
+               roStatBean.setStatusName(dbData.getString("statusName"));
+               restockOrderStatusRetrieved.add(roStatBean);
             }
-         request.setAttribute("suppliersList", suppliersRetrieved);
+         request.setAttribute("roStatList", restockOrderStatusRetrieved);
+         request.setAttribute("message",request.getAttribute("message"));
          
-         request.setAttribute("prodClassList", request.getAttribute("prodClassList"));
-         context.log("FOREDIT EQUAAAAALS: " + request.getAttribute("forEdit"));
+         context.log("Now in the getROStatusServlet!");
+         if(request.getParameter("test")!=null){
+             context.log("heading to errorPage.jsp...");
+             request.getRequestDispatcher("errorPage.jsp").forward(request,response);
+             return;
+         }
          
-         request.setAttribute("message", ""+request.getAttribute("message"));
-         
-         String searchWhat = ""+request.getAttribute("searchWhat");
-         String forOther = ""+request.getAttribute("forOther");
-         request.setAttribute("prodClassList", request.getAttribute("prodClassList"));
-         if((""+request.getAttribute("forEdit")).equals("yes")){
-             //request.setAttribute("forEdit", "yes");
+         if(session.getAttribute("ROcart")!=null && (""+session.getAttribute("cartType")).equals("restock")){
+             request.setAttribute("ROquantity", request.getAttribute("ROquantity"));
              request.setAttribute("message",request.getAttribute("message"));
-             request.setAttribute("product", request.getAttribute("product"));
-             //request.setAttribute("productClassList", request.getAttribute("productClassList"));
-             request.getRequestDispatcher("editProduct.jsp").forward(request,response);
+             request.getRequestDispatcher("createRestockOrder.jsp").forward(request,response);
+             return;
          }
-         else if((""+request.getParameter("forRestock")).equals("yes")){
-             session.setAttribute("cartType","restock");
-             request.getRequestDispatcher("getSupplier.jsp").forward(request,response);
-         }
-         else if((""+request.getAttribute("searchWhat")).equalsIgnoreCase("prod")){
-             context.log("getting suppliers for search Product...");
-             
-             if(forOther.equals("invoice")){request.setAttribute("forOther", "invoice");}
-             else if(forOther.equals("restock")){request.setAttribute("forOther", "restock");}
-             
-             //request.setAttribute("prodClassList", request.getAttribute("prodClassList"));
-             request.getRequestDispatcher("conditionsProduct.jsp").forward(request,response);
+         
+         
+         
+         else if(session.getAttribute("cartType").equals("restock")){
              
          }
-         else if(searchWhat.equalsIgnoreCase("ro")){
-             request.getRequestDispatcher("conditionsRestockOrder.jsp").forward(request,response);}
-         else if((""+request.getParameter("viewSupp")).equals("yes")){
-             context.log("got suppliers for view Supplier.");
-             request.getRequestDispatcher("getSupplier.jsp").forward(request,response);
+         context.log("edit Restock is: "+request.getAttribute("editRestock"));
+         if((""+request.getAttribute("editRestock")).equals("yes")){
+             request.setAttribute("restock", request.getAttribute("restock"));
+             request.setAttribute("ROItemsList", request.getAttribute("ROItemsList"));
+             request.setAttribute("message",request.getAttribute("message"));
+             context.log("now sending to editRestockOrder.jsp!");
+             request.getRequestDispatcher("editRestockOrder.jsp").forward(request,response);
          }
-         else{
-            context.log("now sending suppliers to addProduct.jsp...");
-            request.getRequestDispatcher("addProduct.jsp").forward(request,response);
-         }   
+         
+         else{// if((""+request.getAttribute("whatFor")).equals("conditionsRestockOrder")){
+             request.getRequestDispatcher("conditionsRestockOrder.jsp").forward(request,response);
+         }
+         
          
         }
         catch(Exception ex){

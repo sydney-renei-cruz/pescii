@@ -1,6 +1,6 @@
 <%-- 
-    Document   : viewCart
-    Created on : 09 3, 16, 2:55:34 PM
+    Document   : viewROCart
+    Created on : 04 28, 17, 6:06:12 PM
     Author     : user
 --%>
 
@@ -18,39 +18,39 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>PESCII view cart</title>
+        <title>PESCII view RO Cart</title>
     </head>
     <body>
-        <h1>This is the View Cart page!</h1>
+        <h1>This is the View RO Cart page!</h1>
         
         <c:if test="${message ne '' || message ne null || message ne 'null'}">
             <p>${message}</p><br><br>
         </c:if>
-            
+        
         <c:choose>
-            <c:when test="${sessionScope.cart != null}">
-                <c:set var="cartSize" value="${sessionScope.cart.size()}"/>
-                <c:set var="cart" value="${sessionScope.cart}"/>
-                <c:set var="prodNames" value="${sessionScope.prodNames}"/>
-                <c:set var="quantity" value="${sessionScope.quantity}"/>
+            <c:when test="${sessionScope.ROcart != null}">
+                <c:set var="cartSize" value="${sessionScope.ROcart.size()}"/>
+                <c:set var="cart" value="${sessionScope.ROcart}"/>
+                <c:set var="prodNames" value="${sessionScope.ROprodNames}"/>
+                <c:set var="quantity" value="${sessionScope.ROquantity}"/>
                 <h4>the size is <c:out value="${cartSize}"/></h4>
                 <p>Please enter the quantity you wish to purchase.</p>
                 
                 <!--Now make the table-->
-                <form action="addToCart">
+                <form action="addToROCart">
                     <input type="hidden" name="gotQuantity" value="yes">
                     <c:forEach items="${prodNames}" var="prods" begin="0" step="1" varStatus="loop">
-                        <a href="removeFromCart?prodName=<c:out value="${prods}"/>">REMOVE</a>
+                        <a href="removeFromROCart?prodName=<c:out value="${prods}"/>">REMOVE</a>
                         ${prods}: <input type="text" name="${prods}" value="${quantity[loop.index]}"><br>
                     </c:forEach>
                         <br>
-                        <input type="submit" value="Select Customer">
+                        <input type="submit" value="Fill out RO form">
                 </form>
                 
                 
             </c:when>
 
-            <c:when test="${sessionScope.cart == null}">
+            <c:when test="${sessionScope.ROcart == null}">
                 <%LinkedList<String> emptyCart = new LinkedList<String>();%>
                 <c:set var="cartSize" value="0"/>
                 <p>the size is 0</p>
@@ -59,9 +59,9 @@
 
 
         <br><br>
-        <a href="invoice.add?cancel=yes">Cancel Invoice</a>
+        <a href="Servlets.createRestockOrderServlet?cancel=yes">Cancel Restock Order</a>
         <br><br>
-        <a href="Servlets.getProductServlet?forOther=invoice">Return to Products List</a>
+        <a href="Servlets.getProductServlet?forOther=restock">Return to Products List</a>
         <br><br>
         <c:choose>
             <c:when test="${accountType eq 3}">
