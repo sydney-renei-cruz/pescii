@@ -134,21 +134,7 @@ public class getUnfinishedServlet extends HttpServlet {
                  request.getRequestDispatcher("getInvoice.jsp").forward(request,response);
          }
          else{
-            /*preparedSQL = "select RestockOrder.restockOrderID, Product.productID, RestockOrder.productID, "
-                 + "RestockOrder.ROName, RestockOrder.numberOfPiecesOrdered, Product.restockPrice, "
-                 + "RestockOrder.numberOfPiecesReceived, Product.supplierID, RestockOrder.purpose, "
-                 + "RestockOrder.RODateDue, RestockOrder.RODateDelivered, RestockOrder.amountPaid, "
-                 + "RestockOrder.discount, RestockOrder.dateCreated, RestockOrder.lastEdittedBy, "
-                 + "RestockOrder.datePaid, Product.productClassID, ProductClass.productClassID, "
-                 + "ProductClass.productClassName, Supplier.supplierID, Supplier.supplierName, "
-                 + "Product.productName "
-                 + "from RestockOrder "
-                 + "inner join Product on Product.productID = RestockOrder.productID "
-                 + "inner join Supplier on Supplier.supplierID = Product.supplierID "
-                 + "inner join ProductClass on ProductClass.productClassID = Product.productClassID "
-                 + "where RestockOrder.RODateDelivered is null "
-                 + "order by RestockOrder.RODateDue";
-             */
+            
             preparedSQL = "select RestockOrder.*, RestockOrderStatus.statusName, Supplier.* "
                  + "from RestockOrder "
                  + "inner join RestockOrderStatus on RestockOrderStatus.statusID=RestockOrder.statusID "
@@ -193,7 +179,8 @@ public class getUnfinishedServlet extends HttpServlet {
         catch(Exception ex){
             ex.printStackTrace();
             //out.println("error: " + ex);
-            String message = "Something went wrong. Error: "+ex;
+            String message = "Something went wrong. Please try again or contact the administrator.";
+            request.setAttribute("message", message);
             request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
@@ -206,7 +193,8 @@ public class getUnfinishedServlet extends HttpServlet {
             catch (SQLException ex) {
                 ex.printStackTrace();
                 //out.println("Another SQL error: " + ex);
-                String message = "Something went wrong. Error: "+ex;
+                String message = "Something went wrong. Please try again or contact the administrator.";
+                request.setAttribute("message", message);
                 request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }

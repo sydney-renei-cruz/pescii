@@ -23,9 +23,12 @@
         
         <h1>This is the Add Product page!</h1>
         
+        <c:set var="suppList" value="${requestScope.suppliersList}"/>
+        
         <!--this is the error message-->
-        <c:if test="${message ne '' || message ne null || message ne 'null'}">
-            <p>${message}</p><br><br>
+        <c:set var="errorMessage" value="${requestScope.message}"/>
+        <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
+            <p>${errorMessage}</p><br><br>
         </c:if>
             
          <form action="Servlets.addProductServlet" method="post">
@@ -45,7 +48,7 @@
             </select><br>
             Enter Color: <input type="text" name="colorInput" maxlength="20"><br>
             Enter Supplier: <select name="supplierInput">
-                <c:forEach items="<%=suppList%>" var="sup" begin="0" step="1">
+                <c:forEach items="${suppList}" var="sup" begin="0" step="1">
                         <option value="${sup.getSupplierID()}">${sup.getSupplierName()}</option>
                 </c:forEach>
             </select><br><br>

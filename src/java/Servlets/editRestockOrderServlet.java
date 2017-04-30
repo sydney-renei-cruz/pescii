@@ -351,6 +351,7 @@ public class editRestockOrderServlet extends HttpServlet {
             ex.printStackTrace();
             //out.println("error: " + ex);
             String message = "Something went wrong. Please try again or contact the administrator.";
+            request.setAttribute("message", message);
             request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
@@ -364,6 +365,7 @@ public class editRestockOrderServlet extends HttpServlet {
                 ex.printStackTrace();
                 //out.println("Another SQL error: " + ex);
                 String message = "Something went wrong. Please try again or contact the administrator.";
+                request.setAttribute("message", message);
                 request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }

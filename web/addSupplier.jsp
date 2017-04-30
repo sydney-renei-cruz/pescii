@@ -22,8 +22,9 @@
         <h1>This is the Add Supplier page!</h1>
         
         <!--this is the error message-->
-        <c:if test="${message ne '' || message ne null || message ne 'null'}">
-            <p>${message}</p><br><br>
+        <c:set var="errorMessage" value="${requestScope.message}"/>
+        <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
+            <p>${errorMessage}</p><br><br>
         </c:if>
             
          <form action="supplier.add" method="post">

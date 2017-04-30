@@ -363,9 +363,9 @@ public class editInvoiceServlet extends HttpServlet {
          ps.setString(3,newTop);
          ps.setString(4,newPaymentDueDate);
          //ps.setString(4,newDatePaid);
-         if(newDatePaid.equals("") || newStatus==3){ps.setString(5,null);}
+         if(newDatePaid==null || newStatus==3){ps.setString(5,null);}
          else{ps.setString(5,newDatePaid);}
-         if(newDateClosed.equals("")){ps.setString(6,null);}
+         if(newDateClosed==null){ps.setString(6,null);}
          else{ps.setString(6,newDateClosed);}
          ps.setInt(7,newStatus);
          ps.setFloat(8,newAmountDue);
@@ -424,7 +424,8 @@ public class editInvoiceServlet extends HttpServlet {
         catch(Exception ex){
             ex.printStackTrace();
             //out.println("error: " + ex);
-            String message = "Something went wrong. Error: "+ex;
+            String message = "Something went wrong. Please try again or contact the administrator.";
+            request.setAttribute("message", message);
             request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
@@ -437,7 +438,8 @@ public class editInvoiceServlet extends HttpServlet {
             catch (SQLException ex) {
                 ex.printStackTrace();
                 //out.println("Another SQL error: " + ex);
-                String message = "Something went wrong. Error: "+ex;
+                String message = "Something went wrong. Please try again or contact the administrator.";
+                request.setAttribute("message", message);
                 request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }

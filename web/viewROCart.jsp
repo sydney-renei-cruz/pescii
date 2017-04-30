@@ -23,8 +23,9 @@
     <body>
         <h1>This is the View RO Cart page!</h1>
         
-        <c:if test="${message ne '' || message ne null || message ne 'null'}">
-            <p>${message}</p><br><br>
+        <c:set var="errorMessage" value="${requestScope.message}"/>
+        <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
+            <p>${errorMessage}</p><br><br>
         </c:if>
         
         <c:choose>
@@ -61,22 +62,9 @@
         <br><br>
         <a href="Servlets.createRestockOrderServlet?cancel=yes">Cancel Restock Order</a>
         <br><br>
-        <a href="Servlets.getProductServlet?forOther=restock">Return to Products List</a>
+        <a href="Servlets.getProductServlet?forOther=restock">Go to Products List</a>
         <br><br>
-        <c:choose>
-            <c:when test="${accountType eq 3}">
-                <a href="notif.get?forWhat=invoice">Return to Home</a>
-            </c:when>
-            <c:when test="${(accountType eq 4) || (accountType eq 5)} ">
-                <a href="notif.get?forWhat=restock">Return to Home</a>
-            </c:when>
-            <c:when test="${accountType eq 1}">
-                <a href="notif.get?forWhat=both">Return to Home</a>
-            </c:when>
-            <c:when test="${(accountType ne 3) || (accountType ne 4) || (accountType ne 5) || (accountType ne 1)}">
-                <a href="homePage.jsp">Return to Home</a>
-            </c:when>
-        </c:choose>
+        <a href="notif.get">Return to Home</a>
         <br><br>
         <a href="Servlets.logoutServlet">logout</a>
         

@@ -32,8 +32,9 @@
     </head>
     <body onload="init()">
         <h1>This is the Edit Restock Order page!</h1>
-        <c:if test="${message ne '' || message ne null || message ne 'null'}">
-            <p>${message}</p><br><br>
+        <c:set var="errorMessage" value="${requestScope.message}"/>
+        <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
+            <p>${errorMessage}</p><br><br>
         </c:if>
         
         
@@ -153,9 +154,9 @@
         </form> 
         
         <br><br>
-        <a href="restockOrder.getDetails?restockID=<c:out value="${restockOrder.getRestockOrderID()}"/>">Return to RO Details</a>
+        <a href="restockOrder.getDetails?restockID=<c:out value="${restockOrder.getRestockOrderID()}"/>">Go to RO Details</a>
         <br><br>
-        <a href="restockOrder.get">Return to RO list</a>
+        <a href="restockOrder.get">Go to RO list</a>
         <br><br>
         <a href="notif.get">Return to Home</a>
         <br><br>

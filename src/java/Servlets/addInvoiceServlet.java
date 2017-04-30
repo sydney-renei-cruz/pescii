@@ -88,7 +88,10 @@ public class addInvoiceServlet extends HttpServlet {
         }
         catch(Exception ex){
             ex.printStackTrace();
-            out.println("error: " + ex);
+            //out.println("error: " + ex);
+            String message = "Something went wrong. Please try again or contact the administrator.";
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
             out.close();  // Close the output writer
@@ -99,7 +102,10 @@ public class addInvoiceServlet extends HttpServlet {
             }
             catch (SQLException ex) {
                 ex.printStackTrace();
-                out.println("Another SQL error: " + ex);
+                //out.println("Another SQL error: " + ex);
+                String message = "Something went wrong. Please try again or contact the administrator.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }
         
@@ -544,6 +550,7 @@ public class addInvoiceServlet extends HttpServlet {
             ex.printStackTrace();
             //out.println("error: " + ex);
             String message = "Something went wrong. Please try again or contact the administrator.";
+            request.setAttribute("message", message);
             request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
@@ -557,6 +564,7 @@ public class addInvoiceServlet extends HttpServlet {
                 ex.printStackTrace();
                 //out.println("Another SQL error: " + ex);
                 String message = "Something went wrong. Please try again or contact the administrator.";
+                request.setAttribute("message", message);
                 request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }

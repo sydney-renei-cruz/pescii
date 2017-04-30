@@ -42,7 +42,7 @@
         </c:forEach>
         </table>
         <br><br>
-        <a href="conditionsSalesRep.jsp">Custom View Sales Rep</a>
+        <a href="conditionsSalesRep.jsp">Search Sales Rep</a>
         <br><br>
         <a href="notif.get">Return to Home</a>
         <br><br>

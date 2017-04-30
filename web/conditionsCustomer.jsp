@@ -21,6 +21,15 @@
     <body>
         <h1>This is the Conditions Customer page!</h1>
         
+        <c:set var="salesRepList" value="${requestScope.salesRepsList}"/>
+        <c:set var="provinceList" value="${requestScope.provList}"/>
+        
+        <!--this is the error message-->
+        <c:set var="errorMessage" value="${requestScope.message}"/>
+        <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
+            <p>${errorMessage}</p><br><br>
+        </c:if>
+        
         <h4>Set the conditions of your search</h4>
         <form action="new.get">
             <input type="hidden" name="getWhat" value="customSearch">
@@ -35,7 +44,7 @@
             
             Search by Sales Representative:<select name="searchSalesRepInput">
                 <option value="All">All</option>
-                <c:forEach items="<%=salesRepList%>" var="sr" begin="0" step="1">
+                <c:forEach items="${salesRepList}" var="sr" begin="0" step="1">
                     <option value="${sr.getSalesRepID()}">${sr.getSalesRepLastName()}, ${sr.getSalesRepFirstName()}</option>
                 </c:forEach>
             </select>
@@ -47,27 +56,14 @@
                     </c:forEach>    
             </select><br><br>
                 
-            <input type="submit" value="Get">    
+            <input type="submit" value="Search">    
         </form>
         
         
         <br><br>
         <a href="Servlets.getCustomerServlet">View All Customers</a>
         <br><br>
-        <c:choose>
-            <c:when test="${accountType eq 3}">
-                <a href="notif.get?forWhat=invoice">Return to Home</a>
-            </c:when>
-            <c:when test="${(accountType eq 4) || (accountType eq 5)} ">
-                <a href="notif.get?forWhat=restock">Return to Home</a>
-            </c:when>
-            <c:when test="${accountType eq 1}">
-                <a href="notif.get?forWhat=both">Return to Home</a>
-            </c:when>
-            <c:when test="${(accountType ne 3) || (accountType ne 4) || (accountType ne 5) || (accountType ne 1)}">
-                <a href="homePage.jsp">Return to Home</a>
-            </c:when>
-        </c:choose>
+        <a href="notif.get">Return to Home</a>
         <br><br>
         <a href="Servlets.logoutServlet">logout</a>
         

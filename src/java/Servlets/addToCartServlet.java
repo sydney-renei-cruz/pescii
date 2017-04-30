@@ -45,57 +45,57 @@ public class addToCartServlet extends HttpServlet {
         LinkedList<Float> prodPrices;
         LinkedList<Float> totalPrices;
         HttpSession session = request.getSession();
-        
-        String cartSession = ""+session.getAttribute("cartType");
-        if (session.getAttribute("cart") == null){
-            cart = new LinkedList<String>();    //this contains the productID
-            prodNames = new LinkedList<String>();
-            prodPrices = new LinkedList<Float>();
-            totalPrices = new LinkedList<Float>();
-            context.log(">>cart created!");
-            context.log("----cart size is: " + cart.size());
-        }
-        else{
-            cart = (LinkedList<String>)(session.getAttribute("cart"));
-            prodNames = (LinkedList<String>)(session.getAttribute("prodNames"));
-            prodPrices = (LinkedList<Float>)(session.getAttribute("prodPrices"));
-            totalPrices = (LinkedList<Float>)(session.getAttribute("totalPrices"));
-            context.log("----cart size is: " + cart.size());
-        }
-        if(request.getParameter("prodID")!=null){
-            cart.add(request.getParameter("prodID"));
-            prodNames.add(request.getParameter("prodName"));
-            prodPrices.add(0 + Float.parseFloat(request.getParameter("prodPrice")));
-            context.log("->>product added to cart! ID is: " + request.getParameter("prodID"));
-        }
-        if(request.getParameter("gotQuantity")!=null){
-            LinkedList<Integer> quantity = new LinkedList<Integer>();
-            for(int i=0; i<prodNames.size();i++){
-                try{
-                    quantity.add(Integer.parseInt(request.getParameter(prodNames.get(i))));
-                    if(Integer.parseInt(request.getParameter(prodNames.get(i)))<0){
+        try{
+            String cartSession = ""+session.getAttribute("cartType");
+            if (session.getAttribute("cart") == null){
+                cart = new LinkedList<String>();    //this contains the productID
+                prodNames = new LinkedList<String>();
+                prodPrices = new LinkedList<Float>();
+                totalPrices = new LinkedList<Float>();
+                context.log(">>cart created!");
+                context.log("----cart size is: " + cart.size());
+            }
+            else{
+                cart = (LinkedList<String>)(session.getAttribute("cart"));
+                prodNames = (LinkedList<String>)(session.getAttribute("prodNames"));
+                prodPrices = (LinkedList<Float>)(session.getAttribute("prodPrices"));
+                totalPrices = (LinkedList<Float>)(session.getAttribute("totalPrices"));
+                context.log("----cart size is: " + cart.size());
+            }
+            if(request.getParameter("prodID")!=null){
+                cart.add(request.getParameter("prodID"));
+                prodNames.add(request.getParameter("prodName"));
+                prodPrices.add(0 + Float.parseFloat(request.getParameter("prodPrice")));
+                context.log("->>product added to cart! ID is: " + request.getParameter("prodID"));
+            }
+            if(request.getParameter("gotQuantity")!=null){
+                LinkedList<Integer> quantity = new LinkedList<Integer>();
+                for(int i=0; i<prodNames.size();i++){
+                    try{
+                        quantity.add(Integer.parseInt(request.getParameter(prodNames.get(i))));
+                        if(Integer.parseInt(request.getParameter(prodNames.get(i)))<0){
+                            message = "Product quantity was input incorrectly. Please use whole numbers.";
+                            request.setAttribute("message",message);
+                            context.log("returning to viewCart.jsp 1");
+                            request.getRequestDispatcher("viewCart.jsp").forward(request,response);
+                            return;
+                        }
+                    }
+                    catch(Exception e){
                         message = "Product quantity was input incorrectly. Please use whole numbers.";
                         request.setAttribute("message",message);
-                        context.log("returning to viewCart.jsp 1");
+                        context.log("returning to viewCart.jsp 2");
                         request.getRequestDispatcher("viewCart.jsp").forward(request,response);
                         return;
                     }
+                    totalPrices.add(quantity.get(i)*prodPrices.get(i));
+                    context.log("--->>>quantity is: " + quantity.get(i));
                 }
-                catch(Exception e){
-                    message = "Product quantity was input incorrectly. Please use whole numbers.";
-                    request.setAttribute("message",message);
-                    context.log("returning to viewCart.jsp 2");
-                    request.getRequestDispatcher("viewCart.jsp").forward(request,response);
-                    return;
-                }
-                totalPrices.add(quantity.get(i)*prodPrices.get(i));
-                context.log("--->>>quantity is: " + quantity.get(i));
+                session.setAttribute("quantity", quantity);
+                context.log("cartType in addToCartServlet is: "+session.getAttribute("cartType"));
+                request.getRequestDispatcher("Servlets.getCustomerServlet").forward(request, response);
+                return;
             }
-            session.setAttribute("quantity", quantity);
-            context.log("cartType in addToCartServlet is: "+session.getAttribute("cartType"));
-            request.getRequestDispatcher("Servlets.getCustomerServlet").forward(request, response);
-            return;
-        }
             context.log("cartType in addToCartServlet 2 is: "+session.getAttribute("cartType"));
             session.setAttribute("cart", cart);
             session.setAttribute("prodNames", prodNames);
@@ -103,6 +103,13 @@ public class addToCartServlet extends HttpServlet {
             session.setAttribute("totalPrices", totalPrices);
             request.setAttribute("forInvoice", "yes");
             request.getRequestDispatcher("Servlets.getProductServlet").forward(request,response);
+        }
+        catch(Exception ex){
+            ex.printStackTrace();
+            message = "Something went wrong. Please try again or contact the administrator.";
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("errorPage.jsp").forward(request,response);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

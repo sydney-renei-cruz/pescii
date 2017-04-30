@@ -24,8 +24,9 @@
     <body>
         <h1>This is the Edit Customer page!</h1>
         
-        <c:if test="${message != ''}">
-            <p>${message}</p><br><br>
+        <c:set var="errorMessage" value="${message}"/>
+        <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
+            <p>${errorMessage}</p><br><br>
         </c:if>
         
         <form action="customer.edit" method="post">
@@ -44,28 +45,22 @@
             </select><br><br>
             <br><input type="submit" value="Save Changes"><br>
         </form>
-            
         <br><br>
-        <a href="Servlets.viewCustomerDetailsServlet?viewDetails=yes&custID=<c:out value="${customer.getCustomerID()}"/>">Return to Customer Details</a>
+        <c:if test="${accountType eq '2' || accountType eq '1'}">
+            <form action="province.get">
+                <input type="hidden" value="addClinic" name="whatFor">
+                <input type="hidden" value="${customer.getCustomerID()}" name="custID">
+                <input type="submit" value="Add Clinic">
+            </form>
+        </c:if>
         <br><br>
-        <a href="Servlets.getCustomerServlet">Return to list of customers</a>
+        <a href="Servlets.viewCustomerDetailsServlet?viewDetails=yes&custID=<c:out value="${customer.getCustomerID()}"/>">Go to Customer Details</a>
+        <br><br>
+        <a href="Servlets.getCustomerServlet">Go to list of customers</a>
         <br><br>
         <a href="salesrep.get?whatFor=searchCustomer">Search Customers</a>
         <br><br>
-        <c:choose>
-            <c:when test="${accountType eq 3}">
-                <a href="notif.get?forWhat=invoice">Return to Home</a>
-            </c:when>
-            <c:when test="${(accountType eq 4) || (accountType eq 5)} ">
-                <a href="notif.get?forWhat=restock">Return to Home</a>
-            </c:when>
-            <c:when test="${accountType eq 1}">
-                <a href="notif.get?forWhat=both">Return to Home</a>
-            </c:when>
-            <c:when test="${(accountType ne 3) || (accountType ne 4) || (accountType ne 5) || (accountType ne 1)}">
-                <a href="homePage.jsp">Return to Home</a>
-            </c:when>
-        </c:choose>
+        <a href="notif.get">Return to Home</a>
         <br><br>
         <a href="Servlets.logoutServlet">logout</a>
         

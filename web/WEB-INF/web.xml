@@ -401,6 +401,7 @@
         <url-pattern>/getSalesRep.jsp</url-pattern>
         <url-pattern>/conditionsCustomer.jsp</url-pattern>
         <url-pattern>/conditionsInvoice.jsp</url-pattern>
+        <url-pattern>/anotherInvoice.jsp</url-pattern>
     </filter-mapping>
     <filter>
         <filter-name>IMFilter</filter-name>
@@ -421,6 +422,9 @@
         <url-pattern>/conditionsSupplier.jsp</url-pattern>
         <url-pattern>/editAccount.jsp</url-pattern>
         <url-pattern>/getAccount.jsp</url-pattern>
+        <url-pattern>/anotherProduct.jsp</url-pattern>
+        <url-pattern>/anotherRestockOrder.jsp</url-pattern>
+        <url-pattern>/anotherSupplier.jsp</url-pattern>
     </filter-mapping>
     <filter>
         <filter-name>secretaryFilter</filter-name>
@@ -434,6 +438,13 @@
         <url-pattern>/addProduct.jsp</url-pattern>
         <url-pattern>/addSalesRep.jsp</url-pattern>
         <url-pattern>/addSupplier.jsp</url-pattern>
+        <url-pattern>/anotherAccount.jsp</url-pattern>
+        <url-pattern>/anotherCustomerClinic.jsp</url-pattern>
+        <url-pattern>/anotherInvoice.jsp</url-pattern>
+        <url-pattern>/anotherProduct.jsp</url-pattern>
+        <url-pattern>/anotherRestockOrcder.jsp</url-pattern>
+        <url-pattern>/anotherSalesRep.jsp</url-pattern>
+        <!--<url-pattern>/anotherSupplier.jsp</url-pattern>-->
         <url-pattern>/conditionsAccount.jsp</url-pattern>
         <url-pattern>/conditionsCustomer.jsp</url-pattern>
         <url-pattern>/conditionsInvoice.jsp</url-pattern>

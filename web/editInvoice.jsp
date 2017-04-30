@@ -33,8 +33,9 @@
     <body onload="init()">
         <h1>This is the Edit Invoice page!</h1>
         
-        <c:if test="${message != ''}">
-            <p>${message}</p><br><br>
+        <c:set var="errorMessage" value="${requestScope.message}"/>
+        <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
+            <p>${errorMessage}</p><br><br>
         </c:if>
         
         <br><br><br>
@@ -182,9 +183,9 @@
         
         
         <br><br>
-        <a href="Servlets.viewInvoiceDetailsServlet?editInvoice=no&invID=<c:out value="${invoice.getInvoiceID()}"/>">Return to Invoice details</a>
+        <a href="Servlets.viewInvoiceDetailsServlet?editInvoice=no&invID=<c:out value="${invoice.getInvoiceID()}"/>">Go to Invoice details</a>
         <br><br>
-        <a href="Servlets.getInvoiceServlet">Return to list of Invoices</a>
+        <a href="Servlets.getInvoiceServlet">Go to list of Invoices</a>
         <br><br>
         <a href="notif.get">Return to Home</a>
         <br><br>

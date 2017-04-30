@@ -22,18 +22,21 @@
     <body>
         <h1>This is the Edit Supplier page!</h1>
         
-        <c:if test="${message != ''}">
-            <p>${message}</p><br><br>
+        <c:set var="supb" value="${requestScope.supplier}"/>
+        
+        <c:set var="errorMessage" value="${requestScope.message}"/>
+        <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
+            <p>${errorMessage}</p><br><br>
         </c:if>
         
          <form action="supplier.edit" method="post">
-             <%=supb.getSupplierID()%>
-            Supplier ID: <%=supb.getSupplierID()%><input type="hidden" value="<%=supb.getSupplierID()%>" name="supplierIDInput"><br>
-            Enter Supplier Name:<input type="text" name="supplierNameInput" value="<%=supb.getSupplierName()%>" maxlength="100"><br>
-            Enter Supplier Address: <input type="text" name="supplierAddressInput" value="<%=supb.getSupplierAddress()%>" maxlength="255"><br>
-            Enter Supplier Contact Number:<input type="text" name="supplierContactNumberInput" value="<%=supb.getSupplierContactNumber()%>" maxlength="12"><br>
+             ${supb.getSupplierID()}
+            <input type="hidden" value="${supb.getSupplierID()}" name="supplierIDInput">
+            Enter Supplier Name:<input type="text" name="supplierNameInput" value="${supb.getSupplierName()}" maxlength="100"><br>
+            Enter Supplier Address: <input type="text" name="supplierAddressInput" value="${supb.getSupplierAddress()}" maxlength="255"><br>
+            Enter Supplier Contact Number:<input type="text" name="supplierContactNumberInput" value="${supb.getSupplierContactNumber()}" maxlength="12"><br>
             <b>Product Class</b><br>
-            From: <%=supb.getProductClassName()%><br>
+            From: ${supb.getProductClassName()}<br>
             To: <select name="productClassInput">
                 <c:forEach items="${prodClassList}" var="pro" begin="0" step="1">
                         <option value="${pro.getProductClassID()}">${pro.getProductClassName()}</option>
@@ -44,7 +47,7 @@
         </form>
         <br><br>
         
-        <a href="supplier.get?viewSupp=yes">Return to Suppliers List</a>
+        <a href="supplier.get?viewSupp=yes">Go to Suppliers List</a>
         <br><br>
         <a href="notif.get">Return to Home</a>
         <br><br>

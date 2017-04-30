@@ -105,52 +105,14 @@ public class getCustomerServlet extends HttpServlet {
                 request.setAttribute("addInvoice", "yes");
             }
             
-            /*
-            //this is for when the user will add a customer
-                //its for filling in that dropdown list
-            if((""+request.getParameter("forAdd")).equals("yes")){
-                preparedSQL = "select * from SalesRep order by salesRepLastName asc";
-                ps = conn.prepareStatement(preparedSQL);
-
-                dbData = ps.executeQuery();
-                ArrayList<salesRepBean> salesRepsRetrieved = new ArrayList<salesRepBean>();
-                //retrieve the information.
-                   while(dbData.next()){
-                       salesRepBean data = new salesRepBean();
-                       data.setSalesRepFirstName(dbData.getString("salesRepFirstName"));
-                       data.setSalesRepLastName(dbData.getString("salesRepLastName"));
-                       data.setSalesRepID(dbData.getInt("salesRepID"));
-                       salesRepsRetrieved.add(data);
-                   }
-                request.setAttribute("salesRepList", salesRepsRetrieved);
-                
-                
-                preparedSQL = "select * from Province order by provinceName asc";
-                ps = conn.prepareStatement(preparedSQL);
-
-                dbData = ps.executeQuery();
-                ArrayList<provinceBean> provsRetrieved = new ArrayList<provinceBean>();
-                //retrieve the information.
-                   while(dbData.next()){
-                       provinceBean data = new provinceBean();
-                       data.setProvinceID(dbData.getInt("provinceID"));
-                       data.setProvinceName(dbData.getString("provinceName"));
-                       data.setProvinceDivision(dbData.getString("provinceDivision"));
-                       provsRetrieved.add(data);
-                   }
-                request.setAttribute("provList", provsRetrieved);
-                
-                
-                request.getRequestDispatcher("addCustomer.jsp").forward(request,response);
-            }*/
-            //else{
+            
                 request.getRequestDispatcher("getCustomer.jsp").forward(request,response);
-            //}
         }
         catch(Exception ex){
             ex.printStackTrace();
             //out.println("error: " + ex);
-            String message = "Something went wrong. Error: "+ex;
+            String message = "Something went wrong. Please try again or contact the administrator.";
+            request.setAttribute("message", message);
             request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
@@ -163,7 +125,8 @@ public class getCustomerServlet extends HttpServlet {
             catch (SQLException ex) {
                 ex.printStackTrace();
                 //out.println("Another SQL error: " + ex);
-                String message = "Something went wrong. Error: "+ex;
+                String message = "Something went wrong. Please try again or contact the administrator.";
+                request.setAttribute("message", message);
                 request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }

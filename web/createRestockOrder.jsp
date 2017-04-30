@@ -27,8 +27,11 @@
     </head>
     <body onload="init()">
         <h1>This is the Create Restock Order page!</h1>
-        <c:if test="${message != ''}">
-            <p>${message}</p><br><br>
+        
+        <!--this is the error message-->
+        <c:set var="errorMessage" value="${requestScope.message}"/>
+        <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
+            <p>${errorMessage}</p><br><br>
         </c:if>
         <table border="1">
                 <tr>

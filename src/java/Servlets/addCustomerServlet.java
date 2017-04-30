@@ -329,7 +329,8 @@ public class addCustomerServlet extends HttpServlet {
         catch(Exception ex){
             ex.printStackTrace();
             //out.println("error: " + ex);
-            message = "Something went wrong. Error: "+ex;
+            message = "Something went wrong. Please try again or contact the administrator.";
+            request.setAttribute("message", message);
             request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
@@ -342,7 +343,8 @@ public class addCustomerServlet extends HttpServlet {
             catch (SQLException ex) {
                 ex.printStackTrace();
                 //out.println("Another SQL error: " + ex);
-                message = "Something went wrong. Error: "+ex;
+                message = "Something went wrong. Please try again or contact the administrator.";
+                request.setAttribute("message", message);
                 request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }

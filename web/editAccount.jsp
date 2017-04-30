@@ -23,21 +23,27 @@
     <body>
         <h1>This is the Edit Account Page!</h1>
         
-        <c:if test="${message != ''}">
-            <p>${message}</p><br><br>
+        <c:set var="accountStatusList" value="${requestScope.accountStatusesList}"/>
+        <c:set var="accountTypes" value="${requestScope.atypeList}"/>
+        <c:set var="account" value="${requestScope.account}"/>
+        
+        <!--this is the error message-->
+        <c:set var="errorMessage" value="${requestScope.message}"/>
+        <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
+            <p>${errorMessage}</p><br><br>
         </c:if>
         
         <form action="account.edit" method="post">
             <input type="hidden" value="${account.getAccountID()}" name="accountIDInput"><br>
             <input type="hidden" value="${account.getPassword()}" name="oldPassword">
+            User Name: <input type="text" value="${account.getUserName()}" name="userNameInput" maxlength="30"><br>
             Password: <input type="password" name="newPasswordInput" maxlength="255"><br>
-            Enter password again:<input type="password" name="newPasswordInput2" maxlength="255"><br>
-            User Name: <input type="text" value="${account.getUserName()}" name="userNameInput" maxlength="30"><br><br>
+            Enter password again:<input type="password" name="newPasswordInput2" maxlength="255"><br><br>
             <b>Account Type</b><br>
             From:${account.getAccountType()}<br>
             To:
             <select name="accountTypeInput">
-                <c:forEach items="<%=accountTypes%>" var="atype" begin="0" step="1">
+                <c:forEach items="${accountTypes}" var="atype" begin="0" step="1">
                         <option value="${atype.getAccountTypeID()}">${atype.getAccountTypeName()}</option>
                 </c:forEach>    
             </select><br><br>

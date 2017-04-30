@@ -100,22 +100,27 @@ public class getAccountTypeStatusServlet extends HttpServlet {
          request.setAttribute("message", ""+request.getAttribute("message"));
          
          if(request.getAttribute("account")!=null){
+             context.log("Account found! Account ID is: "+((accountBean)request.getAttribute("account")).getAccountID());
              request.setAttribute("message",""+request.getAttribute("message"));
              request.setAttribute("account", request.getAttribute("account"));
              request.getRequestDispatcher("editAccount.jsp").forward(request,response);
+             return;
          }
-         if((""+request.getParameter("forSearch")).equals("yes")){
+         else if((""+request.getParameter("forSearch")).equals("yes")){
              request.getRequestDispatcher("conditionsAccount.jsp").forward(request,response);
+             return;
          }
          else{
             request.getRequestDispatcher("createAccount.jsp").forward(request,response);
+            return;
          }
          
         }
         catch(Exception ex){
             ex.printStackTrace();
             //out.println("error: " + ex);
-            String message = "Something went wrong. Error: "+ex;
+            String message = "Something went wrong. Please try again or contact the administrator.";
+            request.setAttribute("message", message);
             request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
@@ -128,7 +133,8 @@ public class getAccountTypeStatusServlet extends HttpServlet {
             catch (SQLException ex) {
                 ex.printStackTrace();
                 //out.println("Another SQL error: " + ex);
-                String message = "Something went wrong. Error: "+ex;
+                String message = "Something went wrong. Please try again or contact the administrator.";
+                request.setAttribute("message", message);
                 request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }

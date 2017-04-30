@@ -101,7 +101,7 @@
         </table>
         
         <br><br>
-        <a href="Servlets.getCustomerServlet">Return to list of customers</a>
+        <a href="Servlets.getCustomerServlet">Go to list of customers</a>
         <br><br>
         <a href="salesrep.get?whatFor=searchCustomer">Search Customers</a>
         <br><br>

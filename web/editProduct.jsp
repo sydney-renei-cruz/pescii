@@ -26,18 +26,20 @@
     <body>
         <h1>EDIT PRODUCT PAGE</h1>
         
-        <c:if test="${message != ''}">
-            <p>${message}</p><br><br>
+        <c:set var="suppList" value="${requestScope.suppliersList}"/>
+        <c:set var="errorMessage" value="${requestScope.message}"/>
+        <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
+            <p>${errorMessage}</p><br><br>
         </c:if>
             
 <div class="form">
     <form action="product.edit" method="post">
             <input type="hidden" value="${product.getProductID()}" name="productIDInput">
-            Product Name<input type="hidden" value="${product.getProductName()}" name="productNameInput"><br>
-            Product Description <textarea name="productDescriptionInput" rows="5" cols="50">${product.getProductDescription()}</textarea><br>
+            Product Name: <input type="text" value="${product.getProductName()}" name="productNameInput" maxlength="255" required><br>
+            Product Description: <br><textarea name="productDescriptionInput" rows="5" cols="50">${product.getProductDescription()}</textarea><br>
             Product Price: <input type="text" value="${product.getProductPrice()}" name="productPriceInput"><br>
             Restock Price: <input type="text" value="${product.getRestockPrice()}" name="restockPriceInput"><br>
-            Low Stock Level <input type="text" value="${product.getLowStock()}" name="lowStockInput"><br>
+            Low Stock Level: <input type="text" value="${product.getLowStock()}" name="lowStockInput"><br>
             Brand: <input type="text" value="${product.getBrand()}" name="brandInput" maxlength="50"><br>
             Color: <input type="text" value="${product.getColor()}" name="colorInput" maxlength="20"><br><br>
             <b>Product Class</b><br>
@@ -50,7 +52,7 @@
             <b>Supplier</b><br>
             From: ${product.getSupplierName()}<br>
             To: <select name="supplierInput">
-                <c:forEach items="<%=suppList%>" var="sup" begin="0" step="1">
+                <c:forEach items="${suppList}" var="sup" begin="0" step="1">
                         <option value="${sup.getSupplierID()}">${sup.getSupplierName()}</option>
                 </c:forEach>
             </select><br><br>
@@ -62,7 +64,7 @@
         </form>
 
         <br><br>
-        <a href="product.getDetails?prodID=<c:out value="${product.getProductID()}"/>">Return to Product details</a>
+        <a href="product.getDetails?prodID=<c:out value="${product.getProductID()}"/>">Go to Product details</a>
         <br><br>
         <a href="Servlets.getProductServlet">Go to Products list</a>
         <br><br>

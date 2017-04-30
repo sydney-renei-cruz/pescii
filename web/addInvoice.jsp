@@ -33,8 +33,9 @@
         <h1>This is the Add Invoice page!</h1>
         
         <!--this is the error message-->
-        <c:if test="${message ne '' || message ne null || message ne 'null'}">
-            <p>${message}</p><br><br>
+        <c:set var="errorMessage" value="${requestScope.message}"/>
+        <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
+            <p>${errorMessage}</p><br><br>
         </c:if>
             
             <table border="1">
@@ -106,7 +107,11 @@
             <input type="hidden" name="customerIDInput" value="${customer.getCustomerID()}">
             
             Enter Delivery Date: <input type="text" name="deliveryDateInput" id="date1" required><br>
-            Terms of Payment: <input type="text" name="topInput" maxlength="20" required><br>
+            Terms of Payment: <select name="topInput">
+                <option value="Cash">Cash</option>
+                <option value="Card">Card</option>
+                <option value="Cheque">Cheque</option>
+            </select><br>
             Payment Due Date: <input type="text" name="paymentDueDateInput" id="date2" required><br>
             Date Paid: <input type="text" name="datePaidInput" id="date3"><br>
             Status: <select name="statusInput">

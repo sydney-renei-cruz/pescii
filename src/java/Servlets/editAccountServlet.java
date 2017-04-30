@@ -108,17 +108,20 @@ public class editAccountServlet extends HttpServlet {
          try{
              newUserName = request.getParameter("userNameInput");
              if(newUserName.length()>30){
-                 message = "User name is too long.";
-                 request.setAttribute("message",message);
-                request.getRequestDispatcher("account.getTypeStatus").forward(request,response);
+                message = "User name is too long.";
+                request.setAttribute("message",message);
+                //request.setAttribute("accID", request.getParameter("accountIDInput"));
+                 context.log("here in editAccounServlet, accounID is: "+request.getParameter("accountIDInput"));
+                 request.getRequestDispatcher("account.getDetails?accID="+request.getParameter("accountIDInput")).forward(request,response);
                 return;
              }
             }
             catch(Exception e){
                 message = "User name was input incorrectly. It should also not be blank.";
                 request.setAttribute("message",message);
-                request.setAttribute("accID", request.getAttribute("accountIDInput"));
-                request.getRequestDispatcher("account.getDetails").forward(request,response);
+                //request.setAttribute("accID", request.getParameter("accountIDInput"));
+                 context.log("here in editAccounServlet, accounID is: "+request.getParameter("accountIDInput"));
+                 request.getRequestDispatcher("account.getDetails?accID="+request.getParameter("accountIDInput")).forward(request,response);
                 return;
             }
          
@@ -129,16 +132,18 @@ public class editAccountServlet extends HttpServlet {
              if(password.length()>255){
                  message = "Password is too long.";
                  request.setAttribute("message",message);
-                 request.setAttribute("accID", request.getAttribute("accountIDInput"));
-                 request.getRequestDispatcher("account.getDetails").forward(request,response);
+                 //request.setAttribute("accID", request.getParameter("accountIDInput"));
+                 context.log("here in editAccounServlet, accounID is: "+request.getParameter("accountIDInput"));
+                 request.getRequestDispatcher("account.getDetails?accID="+request.getParameter("accountIDInput")).forward(request,response);
                  return;
              }
              
              if(password.length()<8){
                  message = "Password must be at least 8 characters.";
                  request.setAttribute("message",message);
-                 request.setAttribute("accID", request.getAttribute("accountIDInput"));
-                 request.getRequestDispatcher("account.getDetails").forward(request,response);
+                 //request.setAttribute("accID", request.getParameter("accountIDInput"));
+                 context.log("here in editAccounServlet, accounID is: "+request.getParameter("accountIDInput"));
+                 request.getRequestDispatcher("account.getDetails?accID="+request.getParameter("accountIDInput")).forward(request,response);
                  return;
              }
              
@@ -161,16 +166,19 @@ public class editAccountServlet extends HttpServlet {
              if(!(digit==true || character==true || caps==false)){
                 message = "Password must contain at least one digit and one special character.";
                 request.setAttribute("message",message);
-                request.setAttribute("accID", request.getAttribute("accountIDInput"));
-                request.getRequestDispatcher("account.getDetails").forward(request,response);
+                //request.setAttribute("accID", request.getParameter("accountIDInput"));
+                 context.log("here in editAccounServlet, accounID is: "+request.getParameter("accountIDInput"));
+                 request.getRequestDispatcher("account.getDetails?accID="+request.getParameter("accountIDInput")).forward(request,response);
+                return;
             }
              
             }
             catch(Exception e){
                 message = "Password was input incorrectly. It should also not be blank.";
                 request.setAttribute("message",message);
-                request.setAttribute("accID", request.getAttribute("accountIDInput"));
-                request.getRequestDispatcher("account.getDetails").forward(request,response);
+                //request.setAttribute("accID", request.getParameter("accountIDInput"));
+                 context.log("here in editAccounServlet, accounID is: "+request.getParameter("accountIDInput"));
+                 request.getRequestDispatcher("account.getDetails?accID="+request.getParameter("accountIDInput")).forward(request,response);
                 return;
             }
          
@@ -179,8 +187,9 @@ public class editAccountServlet extends HttpServlet {
          if(!password.equals(password2)){
             message = "Passwords did not match";
             request.setAttribute("message",message);
-            request.setAttribute("accID", request.getAttribute("accountIDInput"));
-            request.getRequestDispatcher("account.getDetails").forward(request,response);
+            //request.setAttribute("accID", request.getParameter("accountIDInput"));
+            context.log("here in editAccounServlet, accounID is: "+request.getParameter("accountIDInput"));
+            request.getRequestDispatcher("account.getDetails?accID="+request.getParameter("accountIDInput")).forward(request,response);
             return;
          }
          if(password==null || password==""){password = request.getParameter("oldPassword");}
@@ -245,16 +254,19 @@ public class editAccountServlet extends HttpServlet {
          request.setAttribute("message", "Account successfully editted!");
          if((""+session.getAttribute("accountType")).equals("2") || (""+session.getAttribute("accountType")).equals("1") ){
              request.getRequestDispatcher("anotherAccount.jsp").forward(request,response);
+             return;
          }
          else{
             request.getRequestDispatcher("notif.get").forward(request,response);
+            return;
          }
          
         }
         catch(Exception ex){
             ex.printStackTrace();
             //out.println("error: " + ex);
-            String message = "Something went wrong. Error: "+ex;
+            String message = "Something went wrong. Please try again or contact the administrator.";
+            request.setAttribute("message", message);
             request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
@@ -267,7 +279,8 @@ public class editAccountServlet extends HttpServlet {
             catch (SQLException ex) {
                 ex.printStackTrace();
                 //out.println("Another SQL error: " + ex);
-                String message = "Something went wrong. Error: "+ex;
+                String message = "Something went wrong. Please try again or contact the administrator.";
+                request.setAttribute("message", message);
                 request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }

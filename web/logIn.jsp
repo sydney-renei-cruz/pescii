@@ -11,14 +11,15 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Welcome!</title>
+        <title>PESCII Log In</title>
           <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
         <h1>This is the log in page!</h1>
         <a href="homePage.jsp">Return to Home</a><br>
-        <c:if test="${message != ''}">
-            <p>${message}</p><br><br> 
+        <c:set var="errorMessage" value="${requestScope.message}"/>
+        <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
+            <p>${errorMessage}</p><br><br>
         </c:if>
             <div class="login">
             <div class="login-triangle"></div>

@@ -22,9 +22,14 @@
     <body>
         <h1>This is the Create Account page!</h1>
         
-        <c:if test="${message != ''}">
-            <p>${message}</p><br><br>
+        <c:set var="accountTypes" value="${requestScope.atypeList}"/>
+        
+        <!--this is the error message-->
+        <c:set var="errorMessage" value="${requestScope.message}"/>
+        <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
+            <p>${errorMessage}</p><br><br>
         </c:if>
+            
         <form action="Servlets.createAccountServlet" method="post">
             Enter username:<input type="text" name="usernameInput" maxlength="30" required><br>
             Enter password:<input type="password" name="passwordInput" maxlength="255" required><br>

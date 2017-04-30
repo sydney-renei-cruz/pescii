@@ -55,7 +55,7 @@
         
 
         <br><br>
-        <a href="province.get?whatFor=conditionsInvoice">Custom View Invoice</a>
+        <a href="province.get?whatFor=conditionsInvoice">Search Invoice</a>
         <br><br>
         <a href="notif.get">Return to Home</a>
         <br><br>

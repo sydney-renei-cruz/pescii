@@ -17,6 +17,7 @@
     
     ArrayList<restockOrderBean> restocksList = (ArrayList<restockOrderBean>)request.getAttribute("restocksList");
     ArrayList<invoiceBean> invoiceList = (ArrayList<invoiceBean>)request.getAttribute("invoiceList");
+    ArrayList<productBean> productsList = (ArrayList<productBean>)request.getAttribute("productsList");
 %>
 <!DOCTYPE html>
 <html>
@@ -87,6 +88,7 @@
             
             
             <a href="account.getTypeStatus">Create Account</a><br>
+            <a href="account.get">Edit Account</a><br>
             <a href="account.getTypeStatus?forSearch=yes">Search Accounts</a><br>
             <a href="account.get">View All Accounts</a><br><br>
         </c:if>    
@@ -154,6 +156,7 @@
             <a href="conditionsSalesRep.jsp">Search Sales Reps</a><br>
             <a href="salesrep.get">View All Sales Reps</a><br><br>
             <a href="account.getTypeStatus">Create Account</a><br>
+            <a href="account.get">Edit Account</a><br>
             <a href="account.getTypeStatus?forSearch=yes">Search Accounts</a><br>
             <a href="account.get">View All Accounts</a><br><br>
             
@@ -186,10 +189,10 @@
             
                 <!--Invoice notifs for those with near (within 7 days) payment or delivery deadlines-->
                 <c:if test="${invoiceList.size() eq 0}">
-                    <p>You have <b>${invoiceList.size()} invoice/s</b> with deadlines within the next 7 days</p>
+                    <p>You have <b>${invoiceList.size()} Invoices</b> with deadlines within the next 7 days</p>
                 </c:if>
                 <c:if test="${invoiceList.size() ne 0}">
-                    <p>You have <b>${invoiceList.size()} invoice/s</b> with deadlines within the next 7 days</p>
+                    <p>You have <b>${invoiceList.size()} Invoice/s</b> with deadlines within the next 7 days</p>
                     <table border="1">
                         <tr>
                             <th>Invoice ID</th>
@@ -223,11 +226,11 @@
                 </c:if>
         </c:if>    
                     
-                    
+        <br><br>            
         <!--RestockOrder notifs for those with near (within 7 days) delivery deadlines-->
         <c:if test="${accountType == '4' || accountType == '5' || accountType == '2' || accountType == '1'}">    
             <c:if test="${restocksList.size() eq 0}">
-                <p>You have <b>${restocksList.size()} RO/s</b> with deadlines within the next 7 days</p>
+                <p>You have <b>${restocksList.size()} ROs</b> with deadlines within the next 7 days</p>
             </c:if>
             <c:if test="${restocksList.size() ne 0}">
                 <p>You have <b>${restocksList.size()} RO/s</b> with deadlines within the next 7 days</p>
@@ -252,9 +255,55 @@
                         <td>${ro.getDateCreated()}</td>
                         <td><a href="restockOrder.getDetails?editRestock=yes&restockID=<c:out value="${ro.getRestockOrderID()}"/>">Edit</td>
                     </tr>
-            </c:forEach>
-            </table>
+                </c:forEach>
+                </table>
             </c:if>
+            <br><br>    
+            <c:if test="${productsList.size() eq 0}">
+                <p>You have <b>${productsList.size()} Products</b> with low stocks.</p>
+            </c:if>
+            <c:if test="${productsList.size() ne 0}">
+                <p>You have <b>${restocksList.size()} RO/s</b> with deadlines within the next 7 days</p>
+                <table border="1">
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Supplier</th>
+                        <th>Product Price</th>
+                        <th>Restock Price</th>
+                        <th>Stocks Remaining</th>
+                        <th>Low Stock</th>
+                        <th>Brand</th>
+                        <th>Product Class</th>
+                        <th>Color</th>
+                    </tr>
+
+                    <c:forEach items="${productsList}" var="prod" begin="0" step="1" varStatus="status">
+                    <tr>
+                        <td><a href="product.getDetails?prodID=<c:out value="${prod.getProductID()}"/>">${prod.getProductName()}</a></td>
+                        <td>${prod.getSupplierName()}</td>
+                        <td>${prod.getProductPrice()}</td>
+                        <td>${prod.getRestockPrice()}</td>
+                        <td>${prod.getStocksRemaining()}</td>
+                        <td>${prod.getLowStock()}</td>
+                        <td>${prod.getBrand()}</td>
+                        <td>${prod.getProductClassName()}</td>
+                        <td>${prod.getColor()}</td>
+
+                        <c:if test="${accountType eq '4' || accountType eq '1'}">
+                            <td><a href="product.getDetails?forEdit=yes&prodID=<c:out value="${prod.getProductID()}"/>">EDIT</a></td>
+                        </c:if>
+                            
+                        <c:if test="${accountType eq '4' || accountType eq '1'}">
+                            <td><a href="addToROCart?getQuantity=yes&prodName=<c:out value="${prod.getProductName()}"/>&prodID=<c:out value="${prod.getProductID()}"/>&prodPrice=<c:out value="${prod.getRestockPrice()}"/>&suppID=<c:out value="${prod.getSupplierID()}"/>&suppName=<c:out value="${prod.getSupplierName()}"/>">Create RO</a></td>
+                        </c:if>    
+
+                    </tr>
+
+                </c:forEach>
+                </table>
+                <br><br>
+            </c:if>        
+            
         </c:if>
         
         <a href="product.getProductClass?search=yes&searchWhat=prod">Search Product</a><br>

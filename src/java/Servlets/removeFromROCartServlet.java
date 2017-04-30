@@ -48,58 +48,57 @@ public class removeFromROCartServlet extends HttpServlet {
         LinkedList<Float> ROtotalPrices;
         int foundIndex = 0;
         HttpSession session = request.getSession();
-        if (session.getAttribute("ROcart") == null){
-            ROcart = new LinkedList<String>();
-            ROprodNames = new LinkedList<String>();
-            ROsuppNames = new LinkedList<String>();
-            ROsuppIDs = new LinkedList<String>();
-            ROprodPrices = new LinkedList<Float>();
-            ROquantity = new LinkedList<Integer>();
-            ROtotalPrices = new LinkedList<Float>();
-            context.log(">>cart created!");
-            context.log("----ROcart size is: " + ROcart.size());
-        }
-        else{
-            ROcart = (LinkedList<String>)(session.getAttribute("ROcart"));
-            ROprodNames = (LinkedList<String>)(session.getAttribute("ROprodNames"));
-            ROprodPrices = (LinkedList<Float>)(session.getAttribute("ROprodPrices"));
-            ROsuppNames = (LinkedList<String>)(session.getAttribute("ROsuppNames"));
-            ROsuppIDs = (LinkedList<String>)(session.getAttribute("ROsuppIDs"));
-            ROquantity = (LinkedList<Integer>)(session.getAttribute("ROquantity"));
-            ROtotalPrices = (LinkedList<Float>)(session.getAttribute("ROtotalPrices"));
-            context.log("----ROcart size is: " + ROcart.size());
-        }
-        if(request.getParameter("prodName")!=null){
-            String prodName = ""+request.getParameter("prodName");
-            
-            for(int i=0;i<ROprodNames.size();i++){
-                if((""+ROprodNames.get(i)).equals(prodName)){
-                    foundIndex = i;
-                }
+        try{
+            if (session.getAttribute("ROcart") == null){
+                ROcart = new LinkedList<String>();
+                ROprodNames = new LinkedList<String>();
+                ROprodPrices = new LinkedList<Float>();
+                ROquantity = new LinkedList<Integer>();
+                ROtotalPrices = new LinkedList<Float>();
+                context.log(">>cart created!");
+                context.log("----ROcart size is: " + ROcart.size());
             }
-            
-            ROcart.remove(foundIndex);
-            ROprodNames.remove(foundIndex);
-            ROprodPrices.remove(foundIndex);
-            ROsuppNames.remove(foundIndex);
-            ROsuppIDs.remove(foundIndex);
-            if(ROquantity!=null && ROquantity.size()>foundIndex){
-                ROquantity.remove(foundIndex);
-                ROtotalPrices.remove(foundIndex);}
-            context.log("->>product removed from ROcart! size is now: " + ROcart.size());
+            else{
+                ROcart = (LinkedList<String>)(session.getAttribute("ROcart"));
+                ROprodNames = (LinkedList<String>)(session.getAttribute("ROprodNames"));
+                ROprodPrices = (LinkedList<Float>)(session.getAttribute("ROprodPrices"));
+                ROquantity = (LinkedList<Integer>)(session.getAttribute("ROquantity"));
+                ROtotalPrices = (LinkedList<Float>)(session.getAttribute("ROtotalPrices"));
+                context.log("----ROcart size is: " + ROcart.size());
+            }
+            if(request.getParameter("prodName")!=null){
+                String prodName = ""+request.getParameter("prodName");
+
+                for(int i=0;i<ROprodNames.size();i++){
+                    if((""+ROprodNames.get(i)).equals(prodName)){
+                        foundIndex = i;
+                    }
+                }
+
+                ROcart.remove(foundIndex);
+                ROprodNames.remove(foundIndex);
+                ROprodPrices.remove(foundIndex);
+                if(ROquantity!=null && ROquantity.size()>foundIndex){
+                    ROquantity.remove(foundIndex);
+                    ROtotalPrices.remove(foundIndex);}
+                context.log("->>product removed from ROcart! size is now: " + ROcart.size());
+            }
+
+            session.setAttribute("ROcart", ROcart);
+            session.setAttribute("ROprodNames", ROprodNames);
+            session.setAttribute("ROprodPrices", ROprodPrices);
+            session.setAttribute("ROquantity", ROquantity);
+            session.setAttribute("ROtotalPrices", ROtotalPrices);
+            request.setAttribute("ROforInvoice", "yes");
+            request.getRequestDispatcher("viewROCart.jsp").forward(request,response);
+
         }
-        
-        session.setAttribute("ROcart", ROcart);
-        session.setAttribute("ROprodNames", ROprodNames);
-        session.setAttribute("ROsuppNames", ROsuppNames);
-        session.setAttribute("ROsuppIDs", ROsuppIDs);
-        session.setAttribute("ROprodPrices", ROprodPrices);
-        session.setAttribute("ROquantity", ROquantity);
-        session.setAttribute("ROtotalPrices", ROtotalPrices);
-        request.setAttribute("ROforInvoice", "yes");
-        request.getRequestDispatcher("viewROCart.jsp").forward(request,response);
-    
-        
+        catch(Exception ex){
+            ex.printStackTrace();
+            String message = "Something went wrong. Please try again or contact the administrator.";
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("errorPage.jsp").forward(request,response);
+        }
         
     }
 

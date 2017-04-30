@@ -25,7 +25,6 @@
         ${cartType}
         <table border="1">
             <tr>
-                <th>Product ID</th>
                 <th>Product Name</th>
                 <th>Supplier</th>
                 <th>Product Price</th>
@@ -39,17 +38,7 @@
         
         <c:forEach items="${productsList}" var="prod" begin="0" step="1" varStatus="status">
             <tr>
-                    <td>${prod.getProductID()}</td>
-                    <c:choose>
-                        <c:when test="${cartType eq null}">
-                            <td><a href="product.getDetails?prodID=<c:out value="${prod.getProductID()}"/>">${prod.getProductName()}</a></td>
-                        </c:when>
-                        <c:when test="${cartType ne null}">
-                            <!--<td><a href="product.getDetails?forInvoice=yes&prodID=<c:out value="${prod.getProductID()}"/>">${prod.getProductName()}</a></td>-->
-                            <td><a href="product.getDetails?prodID=<c:out value="${prod.getProductID()}"/>">${prod.getProductName()}</a></td>
-                        </c:when>
-                    </c:choose>
-                    
+                    <td><a href="product.getDetails?prodID=<c:out value="${prod.getProductID()}"/>">${prod.getProductName()}</a></td>
                     <td>${prod.getSupplierName()}</td>
                     <td>${prod.getProductPrice()}</td>
                     <td>${prod.getRestockPrice()}</td>
@@ -64,7 +53,6 @@
                     </c:if>
                     <c:if test="${cartType eq 'restock'}">
                         <td><a href="addToROCart?prodName=<c:out value="${prod.getProductName()}"/>&prodID=<c:out value="${prod.getProductID()}"/>&prodPrice=<c:out value="${prod.getRestockPrice()}"/>&suppID=<c:out value="${prod.getSupplierID()}"/>&suppName=<c:out value="${prod.getSupplierName()}"/>">ADD to RO</a></td>
-                        <!--<td><a href="product.getDetails?forRestock=yes&prodID=<c:out value="${prod.getProductID()}"/>">ADD to RO</a></td>-->
                     </c:if>    
                     <c:if test="${accountType eq '4' || accountType eq '1'}">
                       <td><a href="product.getDetails?forEdit=yes&prodID=<c:out value="${prod.getProductID()}"/>">EDIT</a></td>
@@ -81,17 +69,17 @@
             <c:when test="${cartType eq 'invoice'}">
                 <a href="viewCart.jsp">View Cart</a> to add your invoice.<br><br>
                 <a href="invoice.add?cancel=yes">Cancel Invoice</a><br><br>
-                <a href="product.getProductClass?search=yes&searchWhat=prod&forOther=invoice">Custom View Product</a>
+                <a href="product.getProductClass?search=yes&searchWhat=prod&forOther=invoice">Search Product</a>
             </c:when>
                 
             <c:when test="${cartType eq 'restock'}">
                 <a href="viewROCart.jsp">View Cart</a> to add your Restock Order.<br><br>
                 <a href="Servlets.createRestockOrderServlet?cancel=yes">Cancel Restock Order</a><br><br>
-                <a href="product.getProductClass?search=yes&searchWhat=prod&forOther=restock">Custom View Product</a>
+                <a href="product.getProductClass?search=yes&searchWhat=prod&forOther=restock">Search Product</a>
             </c:when>    
             
             <c:when test="${forInvoice ne 'yes' && forRestock ne 'yes'}">
-                <a href="product.getProductClass?search=yes&searchWhat=prod">Custom View Product</a>
+                <a href="product.getProductClass?search=yes&searchWhat=prod">Search Product</a>
             </c:when>
         </c:choose>
         <br><br>

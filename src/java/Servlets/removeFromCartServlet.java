@@ -46,49 +46,56 @@ public class removeFromCartServlet extends HttpServlet {
         LinkedList<Float> totalPrices;
         int foundIndex = 0;
         HttpSession session = request.getSession();
-        if (session.getAttribute("cart") == null){
-            cart = new LinkedList<String>();
-            prodNames = new LinkedList<String>();
-            prodPrices = new LinkedList<Float>();
-            quantity = new LinkedList<Integer>();
-            totalPrices = new LinkedList<Float>();
-            context.log(">>cart created!");
-            context.log("----cart size is: " + cart.size());
-        }
-        else{
-            cart = (LinkedList<String>)(session.getAttribute("cart"));
-            prodNames = (LinkedList<String>)(session.getAttribute("prodNames"));
-            prodPrices = (LinkedList<Float>)(session.getAttribute("prodPrices"));
-            quantity = (LinkedList<Integer>)(session.getAttribute("quantity"));
-            totalPrices = (LinkedList<Float>)(session.getAttribute("totalPrices"));
-            context.log("----cart size is: " + cart.size());
-        }
-        if(request.getParameter("prodName")!=null){
-            String prodName = ""+request.getParameter("prodName");
-            
-            for(int i=0;i<prodNames.size();i++){
-                if((""+prodNames.get(i)).equals(prodName)){
-                    foundIndex = i;
-                }
+        try{
+            if (session.getAttribute("cart") == null){
+                cart = new LinkedList<String>();
+                prodNames = new LinkedList<String>();
+                prodPrices = new LinkedList<Float>();
+                quantity = new LinkedList<Integer>();
+                totalPrices = new LinkedList<Float>();
+                context.log(">>cart created!");
+                context.log("----cart size is: " + cart.size());
             }
-            
-            cart.remove(foundIndex);
-            prodNames.remove(foundIndex);
-            prodPrices.remove(foundIndex);
-            if(quantity!=null && quantity.size()>foundIndex){quantity.remove(foundIndex);totalPrices.remove(foundIndex);}
-            context.log("->>product removed from cart! size is now: " + cart.size());
+            else{
+                cart = (LinkedList<String>)(session.getAttribute("cart"));
+                prodNames = (LinkedList<String>)(session.getAttribute("prodNames"));
+                prodPrices = (LinkedList<Float>)(session.getAttribute("prodPrices"));
+                quantity = (LinkedList<Integer>)(session.getAttribute("quantity"));
+                totalPrices = (LinkedList<Float>)(session.getAttribute("totalPrices"));
+                context.log("----cart size is: " + cart.size());
+            }
+            if(request.getParameter("prodName")!=null){
+                String prodName = ""+request.getParameter("prodName");
+
+                for(int i=0;i<prodNames.size();i++){
+                    if((""+prodNames.get(i)).equals(prodName)){
+                        foundIndex = i;
+                    }
+                }
+
+                cart.remove(foundIndex);
+                prodNames.remove(foundIndex);
+                prodPrices.remove(foundIndex);
+                if(quantity!=null && quantity.size()>foundIndex){quantity.remove(foundIndex);totalPrices.remove(foundIndex);}
+                context.log("->>product removed from cart! size is now: " + cart.size());
+            }
+
+            session.setAttribute("cart", cart);
+            session.setAttribute("prodNames", prodNames);
+            session.setAttribute("prodPrices", prodPrices);
+            session.setAttribute("quantity", quantity);
+            session.setAttribute("totalPrices", totalPrices);
+            request.setAttribute("forInvoice", "yes");
+            request.getRequestDispatcher("viewCart.jsp").forward(request,response);
+
+
         }
-        
-        session.setAttribute("cart", cart);
-        session.setAttribute("prodNames", prodNames);
-        session.setAttribute("prodPrices", prodPrices);
-        session.setAttribute("quantity", quantity);
-        session.setAttribute("totalPrices", totalPrices);
-        request.setAttribute("forInvoice", "yes");
-        request.getRequestDispatcher("viewCart.jsp").forward(request,response);
-    
-        
-        
+        catch(Exception ex){
+            ex.printStackTrace();
+            String message = "Something went wrong. Please try again or contact the administrator.";
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("errorPage.jsp").forward(request,response);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

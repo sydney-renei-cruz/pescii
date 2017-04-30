@@ -43,7 +43,7 @@
         </table>
         <br><br>
         
-        <a href="account.getTypeStatus?forSearch=yes">Custom View Account</a>
+        <a href="account.getTypeStatus?forSearch=yes">Search Account</a>
         <br><br>
         <a href="notif.get">Return to Home</a>
         <br><br>

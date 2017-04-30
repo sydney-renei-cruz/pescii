@@ -44,7 +44,7 @@
         </c:forEach>
         </table>
         <br><br>
-        <a href="product.getProductClass?search=yes&searchWhat=supp">Custom View Supplier</a>
+        <a href="product.getProductClass?search=yes&searchWhat=supp">Search Supplier</a>
         <br><br>
         <c:if test="${cartType eq 'restock'}">
             <a href="Servlets.createRestockOrderServlet?cancel=yes">Cancel Restock Order</a>
