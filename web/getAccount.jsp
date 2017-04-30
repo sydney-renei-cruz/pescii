@@ -36,7 +36,7 @@
                     <td>${acc.getAccountType()}</td>
                     <td>${acc.getAccountStatus()}</td>
                     <td>${acc.getDateCreated()}</td>
-                    <td><a href="account.getDetails?accID=<c:out value="${acc.getAccountID()}"/>">Edit</td>
+                    <td><a href="account.getDetails?accID=<c:out value="${acc.getAccountID()}"/>">Edit</a></td>
             </tr>
             
         </c:forEach>
@@ -45,20 +45,7 @@
         
         <a href="account.getTypeStatus?forSearch=yes">Custom View Account</a>
         <br><br>
-        <c:choose>
-            <c:when test="${accountType eq 3}">
-                <a href="notif.get?forWhat=invoice">Return to Home</a>
-            </c:when>
-            <c:when test="${(accountType eq 4) || (accountType eq 5)} ">
-                <a href="notif.get?forWhat=restock">Return to Home</a>
-            </c:when>
-            <c:when test="${accountType eq 1}">
-                <a href="notif.get?forWhat=both">Return to Home</a>
-            </c:when>
-            <c:when test="${(accountType ne 3) || (accountType ne 4) || (accountType ne 5) || (accountType ne 1)}">
-                <a href="homePage.jsp">Return to Home</a>
-            </c:when>
-        </c:choose>
+        <a href="notif.get">Return to Home</a>
         <br><br>
         <a href="Servlets.logoutServlet">logout</a>
     

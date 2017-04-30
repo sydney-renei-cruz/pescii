@@ -208,9 +208,9 @@ public class viewCustomerDetailsServlet extends HttpServlet {
          catch(Exception e){forEdit = "" + request.getAttribute("forEdit");}
          context.log("for Edit is: "+forEdit);
          String editWhat = request.getParameter("editWhat");
-         String viewDetails = request.getParameter("viewDetails");
+         //String viewDetails = request.getParameter("viewDetails");
          
-         if((""+session.getAttribute("cartType")).equals("invoice") && session.getAttribute("cart")!=null && editWhat==null && viewDetails==null){
+         if((""+session.getAttribute("cartType")).equals("invoice") && session.getAttribute("cart")!=null && editWhat==null){
              request.setAttribute("message",request.getAttribute("message"));
              request.getRequestDispatcher("invoice.getStatus").forward(request, response);
          }
@@ -237,7 +237,8 @@ public class viewCustomerDetailsServlet extends HttpServlet {
              request.setAttribute("salesRepList", salesRepsRetrieved);
              request.getRequestDispatcher("editCustomer.jsp").forward(request, response);
          }
-         else if(viewDetails!=null){
+         //else if(viewDetails!=null || viewDetails==null){
+         else{
             request.getRequestDispatcher("customerDetails.jsp").forward(request,response);
          }
         }

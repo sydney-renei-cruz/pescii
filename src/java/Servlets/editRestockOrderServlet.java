@@ -180,6 +180,16 @@ public class editRestockOrderServlet extends HttpServlet {
          //check purpose
          String newPurpose = request.getParameter("purposeInput");
          
+         //check status ID
+        int newStatusID = 0;
+        try{newStatusID = Integer.parseInt(request.getParameter("statusInput"));}
+        catch(Exception e){
+               message = "Restock Order Status is invalid.";
+               request.setAttribute("message",message);
+               request.setAttribute("forRestock", "yes");
+               request.getRequestDispatcher("restockOrder.getStatus").forward(request,response);
+               return;
+        }
          
          //check RO date delivered
          String newRODateDelivered = "";
@@ -191,6 +201,10 @@ public class editRestockOrderServlet extends HttpServlet {
                 request.getRequestDispatcher("restockOrder.getDetails?editRestock=yes&restockID="+inputRestockOrderID).forward(request,response);
                 return;
                  }
+                
+                else if(newRODateDelivered.equals("") || newRODateDelivered == null){
+                    newRODateDelivered = null;
+                }
 
                 else if((!(newRODateDelivered.equals("")) || newRODateDelivered != null)){
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -229,16 +243,7 @@ public class editRestockOrderServlet extends HttpServlet {
          
          String lastEdittedBy = ""+session.getAttribute("userName");
          
-         //check status ID
-        int newStatusID = 0;
-        try{newStatusID = Integer.parseInt(request.getParameter("statusInput"));}
-        catch(Exception e){
-               message = "Restock Order Status is invalid.";
-               request.setAttribute("message",message);
-               request.setAttribute("forRestock", "yes");
-               request.getRequestDispatcher("restockOrder.getStatus").forward(request,response);
-               return;
-        }
+         
          
          
          context.log("now updating the Restock Order!");
@@ -252,11 +257,11 @@ public class editRestockOrderServlet extends HttpServlet {
          ps.setString(1,newROName);
          ps.setString(2,newPurpose);
          ps.setString(3,newRODateDue);
-         if(newRODateDelivered.equals("") || newRODateDelivered==null){ps.setString(4,null);}
+         if(newRODateDelivered==null || newRODateDelivered.equals("")){ps.setString(4,null);}
          else{ps.setString(4,newRODateDelivered);}
          ps.setFloat(5,newAmountPaid);
          ps.setFloat(6,newDiscount);
-         if(newRODateDelivered.equals("") || newRODateDelivered==null){ps.setString(7,null);}
+         if(newRODateDelivered==null || newRODateDelivered.equals("")){ps.setString(7,null);}
          else{ps.setString(7,newRODateDelivered);}
          ps.setString(8,lastEdittedBy);
          ps.setInt(9,newStatusID);
@@ -273,7 +278,7 @@ public class editRestockOrderServlet extends HttpServlet {
          String[] roiidInput = request.getParameterValues("ROIID");
          String[] pidInput = request.getParameterValues("pid");
          
-         if(!newRODateDelivered.equals("")){
+         if(newStatusID!=2){
             //now update the product if an RODateDelivered was entered
 
             LinkedList<Integer> ROquantity = new LinkedList<Integer>();
@@ -338,13 +343,14 @@ public class editRestockOrderServlet extends HttpServlet {
          
          
          request.setAttribute("message", message);
-         request.getRequestDispatcher("homePage.jsp").forward(request,response);
+         request.setAttribute("restockID", inputRestockOrderID);
+         request.getRequestDispatcher("anotherRestockOrder.jsp").forward(request,response);
          
         }
         catch(Exception ex){
             ex.printStackTrace();
             //out.println("error: " + ex);
-            String message = "Something went wrong. Error: "+ex;
+            String message = "Something went wrong. Please try again or contact the administrator.";
             request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
@@ -357,7 +363,7 @@ public class editRestockOrderServlet extends HttpServlet {
             catch (SQLException ex) {
                 ex.printStackTrace();
                 //out.println("Another SQL error: " + ex);
-                String message = "Something went wrong. Error: "+ex;
+                String message = "Something went wrong. Please try again or contact the administrator.";
                 request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }

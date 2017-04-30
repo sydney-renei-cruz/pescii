@@ -258,13 +258,14 @@ public class editProductServlet extends HttpServlet {
          
          message = "Product successfully editted!";
          request.setAttribute("message", message);
-         request.getRequestDispatcher("homePage.jsp").forward(request,response);
+         request.setAttribute("prodID", productID);
+         request.getRequestDispatcher("anotherProduct.jsp").forward(request,response);
          
         }
         catch(Exception ex){
             ex.printStackTrace();
             //out.println("error: " + ex);
-            String message = "Something went wrong. Error: "+ex;
+            String message = "Something went wrong. Please try again or contact the administrator.";
             request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
@@ -277,7 +278,7 @@ public class editProductServlet extends HttpServlet {
             catch (SQLException ex) {
                 ex.printStackTrace();
                 //out.println("Another SQL error: " + ex);
-                String message = "Something went wrong. Error: "+ex;
+                String message = "Something went wrong. Please try again or contact the administrator.";
                 request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }

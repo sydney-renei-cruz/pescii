@@ -64,7 +64,9 @@
         </c:forEach>
         </table>
         <br><br>
-        <a href="Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID=<c:out value="${invoice.getInvoiceID()}"/>">Edit Invoice</a>
+        <c:if test="${accountType eq '4' || accountType eq '1' || accountType eq '3'}">
+            <a href="Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID=<c:out value="${invoice.getInvoiceID()}"/>">Edit Invoice</a>
+        </c:if>
         <br><br>
         <a href="province.get?whatFor=conditionsInvoice">Search Invoice</a><br>
         <br><br>

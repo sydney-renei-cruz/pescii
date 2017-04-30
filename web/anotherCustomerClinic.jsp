@@ -16,16 +16,17 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>PESCII Customer Data Saved</title>
     </head>
     <body>
         <c:if test="${message != ''}">
            <h1>${message}</h1>
         </c:if>
         <c:set var="customerID" value="${requestScope.custID}"/>   
-        <a href="salesrep.get?whatFor=addCustomer">Add another Customer</a><br>
+        <a href="salesrep.get?whatFor=addCustomer">Add a new Customer</a><br>
         <a href="Servlets.viewCustomerDetailsServlet?editWhat=cust&forEdit=yes&custID=<c:out value="${customerID}"/>">Edit created Customer</a><br>
         <a href="province.get?whatFor=addClinic&custID=<c:out value="${customerID}"/>">Add another Clinic to created Customer</a><br>
+        <a href="Servlets.viewCustomerDetailsServlet?viewDetails=yes&custID=<c:out value="${customerID}"/>">View Customer Details</a>
         <br><br>
         <a href="notif.get">Return to Home</a>
         <br><br>

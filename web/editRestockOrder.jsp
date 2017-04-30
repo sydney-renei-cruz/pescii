@@ -43,12 +43,12 @@
 
             <c:choose>
                 <c:when test="${accountType eq '4' || accountType eq '1'}">
-                    Restock Order Name: <input type="text" value="${restockOrder.getRestockOrderName()}" name="newRONameInput" maxlength="255"><br>
+                    Restock Order Name: <input type="text" value="${restockOrder.getRestockOrderName()}" name="newRONameInput" maxlength="255" required><br>
                     Purpose: <br><textarea name="purposeInput" rows="5" cols="50">${restockOrder.getPurpose()}</textarea><br>
                 </c:when>
                 <c:when test="${accountType eq '5'}">
-                    Restock Order Name: ${restockOrder.getRestockOrderName()}<br>
-                    Purpose: <br>${restockOrder.getPurpose()}<br>
+                    Restock Order Name: <input type="hidden" value="${restockOrder.getRestockOrderName()}" name="newRONameInput">${restockOrder.getRestockOrderName()}<br>
+                    Purpose: <br><input type="hidden" name="purposeInput" value="${restockOrder.getPurpose()}">${restockOrder.getPurpose()}<br>
                 </c:when>
             </c:choose>
                     
@@ -64,13 +64,26 @@
                     <tr>
                         <td><a href="restockOrder.getDetails?restockID=<c:out value="${ro.getProductID()}"/>">${ro.getProductName()}</a></td>
                         <c:choose>
-                            <c:when test="${accountType eq '4' || accountType eq '1'}">
-                                <td><input type="text" name="QO" value="${ro.getQuantityPurchased()}"></td>
-                                <td>${ro.getQuantityReceived()}</td>
+                            <c:when test="${restockOrder.getStatusName() eq 'In Progress'}">
+                                <c:choose>
+                                    <c:when test="${accountType eq '4'}">
+                                        <td><input type="text" name="QO" value="${ro.getQuantityPurchased()}"></td>
+                                        <td><input type="hidden" name="QR" value="${ro.getQuantityReceived()}">${ro.getQuantityReceived()}</td>
+                                    </c:when>
+                                    <c:when test="${accountType eq '5'}">
+                                        <td><input type="hidden" name="QO" value="${ro.getQuantityPurchased()}">${ro.getQuantityPurchased()}</td>
+                                        <td><input type="text" name="QR" value="${ro.getQuantityReceived()}"></td>
+                                    </c:when>
+                                    <c:when test="${accountType eq '1'}">
+                                        <td><input type="text" name="QO" value="${ro.getQuantityPurchased()}"></td>
+                                        <td><input type="text" name="QR" value="${ro.getQuantityReceived()}"></td>
+                                    </c:when>
+                                </c:choose>
                             </c:when>
-                            <c:when test="${accountType eq '5'}">
-                                <td>${ro.getQuantityPurchased()}</td>
-                                <td><input type="text" name="QR" value="${ro.getQuantityReceived()}"></td>
+                                        
+                            <c:when test="${restockOrder.getStatusName() ne 'In Progress'}">
+                                <td><input type="hidden" name="QO" value="${ro.getQuantityPurchased()}">${ro.getQuantityPurchased()}</td>
+                                <td><input type="hidden" name="QR" value="${ro.getQuantityReceived()}">${ro.getQuantityReceived()}</td>
                             </c:when>
                         </c:choose>
                     </tr>
@@ -86,19 +99,37 @@
 
             Original Price: ${restockOrder.getRestockPrice()}<br>
             <c:choose>
-                <c:when test="${accountType eq '4' || accountType eq '1'}">
-                    Discount: <input type="text" value="${restockOrder.getDiscount()}" name="discountInput"><br>
-                    Amount Paid:<input type="text" value="${restockOrder.getAmountPaid()}" name="amountPaidInput"><br>
-                    Delivery Due Date: <input type="text" value="${restockOrder.getRODateDue()}" name="roDeliveryDueDateInput" id="date1" maxlength="10"><br>
+                <c:when test="${restockOrder.getStatusName() eq 'In Progress'}">
+                    <c:choose>
+                        <c:when test="${accountType eq '4'}">
+                            Discount: <input type="text" value="${restockOrder.getDiscount()}" name="discountInput" required><br>
+                            Amount Paid:<input type="text" value="${restockOrder.getAmountPaid()}" name="amountPaidInput" required><br>
+                            Delivery Due Date: <input type="text" value="${restockOrder.getRODateDue()}" name="roDeliveryDueDateInput" id="date1" maxlength="10" required><br>
+                            Date Delivered: <input type="hidden" value="${restockOrder.getRODateDelivered()}" name="roDateDeliveredInput">${restockOrder.getRODateDelivered()}<br>
+                        </c:when>
+                        <c:when test="${accountType eq '5'}">
+                            Discount: <input type="hidden" value="${restockOrder.getDiscount()}" name="discountInput">${restockOrder.getDiscount()}<br>
+                            Amount Paid:<input type="hidden" value="${restockOrder.getAmountPaid()}" name="amountPaidInput">${restockOrder.getAmountPaid()}<br>
+                            Delivery Due Date: <input type="hidden" value="${restockOrder.getRODateDue()}" name="roDeliveryDueDateInput">${restockOrder.getRODateDue()}<br>
+                            Date Delivered: <input type="text" value="${restockOrder.getRODateDelivered()}" name="roDateDeliveredInput" id="date2" maxlength="10" required><br>
+                        </c:when>
+                        <c:when test="${accountType eq '1'}">
+                            Discount: <input type="text" value="${restockOrder.getDiscount()}" name="discountInput" required><br>
+                            Amount Paid:<input type="text" value="${restockOrder.getAmountPaid()}" name="amountPaidInput" required><br>
+                            Delivery Due Date: <input type="text" value="${restockOrder.getRODateDue()}" name="roDeliveryDueDateInput" id="date1" maxlength="10" required><br>
+                            Date Delivered: <input type="text" value="${restockOrder.getRODateDelivered()}" name="roDateDeliveredInput" id="date2" maxlength="10" required><br>
+                        </c:when>
+                    </c:choose>
                 </c:when>
-                <c:when test="${accountType eq '5'}">
-                    Discount: ${restockOrder.getDiscount()}<br>
-                    Amount Paid: ${restockOrder.getAmountPaid()}<br>
-                    Delivery Due Date: ${restockOrder.getRODateDue()}<br>
-                    Date Delivered: <input type="text" value="${restockOrder.getRODateDelivered()}" name="roDateDeliveredInput" id="date2" maxlength="10"><br>
+                
+                <c:when test="${restockOrder.getStatusName() ne 'In Progress'}">
+                    Discount: <input type="hidden" value="${restockOrder.getDiscount()}" name="discountInput">${restockOrder.getDiscount()}<br>
+                    Amount Paid:<input type="hidden" value="${restockOrder.getAmountPaid()}" name="amountPaidInput">${restockOrder.getAmountPaid()}<br>
+                    Delivery Due Date: <input type="hidden" value="${restockOrder.getRODateDue()}" name="roDeliveryDueDateInput">${restockOrder.getRODateDue()}<br>
+                    Date Delivered: <input type="hidden" value="${restockOrder.getRODateDelivered()}" name="roDateDeliveredInput">${restockOrder.getRODateDelivered()}<br>
                 </c:when>
+                            
             </c:choose>
-
             
             <c:set var="rostatList" value="${requestScope.roStatList}"/>  
             <b>Status:</b>
@@ -126,20 +157,7 @@
         <br><br>
         <a href="restockOrder.get">Return to RO list</a>
         <br><br>
-        <c:choose>
-            <c:when test="${accountType eq 3}">
-                <a href="notif.get?forWhat=invoice">Return to Home</a>
-            </c:when>
-            <c:when test="${(accountType eq 4) || (accountType eq 5)} ">
-                <a href="notif.get?forWhat=restock">Return to Home</a>
-            </c:when>
-            <c:when test="${accountType eq 1}">
-                <a href="notif.get?forWhat=both">Return to Home</a>
-            </c:when>
-            <c:when test="${(accountType ne 3) || (accountType ne 4) || (accountType ne 5) || (accountType ne 1)}">
-                <a href="homePage.jsp">Return to Home</a>
-            </c:when>
-        </c:choose>
+        <a href="notif.get">Return to Home</a>
         <br><br>
         <a href="Servlets.logoutServlet">logout</a>
         

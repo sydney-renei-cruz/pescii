@@ -358,6 +358,7 @@ public class createRestockOrderServlet extends HttpServlet {
 
             context.log("now in createRestockOrderServlet 6!");
             request.setAttribute("message", message);
+            request.setAttribute("restockID", restockOrderIDInput);
             session.setAttribute("ROcart", null);
             session.setAttribute("ROprodNames", null);
             session.setAttribute("ROsuppIDs", null);
@@ -366,7 +367,7 @@ public class createRestockOrderServlet extends HttpServlet {
             session.setAttribute("ROtotalPrices", null);
             session.setAttribute("cartType", null);
             session.setAttribute("supplier", null);
-            request.getRequestDispatcher("notif.get").forward(request,response);
+            request.getRequestDispatcher("anotherRestockOrder.jsp").forward(request,response);
 
            }
          
@@ -379,7 +380,7 @@ public class createRestockOrderServlet extends HttpServlet {
          catch(Exception ex){
             ex.printStackTrace();
             //out.println("error: " + ex);
-            String message = "Something went wrong. Error: "+ex;
+            String message = "Something went wrong. Please try again or contact the administrator.";
             request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
@@ -392,7 +393,7 @@ public class createRestockOrderServlet extends HttpServlet {
             catch (SQLException ex) {
                 ex.printStackTrace();
                 //out.println("Another SQL error: " + ex);
-                String message = "Something went wrong. Error: "+ex;
+                String message = "Something went wrong. Please try again or contact the administrator.";
                 request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }

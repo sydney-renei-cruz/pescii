@@ -25,14 +25,14 @@
         <br><br>
         <p>Restock Order Name: ${restockOrder.getRestockOrderName()}</p>
         <p>Supplier: ${restockOrder.getSupplierName()}</p>
-        <p>Total Price: <fmt:formatNumber pattern="0.00" value="${totalPrice}" type="number"/></p>
-        <p>Amount Paid: ${restockOrder.getAmountPaid()}</p>
-        <p>Discount: ${restockOrder.getDiscount()}</p>
+        <p>Total Price: <fmt:formatNumber pattern="0.00" value="${restockOrder.getRestockPrice()}" type="number"/></p>
+        <p>Amount Paid: <fmt:formatNumber pattern="0.00" value="${restockOrder.getAmountPaid()}" type="number"/></p>
+        <p>Discount: <fmt:formatNumber pattern="0.00" value="${restockOrder.getDiscount()}" type="number"/>${restockOrder.getDiscount()}</p>
         <p>Date Due: ${restockOrder.getRODateDue()}</p>
         <p>Date Received: ${restockOrder.getRODateDelivered()}</p>
         <p>Purpose: ${restockOrder.getPurpose()}</p>
         <p>Date Created: ${restockOrder.getDateCreated()}</p>
-        <p>Last Editted By: ${restockOrder.getLastEdittedBy()}</p>
+        <p>Last Edited By: ${restockOrder.getLastEdittedBy()}</p>
         
         
         <!--Restock Order Items-->

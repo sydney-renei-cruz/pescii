@@ -22,6 +22,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -77,7 +78,7 @@ public class editAccountServlet extends HttpServlet {
         
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
-        
+        HttpSession session = request.getSession();
         try {
          Class.forName(context.getInitParameter("jdbcDriver"));
       } catch(ClassNotFoundException ex) {
@@ -242,7 +243,12 @@ public class editAccountServlet extends HttpServlet {
          context.log("--->Account successfully updated. AccountID is: "+accountID);
          
          request.setAttribute("message", "Account successfully editted!");
-         request.getRequestDispatcher("homePage.jsp").forward(request,response);
+         if((""+session.getAttribute("accountType")).equals("2") || (""+session.getAttribute("accountType")).equals("1") ){
+             request.getRequestDispatcher("anotherAccount.jsp").forward(request,response);
+         }
+         else{
+            request.getRequestDispatcher("notif.get").forward(request,response);
+         }
          
         }
         catch(Exception ex){

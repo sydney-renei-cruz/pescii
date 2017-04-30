@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.servlet.ServletContext;
@@ -98,7 +99,7 @@ public class addProductServlet extends HttpServlet {
                  + "restockPrice, stocksRemaining, lowStock, brand, productClassID, color, supplierID, "
                  + "lastEdittedBy) values(?,?,?,?,?,?,?,?,?,?,?)";
          
-         PreparedStatement ps = conn.prepareStatement(preparedSQL);
+         PreparedStatement ps = conn.prepareStatement(preparedSQL, Statement.RETURN_GENERATED_KEYS);
          
          String message = "";
          
@@ -249,17 +250,29 @@ public class addProductServlet extends HttpServlet {
          
          ps.executeUpdate();                   //at this point, you have already inserted into the database
          
+         //get the generated product ID
+         int productIDInput;
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                   productIDInput = generatedKeys.getInt(1);
+                   context.log("The productID of the new product is: " + productIDInput);
+                }
+               else {
+                   throw new SQLException("--> no productID retrieved");
+               }
+           }
          
          message = "Product successfully created!";
          request.setAttribute("message", message);
-         request.getRequestDispatcher("notif.get").forward(request,response);
+         request.setAttribute("prodID", productIDInput);
+         request.getRequestDispatcher("anotherProduct.jsp").forward(request,response);
             
          
         }
         catch(Exception ex){
             ex.printStackTrace();
             //out.println("error: " + ex);
-            String message = "Something went wrong. Error: "+ex;
+            String message = "Something went wrong. Please try again or contact the administrator.";
             request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
@@ -272,7 +285,7 @@ public class addProductServlet extends HttpServlet {
             catch (SQLException ex) {
                 ex.printStackTrace();
                 //out.println("Another SQL error: " + ex);
-                String message = "Something went wrong. Error: "+ex;
+                String message = "Something went wrong. Please try again or contact the administrator.";
                 request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }

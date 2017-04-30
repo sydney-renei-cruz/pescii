@@ -66,8 +66,9 @@
                         <td><a href="addToROCart?prodName=<c:out value="${prod.getProductName()}"/>&prodID=<c:out value="${prod.getProductID()}"/>&prodPrice=<c:out value="${prod.getRestockPrice()}"/>&suppID=<c:out value="${prod.getSupplierID()}"/>&suppName=<c:out value="${prod.getSupplierName()}"/>">ADD to RO</a></td>
                         <!--<td><a href="product.getDetails?forRestock=yes&prodID=<c:out value="${prod.getProductID()}"/>">ADD to RO</a></td>-->
                     </c:if>    
-                    
+                    <c:if test="${accountType eq '4' || accountType eq '1'}">
                       <td><a href="product.getDetails?forEdit=yes&prodID=<c:out value="${prod.getProductID()}"/>">EDIT</a></td>
+                    </c:if>
                     
             </tr>
             
@@ -94,20 +95,7 @@
             </c:when>
         </c:choose>
         <br><br>
-        <c:choose>
-            <c:when test="${accountType eq 3}">
-                <a href="notif.get?forWhat=invoice">Return to Home</a>
-            </c:when>
-            <c:when test="${(accountType eq 4) || (accountType eq 5)} ">
-                <a href="notif.get?forWhat=restock">Return to Home</a>
-            </c:when>
-            <c:when test="${accountType eq 1}">
-                <a href="notif.get?forWhat=both">Return to Home</a>
-            </c:when>
-            <c:when test="${(accountType ne 3) || (accountType ne 4) || (accountType ne 5) || (accountType ne 1)}">
-                <a href="homePage.jsp">Return to Home</a>
-            </c:when>
-        </c:choose>
+        <a href="notif.get">Return to Home</a>
         <br><br>
         <!--THIS PART OF THE CODE CHECKS IF IT SHOULD DISPLAY THE LOG IN OR LOGOUT LINK-->
         <c:if test="${state == 'logged in'}">

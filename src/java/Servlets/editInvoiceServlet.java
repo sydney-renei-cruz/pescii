@@ -214,6 +214,10 @@ public class editInvoiceServlet extends HttpServlet {
                     request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
                     return;
                  }
+                
+                else if(newDatePaid.equals("") || newDatePaid == null){
+                    newDatePaid = null;
+                }
 
                 else if((!(newDatePaid.equals("")) || newDatePaid != null)){
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -312,6 +316,10 @@ public class editInvoiceServlet extends HttpServlet {
                     request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
                     return;
                  }
+                
+                else if(newDateDelivered.equals("") || newDateDelivered == null){
+                    newDateDelivered = null;
+                }
 
                 else if((!(newDateDelivered.equals("")) || newDateDelivered != null)){
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -408,9 +416,9 @@ public class editInvoiceServlet extends HttpServlet {
                 ps.executeUpdate();
             }
          }
-         
+         request.setAttribute("invID", invoiceID);
          request.setAttribute("message", "Invoice successfully editted! Inventory updated.");
-         request.getRequestDispatcher("homePage.jsp").forward(request,response);
+         request.getRequestDispatcher("anotherInvoice.jsp").forward(request,response);
          
         }
         catch(Exception ex){

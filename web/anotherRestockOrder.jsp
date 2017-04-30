@@ -1,0 +1,40 @@
+<%-- 
+    Document   : anotherRestockOrder
+    Created on : 04 30, 17, 6:35:27 PM
+    Author     : user
+--%>
+
+<%@page import="Beans.*,java.util.ArrayList"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%
+    String message = ""+request.getAttribute("message");
+    String suppID = ""+session.getAttribute("suppID");
+%>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>PESCI RO Data Saved</title>
+    </head>
+    <body>
+        <c:if test="${message != ''}">
+           <h1>${message}</h1>
+        </c:if>
+        <c:set var="restockOrderID" value="${requestScope.restockID}"/>   
+        <c:choose>
+                <c:when test="${(suppID eq null || suppID eq 'null' || suppID eq '')}">
+                    <a href="supplier.get?viewSupp=yes&forRestock=yes">Create a new Restock Order</a><br>      
+                </c:when>
+                <c:when test="${cartType eq 'restock' && (suppID ne null && suppID ne 'null' && suppID ne '')}">
+                    <a href="Servlets.getProductServlet?forOther=restock">Create a new Restock Order</a><br>      
+                </c:when>
+        </c:choose>
+        <a href="restockOrder.getDetails?editRestock=yes&restockID=<c:out value="${restockOrderID}"/>">Edit Restock Order</a><br>
+        <a href="restockOrder.getDetails?restockID=<c:out value="${restockOrderID}"/>">View Restock Order Details</a><br>
+        <br><br>
+        <a href="notif.get">Return to Home</a>
+        <br><br>
+        <a href="Servlets.logoutServlet">logout</a>
+    </body>
+</html>

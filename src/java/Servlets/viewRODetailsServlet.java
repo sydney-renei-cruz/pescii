@@ -107,7 +107,7 @@ public class viewRODetailsServlet extends HttpServlet {
                 rbean.setPurpose(dbData.getString("purpose"));
                 rbean.setRODateDue(dbData.getDate("RODateDue"));
                 rbean.setRODateDelivered(dbData.getDate("RODateDelivered"));
-                //rbean.setRestockPrice(dbData.getFloat("restockPrice"));
+                rbean.setRestockPrice(dbData.getFloat("restockPrice"));
                 rbean.setAmountPaid(dbData.getFloat("amountPaid"));
                 rbean.setDiscount(dbData.getFloat("discount"));
                 rbean.setDatePaid(dbData.getDate("datePaid"));

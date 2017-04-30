@@ -36,10 +36,11 @@
                 <td><a href="restockOrder.getDetails?restockID=<c:out value="${ro.getRestockOrderID()}"/>">${ro.getRestockOrderName()}</a></td>
                 <td>${ro.getRODateDue()}</td>
                 <td>${ro.getRODateDelivered()}</td>
+                <td>${ro.getAmountPaid()}</td>
                 <td>${ro.getDiscount()}</td>
                 <td>${ro.getDatePaid()}</td>
                 <td>${ro.getDateCreated()}</td>
-                <td><a href="restockOrder.getDetails?editRestock=yes&restockID=<c:out value="${ro.getRestockOrderID()}"/>">Edit</td>
+                <td><a href="restockOrder.getDetails?editRestock=yes&restockID=<c:out value="${ro.getRestockOrderID()}"/>">Edit</a></td>
             </tr>
             
         </c:forEach>
@@ -49,20 +50,7 @@
         <br><br>
         <a href="restockOrder.getStatus">Search RO</a><br>
         <br><br>
-        <c:choose>
-            <c:when test="${accountType eq 3}">
-                <a href="notif.get?forWhat=invoice">Return to Home</a>
-            </c:when>
-            <c:when test="${(accountType eq 4) || (accountType eq 5)} ">
-                <a href="notif.get?forWhat=restock">Return to Home</a>
-            </c:when>
-            <c:when test="${accountType eq 1}">
-                <a href="notif.get?forWhat=both">Return to Home</a>
-            </c:when>
-            <c:when test="${(accountType ne 3) || (accountType ne 4) || (accountType ne 5) || (accountType ne 1)}">
-                <a href="homePage.jsp">Return to Home</a>
-            </c:when>
-        </c:choose>
+        <a href="notif.get">Return to Home</a>
         <br><br>
         <a href="Servlets.logoutServlet">logout</a>
         

@@ -35,7 +35,9 @@
         
             
         <br><br>
-        <a href="Servlets.viewCustomerDetailsServlet?forEdit=yes&custID=<c:out value="${customer.getCustomerID()}"/>">Edit</a>    
+        <c:if test="${accountType eq '2' || accountType eq '1'}">
+            <a href="Servlets.viewCustomerDetailsServlet?forEdit=yes&custID=<c:out value="${customer.getCustomerID()}"/>">Edit</a>   
+        </c:if>
         <br><br>
         
         <!-- this is the table for the clinics-->
@@ -56,16 +58,20 @@
                 <td>${clin.getClinicAddress()}</td>
                 <td>${clin.getProvinceName()}</td>
                 <td>${clin.getClinicPhoneNumber()}</td>
+                <c:if test="${accountType eq '2' || accountType eq '1'}">
                 <td><a href="customer.getClinic?clinID=<c:out value="${clin.getClinicID()}"/>">Edit</a></td>
+                </c:if>
             </tr>
         </c:forEach>
         </table>
         <br><br>
-        <form action="province.get">
-            <input type="hidden" value="addClinic" name="whatFor">
-            <input type="hidden" value="${customer.getCustomerID()}" name="custID">
-            <input type="submit" value="Add Clinic">
-        </form>
+        <c:if test="${accountType eq '2' || accountType eq '1'}">
+            <form action="province.get">
+                <input type="hidden" value="addClinic" name="whatFor">
+                <input type="hidden" value="${customer.getCustomerID()}" name="custID">
+                <input type="submit" value="Add Clinic">
+            </form>
+        </c:if>
         <br><br>
          <!-- this table is for the invoices-->
         <h5>Invoices</h5>
@@ -87,7 +93,9 @@
                 <td>${inv.getPaymentDueDate()}</td>
                 <td>${inv.getDatePaid()}</td>
                 <td>${inv.getStatusName()}</td>
-                <td><a href="Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID=<c:out value="${inv.getInvoiceID()}"/>">Edit Invoice</a></td>
+                <c:if test="${accountType eq '3' || accountType eq '1'}">
+                    <td><a href="Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID=<c:out value="${inv.getInvoiceID()}"/>">Edit Invoice</a></td>
+                </c:if>
             </tr>
         </c:forEach>
         </table>
@@ -97,20 +105,7 @@
         <br><br>
         <a href="salesrep.get?whatFor=searchCustomer">Search Customers</a>
         <br><br>
-        <c:choose>
-            <c:when test="${accountType eq 3}">
-                <a href="notif.get?forWhat=invoice">Return to Home</a>
-            </c:when>
-            <c:when test="${(accountType eq 4) || (accountType eq 5)} ">
-                <a href="notif.get?forWhat=restock">Return to Home</a>
-            </c:when>
-            <c:when test="${accountType eq 1}">
-                <a href="notif.get?forWhat=both">Return to Home</a>
-            </c:when>
-            <c:when test="${(accountType ne 3) || (accountType ne 4) || (accountType ne 5) || (accountType ne 1)}">
-                <a href="homePage.jsp">Return to Home</a>
-            </c:when>
-        </c:choose>
+        <a href="notif.get">Return to Home</a>
         <br><br>
         <a href="Servlets.logoutServlet">logout</a>
         

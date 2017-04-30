@@ -477,7 +477,7 @@ public class addInvoiceServlet extends HttpServlet {
 
                        inputProductID = cart.get(i);
                        inputQuantityPurchased = ""+quantity.get(i);
-
+                       request.setAttribute("invID",inputInvoiceID);
                        ps2.setInt(1, inputInvoiceID);
                        ps2.setInt(2, Integer.parseInt(inputProductID));
                        ps2.setInt(3, Integer.parseInt(inputQuantityPurchased));
@@ -536,14 +536,14 @@ public class addInvoiceServlet extends HttpServlet {
             session.setAttribute("quantity", null);
             session.setAttribute("totalPrices", null);
             session.setAttribute("cartType", null);
-            request.getRequestDispatcher("notif.get").forward(request,response);
+            request.getRequestDispatcher("anotherInvoice.jsp").forward(request,response);
 
            }
         }
         catch(Exception ex){
             ex.printStackTrace();
             //out.println("error: " + ex);
-            String message = "Something went wrong. Error: "+ex;
+            String message = "Something went wrong. Please try again or contact the administrator.";
             request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
@@ -556,7 +556,7 @@ public class addInvoiceServlet extends HttpServlet {
             catch (SQLException ex) {
                 ex.printStackTrace();
                 //out.println("Another SQL error: " + ex);
-                String message = "Something went wrong. Error: "+ex;
+                String message = "Something went wrong. Please try again or contact the administrator.";
                 request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }

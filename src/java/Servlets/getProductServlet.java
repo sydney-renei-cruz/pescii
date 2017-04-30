@@ -107,7 +107,7 @@ public class getProductServlet extends HttpServlet {
             //this is for the invoice cart
          if(cartType.equals("invoice")){
             if(session.getAttribute("cart")!=null){
-                context.log(preparedSQL);
+                context.log("something in the invoice cart!");
                 LinkedList<String> cart = (LinkedList<String>)(session.getAttribute("cart"));
                 String prodIDs = "";
                 context.log(""+cart.size());
@@ -127,7 +127,7 @@ public class getProductServlet extends HttpServlet {
                     + "inner join Supplier on Supplier.supplierID = Product.supplierID "
                     + prodIDs + " order by productName asc";
                 context.log(preparedSQL);
-                //ps = conn.prepareStatement(preparedSQL);
+                ps = conn.prepareStatement(preparedSQL);
             }
          }
          

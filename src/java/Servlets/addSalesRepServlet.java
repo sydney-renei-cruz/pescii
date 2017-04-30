@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.servlet.ServletContext;
@@ -94,7 +95,7 @@ public class addSalesRepServlet extends HttpServlet {
          //THIS IS WHERE YOU START CHANGING
          HttpSession session = request.getSession();
          String preparedSQL = "insert into SalesRep(salesRepFirstName, salesRepMobileNumber, salesRepAddress, salesRepLastName, lastEdittedBy) values (?,?,?,?,?)";
-         PreparedStatement ps = conn.prepareStatement(preparedSQL);
+         PreparedStatement ps = conn.prepareStatement(preparedSQL, Statement.RETURN_GENERATED_KEYS);
          String message;
          
          //check the salesrep first name
@@ -189,17 +190,29 @@ public class addSalesRepServlet extends HttpServlet {
          
          ps.executeUpdate();                   //at this point, you have already inserted into the database
          
+         //get the generated SalesRep ID
+         int salesRepIDInput;
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                   salesRepIDInput = generatedKeys.getInt(1);
+                   context.log("The salesRepID of the new salesRep is: " + salesRepIDInput);
+                }
+               else {
+                   throw new SQLException("--> no salesRepID retrieved");
+               }
+           }
          
          message = "Sales Rep successfully added!";
          request.setAttribute("message", message);
-         request.getRequestDispatcher("notif.get").forward(request,response);
+         request.setAttribute("srID", salesRepIDInput);
+         request.getRequestDispatcher("anotherSalesRep.jsp").forward(request,response);
             
          
         }
         catch(Exception ex){
             ex.printStackTrace();
             //out.println("error: " + ex);
-            String message = "Something went wrong. Error: "+ex;
+            String message = "Something went wrong. Please try again or contact the administrator.";
             request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
@@ -212,7 +225,7 @@ public class addSalesRepServlet extends HttpServlet {
             catch (SQLException ex) {
                 ex.printStackTrace();
                 //out.println("Another SQL error: " + ex);
-                String message = "Something went wrong. Error: "+ex;
+                String message = "Something went wrong. Please try again or contact the administrator.";
                 request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }

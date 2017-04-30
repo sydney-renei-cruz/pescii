@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.servlet.ServletContext;
@@ -95,7 +96,7 @@ public class addSupplierServlet extends HttpServlet {
          HttpSession session = request.getSession();
          String preparedSQL = "insert into Supplier(supplierName, supplierAddress, "
                  + "supplierContactNumber, productClassID, lastEdittedBy) values (?,?,?,?,?)";
-         PreparedStatement ps = conn.prepareStatement(preparedSQL);
+         PreparedStatement ps = conn.prepareStatement(preparedSQL, Statement.RETURN_GENERATED_KEYS);
          String message = "";
          
          //check the supplier name
@@ -183,17 +184,29 @@ public class addSupplierServlet extends HttpServlet {
          
          ps.executeUpdate();                   //at this point, you have already inserted into the database
          
+         //get the generated SalesRep ID
+         int supplierIDInput;
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                   supplierIDInput = generatedKeys.getInt(1);
+                   context.log("The supplierID of the new supplier is: " + supplierIDInput);
+                }
+               else {
+                   throw new SQLException("--> no salesRepID retrieved");
+               }
+           }
          
          message = "Supplier successfully added!";
          request.setAttribute("message", message);
-         request.getRequestDispatcher("homePage.jsp").forward(request,response);
+         request.setAttribute("suppID", supplierIDInput);
+         request.getRequestDispatcher("anotherSupplier.jsp").forward(request,response);
             
          
         }
         catch(Exception ex){
             ex.printStackTrace();
             //out.println("error: " + ex);
-            String message = "Something went wrong. Error: "+ex;
+            String message = "Something went wrong. Please try again or contact the administrator.";
             request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
@@ -206,7 +219,7 @@ public class addSupplierServlet extends HttpServlet {
             catch (SQLException ex) {
                 ex.printStackTrace();
                 //out.println("Another SQL error: " + ex);
-                String message = "Something went wrong. Error: "+ex;
+                String message = "Something went wrong. Please try again or contact the administrator.";
                 request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }

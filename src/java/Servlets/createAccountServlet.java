@@ -240,7 +240,7 @@ public class createAccountServlet extends HttpServlet {
          
          
          preparedSQL = "insert into Account(userName, password, accountStatus, accountType) values(?,?,?,?)";
-         ps = conn.prepareStatement(preparedSQL);
+         ps = conn.prepareStatement(preparedSQL, Statement.RETURN_GENERATED_KEYS);
          
          ps.setString(1,inputUsername);
          ps.setString(2,inputPassword);
@@ -248,16 +248,29 @@ public class createAccountServlet extends HttpServlet {
          ps.setInt(4,inputAccType);
          ps.executeUpdate();                   //at this point, you have already inserted into the database
          
+         //get the generated account ID
+         int accountIDInput;
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                   accountIDInput = generatedKeys.getInt(1);
+                   context.log("The accountID of the new account is: " + accountIDInput);
+                }
+               else {
+                   throw new SQLException("--> no accountID retrieved");
+               }
+           }
+         
          message = "Account successfully created!";
          request.setAttribute("message", message);
-         request.getRequestDispatcher("homePage.jsp").forward(request,response);
+         request.setAttribute("accID",accountIDInput);
+         request.getRequestDispatcher("anotherAccount.jsp").forward(request,response);
             
          
         }
         catch(Exception ex){
             ex.printStackTrace();
             //out.println("error: " + ex);
-            String message = "Something went wrong. Error: "+ex;
+            String message = "Something went wrong. Please try again or contact the administrator.";
             request.getRequestDispatcher("errorPage.jsp").forward(request,response);
         }
         finally {
@@ -270,7 +283,7 @@ public class createAccountServlet extends HttpServlet {
             catch (SQLException ex) {
                 ex.printStackTrace();
                 //out.println("Another SQL error: " + ex);
-                String message = "Something went wrong. Error: "+ex;
+                String message = "Something went wrong. Please try again or contact the administrator.";
                 request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
      }
