@@ -72,20 +72,17 @@ public class getInvoiceServlet extends HttpServlet {
          String preparedSQL;
          
          if(request.getParameter("invoiceDate")!=null && request.getParameter("PRCID")!=null){
-             preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, "
-                 + "Customer.customerFirstName, Customer.customerLastName, "
-                 + "Invoice.clinicID, Clinic.clinicName, Clinic.provinceID, "
-                 + "Province.provinceID, Province.provinceName, Province.provinceDivision, "
-                 + "Invoice.invoiceDate, Invoice.deliveryDate, "
-                 + "Invoice.termsOfPayment, Invoice.paymentDueDate, Invoice.datePaid, "
-                 + "Invoice.dateClosed, Invoice.statusID, InvoiceStatus.statusName, "
-                 + "Invoice.overdueFee, Invoice.amountDue, Invoice.amountPaid, Invoice.discount, "
-                 + "Invoice.dateDelivered, Invoice.dateCreated, Invoice.lastEdittedBy "
+             preparedSQL = "select Invoice.*, Customer.*, "
+                 + "Clinic.*, "
+                 + "Province.*, "
+                 + "InvoiceStatus.*, "
+                 + "SalesRep.* "
                  + "from Invoice "
                  + "inner join Customer on Customer.customerID = Invoice.customerID "
                  + "inner join Clinic on Clinic.clinicID = Invoice.clinicID "
                  + "inner join Province on Province.provinceID = Clinic.provinceID "
                  + "inner join InvoiceStatus on InvoiceStatus.statusID = Invoice.statusID "
+                 + "inner join SalesRep on SalesRep.salesRepID = Invoice.salesRepID "
                  + "where Customer.PRCID="+request.getParameter("PRCID")
                  + " and Invoice.dateCreated="+request.getParameter("invoiceDate")
                  + " order by Invoice.dateCreated desc";
@@ -93,20 +90,17 @@ public class getInvoiceServlet extends HttpServlet {
              }
          
          else{
-            preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, "
-                 + "Customer.customerFirstName, Customer.customerLastName, "
-                 + "Invoice.clinicID, Clinic.clinicName, Clinic.provinceID, "
-                 + "Province.provinceID, Province.provinceName, Province.provinceDivision, "
-                 + "Invoice.invoiceDate, Invoice.deliveryDate, "
-                 + "Invoice.termsOfPayment, Invoice.paymentDueDate, Invoice.datePaid, "
-                 + "Invoice.dateClosed, Invoice.statusID, InvoiceStatus.statusName, "
-                 + "Invoice.overdueFee, Invoice.amountDue, Invoice.amountPaid, Invoice.discount, "
-                 + "Invoice.dateDelivered, Invoice.dateCreated, Invoice.lastEdittedBy "
+            preparedSQL = "select Invoice.*, Customer.*, "
+                 + "Clinic.*, "
+                 + "Province.*, "
+                 + "InvoiceStatus.*, "
+                 + "SalesRep.* "
                  + "from Invoice "
                  + "inner join Customer on Customer.customerID = Invoice.customerID "
                  + "inner join Clinic on Clinic.clinicID = Invoice.clinicID "
                  + "inner join Province on Province.provinceID = Clinic.provinceID "
                  + "inner join InvoiceStatus on InvoiceStatus.statusID = Invoice.statusID "
+                 + "inner join SalesRep on SalesRep.salesRepID = Invoice.salesRepID "
                  + "order by Invoice.dateCreated desc";
          
          }
@@ -141,8 +135,11 @@ public class getInvoiceServlet extends HttpServlet {
                 invBean.setAmountPaid(dbData.getFloat("amountPaid"));
                 invBean.setDiscount(dbData.getFloat("discount"));
                 invBean.setDateDelivered(dbData.getDate("dateDelivered"));
-                invBean.setDateCreated(dbData.getTimestamp("dateCreated"));
-                invBean.setLastEdittedBy(dbData.getString("lastEdittedBy"));
+                invBean.setDateCreated(dbData.getTimestamp("Invoice.dateCreated"));
+                invBean.setLastEdittedBy(dbData.getString("Invoice.lastEdittedBy"));
+                invBean.setSalesRepID(dbData.getInt("salesRepID"));
+                invBean.setSalesRepName(dbData.getString("salesRepFirstName")+" "+dbData.getString("salesRepLastName"));
+                
                 invoicesRetrieved.add(invBean);
             }
          request.setAttribute("invoiceList", invoicesRetrieved);

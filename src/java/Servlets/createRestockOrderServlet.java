@@ -149,7 +149,7 @@ public class createRestockOrderServlet extends HttpServlet {
          //you don't change this
          //PreparedStatement rs = conn.prepareStatement(preparedSQL);
          
-          //this is put at the start because it needs to cancel immediately if there are no InvoiceItems
+          //this is put at the start because it needs to cancel immediately if there are no RO Items
             LinkedList<String> cart;
             LinkedList<String> prodNames;
             LinkedList<Integer> quantity;
@@ -162,7 +162,7 @@ public class createRestockOrderServlet extends HttpServlet {
                ROtotalPrices = (LinkedList<Float>)(session.getAttribute("ROtotalPrices"));
             }
             else{
-                message = "You have no products selected. Invoice could not be created";
+                message = "You have no products selected. Restock Order could not be created";
                 request.setAttribute("message", message);
                 return;
             }

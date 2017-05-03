@@ -108,14 +108,14 @@ public class getProductServlet extends HttpServlet {
          if(cartType.equals("invoice")){
             if(session.getAttribute("cart")!=null){
                 context.log("something in the invoice cart!");
-                LinkedList<String> cart = (LinkedList<String>)(session.getAttribute("cart"));
+                LinkedList<productBean> cart = (LinkedList<productBean>)(session.getAttribute("cart"));
                 String prodIDs = "";
-                context.log(""+cart.size());
+                context.log("cart size is: "+cart.size());
                 if(cart.size()>0){
-                    prodIDs = " where productID!="+cart.get(0);
+                    prodIDs = " where productID!="+cart.get(0).getProductID();
                     if(cart.size()>1){
                        for(int i=1;i<cart.size();i++){
-                           prodIDs = prodIDs + " and productID!=" + cart.get(i);
+                           prodIDs = prodIDs + " and productID!=" + cart.get(i).getProductID();
                        }
                     }
                 }
@@ -137,7 +137,13 @@ public class getProductServlet extends HttpServlet {
          if(cartType.equals("restock")){
             String suppID = "";
             try{
-            if(session.getAttribute("suppID")==null){
+            if(session.getAttribute("suppID")==null || (request.getParameter("suppID")!=null && !((""+session.getAttribute("suppID")).equals(request.getParameter("suppID"))))){
+                if(request.getParameter("suppID")!=null && !((""+session.getAttribute("suppID")).equals(request.getParameter("suppID")))){
+                    session.setAttribute("ROcart", null);
+                    session.setAttribute("ROprodNames", null);
+                    session.setAttribute("ROquantity", null);
+                    session.setAttribute("ROtotalPrices", null);
+                }
                 suppID = request.getParameter("suppID");
                 session.setAttribute("suppID",suppID);
             }
@@ -150,6 +156,7 @@ public class getProductServlet extends HttpServlet {
                 e.printStackTrace();
                 //out.println("error: " + ex);
                 String message = "Something went wrong: No Supplier Selected.";
+                request.setAttribute("message",message);
                 request.getRequestDispatcher("errorPage.jsp").forward(request,response);
                 return;
             }
@@ -160,7 +167,7 @@ public class getProductServlet extends HttpServlet {
                 LinkedList<String> ROcart = (LinkedList<String>)(session.getAttribute("ROcart"));
                 
                 String prodIDs = "";
-                context.log(""+ROcart.size());
+                context.log("ROCart size is: "+ROcart.size());
                 if(ROcart.size()>0){
                     prodIDs = " where productID!="+ROcart.get(0);
                     if(ROcart.size()>1){
@@ -193,6 +200,32 @@ public class getProductServlet extends HttpServlet {
                 ps.setString(1,suppID);
          }
          
+         //this is for the product low stock level cart
+         if(cartType.equals("lowstockLevel")){
+            if(session.getAttribute("prodCart")!=null){
+                context.log("something in the product cart!");
+                LinkedList<productBean> prodCart = (LinkedList<productBean>)(session.getAttribute("prodCart"));
+                String prodIDs = "";
+                context.log("prodCart size is: "+prodCart.size());
+                if(prodCart.size()>0){
+                    prodIDs = " where productID!="+prodCart.get(0).getProductID();
+                    if(prodCart.size()>1){
+                       for(int i=1;i<prodCart.size();i++){
+                           prodIDs = prodIDs + " and productID!=" + prodCart.get(i).getProductID();
+                       }
+                    }
+                }
+                preparedSQL = "select Product.productID, Product.productName, Product.productDescription, "
+                    + "Product.productPrice, Product.restockPrice, Product.stocksRemaining, Product.lowStock, "
+                    + "Product.brand, Product.productClassID, ProductClass.productClassname, Product.color, "
+                    + "Product.supplierID, Supplier.supplierID, Supplier.supplierName from Product "
+                    + "inner join ProductClass on ProductClass.productClassID = Product.productClassID "
+                    + "inner join Supplier on Supplier.supplierID = Product.supplierID "
+                    + prodIDs + " order by productName asc";
+                context.log(preparedSQL);
+                ps = conn.prepareStatement(preparedSQL);
+            }
+         }
          
          
          

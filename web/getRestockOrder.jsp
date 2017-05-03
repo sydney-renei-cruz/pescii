@@ -7,10 +7,6 @@
 <%@page import="Beans.*,java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%
-    String accountType = ""+session.getAttribute("accountType");
-    ArrayList<restockOrderBean> restocksList = (ArrayList<restockOrderBean>)request.getAttribute("restocksList");
-%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -20,33 +16,41 @@
     <body>
         <h1>This is the Get Restock Order page!</h1>
         
-        <table border="1">
-            <tr>
-                <th>Restock Order Name</th>
-                <th>Date Due</th>
-                <th>Date Delivered</th>
-                <th>Amount Paid</th>
-                <th>Discount</th>
-                <th>Date Paid</th>
-                <th>Date Created</th>
-            </tr>
+        <c:set var="accountType" value="${sessionScope.accountType}"/>
+        <c:set var="restocksList" value="${requestScope.restocksList}"/>
+        <c:set var="listSize" value="${restocksList.size()}"/>
+        <c:if test="${listSize > 0}">
+            <table border="1">
+                <tr>
+                    <th>Restock Order Name</th>
+                    <th>Date Due</th>
+                    <th>Date Delivered</th>
+                    <th>Amount Paid</th>
+                    <th>Discount</th>
+                    <th>Date Paid</th>
+                    <th>Date Created</th>
+                </tr>
+
+            <c:forEach items="${restocksList}" var="ro" begin="0" step="1" varStatus="status">
+                <tr>
+                    <td><a href="restockOrder.getDetails?restockID=<c:out value="${ro.getRestockOrderID()}"/>">${ro.getRestockOrderName()}</a></td>
+                    <td>${ro.getRODateDue()}</td>
+                    <td>${ro.getRODateDelivered()}</td>
+                    <td>${ro.getAmountPaid()}</td>
+                    <td>${ro.getDiscount()}</td>
+                    <td>${ro.getDatePaid()}</td>
+                    <td>${ro.getDateCreated()}</td>
+                    <td><a href="restockOrder.getDetails?editRestock=yes&restockID=<c:out value="${ro.getRestockOrderID()}"/>">Edit</a></td>
+                </tr>
+
+            </c:forEach>
+            </table>
+        </c:if>
         
-        <c:forEach items="${restocksList}" var="ro" begin="0" step="1" varStatus="status">
-            <tr>
-                <td><a href="restockOrder.getDetails?restockID=<c:out value="${ro.getRestockOrderID()}"/>">${ro.getRestockOrderName()}</a></td>
-                <td>${ro.getRODateDue()}</td>
-                <td>${ro.getRODateDelivered()}</td>
-                <td>${ro.getAmountPaid()}</td>
-                <td>${ro.getDiscount()}</td>
-                <td>${ro.getDatePaid()}</td>
-                <td>${ro.getDateCreated()}</td>
-                <td><a href="restockOrder.getDetails?editRestock=yes&restockID=<c:out value="${ro.getRestockOrderID()}"/>">Edit</a></td>
-            </tr>
+        <c:if test="${listSize eq 0}">
+            <p> 0 restock orders found.</p>
+        </c:if>
             
-        </c:forEach>
-        </table>
-        
-        
         <br><br>
         <a href="restockOrder.getStatus">Search RO</a><br>
         <br><br>

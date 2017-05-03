@@ -40,12 +40,14 @@ public class invoiceBean implements Serializable{
     public String lastEdittedBy;
     public Date lastEdittedDate;
     public Date dateDelivered;
+    public int salesRepID;
+    public String salesRepName;
     
     public invoiceBean(int iid, String iname, String cid, int custID, String custName, int clinid, String clinName, String provName, 
                         String provDiv, Date invdate, Date deldate,
                         String tofpay, Date payduedate, Date dpaid, Date dclosed, int statID, 
                         String statName, float overfee, float ad, float ap, float disc, Timestamp dcreated,
-                        String leb, Date led, Date dd){
+                        String leb, Date led, Date dd, int srID, String srName){
         this.invoiceID=iid;
         this.invoiceName=iname;
         this.PRCID=cid;
@@ -71,6 +73,8 @@ public class invoiceBean implements Serializable{
         this.lastEdittedBy=leb;
         this.lastEdittedDate=led;
         this.dateDelivered=dd;
+        this.salesRepID=srID;
+        this.salesRepName=srName;
     }
     
     public invoiceBean(){}
@@ -100,6 +104,8 @@ public class invoiceBean implements Serializable{
     public void setLastEdittedBy(String leb){this.lastEdittedBy=leb;}
     public void setLastEdittedDate(Date led){this.lastEdittedDate=led;}
     public void setDateDelivered(Date dd){this.dateDelivered=dd;}
+    public void setSalesRepID(int srID){this.salesRepID=srID;}
+    public void setSalesRepName(String srName){this.salesRepName=srName;}
     
     public int getInvoiceID(){return this.invoiceID;}
     public String getInvoiceName(){return this.invoiceName;}
@@ -126,5 +132,7 @@ public class invoiceBean implements Serializable{
     public String getLastEdittedBy(){return this.lastEdittedBy;}
     public Date getLastEdittedDate(){return this.lastEdittedDate;}
     public Date getDateDelivered(){return this.dateDelivered;}
+    public int getSalesRepID(){return this.salesRepID;}
+    public String getSalesRepName(){return this.salesRepName;}
     
 }

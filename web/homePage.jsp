@@ -7,18 +7,6 @@
 <%@page import="Beans.*,java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%
-    String state = ""+session.getAttribute("state");
-    String userName = ""+session.getAttribute("userName");
-    String message = ""+request.getAttribute("message");
-    String accountType = ""+session.getAttribute("accountType");
-    String cartType = ""+session.getAttribute("cartType");
-    String suppID = ""+session.getAttribute("suppID");
-    
-    ArrayList<restockOrderBean> restocksList = (ArrayList<restockOrderBean>)request.getAttribute("restocksList");
-    ArrayList<invoiceBean> invoiceList = (ArrayList<invoiceBean>)request.getAttribute("invoiceList");
-    ArrayList<productBean> productsList = (ArrayList<productBean>)request.getAttribute("productsList");
-%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -27,7 +15,14 @@
     </head>
     <body>
         <h1>This is the homePage!</h1>
-        
+         <c:set var="state" value="${sessionScope.state}"/>
+         <c:set var="userName" value="${sessionScope.userName}"/>
+         <c:set var="message" value="${sessionScope.message}"/>
+         <c:set var="accountType" value="${sessionScope.accountType}"/>
+         <c:set var="suppID" value="${sessionScope.suppID}"/>
+        <c:set var="restocksList" value="${requestScope.restocksList}"/>
+        <c:set var="invoiceList" value="${requestScope.invoiceList}"/>
+        <c:set var="productsList" value="${productsList}"/>
         
         <!--THIS PART OF THE CODE CHECKS IF IT SHOULD DISPLAY THE LOG IN OR LOGOUT LINK-->
         <c:if test="${state == 'logged in'}">
@@ -45,6 +40,23 @@
         
             
         <!--THIS PART DISPLAYS LINKS BASED ON THE USER'S ACCOUNT TYPE-->
+        
+        <!--this is the Sales Representative section
+                - the SalesRep manages invoice information, but can't input the payment fields.
+                - once an invoice is created, there are some fields that can no longer be edited.
+                    - see document to know what these are
+        -->
+        <c:if test="${accountType == '6'}">
+            <a href="Servlets.getProductServlet?forOther=invoice">Create Invoice</a><br>
+            <a href="Servlets.getInvoiceServlet">Edit Invoice</a><br>
+            <a href="unfinished.get?getTable=invoice">View Unfinished Invoices</a><br>
+            <a href="province.get?whatFor=conditionsInvoice">Search Invoice</a><br>
+            <a href="Servlets.getInvoiceServlet">View All Invoices</a><br><br>
+            <a href="salesrep.get?whatFor=searchCustomer">Search Customers</a><br>
+            <a href="Servlets.getCustomerServlet">View All Customers</a><br><br>
+            <a href="account.get">Edit Account</a><br><br>
+        </c:if>
+        
         
         <!--this is the Accountant section
                 - the Accountant manages invoice information
@@ -167,7 +179,7 @@
             
             <a href="product.getProductClass">Add Product</a><br>
             <a href="Servlets.getProductServlet">Edit Product</a><br>
-            <!--<a href="Servlets.getProductServlet?forOther=restock">Add Restock Order</a><br>-->
+            <a href="Servlets.getProductServlet?forOther=lowstockLevel">Set Low stock level</a><br>
             <c:choose>
                 <c:when test="${(suppID eq null || suppID eq 'null' || suppID eq '')}">
                     <a href="supplier.get?viewSupp=yes&forRestock=yes">Create Restock Order</a><br>      

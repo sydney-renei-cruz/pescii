@@ -180,16 +180,15 @@ public class addInvoiceServlet extends HttpServlet {
          else{  //if not cancelled, then do what this servlet was made for.
             String preparedSQL = "insert into Invoice(customerID, clinicID, invoiceDate, "
                     + "deliveryDate, termsOfPayment, paymentDueDate, datePaid, dateClosed, "
-                    + "statusID, overdueFee, invoiceName, amountDue, discount, amountPaid, lastEdittedBy) "
-                    + "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                    + "statusID, overdueFee, invoiceName, amountDue, discount, amountPaid, salesRepID, lastEdittedBy) "
+                    + "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
             //this is put at the start because it needs to cancel immediately if there are no InvoiceItems
-            LinkedList<String> cart;
-            LinkedList<String> prodNames;
+            LinkedList<productBean> cart;
+            //LinkedList<String> prodNames;
             LinkedList<Integer> quantity;
             if(session.getAttribute("cart")!=null){
-               cart = (LinkedList<String>)(session.getAttribute("cart"));
-               prodNames = (LinkedList<String>)(session.getAttribute("prodNames"));
+               cart = (LinkedList<productBean>)(session.getAttribute("cart"));
                quantity = (LinkedList<Integer>)(session.getAttribute("quantity"));
             }
             else{
@@ -428,6 +427,16 @@ public class addInvoiceServlet extends HttpServlet {
                 return;
             }
             
+            int inputSalesRepID = 0;
+            try{inputSalesRepID = Integer.parseInt(request.getParameter("salesRepIDInput"));}
+            catch(Exception e){
+                message = "salesRep ID format is invalid.";
+                request.setAttribute("message",message);
+                request.setAttribute("custID",inputCustomerID);
+                request.getRequestDispatcher("Servlets.viewCustomerDetailsServlet").forward(request,response);
+                return;
+            }
+            
             
             //no need to check this
             String lastEdittedBy = ""+session.getAttribute("userName");
@@ -449,7 +458,8 @@ public class addInvoiceServlet extends HttpServlet {
             ps.setFloat(12,inputAmountDue);
             ps.setFloat(13,inputDiscount);
             ps.setFloat(14, inputAmountPaid);
-            ps.setString(15,lastEdittedBy);
+            ps.setInt(15,inputSalesRepID);
+            ps.setString(16,lastEdittedBy);
             context.log(preparedSQL);
             ps.executeUpdate();                   //at this point, you have already inserted into the database
 
@@ -463,7 +473,6 @@ public class addInvoiceServlet extends HttpServlet {
 
                    //the session attributes are:
                    //cart  -- these are the productIDs
-                   //prodNames -- these are the productNames
                    //quantity  -- these are the quantities of each invoiceItem
 
                    //DO NOT SORT THEM EVER. They're already in order.
@@ -481,7 +490,7 @@ public class addInvoiceServlet extends HttpServlet {
                                        + "values(?,?,?)";
                        ps2 = conn.prepareStatement(preparedSQL2);
 
-                       inputProductID = cart.get(i);
+                       inputProductID = cart.get(i).getProductID();
                        inputQuantityPurchased = ""+quantity.get(i);
                        request.setAttribute("invID",inputInvoiceID);
                        ps2.setInt(1, inputInvoiceID);
@@ -512,15 +521,10 @@ public class addInvoiceServlet extends HttpServlet {
                //retrieve the information.
                   while(dbData.next()){
                      invoiceItemBean invItemBean = new invoiceItemBean();
-                     //invItemBean.setInvoiceID(dbData.getInt("invoiceID"));
                      invItemBean.setProductID(dbData.getInt("productID"));
-                     //invItemBean.setQuantityPurchased(dbData.getInt("quantityPurchased"));
                      invItemsRetrieved.add(invItemBean);
                   }
 
-              /* UPDATE Product JOIN InvoiceItem ON Product.productID=InvoiceItem.productID
-               SET Product.stocksRemaining = Product.stocksRemaining-InvoiceItem.quantityPurchased
-               WHERE Product.productID=1 and InvoiceItem.invoiceID=9;*/
                for(invoiceItemBean iibean : invItemsRetrieved){
                    preparedSQL = "UPDATE Product JOIN InvoiceItem ON Product.productID=InvoiceItem.productID" +
       "               SET Product.stocksRemaining = Product.stocksRemaining-InvoiceItem.quantityPurchased" +

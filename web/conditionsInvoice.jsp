@@ -74,6 +74,12 @@
             From:<input type="text" name="fromDate" id="date1" maxlength="10"><br>
             To:<input type="text" name="toDate" id="date2" maxlength="10"><br><br>
             
+            <br><br>
+            <b>Search by Sales Representative:</b><br>
+            Last Name: <input type="text" name="searchSalesRepLastNameInput" maxlength="100"><br>
+            First Name: <input type="text" name="searchSalesRepFirstNameInput" maxlength="100"><br>
+            <br>
+            
             <input type="submit" value="Search"><br><br><br>
         </form>
         
@@ -83,7 +89,9 @@
             
             <b>Shortcuts</b><br>
                 <input type="radio" name="getWhat" value="new">View New Invoices<br>
-                <input type="radio" name="getWhat" value="validated">View Incomplete Invoices<br>
+                <input type="radio" name="getWhat" value="unpaid">View Unpaid Invoices<br>
+                <input type="radio" name="getWhat" value="validated">View validated Invoices<br>
+                <input type="radio" name="getWhat" value="undelivered">View Undelivered Invoices<br>
                 <input type="radio" name="getWhat" value="close">View Invoices near payment deadlines<br>
                 <input type="radio" name="getWhat" value="overduePay">View Invoices with Overdue Payments<br>
                 <br>

@@ -21,8 +21,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author user
  */
-@WebServlet(name = "NewServlet", urlPatterns = {"/NewServlet"})
-public class removeFromCartServlet extends HttpServlet {
+@WebServlet(name = "removeFromProdCartServlet", urlPatterns = {"/removeFromProdCartServlet"})
+public class removeFromProdCartServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,48 +36,41 @@ public class removeFromCartServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        
         ServletContext context = request.getSession().getServletContext();
         
-        LinkedList<productBean> cart;
+        LinkedList<productBean> prodCart;
+        LinkedList<String> prodNames;
+        LinkedList<Float> prodPrices;
         LinkedList<Integer> quantity;
         LinkedList<Float> totalPrices;
         int foundIndex = 0;
         HttpSession session = request.getSession();
         try{
-            if (session.getAttribute("cart") == null){
-                cart = new LinkedList<productBean>();
-                quantity = new LinkedList<Integer>();
-                totalPrices = new LinkedList<Float>();
-                context.log(">>cart created!");
-                context.log("----cart size is: " + cart.size());
+            if (session.getAttribute("prodCart") == null){
+                prodCart = new LinkedList<productBean>();
+                context.log(">>prodCart created!");
+                context.log("----prodCart size is: " + prodCart.size());
             }
             else{
-                cart = (LinkedList<productBean>)(session.getAttribute("cart"));
-                quantity = (LinkedList<Integer>)(session.getAttribute("quantity"));
-                totalPrices = (LinkedList<Float>)(session.getAttribute("totalPrices"));
-                context.log("----cart size is: " + cart.size());
+                prodCart = (LinkedList<productBean>)(session.getAttribute("prodCart"));
+                context.log("----prodCart size is: " + prodCart.size());
             }
-            if(request.getParameter("prodName")!=null){
-                String prodName = ""+request.getParameter("prodName");
+            if(request.getParameter("prodID")!=null){
+                String prodID = ""+request.getParameter("prodID");
 
-                for(int i=0;i<cart.size();i++){
-                    if((cart.get(i)).getProductName().equals(prodName)){
+                for(int i=0;i<prodCart.size();i++){
+                    if(prodCart.get(i).getProductID().equals(prodID)){
                         foundIndex = i;
                     }
                 }
 
-                cart.remove(foundIndex);
-                if(quantity!=null && quantity.size()>foundIndex){quantity.remove(foundIndex);totalPrices.remove(foundIndex);}
-                context.log("->>product removed from cart! size is now: " + cart.size());
+                prodCart.remove(foundIndex);
+                context.log("->>product removed from prodCart! size is now: " + prodCart.size());
             }
 
-            session.setAttribute("cart", cart);
-            session.setAttribute("quantity", quantity);
-            session.setAttribute("totalPrices", totalPrices);
-            request.setAttribute("forInvoice", "yes");
-            request.getRequestDispatcher("viewCart.jsp").forward(request,response);
+            session.setAttribute("prodCart", prodCart);
+            //request.setAttribute("forLowStock", "yes");
+            request.getRequestDispatcher("viewProdCart.jsp").forward(request,response);
 
 
         }

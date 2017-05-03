@@ -32,7 +32,8 @@
         
         <br><br><br>
         
-        
+        <br><br>
+        <a href="Servlets.getProductServlet?forOther=restock&suppID=<c:out value="${supb.getSupplierID()}"/>">Select for RO</a>
         <br><br>
         <a href="supplier.get?viewSupp=yes">Go to Suppliers List</a>
         <br><br>

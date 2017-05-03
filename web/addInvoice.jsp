@@ -7,6 +7,7 @@
 <%@page import="Beans.*,java.util.ArrayList, java.util.LinkedList,java.util.Collections"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     String accountType = ""+session.getAttribute("accountType");
     customerBean customer = (customerBean)request.getAttribute("customer");
@@ -31,6 +32,8 @@
     </head>
     <body onload="init()">
         <h1>This is the Add Invoice page!</h1>
+        
+        <c:set var="customer" value="${requestScope.customer}"/>
         
         <!--this is the error message-->
         <c:set var="errorMessage" value="${requestScope.message}"/>
@@ -67,25 +70,21 @@
                     <c:when test="${sessionScope.cart != null}">
                         <c:set var="cartSize" value="${sessionScope.cart.size()}"/>
                         <c:set var="cart" value="${sessionScope.cart}"/>
-                        <c:set var="prodNames" value="${sessionScope.prodNames}"/>
-                        <c:set var="prodPrices" value="${sessionScope.prodPrices}"/>
                         <c:set var="quantity" value="${sessionScope.quantity}"/>
                         <c:set var="totalPrices" value="${sessionScope.totalPrices}"/>
 
                         <c:forEach items="${cart}" var="prods" begin="0" step="1" varStatus="loop">
                             <tr>
-                                <td><c:out value="${prodNames[loop.index]}"/></td>
-                                <td><c:out value="${prodPrices[loop.index]}"/></td>
+                                <td><c:out value="${prods.getProductName()}"/></td>
+                                <td><fmt:formatNumber pattern="0.00" value="${prods.getProductPrice()}" type="number"/></td>
                                 <td><c:out value="${quantity[loop.index]}"/></td>
-                                <td><c:out value="${totalPrices[loop.index]}"/></td>
+                                <td><fmt:formatNumber pattern="0.00" value="${totalPrices[loop.index]}" type="number"/></td>
                             </tr>
                         </c:forEach>
                     </c:when>
 
                     <c:when test="${sessionScope.cart == null}">
-                        <%LinkedList<String> emptyCart = new LinkedList<String>();%>
-                        <c:set var="cartSize" value="0"/>
-                        <p>the size is 0</p>
+                       <p>the size is 0</p>
                     </c:when>
                 </c:choose>
                 
@@ -97,7 +96,7 @@
         <form action="invoice.add" method="POST">
             
             Enter Invoice Name: <input type="text" name="invoiceNameInput" maxlength="255" required><br>
-            Select Clinic: <select name="chosenClinic">
+            Select Clinic Address: <select name="chosenClinic">
                 <c:forEach items="${clinicsList}" var="clin" begin="0" step="1">
                     <option value="${clin.getClinicID()}">${clin.getClinicAddress()}</option>
                 </c:forEach>
@@ -113,15 +112,25 @@
                 <option value="Cheque">Cheque</option>
             </select><br>
             Payment Due Date: <input type="text" name="paymentDueDateInput" id="date2" required><br>
-            Date Paid: <input type="text" name="datePaidInput" id="date3"><br>
-            Status: <select name="statusInput">
+            <c:if test="${accountType eq '3' || accountType eq '1'}">
+                Status: <select name="statusInput">
                 <c:forEach items="${invStatList}" var="invStat" begin="0" step="1">
                     <option value="${invStat.getStatusID()}">${invStat.getStatusName()}</option>
                 </c:forEach>
-            </select><br>
+                </select><br>
+                Amount Paid: <input type="text" name="amountPaidInput" value="0"><br>
+                Date Paid: <input type="text" name="datePaidInput" id="date3"><br>
+            </c:if>
+            <c:if test="${accountType eq '6'}">
+                <input type='hidden' value='2' name='statusInput'>
+                <input type="hidden" name="amountPaidInput" value="0"><br>
+                <input type="hidden" name="datePaidInput" value=""><br>
+            </c:if>
+            
             Amount Due: <input type="text" name="amountDueInput" value="0" required><br>
             Discount: <input type="text" name="discountInput" value="0"><br>
-            Amount Paid: <input type="text" name="amountPaidInput" value="0"><br>
+            
+            Sales Representative: <input type="hidden" name="salesRepIDInput" value="${customer.getSalesRepID()}">${customer.getSalesRep()}<br>
             
             <input type="submit" value="Add Invoice">
         </form>

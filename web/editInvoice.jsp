@@ -7,13 +7,7 @@
 <%@page import="Beans.*,java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%
-    String accountType = ""+session.getAttribute("accountType");
-    invoiceBean invoice = (invoiceBean)request.getAttribute("invoice");
-    ArrayList<invoiceStatusBean> invStatList = (ArrayList<invoiceStatusBean>)request.getAttribute("invStatList");
-    ArrayList<invoiceItemBean> invitemsList = (ArrayList<invoiceItemBean>)request.getAttribute("invitemsList");
-    String message = ""+request.getAttribute("message");
-%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -33,17 +27,22 @@
     <body onload="init()">
         <h1>This is the Edit Invoice page!</h1>
         
+         <c:set var="accountType" value="${sessionScope.accountType}"/>
+        <c:set var="invoice" value="${requestScope.invoice}"/>
+        <c:set var="invitemsList" value="${requestScope.invitemsList}"/>
+        <c:set var="invStatList" value="${requestScope.invStatList}"/>
+        
         <c:set var="errorMessage" value="${requestScope.message}"/>
         <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
             <p>${errorMessage}</p><br><br>
         </c:if>
         
-        <br><br><br>
+        <br>
         <!--show the invoice details so users can have an easier time-->
         <h5>Invoice Details</h5>
         
         <form action="invoice.edit" method="post">
-            <p>Invoice ID: <input type="hidden" value="${invoice.getInvoiceID()}" name="invoiceIDInput">${invoice.getInvoiceID()}</p>
+            <input type="hidden" value="${invoice.getInvoiceID()}" name="invoiceIDInput">
             <p>Invoice Name: <input type="text" value="${invoice.getInvoiceName()}" name="newInvoiceNameInput" maxlength="255"><br>
             <p>Customer Name: <input type="hidden" value="${invoice.getPRCID()}" name="PRCIDInput">${invoice.getCustomerName()}</p>
             <p>Clinic Name: <input type="hidden" value="${invoice.getClinicID()}" name="clinicIDInput">${invoice.getClinicName()}</p>
@@ -59,16 +58,28 @@
                 </c:when>
             </c:choose>
             <br>
+            
             <b>Terms of Payment:</b><br>
-            <c:choose>
-                <c:when test="${invoice.getStatusName() eq 'In Progress'}">
-                    From: ${invoice.getTermsOfPayment()}<br>
-                    To: <input type="text" name="topInput" value="${invoice.getTermsOfPayment()}" maxlength="20"><br><br>
-                </c:when>
-                <c:when test="${invoice.getStatusName() ne 'In Progress'}">
-                    <input type="hidden" value="${invoice.getTermsOfPayment()}" name="topInput">${invoice.getTermsOfPayment()}<br><br>
-                </c:when>
-            </c:choose>      
+            <c:if test="${accountType ne '2'}">
+                <c:choose>
+                    <c:when test="${invoice.getStatusName() eq 'In Progress'}">
+                        From: ${invoice.getTermsOfPayment()}<br>
+                        To: <select name="topInput">
+                                <option value="Cash">Cash</option>
+                                <option value="Card">Card</option>
+                                <option value="Cheque">Cheque</option>
+                            </select>
+                        <br><br>
+                    </c:when>
+                    <c:when test="${invoice.getStatusName() ne 'In Progress'}">
+                        <input type="hidden" value="${invoice.getTermsOfPayment()}" name="topInput">${invoice.getTermsOfPayment()}<br><br>
+                    </c:when>
+                </c:choose>
+            </c:if>
+            <c:if test="${accountType eq '2'}">
+                <input type="hidden" value="${invoice.getTermsOfPayment()}" name="topInput">${invoice.getTermsOfPayment()}<br><br>
+            </c:if>
+                    
             <b>Payment Due Date:</b><br>        
             <c:choose>
                 <c:when test="${invoice.getDatePaid() eq '0000-00-00'}">
@@ -79,65 +90,101 @@
                     <input type="hidden" value="${invoice.getPaymentDueDate()}" name="paymentDueDateInput">${invoice.getPaymentDueDate()}<br><br>
                 </c:when>
             </c:choose>
+                    
+            
             <b>Date Paid:</b>
-            <c:choose>
-                <c:when test="${invoice.getStatusName() eq 'In Progress'}">
-                    <br>
-                    From: ${invoice.getDatePaid()}<br>
-                    To: <input type="text" name="datePaidInput" value="${invoice.getDatePaid()}" id="date3" maxlength="10"><br><br>
-                </c:when>
-                <c:when test="${invoice.getStatusName() ne 'In Progress'}">
-                    <input type="hidden" value="${invoice.getDatePaid()}" name="datePaidInput">${invoice.getDatePaid()}<br><br>
-                </c:when>
-            </c:choose>
+            <c:if test="${accounType eq '3' || accountType eq '1'}">        
+                <c:choose>
+                    <c:when test="${invoice.getStatusName() eq 'In Progress'}">
+                        <br>
+                        From: ${invoice.getDatePaid()}<br>
+                        To: <input type="text" name="datePaidInput" value="${invoice.getDatePaid()}" id="date3" maxlength="10"><br><br>
+                    </c:when>
+                    <c:when test="${invoice.getStatusName() ne 'In Progress'}">
+                        <input type="hidden" value="${invoice.getDatePaid()}" name="datePaidInput">${invoice.getDatePaid()}<br><br>
+                    </c:when>
+                </c:choose>
+            </c:if>
+            <c:if test="${accountType eq '6' || accountType eq '2'}">
+                <input type="hidden" value="${invoice.getDatePaid()}" name="datePaidInput">${invoice.getDatePaid()}<br><br>
+            </c:if>  
+                    
             <b>Status:</b>
-            <c:choose>
-                <c:when test="${invoice.getStatusName() eq 'In Progress'}">
-                    <br>
-                    From: ${invoice.getStatusName()}<br>
-                    To: 
-                    <select name="statusInput">
-                        <c:forEach items="${invStatList}" var="invStat" begin="0" step="1">
-                        <option value="${invStat.getStatusID()}">${invStat.getStatusName()}</option>
-                        </c:forEach>
-                    </select><br>
-                </c:when>
-                <c:when test="${invoice.getStatusName() ne 'In Progress'}">
-                    <input type="hidden" value="${invoice.getStatusID()}" name="statusInput">${invoice.getStatusName()}<br>
-                </c:when>
-            </c:choose>
+            <c:if test="${accountType eq '3' || accountType eq '1' || accountType eq '2'}">
+                <c:choose>
+                    <c:when test="${invoice.getStatusName() eq 'In Progress'}">
+                        <br>
+                        From: ${invoice.getStatusName()}<br>
+                        To: 
+                        <select name="statusInput">
+                            <c:forEach items="${invStatList}" var="invStat" begin="0" step="1">
+                            <option value="${invStat.getStatusID()}">${invStat.getStatusName()}</option>
+                            </c:forEach>
+                        </select><br>
+                    </c:when>
+                    <c:when test="${invoice.getStatusName() ne 'In Progress'}">
+                        <input type="hidden" value="${invoice.getStatusID()}" name="statusInput">${invoice.getStatusName()}<br>
+                    </c:when>
+                </c:choose>
+            </c:if>
+            <c:if test="${accountType eq '6'}">
+                <input type="hidden" value="${invoice.getStatusID()}" name="statusInput">${invoice.getStatusName()}<br>
+            </c:if>            
+                        
             <br>
             Amount Due:
-            <c:choose>
-                <c:when test="${invoice.getStatusName() eq 'In Progress'}">
-                    <input type="text" value="${invoice.getAmountDue()}" name="amountDueInput"><br>
-                </c:when>
-                <c:when test="${invoice.getStatusName() ne 'In Progress'}">
-                    <input type="hidden" value="${invoice.getAmountDue()}" name="amountDueInput">${invoice.getAmountDue()}<br>
-                </c:when>
-            </c:choose>
-                    
+            <c:if test="${accountType ne '2'}">
+                <c:choose>
+                    <c:when test="${invoice.getStatusName() eq 'In Progress'}">
+                        <input type="text" value="${invoice.getAmountDue()}" name="amountDueInput"><br>
+                    </c:when>
+                    <c:when test="${invoice.getStatusName() ne 'In Progress'}">
+                        <input type="hidden" value="${invoice.getAmountDue()}" name="amountDueInput">
+                        <fmt:formatNumber pattern="0.00" value="${invoice.getAmountDue()}" type="number"/><br>
+                    </c:when>
+                </c:choose>
+            </c:if>   
+            <c:if test="${accountType eq '2'}">
+                <input type="hidden" value="${invoice.getAmountDue()}" name="amountDueInput">
+                <fmt:formatNumber pattern="0.00" value="${invoice.getAmountDue()}" type="number"/><br>
+            </c:if>
+                        
             Discount:
+            <c:if test="${accountType ne '2'}">
             <c:choose>
                 <c:when test="${invoice.getStatusName() eq 'In Progress'}">
                     <input type="text" value="${invoice.getDiscount()}" name="discountInput"><br>
                 </c:when>
                 <c:when test="${invoice.getStatusName() ne 'In Progress'}">
-                    <input type="hidden" value="${invoice.getDiscount()}" name="discountInput">${invoice.getDiscount()}<br>
+                    <input type="hidden" value="${invoice.getDiscount()}" name="discountInput">
+                    <fmt:formatNumber pattern="0.00" value="${invoice.getDiscount()}" type="number"/><br>
                 </c:when>
             </c:choose>
-                    
+            </c:if>
+            <c:if test="${accountType eq '2'}">
+                <input type="hidden" value="${invoice.getDiscount()}" name="discountInput">
+                <fmt:formatNumber pattern="0.00" value="${invoice.getDiscount()}" type="number"/><br>
+            </c:if>
+                   
             Amount Paid:
-            <c:choose>
-                <c:when test="${invoice.getStatusName() eq 'In Progress'}">
-                    <input type="text" value="${invoice.getAmountPaid()}" name="amountPaidInput"><br>
-                </c:when>
-                <c:when test="${invoice.getStatusName() ne 'In Progress'}">
-                    <input type="hidden" value="${invoice.getAmountPaid()}" name="amountPaidInput">${invoice.getAmountPaid()}<br>
-                </c:when>
-            </c:choose>
+            <c:if test="${accountType eq '3' || accountType eq '1'}">
+                <c:choose>
+                    <c:when test="${invoice.getStatusName() eq 'In Progress'}">
+                        <input type="text" value="${invoice.getAmountPaid()}" name="amountPaidInput"><br>
+                    </c:when>
+                    <c:when test="${invoice.getStatusName() ne 'In Progress'}">
+                        <input type="hidden" value="${invoice.getAmountPaid()}" name="amountPaidInput">
+                        <fmt:formatNumber pattern="0.00" value="${invoice.getAmountPaid()}" type="number"/><br>
+                    </c:when>
+                </c:choose>
+            </c:if>     
+            <c:if test="${accountType eq '6' || accountType eq '2'}">
+                <input type="hidden" value="${invoice.getAmountPaid()}" name="amountPaidInput">
+                <fmt:formatNumber pattern="0.00" value="${invoice.getAmountPaid()}" type="number"/><br>
+            </c:if>
                     
             Date Delivered:
+            <c:if test="${accountType eq '3' || accountType eq '1' || accountType eq '2'}">
             <c:choose>
                 <c:when test="${invoice.getStatusName() eq 'In Progress'}">
                     <input type="text" value="${invoice.getDateDelivered()}" name="dateDeliveredInput" id="date4" maxlength="10"><br>
@@ -146,18 +193,28 @@
                     <input type="hidden" value="${invoice.getDateDelivered()}" name="dateDeliveredInput">${invoice.getDateDelivered()}<br>
                 </c:when>
             </c:choose>
-                    
+            </c:if>
+            <c:if test="${accountType eq '6'}">
+                <input type="hidden" value="${invoice.getDateDelivered()}" name="dateDeliveredInput">${invoice.getDateDelivered()}<br>
+            </c:if>        
                     
                     
             Overdue Fee:
-            <c:choose>
-                <c:when test="${invoice.getStatusName() eq 'In Progress'}">
-                    <input type="text" value="${invoice.getOverdueFee()}" name="overdueFeeInput"><br>
-                </c:when>
-                <c:when test="${invoice.getStatusName() ne 'In Progress'}">
-                    <input type="hidden" value="${invoice.getOverdueFee()}" name="overdueFeeInput">${invoice.getOverdueFee()}<br>
-                </c:when>
-            </c:choose>
+            <c:if test="${accountType eq '3'}">
+                <c:choose>
+                    <c:when test="${invoice.getStatusName() eq 'In Progress'}">
+                        <input type="text" value="${invoice.getOverdueFee()}" name="overdueFeeInput"><br>
+                    </c:when>
+                    <c:when test="${invoice.getStatusName() ne 'In Progress'}">
+                        <input type="hidden" value="${invoice.getOverdueFee()}" name="overdueFeeInput">
+                        <fmt:formatNumber pattern="0.00" value="${invoice.getOverdueFee()}" type="number"/><br>
+                    </c:when>
+                </c:choose>
+            </c:if>
+            <c:if test="${accountType ne '3'}">
+                <input type="hidden" value="${invoice.getOverdueFee()}" name="overdueFeeInput">
+                <fmt:formatNumber pattern="0.00" value="${invoice.getOverdueFee()}" type="number"/><br>
+            </c:if>
             <br><input type="submit" value="Save Changes">
         </form>
         

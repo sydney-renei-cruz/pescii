@@ -22,7 +22,7 @@
         
         <!--this is the error message-->
         <c:set var="errorMessage" value="${requestScope.message}"/>
-        <h3>${errorMmessage}</h3>
+        <h3>${errorMessage}</h3>
             
         <br><br>
         <a href="notif.get">Return to Home</a>

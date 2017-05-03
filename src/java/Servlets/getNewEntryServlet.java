@@ -124,8 +124,23 @@ public class getNewEntryServlet extends HttpServlet {
                  */
                  condition = " InvoiceStatus.statusName='In Progress' and Invoice.datePaid is not null order by Invoice.deliveryDate asc";
              }
+             //this sets up the SQL statement for invoices undelivered, regardless of date
+             else if(getWhat.equals("undelivered")){
+                 forWhere = "";
+                 interval = "";
+                 status = "";
+                 orderBy = "";
+                 condition = " InvoiceStatus.statusName='In Progress' and Invoice.dateDelivered is null order by Invoice.deliveryDate asc";
+             }
+             //this sets up the SQL statement for invoices undelivered, regardless of date
+             else if(getWhat.equals("unpaid")){
+                 forWhere = "";
+                 interval = "";
+                 status = "";
+                 orderBy = "";
+                 condition = " InvoiceStatus.statusName='In Progress' and Invoice.datePaid is null order by Invoice.deliveryDate asc";
+             }
              //this sets up the SQL statement for incomplete invoices with payment dates past deadline
-                //remember: a validated invoice is that which is paid for but not delivered yet
              else if(getWhat.equals("overduePay")){
                  forWhere = "";
                  interval = "";
@@ -214,13 +229,38 @@ public class getNewEntryServlet extends HttpServlet {
                         compound="";
                     }
                  }
+
+                //salesRep name field
+                if(!request.getParameter("searchSalesRepLastNameInput").equals("")){
+                        if(!(condition.equals(""))){
+                            compound=" and";
+                        }
+                        if(!(request.getParameter("searchSalesRepLastNameInput").equals("all"))){
+                           condition = condition + compound + " SalesRep.salesRepLastName like '%"+request.getParameter("searchSalesRepLastNameInput")+"%'";
+                        }
+                        compound="";
+                }
+                if(!request.getParameter("searchSalesRepFirstNameInput").equals("")){
+                        if(!(condition.equals(""))){
+                            compound=" and";
+                        }
+                        if(!(request.getParameter("searchSalesRepFirstNameInput").equals("all"))){
+                           condition = condition + compound + " SalesRep.salesRepFirstName like '%"+request.getParameter("searchSalesRepFirstNameInput")+"%'";
+                        }
+                        compound="";
+                }
+                
+                
                  forWhere="";
                  searchName="";
                  orderBy = " order by Invoice.invoiceName";
+                 
+                 
+                 
              }
              
              if(!condition.equals("")){condition = "where " + condition;}
-             preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, "
+             /*preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, "
                  + "Customer.customerFirstName, Customer.customerLastName, "
                  + "Invoice.clinicID, Clinic.clinicName, Clinic.provinceID, "
                  + "Province.provinceID, Province.provinceName, Province.provinceDivision, "
@@ -234,8 +274,21 @@ public class getNewEntryServlet extends HttpServlet {
                  + "inner join Clinic on Clinic.clinicID = Invoice.clinicID "
                  + "inner join Province on Province.provinceID = Clinic.provinceID "
                  + "inner join InvoiceStatus on InvoiceStatus.statusID = Invoice.statusID "
+                 + condition + forWhere + searchName + interval + status + orderBy;*/
+             preparedSQL = "select Invoice.*, "
+                 + "Customer.*, "
+                 + "Clinic.*, "
+                 + "Province.*, "
+                 + "Invoice.invoiceDate, Invoice.deliveryDate, "
+                 + "InvoiceStatus.*, "
+                 + "SalesRep.* "
+                 + "from Invoice "
+                 + "inner join Customer on Customer.customerID = Invoice.customerID "
+                 + "inner join Clinic on Clinic.clinicID = Invoice.clinicID "
+                 + "inner join Province on Province.provinceID = Clinic.provinceID "
+                 + "inner join InvoiceStatus on InvoiceStatus.statusID = Invoice.statusID "
+                 + "inner join SalesRep on SalesRep.salesRepID = Invoice.salesRepID "
                  + condition + forWhere + searchName + interval + status + orderBy;
-             
              
              context.log(preparedSQL);
              ps = conn.prepareStatement(preparedSQL);
@@ -265,8 +318,10 @@ public class getNewEntryServlet extends HttpServlet {
                 invBean.setAmountPaid(dbData.getFloat("amountPaid"));
                 invBean.setDiscount(dbData.getFloat("discount"));
                 invBean.setDateDelivered(dbData.getDate("dateDelivered"));
-                invBean.setDateCreated(dbData.getTimestamp("dateCreated"));
-                invBean.setLastEdittedBy(dbData.getString("lastEdittedBy"));
+                invBean.setDateCreated(dbData.getTimestamp("Invoice.dateCreated"));
+                invBean.setLastEdittedBy(dbData.getString("Invoice.lastEdittedBy"));
+                invBean.setSalesRepID(dbData.getInt("salesRepID"));
+                invBean.setSalesRepName(dbData.getString("salesRepFirstName")+" "+(dbData.getString("salesRepLastName")));
                 invoicesRetrieved.add(invBean);
              }
 
@@ -318,7 +373,7 @@ public class getNewEntryServlet extends HttpServlet {
                         compound="";
                 }
                  //SalesRep field
-                 if(!request.getParameter("searchSalesRepInput").equals("")){
+                 /*if(!request.getParameter("searchSalesRepInput").equals("")){
                      if(!(condition.equals(""))){
                          compound=" and";
                      }
@@ -326,7 +381,28 @@ public class getNewEntryServlet extends HttpServlet {
                         condition = condition + compound + " SalesRep.salesRepID = '"+request.getParameter("searchSalesRepInput")+"'";
                      }
                      compound="";
-                 }
+                 }*/
+                 
+                 //salesRep name field
+                if(!request.getParameter("searchSalesRepLastNameInput").equals("")){
+                        if(!(condition.equals(""))){
+                            compound=" and";
+                        }
+                        if(!(request.getParameter("searchSalesRepLastNameInput").equals("all"))){
+                           condition = condition + compound + " SalesRep.salesRepLastName like '%"+request.getParameter("searchSalesRepLastNameInput")+"%'";
+                        }
+                        compound="";
+                }
+                if(!request.getParameter("searchSalesRepFirstNameInput").equals("")){
+                        if(!(condition.equals(""))){
+                            compound=" and";
+                        }
+                        if(!(request.getParameter("searchSalesRepFirstNameInput").equals("all"))){
+                           condition = condition + compound + " SalesRep.salesRepFirstName like '%"+request.getParameter("searchSalesRepFirstNameInput")+"%'";
+                        }
+                        compound="";
+                }
+                 
                  //province field
                  if(!request.getParameter("searchProvinceInput").equals("")){
                      if(!(condition.equals(""))){
@@ -356,6 +432,16 @@ public class getNewEntryServlet extends HttpServlet {
                      + "inner join Province on Province.provinceID = Clinic.provinceID "
                      //+ "inner join Invoice on Invoice.customerID = Customer.customerID "
                      //+ "inner join InvoiceStatus on InvoiceStatus.statusID = Invoice.statusID "
+                     + condition + forWhere + searchName + interval + orderBy;
+             
+             preparedSQL = "select Customer.*, "
+                     + "SalesRep.*, "
+                     + "Clinic.*, "
+                     + "Province.* "
+                     + "from Customer "
+                     + "inner join SalesRep on SalesRep.salesRepID = Customer.salesRepID "
+                     + "inner join Clinic on Clinic.customerID = Customer.customerID "
+                     + "inner join Province on Province.provinceID = Clinic.provinceID "
                      + condition + forWhere + searchName + interval + orderBy;
              
              context.log(preparedSQL);

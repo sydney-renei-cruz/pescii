@@ -8,11 +8,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%
-    String accountType = ""+session.getAttribute("accountType");
-    restockOrderBean restockOrder = (restockOrderBean)request.getAttribute("restockOrder");
-    ArrayList<restockOrderItemBean> roitemsList = (ArrayList<restockOrderItemBean>)request.getAttribute("roitemsList");
-%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -22,12 +17,16 @@
     <body>
         <h1>This is the Restock Order Details Page!</h1>
         
+         <c:set var="accountType" value="${sessionScope.accountType}"/>
+        <c:set var="restockOrder" value="${requestScope.restockOrder}"/>
+        <c:set var="roitemsList" value="${requestScope.roitemsList}"/>
+        
         <br><br>
         <p>Restock Order Name: ${restockOrder.getRestockOrderName()}</p>
         <p>Supplier: ${restockOrder.getSupplierName()}</p>
         <p>Total Price: <fmt:formatNumber pattern="0.00" value="${restockOrder.getRestockPrice()}" type="number"/></p>
         <p>Amount Paid: <fmt:formatNumber pattern="0.00" value="${restockOrder.getAmountPaid()}" type="number"/></p>
-        <p>Discount: <fmt:formatNumber pattern="0.00" value="${restockOrder.getDiscount()}" type="number"/>${restockOrder.getDiscount()}</p>
+        <p>Discount: <fmt:formatNumber pattern="0.00" value="${restockOrder.getDiscount()}" type="number"/></p>
         <p>Date Due: ${restockOrder.getRODateDue()}</p>
         <p>Date Received: ${restockOrder.getRODateDelivered()}</p>
         <p>Purpose: ${restockOrder.getPurpose()}</p>
@@ -51,7 +50,7 @@
                 <td><a href="product.getDetails?prodID=<c:out value="${roitem.getProductID()}"/>">${roitem.getProductName()}</a></td>
                 <td>${roitem.getQuantityPurchased()}</td>
                 <td>${roitem.getQuantityReceived()}</td>
-                <td>${roitem.getTotalCost()}</td>
+                <td><fmt:formatNumber pattern="0.00" value="${roitem.getTotalCost()}" type="number"/></td>
             </tr>
         </c:forEach>
         </table>

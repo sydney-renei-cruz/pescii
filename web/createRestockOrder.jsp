@@ -6,6 +6,7 @@
 <%@page import="Beans.*,java.util.ArrayList, java.util.LinkedList,java.util.Collections"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     String accountType = ""+session.getAttribute("accountType");
     //productBean pbean = (productBean)request.getAttribute("product");
@@ -48,21 +49,21 @@
                         <c:set var="prodPrices" value="${sessionScope.ROprodPrices}"/>
                         <c:set var="quantity" value="${sessionScope.ROquantity}"/>
                         <c:set var="totalPrices" value="${sessionScope.ROtotalPrices}"/>
+                        <c:set var="total" value="0"/>
 
                         <c:forEach items="${cart}" var="prods" begin="0" step="1" varStatus="loop">
                             <tr>
                                 <td><c:out value="${prodNames[loop.index]}"/></td>
-                                <td><c:out value="${prodPrices[loop.index]}"/></td>
+                                <td><fmt:formatNumber pattern="0.00" value="${prodPrices[loop.index]}" type="number"/></td>
                                 <td><c:out value="${quantity[loop.index]}"/></td>
-                                <td><c:out value="${totalPrices[loop.index]}"/></td>
+                                <td><fmt:formatNumber pattern="0.00" value="${totalPrices[loop.index]}" type="number"/></td>
+                                <c:set var="total" value = "${total+totalPrices[loop.index]}"/>
                             </tr>
                         </c:forEach>
                     </c:when>
 
                     <c:when test="${sessionScope.ROcart == null}">
-                        <%LinkedList<String> emptyCart = new LinkedList<String>();%>
-                        <c:set var="cartSize" value="0"/>
-                        <p>the size is 0</p>
+                        <p>0 products selected</p>
                     </c:when>
                 </c:choose>
                 
@@ -75,6 +76,7 @@
             Enter RO Name: <input type="text" name="RONameInput" maxlength="255" required><br>
             Enter Purpose:<br><textarea name="purposeInput" rows="5" cols="50"></textarea><br>
             Enter Date Due:<input type="text" name="dateDueInput" id="date1" maxlength="10" required><br>
+            Total due: <c:out value="${total}"/><br>
             Enter discount:<input type="text" name="discountInput" value="0"><br>
             <input type="Submit" value="Create Restock Order">
         </form>

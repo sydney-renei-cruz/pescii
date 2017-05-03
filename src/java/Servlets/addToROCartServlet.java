@@ -54,6 +54,8 @@ public class addToROCartServlet extends HttpServlet {
                 session.setAttribute("quantity", null);
                 session.setAttribute("cartType", "restock");
                 session.setAttribute("suppID",request.getParameter("suppID"));
+                
+                session.setAttribute("prodCart", null);
             }
 
 
@@ -84,9 +86,6 @@ public class addToROCartServlet extends HttpServlet {
                 for(int i=0; i<ROprodNames.size();i++){
                     try{
                         context.log("product name from prodName is: "+request.getParameter(ROprodNames.get(i)));
-                        //String pq = request.getParameter(ROprodNames.get(i));
-                        //int prodQuant = Integer.parseInt(request.getParameter(ROprodNames.get(i)));
-                        //int prodQuant = Integer.parseInt(pq);
                         context.log("I made it?...");
                         ROquantity.add(Integer.parseInt(request.getParameter(ROprodNames.get(i))));
                         if(Integer.parseInt(request.getParameter(ROprodNames.get(i)))<0){
@@ -109,7 +108,7 @@ public class addToROCartServlet extends HttpServlet {
                     context.log("--->>>ROquantity is: " + ROquantity.get(i));
                 }
                 session.setAttribute("ROquantity", ROquantity);
-                context.log("cartType in addToCartServlet is: "+session.getAttribute("cartType"));
+                context.log("cartType in addToROCartServlet is: "+session.getAttribute("cartType"));
                 //request.getRequestDispatcher("createRestockOrder.jsp").forward(request,response);
                 request.getRequestDispatcher("restockOrder.getStatus").forward(request,response);
 

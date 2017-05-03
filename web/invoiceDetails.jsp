@@ -7,11 +7,7 @@
 <%@page import="Beans.*,java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%
-    String accountType = ""+session.getAttribute("accountType");
-    invoiceBean invoice = (invoiceBean)request.getAttribute("invoice");
-    ArrayList<invoiceItemBean> invitemsList = (ArrayList<invoiceItemBean>)request.getAttribute("invitemsList");
-%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -20,7 +16,12 @@
     </head>
     <body>
         <h1>This is the Invoice Details Page!</h1>
-        <br><br><br>
+        
+        <c:set var="accountType" value="${sessionScope.accountType}"/>
+        <c:set var="invoice" value="${requestScope.invoice}"/>
+        <c:set var="invitemsList" value="${requestScope.invitemsList}"/>
+        
+        <br>
         <!--Invoice-->
         <h5>Invoice Details</h5>
         
@@ -35,13 +36,14 @@
         <p>Date Delivered: ${invoice.getDateDelivered()}</p>
         <p>Terms Of Payment: ${invoice.getTermsOfPayment()}</p>
         <p>Date Paid: ${invoice.getDatePaid()}</p>
-        <p>Amount Due: ${invoice.getAmountDue()}</p>
-        <p>Discount: ${invoice.getDiscount()}</p>
-        <p>Amount Paid: ${invoice.getAmountPaid()}</p>
+        <p>Amount Due: <fmt:formatNumber pattern="0.00" value="${invoice.getAmountDue()}" type="number"/></p>
+        <p>Discount: <fmt:formatNumber pattern="0.00" value="${invoice.getDiscount()}" type="number"/></p>
+        <p>Amount Paid: <fmt:formatNumber pattern="0.00" value="${invoice.getAmountPaid()}" type="number"/></p>
         <p>Date Closed: ${invoice.getDateClosed()}</p>
         <p>Status: ${invoice.getStatusName()}</p>
-        <p>Overdue Fee: ${invoice.getOverdueFee()}</p>
-        <p>Last Editted By: ${invoice.getLastEdittedBy()}</p>
+        <p>Overdue Fee: <fmt:formatNumber pattern="0.00" value="${invoice.getOverdueFee()}" type="number"/></p>
+        <p>Sales Representative: ${invoice.getSalesRepName()}</p>
+        <p>Last Edited By: ${invoice.getLastEdittedBy()}</p>
         
         <!-- Invoice Items-->
         <br><br><br>
@@ -59,12 +61,12 @@
                 <td>${invitem.getInvoiceItemID()}</td>
                 <td><a href="product.getDetails?prodID=<c:out value="${invitem.getProductID()}"/>">${invitem.getProductName()}</a></td>
                 <td>${invitem.getQuantityPurchased()}</td>
-                <td>${invitem.getTotalCost()}</td>
+                <td><fmt:formatNumber pattern="0.00" value="${invitem.getTotalCost()}" type="number"/></td>
             </tr>
         </c:forEach>
         </table>
         <br><br>
-        <c:if test="${accountType eq '4' || accountType eq '1' || accountType eq '3'}">
+        <c:if test="${accountType eq '4' || accountType eq '1' || accountType eq '3' || accountType eq '6'}">
             <a href="Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID=<c:out value="${invoice.getInvoiceID()}"/>">Edit Invoice</a>
         </c:if>
         <br><br>

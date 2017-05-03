@@ -42,12 +42,13 @@
             
             Search by Clinic Name: <input type="text" name="searchClinicNameInput" maxlength="255"><br>
             
-            Search by Sales Representative:<select name="searchSalesRepInput">
-                <option value="All">All</option>
-                <c:forEach items="${salesRepList}" var="sr" begin="0" step="1">
-                    <option value="${sr.getSalesRepID()}">${sr.getSalesRepLastName()}, ${sr.getSalesRepFirstName()}</option>
-                </c:forEach>
-            </select>
+            
+            <b>Search by Sales Representative:</b><br>
+            Last Name: <input type="text" name="searchSalesRepLastNameInput" maxlength="100"><br>
+            First Name: <input type="text" name="searchSalesRepFirstNameInput" maxlength="100"><br>
+            <br>
+            
+            
             <br><br>
             Search by Province:<select name="searchProvinceInput">
                     <option value="all">All</option>

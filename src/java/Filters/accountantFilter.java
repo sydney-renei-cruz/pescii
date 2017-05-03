@@ -44,6 +44,10 @@ public class accountantFilter implements Filter {
                 context.log("not accountant, but an admin");
                 chain.doFilter(request, response);
             }
+            else if(session.getAttribute("accountType").equals("6")){
+                context.log("not accountant, but a salesRep");
+                chain.doFilter(request, response);
+            }
             else{
                 String message = "You do not have clearance to perform that function.";
                 request.setAttribute("message", message);

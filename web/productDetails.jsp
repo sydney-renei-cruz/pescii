@@ -33,15 +33,24 @@
         <p>Product Class: ${product.getProductClassName()}</p>
         <p>Color: ${product.getColor()}</p>
         <p>Date Created: ${product.getDateCreated()}</p>
-        <p>Last Editted By: ${product.getLastEdittedBy()}</p>
+        <p>Last Edited By: ${product.getLastEdittedBy()}</p>
         
         <br><br><br>
         <c:if test="${forInvoice eq 'yes'}">
-            <a href="addToCart?prodName=<c:out value="${product.getProductName()}"/>&prodID=<c:out value="${product.getProductID()}"/>">ADD to Invoice</a><br><br>
+            <a href="addToCart?prodName=<c:out value="${product.getProductName()}"/>&prodID=<c:out value="${product.getProductID()}"/>&prodPrice=<c:out value="${product.getProductPrice()}"/>">ADD to Invoice</a><br><br>
         </c:if>
         <c:if test="${forInvoice eq 'yes'}">
             <br><br>
-            <a href="viewCart.jsp">View Cart</a> to add your invoice.<br><br>
+            <a href="viewCart.jsp">View Cart</a> to add your invoice
+            <br><br>
+        </c:if>
+        
+        <!--insert "add to RO link here!!!!!-->
+        <c:set var="cartType" value="${sessionScope.cartType}"/>
+        <c:if test="${cartType eq 'restock'}">
+            <br>
+            <a href="addToROCart?prodName=<c:out value="${product.getProductName()}"/>&prodID=<c:out value="${product.getProductID()}"/>&prodPrice=<c:out value="${product.getRestockPrice()}"/>">ADD to RO</a>
+            <br><br>
         </c:if>
         
         
@@ -49,12 +58,13 @@
             <c:when test="${forInvoice ne 'yes'}">
                 <c:if test="${accountType eq '4' || accountType eq '1'}">
                     <a href="product.getDetails?forEdit=yes&prodID=<c:out value="${product.getProductID()}"/>">Edit</a><br><br>
+                    <br><br>
                 </c:if>
                 <a href="Servlets.getProductServlet">Go to Products list</a><br><br>
                 <a href="product.getProductClass?search=yes&searchWhat=prod">Search Product</a><br>
                
             </c:when>
-            <c:when test="${forInvoice eq 'yes'}">
+            <c:when test="${cartType eq 'invoice'}">
                 <a href="Servlets.getProductServlet?forInvoice=yes">Go to Products list</a><br>
                 <a href="invoice.add?cancel=yes">Cancel Invoice</a><br>
             </c:when>

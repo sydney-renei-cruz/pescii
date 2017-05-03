@@ -9,9 +9,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
     String accountType = ""+session.getAttribute("accountType");
-    /*<String> cart = new LinkedList<String>();
-    if(session.getAttribute("cart")!=null){cart = (LinkedList<String>)session.getAttribute("cart");}
-    int cartSize=cart.size();*/
     String message = ""+request.getAttribute("message");
 %>
 <!DOCTYPE html>
@@ -32,7 +29,6 @@
             <c:when test="${sessionScope.cart != null}">
                 <c:set var="cartSize" value="${sessionScope.cart.size()}"/>
                 <c:set var="cart" value="${sessionScope.cart}"/>
-                <c:set var="prodNames" value="${sessionScope.prodNames}"/>
                 <c:set var="quantity" value="${sessionScope.quantity}"/>
                 <h4>the size is <c:out value="${cartSize}"/></h4>
                 <p>Please enter the quantity you wish to purchase.</p>
@@ -40,9 +36,9 @@
                 <!--Now make the table-->
                 <form action="addToCart">
                     <input type="hidden" name="gotQuantity" value="yes">
-                    <c:forEach items="${prodNames}" var="prods" begin="0" step="1" varStatus="loop">
-                        <a href="removeFromCart?prodName=<c:out value="${prods}"/>">REMOVE</a>
-                        ${prods}: <input type="text" name="${prods}" value="${quantity[loop.index]}"><br>
+                    <c:forEach items="${cart}" var="prods" begin="0" step="1" varStatus="loop">
+                        <a href="removeFromCart?prodName=<c:out value="${prods.getProductName()}"/>">REMOVE</a>
+                        ${prods.getProductName()}: <input type="text" name="${prods.getProductName()}" value="${quantity[loop.index]}"><br>
                     </c:forEach>
                         <br>
                         <input type="submit" value="Select Customer">
@@ -52,9 +48,7 @@
             </c:when>
 
             <c:when test="${sessionScope.cart == null}">
-                <%LinkedList<String> emptyCart = new LinkedList<String>();%>
-                <c:set var="cartSize" value="0"/>
-                <p>the size is 0</p>
+                 <p>0 products selected</p>
             </c:when>
         </c:choose>
 

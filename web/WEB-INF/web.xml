@@ -53,12 +53,20 @@
         <servlet-class>Servlets.addToROCartServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>addToProdCartServlet</servlet-name>
+        <servlet-class>Servlets.addToProdCartServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>removeFromCartServlet</servlet-name>
         <servlet-class>Servlets.removeFromCartServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>removeFromROCartServlet</servlet-name>
         <servlet-class>Servlets.removeFromROCartServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>removeFromProdCartServlet</servlet-name>
+        <servlet-class>Servlets.removeFromProdCartServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>addClinicServlet</servlet-name>
@@ -196,6 +204,10 @@
         <servlet-name>editSupplierServlet</servlet-name>
         <servlet-class>Servlets.editSupplierServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>setLowstockLevelServlet</servlet-name>
+        <servlet-class>Servlets.setLowstockLevelServlet</servlet-class>
+    </servlet>
     
     <!-- Servlet Mapping-->
     
@@ -232,12 +244,20 @@
         <url-pattern>/addToROCart</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>addToProdCartServlet</servlet-name>
+        <url-pattern>/addToProdCart</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>removeFromCartServlet</servlet-name>
         <url-pattern>/removeFromCart</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>removeFromROCartServlet</servlet-name>
         <url-pattern>/removeFromROCart</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>removeFromProdCartServlet</servlet-name>
+        <url-pattern>/removeFromProdCart</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>addClinicServlet</servlet-name>
@@ -378,6 +398,10 @@
     <servlet-mapping>
         <servlet-name>editSupplierServlet</servlet-name>
         <url-pattern>/supplier.edit</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>setLowstockLevelServlet</servlet-name>
+        <url-pattern>/product.setLowstockLevel</url-pattern>
     </servlet-mapping>
     
     

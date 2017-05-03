@@ -7,11 +7,6 @@
 <%@page import="Beans.*,java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%
-    String accountType = ""+session.getAttribute("accountType");
-    ArrayList<supplierBean> suppliersList = (ArrayList<supplierBean>)request.getAttribute("suppliersList");
-    String cartType = ""+session.getAttribute("accountType");
-%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -21,28 +16,40 @@
     <body>
         <h1>This is the Get Supplier Page!</h1>
         
-        <table border="1">
-            <tr>
-                <th>Supplier ID</th>
-                <th>Supplier Name</th>
-                <th>Address</th>
-                <th>Contact Number</th>
-                <th>Product Class</th>
-            </tr>
+        <c:set var="accountType" value="${sessionScope.accountType}"/>
+        <c:set var="cartType" value="${sessionScope.cartType}"/>
+        <c:set var="suppliersList" value="${requestScope.suppliersList}"/>
+        <c:set var="listSize" value="${suppliersList.size()}"/>
         
-        <c:forEach items="${suppliersList}" var="sr" begin="0" step="1" varStatus="status">
-            <tr>
-                    <td>${sr.getSupplierID()}</td>
-                    <td><a href="supplier.getDetails?suppID=<c:out value="${sr.getSupplierID()}"/>">${sr.getSupplierName()}</a></td>
-                    <td>${sr.getSupplierAddress()}</td>
-                    <td>${sr.getSupplierContactNumber()}</td>
-                    <td>${sr.getProductClassName()}</td>
-                    <td><a href="Servlets.getProductServlet?forOther=restock&suppID=<c:out value="${sr.getSupplierID()}"/>">Select for RO</a></td>
-                    <td><a href="supplier.getDetails?forEdit=yes&suppID=<c:out value="${sr.getSupplierID()}"/>">Edit</a></td>
-            </tr>
-            
-        </c:forEach>
-        </table>
+        <c:if test="${listSize > 0}">
+            <table border="1">
+                <tr>
+                    <th>Supplier ID</th>
+                    <th>Supplier Name</th>
+                    <th>Address</th>
+                    <th>Contact Number</th>
+                    <th>Product Class</th>
+                </tr>
+
+            <c:forEach items="${suppliersList}" var="sr" begin="0" step="1" varStatus="status">
+                <tr>
+                        <td>${sr.getSupplierID()}</td>
+                        <td><a href="supplier.getDetails?suppID=<c:out value="${sr.getSupplierID()}"/>">${sr.getSupplierName()}</a></td>
+                        <td>${sr.getSupplierAddress()}</td>
+                        <td>${sr.getSupplierContactNumber()}</td>
+                        <td>${sr.getProductClassName()}</td>
+                        <td><a href="Servlets.getProductServlet?forOther=restock&suppID=<c:out value="${sr.getSupplierID()}"/>">Select for RO</a></td>
+                        <td><a href="supplier.getDetails?forEdit=yes&suppID=<c:out value="${sr.getSupplierID()}"/>">Edit</a></td>
+                </tr>
+
+            </c:forEach>
+            </table>
+        </c:if>
+        
+        <c:if test="${listSize eq 0}">
+            <p> 0 suppliers found.</p>
+        </c:if>
+        
         <br><br>
         <a href="product.getProductClass?search=yes&searchWhat=supp">Search Supplier</a>
         <br><br>

@@ -154,7 +154,6 @@ public class viewProductDetailsServlet extends HttpServlet {
          if(cartSession.equals("restock")){
              //request.getRequestDispatcher("restockOrder.getStatus").forward(request,response);
              request.setAttribute("forRestock", "yes");
-             return;
          }
          if(forEdit.equals("yes")){
              request.setAttribute("message",request.getAttribute("message"));

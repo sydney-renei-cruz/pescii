@@ -9,9 +9,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
     String accountType = ""+session.getAttribute("accountType");
-    /*<String> cart = new LinkedList<String>();
-    if(session.getAttribute("cart")!=null){cart = (LinkedList<String>)session.getAttribute("cart");}
-    int cartSize=cart.size();*/
     String message = ""+request.getAttribute("message");
 %>
 <!DOCTYPE html>
@@ -54,7 +51,7 @@
             <c:when test="${sessionScope.ROcart == null}">
                 <%LinkedList<String> emptyCart = new LinkedList<String>();%>
                 <c:set var="cartSize" value="0"/>
-                <p>the size is 0</p>
+                <p>0 products selected</p>
             </c:when>
         </c:choose>
 

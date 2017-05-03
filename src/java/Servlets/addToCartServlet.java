@@ -5,6 +5,7 @@
  */
 package Servlets;
 
+import Beans.productBean;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.LinkedList;
@@ -40,40 +41,55 @@ public class addToCartServlet extends HttpServlet {
         
         String message = "";
         
-        LinkedList<String> cart;
+        //LinkedList<String> cart;
+        LinkedList<productBean> cart;
         LinkedList<String> prodNames;
         LinkedList<Float> prodPrices;
         LinkedList<Float> totalPrices;
         HttpSession session = request.getSession();
         try{
             String cartSession = ""+session.getAttribute("cartType");
+            
+             if(session.getAttribute("cartType")==null || !session.getAttribute("cartType").equals("invoice") || request.getParameter("getQuantity")!=null){
+                session.setAttribute("ROcart", null);
+                session.setAttribute("ROprodNames", null);
+                session.setAttribute("ROquantity", null);
+                session.setAttribute("ROtotalPrices", null);
+                session.setAttribute("cartType", "invoice");
+                session.setAttribute("suppID",null);
+                
+                session.setAttribute("prodCart", null);
+            }
+            
             if (session.getAttribute("cart") == null){
-                cart = new LinkedList<String>();    //this contains the productID
-                prodNames = new LinkedList<String>();
-                prodPrices = new LinkedList<Float>();
+                cart = new LinkedList<productBean>();
                 totalPrices = new LinkedList<Float>();
                 context.log(">>cart created!");
                 context.log("----cart size is: " + cart.size());
             }
             else{
-                cart = (LinkedList<String>)(session.getAttribute("cart"));
-                prodNames = (LinkedList<String>)(session.getAttribute("prodNames"));
-                prodPrices = (LinkedList<Float>)(session.getAttribute("prodPrices"));
+                cart = (LinkedList<productBean>)(session.getAttribute("cart"));
                 totalPrices = (LinkedList<Float>)(session.getAttribute("totalPrices"));
+                
                 context.log("----cart size is: " + cart.size());
             }
             if(request.getParameter("prodID")!=null){
-                cart.add(request.getParameter("prodID"));
-                prodNames.add(request.getParameter("prodName"));
-                prodPrices.add(0 + Float.parseFloat(request.getParameter("prodPrice")));
+                context.log("adding items to cart!");
+                productBean product = new productBean();
+                
+                product.setProductID(request.getParameter("prodID"));
+                product.setProductName(request.getParameter("prodName"));
+                product.setProductPrice(Float.parseFloat(request.getParameter("prodPrice")));
+                cart.add(product);
+                session.setAttribute("cart", cart);
                 context.log("->>product added to cart! ID is: " + request.getParameter("prodID"));
             }
             if(request.getParameter("gotQuantity")!=null){
                 LinkedList<Integer> quantity = new LinkedList<Integer>();
-                for(int i=0; i<prodNames.size();i++){
+                for(int i=0; i<cart.size();i++){
                     try{
-                        quantity.add(Integer.parseInt(request.getParameter(prodNames.get(i))));
-                        if(Integer.parseInt(request.getParameter(prodNames.get(i)))<0){
+                        quantity.add(Integer.parseInt(request.getParameter(cart.get(i).getProductName())));
+                        if(Integer.parseInt(request.getParameter(cart.get(i).getProductName()))<0){
                             message = "Product quantity was input incorrectly. Please use whole numbers.";
                             request.setAttribute("message",message);
                             context.log("returning to viewCart.jsp 1");
@@ -88,7 +104,7 @@ public class addToCartServlet extends HttpServlet {
                         request.getRequestDispatcher("viewCart.jsp").forward(request,response);
                         return;
                     }
-                    totalPrices.add(quantity.get(i)*prodPrices.get(i));
+                    totalPrices.add(quantity.get(i)*cart.get(i).getProductPrice());
                     context.log("--->>>quantity is: " + quantity.get(i));
                 }
                 session.setAttribute("quantity", quantity);
@@ -98,8 +114,6 @@ public class addToCartServlet extends HttpServlet {
             }
             context.log("cartType in addToCartServlet 2 is: "+session.getAttribute("cartType"));
             session.setAttribute("cart", cart);
-            session.setAttribute("prodNames", prodNames);
-            session.setAttribute("prodPrices", prodPrices);
             session.setAttribute("totalPrices", totalPrices);
             request.setAttribute("forInvoice", "yes");
             request.getRequestDispatcher("Servlets.getProductServlet").forward(request,response);
