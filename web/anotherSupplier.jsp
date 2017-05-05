@@ -22,8 +22,13 @@
         </c:if>
         <c:set var="supplierID" value="${requestScope.suppID}"/>   
         <a href="product.getProductClass?addSupp=yes">Add Supplier</a><br>
-        <a href="supplier.getDetails?forEdit=yes&suppID=<c:out value="${supplierID}"/>">Edit created Supplier</a><br>
-        <a href="supplier.getDetails?suppID=<c:out value="${supplierID}"/>">View Supplier Details</a><br>
+        <c:if test="${supplierID ne '' && supplierID ne null}">
+            <a href="supplier.getDetails?forEdit=yes&suppID=<c:out value="${supplierID}"/>">Edit created Supplier</a><br>
+            <a href="supplier.getDetails?suppID=<c:out value="${supplierID}"/>">View Supplier Details</a><br><br>
+        </c:if>
+        <a href="supplier.get?viewSupp=yes">Edit another Supplier</a><br>
+        <a href="product.getProductClass?search=yes&searchWhat=supp">Search Supplier</a><br>
+        <a href="supplier.get?viewSupp=yes">View All Suppliers</a><br>
         <br><br>
         <a href="notif.get">Return to Home</a>
         <br><br>

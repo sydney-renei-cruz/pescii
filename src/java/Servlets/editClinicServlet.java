@@ -101,9 +101,26 @@ public class editClinicServlet extends HttpServlet {
          String inputClinID = request.getParameter("clinID");
          PreparedStatement ps;
          String message = "";
+         boolean clinicAddress=false;
+         boolean clinicPhoneNumber=false;
+         boolean clinicName=false;
 
         String newClinicAddress = "";
-        try{newClinicAddress = request.getParameter("clinicAddressInput");}
+        try{
+            newClinicAddress = request.getParameter("clinicAddressInput");
+            if(!newClinicAddress.equals("") && newClinicAddress!=null){
+                clinicAddress=true;
+            }
+            else{
+                message = "Clinic address was input incorrectly. It should also not be blank.";
+                request.setAttribute("message",message);
+                request.setAttribute("whatFor","addClinic");
+                request.setAttribute("custID", request.getParameter("custID"));
+                request.getRequestDispatcher("customer.getClinic").forward(request,response);
+                return;
+            }
+        
+        }
         catch(Exception e){
              e.printStackTrace();
              message = "Clinic address was input incorrectly. It should also not be blank.";
@@ -128,6 +145,7 @@ public class editClinicServlet extends HttpServlet {
                     request.getRequestDispatcher("customer.getClinic").forward(request,response);
                     return;
                 }
+                else{clinicPhoneNumber=true;}
             }
          }
          catch(Exception e){
@@ -142,7 +160,21 @@ public class editClinicServlet extends HttpServlet {
         
         //check clinic name
         String newClinicName = "";
-        try{newClinicName = request.getParameter("clinicNameInput");}
+        try{
+            newClinicName = request.getParameter("clinicNameInput");
+            if(!newClinicName.equals("") && newClinicName!=null){
+                clinicName=true;
+            }
+            else{
+             message = "Clinic Name was input incorrectly. It should also not be blank.";
+             request.setAttribute("message",message);
+             request.setAttribute("whatFor","addClinic");
+             request.setAttribute("custID", request.getParameter("custID"));
+             request.getRequestDispatcher("customer.getClinic").forward(request,response);
+             return;
+            }
+        
+        }
          catch(Exception e){
              message = "Clinic Name was input incorrectly. It should also not be blank.";
              request.setAttribute("message",message);
@@ -164,14 +196,34 @@ public class editClinicServlet extends HttpServlet {
              return;
          }
 
+        preparedSQL = "update Clinic set clinicAddress=?, clinicPhoneNumber=?, clinicName=?, provinceID=? where clinicID=?";
         ps = conn.prepareStatement(preparedSQL);
-        ps.setString(1,newClinicAddress);
-        ps.setString(2,newClinicPhoneNumber);
-        ps.setString(3,newClinicName);
-        ps.setString(4,inputClinID);
-        ps.setString(5,provinceID);
-
+        if(clinicName==true){
+            preparedSQL = "update Clinic set clinicName=? where clinicID=?";
+            ps.setString(1,newClinicName);
+            ps.setString(2,inputClinID);
+            ps.executeUpdate();
+            context.log("updated the clinicName!");
+        }
+        if(clinicAddress==true){
+            preparedSQL = "update Clinic set clinicAddress=? where clinicID=?";
+            ps.setString(1,newClinicAddress);
+            ps.setString(2,inputClinID);
+            ps.executeUpdate();
+            context.log("updated the clinicAddress!");
+        }
+        if(clinicPhoneNumber==true){
+            preparedSQL = "update Clinic set clinicPhoneNumber=? where clinicID=?";
+            ps.setString(1,newClinicPhoneNumber);
+            ps.setString(2,inputClinID);
+            ps.executeUpdate();
+            context.log("updated the clinicPhoneNumber!");
+        }
+        preparedSQL = "update Clinic set provinceID=? where clinicID=?";
+        ps.setString(1,provinceID);
+        ps.setString(2,inputClinID);
         ps.executeUpdate();
+        context.log("updated the clinicAddress!");
 
         context.log("--->Clinic successfully updated. ClinicID is: "+inputClinID);
 

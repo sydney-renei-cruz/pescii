@@ -37,11 +37,11 @@
             <input type="hidden" value="${product.getProductID()}" name="productIDInput">
             Product Name: <input type="text" value="${product.getProductName()}" name="productNameInput" maxlength="255" required><br>
             Product Description: <br><textarea name="productDescriptionInput" rows="5" cols="50">${product.getProductDescription()}</textarea><br>
-            Product Price: <input type="text" value="${product.getProductPrice()}" name="productPriceInput"><br>
-            Restock Price: <input type="text" value="${product.getRestockPrice()}" name="restockPriceInput"><br>
-            Low Stock Level: <input type="text" value="${product.getLowStock()}" name="lowStockInput"><br>
-            Brand: <input type="text" value="${product.getBrand()}" name="brandInput" maxlength="50"><br>
-            Color: <input type="text" value="${product.getColor()}" name="colorInput" maxlength="20"><br><br>
+            Product Price: <input type="text" value="${product.getProductPrice()}" name="productPriceInput" required><br>
+            Restock Price: <input type="text" value="${product.getRestockPrice()}" name="restockPriceInput" required><br>
+            Low Stock Level: <input type="text" value="${product.getLowStock()}" name="lowStockInput" required><br>
+            Brand: <input type="text" value="${product.getBrand()}" name="brandInput" maxlength="50" required><br>
+            Color: <input type="text" value="${product.getColor()}" name="colorInput" maxlength="20" required><br><br>
             <b>Product Class</b><br>
             From: ${product.getProductClassName()}<br>
             To: <select name="productClassInput">

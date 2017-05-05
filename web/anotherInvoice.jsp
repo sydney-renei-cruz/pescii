@@ -22,8 +22,14 @@
         </c:if>
         <c:set var="invoiceID" value="${requestScope.invID}"/>   
         <a href="Servlets.getProductServlet?forOther=invoice">Create a new Invoice</a><br>
-        <a href="Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID=<c:out value="${invoiceID}"/>">Edit created Invoice</a><br>
-        <a href="Servlets.viewInvoiceDetailsServlet?editInvoice=no&invID=<c:out value="${invoiceID}"/>">View Invoice Details</a><br>
+        <c:if test="${invoiceID ne '' && invoiceID ne null}">
+            <a href="Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID=<c:out value="${invoiceID}"/>">Edit created Invoice</a><br>
+            <a href="Servlets.viewInvoiceDetailsServlet?editInvoice=no&invID=<c:out value="${invoiceID}"/>">View Invoice Details</a><br><br>
+        </c:if>
+        <a href="Servlets.getInvoiceServlet">Edit another Invoice</a><br>
+        <a href="unfinished.get?getTable=invoice">View Unfinished Invoices</a><br>
+        <a href="province.get?whatFor=conditionsInvoice">Search Invoice</a><br>
+        <a href="Servlets.getInvoiceServlet">View All Invoices</a><br>
         <br><br>
         <a href="notif.get">Return to Home</a>
         <br><br>

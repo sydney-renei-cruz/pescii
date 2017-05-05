@@ -115,61 +115,74 @@ public class editSalesRepServlet extends HttpServlet {
          
          //check first name
          String newSalesRepFirstName = "";
+         boolean salesRepFirstName=false;
          try{
-             newSalesRepFirstName = request.getParameter("newSalesRepFirstNameInput");
-             if(newSalesRepFirstName.length()>100){
-                 message = "First name is too long.";
-                 request.setAttribute("message",message);
-                request.getRequestDispatcher("salesrep.getDetails?srID="+salesRepID).forward(request,response);
-                return;
+             if(request.getParameter("newSalesRepFirstNameInput")!=null && !request.getParameter("newSalesRepFirstNameInput").equals("")){
+                newSalesRepFirstName = request.getParameter("newSalesRepFirstNameInput");
+                if(newSalesRepFirstName.length()>100){
+                    message = "First name is too long.";
+                    request.setAttribute("message",message);
+                   request.getRequestDispatcher("salesrep.getDetails?srID="+salesRepID).forward(request,response);
+                   return;
+                }
+                else{salesRepFirstName=true;}
              }
-            }
-            catch(Exception e){
-                message = "First name was input incorrectly. It should also not be blank.";
-                request.setAttribute("message",message);
-                request.getRequestDispatcher("salesrep.getDetails?srID="+salesRepID).forward(request,response);
-                return;
-            }
+        }
+        catch(Exception e){
+            message = "First name was input incorrectly. It should also not be blank.";
+            request.setAttribute("message",message);
+            request.getRequestDispatcher("salesrep.getDetails?srID="+salesRepID).forward(request,response);
+            return;
+        }
          
          
          //check last name
          String newSalesRepLastName = "";
+         boolean salesRepLastName=false;
          try{
-             newSalesRepLastName = request.getParameter("newSalesRepLastNameInput");
-             if(newSalesRepLastName.length()>100){
-                message = "Last name is too long.";
-                request.setAttribute("message",message);
-                request.getRequestDispatcher("salesrep.getDetails?srID="+salesRepID).forward(request,response);
-                return;
-             }
-            }
-            catch(Exception e){
-                message = "Last name was input incorrectly. It should also not be blank.";
-                request.setAttribute("message",message);
-                request.getRequestDispatcher("salesrep.getDetails?srID="+salesRepID).forward(request,response);
-                return;
-            }
-         
-         
-         //check mobile number
-         String newSalesRepMobileNumber = "";
-         try{
-             newSalesRepMobileNumber = request.getParameter("newSalesRepMNInput");
-             if(newSalesRepMobileNumber.length()>12){
-                 message = "Mobile Number is too long.";
-                 request.setAttribute("message",message);
-                request.getRequestDispatcher("salesrep.getDetails?srID="+salesRepID).forward(request,response);
-                return;
-             }
-             char c;
-             for(int i=0;i<newSalesRepMobileNumber.length();i++){
-                c = newSalesRepMobileNumber.charAt(i);
-                if(!Character.isDigit(c)){
-                    message = "Mobile Number was input incorrectly.";
+             if(request.getParameter("newSalesRepLastNameInput")!=null && !request.getParameter("newSalesRepLastNameInput").equals("")){
+                newSalesRepLastName = request.getParameter("newSalesRepLastNameInput");
+                if(newSalesRepLastName.length()>100){
+                    message = "Last name is too long.";
                     request.setAttribute("message",message);
                     request.getRequestDispatcher("salesrep.getDetails?srID="+salesRepID).forward(request,response);
                     return;
                 }
+                else{salesRepLastName=true;}
+            }
+        }
+        catch(Exception e){
+            message = "Last name was input incorrectly. It should also not be blank.";
+            request.setAttribute("message",message);
+            request.getRequestDispatcher("salesrep.getDetails?srID="+salesRepID).forward(request,response);
+            return;
+        }
+         
+         
+         //check mobile number
+         String newSalesRepMobileNumber = "";
+         boolean salesRepMobileNumber=false;
+         try{
+             if(request.getParameter("newSalesRepMNInput")!=null && !request.getParameter("newSalesRepMNInput").equals("")){
+                newSalesRepMobileNumber = request.getParameter("newSalesRepMNInput");
+                char c;
+                for(int i=0;i<newSalesRepMobileNumber.length();i++){
+                   c = newSalesRepMobileNumber.charAt(i);
+                   if(!Character.isDigit(c)){
+                       message = "Mobile Number was input incorrectly.";
+                       request.setAttribute("message",message);
+                       request.getRequestDispatcher("salesrep.getDetails?srID="+salesRepID).forward(request,response);
+                       return;
+                   }
+                }
+                if(newSalesRepMobileNumber.length()>12){
+                    message = "Mobile Number is too long.";
+                    request.setAttribute("message",message);
+                   request.getRequestDispatcher("salesrep.getDetails?srID="+salesRepID).forward(request,response);
+                   return;
+                }
+                else{salesRepMobileNumber=true;}
+                
             }
          }
          catch(Exception e){
@@ -182,26 +195,73 @@ public class editSalesRepServlet extends HttpServlet {
          
          //check address
          String newSalesRepAddress = "";
+         boolean salesRepAddress=false;
          try{
-             newSalesRepAddress = request.getParameter("newSalesRepAddressInput");
-             if(newSalesRepAddress.length()>255){
-                message = "Address is too long.";
-                request.setAttribute("message",message);
-                request.getRequestDispatcher("salesrep.getDetails?srID="+salesRepID).forward(request,response);
-                return;
-             }
+             if(request.getParameter("newSalesRepAddressInput")!=null && !request.getParameter("newSalesRepAddressInput").equals("")){
+                newSalesRepAddress = request.getParameter("newSalesRepAddressInput");
+                if(newSalesRepAddress.length()>255){
+                   message = "Address is too long.";
+                   request.setAttribute("message",message);
+                   request.getRequestDispatcher("salesrep.getDetails?srID="+salesRepID).forward(request,response);
+                   return;
+                }
+                else{salesRepAddress=true;}
             }
-            catch(Exception e){
-                message = "Address was input incorrectly. It should also not be blank.";
-                request.setAttribute("message",message);
-                request.getRequestDispatcher("salesrep.getDetails?srID="+salesRepID).forward(request,response);
-                return;
-            }
+        }
+        catch(Exception e){
+            message = "Address was input incorrectly. It should also not be blank.";
+            request.setAttribute("message",message);
+            request.getRequestDispatcher("salesrep.getDetails?srID="+salesRepID).forward(request,response);
+            return;
+        }
          
          
          String lastEdittedBy = ""+session.getAttribute("userName");
-         
+         preparedSQL = "update SalesRep set salesRepFirstName=?, salesRepLastName=?, "
+                 + "salesRepMobileNumber=?, salesRepAddress=?, lastEdittedBy=? "
+                 + "where salesRepID=?";
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
+         if(salesRepFirstName==true){
+             preparedSQL = "update SalesRep set salesRepFirstname=? where salesRepID=?";
+             ps = conn.prepareStatement(preparedSQL);
+             ps.setString(1,newSalesRepFirstName);
+             ps.setInt(2,salesRepID);
+             ps.executeUpdate();
+             context.log("updated the salesRepFirstName");
+         }
+         if(salesRepLastName==true){
+             preparedSQL = "update SalesRep set salesRepLastname=? where salesRepID=?";
+             ps = conn.prepareStatement(preparedSQL);
+             ps.setString(1,newSalesRepLastName);
+             ps.setInt(2,salesRepID);
+             ps.executeUpdate();
+             context.log("updated the salesRepLastName");
+         }
+         if(salesRepMobileNumber==true){
+             preparedSQL = "update SalesRep set salesRepMobileNumber=? where salesRepID=?";
+             ps = conn.prepareStatement(preparedSQL);
+             ps.setString(1,newSalesRepMobileNumber);
+             ps.setInt(2,salesRepID);
+             ps.executeUpdate();
+             context.log("updated the salesRepMobileNumber");
+         }
+         if(salesRepAddress==true){
+             preparedSQL = "update SalesRep set salesRepAddress=? where salesRepID=?";
+             ps = conn.prepareStatement(preparedSQL);
+             ps.setString(1,newSalesRepAddress);
+             ps.setInt(2,salesRepID);
+             ps.executeUpdate();
+             context.log("updated the salesRepAddress");
+         }
+        
+        preparedSQL = "update SalesRep set lastEdittedBy=? where salesRepID=?";
+        ps = conn.prepareStatement(preparedSQL);
+        ps.setString(1,lastEdittedBy);
+        ps.setInt(2,salesRepID);
+        ps.executeUpdate();
+        context.log("updated the salesRep lastEdittedBy!");
+         
+         /*
          ps.setString(1,newSalesRepFirstName);
          ps.setString(2,newSalesRepLastName);
          ps.setString(3,newSalesRepMobileNumber);
@@ -210,7 +270,7 @@ public class editSalesRepServlet extends HttpServlet {
          ps.setInt(6,salesRepID);
          
          ps.executeUpdate();
-         
+         */
          message = "Sales Rep successfully editted!";
          request.setAttribute("message", message);
          request.setAttribute("srID", salesRepID);

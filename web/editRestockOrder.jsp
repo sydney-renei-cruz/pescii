@@ -27,6 +27,7 @@
             function init() {
                 calendar.set("date1");
                 calendar.set("date2");
+                calendar.set("date3");
             }
         </script>
     </head>
@@ -68,16 +69,16 @@
                             <c:when test="${restockOrder.getStatusName() eq 'In Progress'}">
                                 <c:choose>
                                     <c:when test="${accountType eq '4'}">
-                                        <td><input type="text" name="QO" value="${ro.getQuantityPurchased()}"></td>
+                                        <td><input type="text" name="QO" value="${ro.getQuantityPurchased()}" required></td>
                                         <td><input type="hidden" name="QR" value="${ro.getQuantityReceived()}">${ro.getQuantityReceived()}</td>
                                     </c:when>
                                     <c:when test="${accountType eq '5'}">
                                         <td><input type="hidden" name="QO" value="${ro.getQuantityPurchased()}">${ro.getQuantityPurchased()}</td>
-                                        <td><input type="text" name="QR" value="${ro.getQuantityReceived()}"></td>
+                                        <td><input type="text" name="QR" value="${ro.getQuantityReceived()}" required></td>
                                     </c:when>
                                     <c:when test="${accountType eq '1'}">
-                                        <td><input type="text" name="QO" value="${ro.getQuantityPurchased()}"></td>
-                                        <td><input type="text" name="QR" value="${ro.getQuantityReceived()}"></td>
+                                        <td><input type="text" name="QO" value="${ro.getQuantityPurchased()}" required></td>
+                                        <td><input type="text" name="QR" value="${ro.getQuantityReceived()}" required></td>
                                     </c:when>
                                 </c:choose>
                             </c:when>
@@ -105,18 +106,21 @@
                         <c:when test="${accountType eq '4'}">
                             Discount: <input type="text" value="${restockOrder.getDiscount()}" name="discountInput" required><br>
                             Amount Paid:<input type="text" value="${restockOrder.getAmountPaid()}" name="amountPaidInput" required><br>
+                            Date Paid: <input type="text" value="${restockOrder.getDatePaid()}" name="roDatePaidInput" id="date3" maxlength="10" required><br>
                             Delivery Due Date: <input type="text" value="${restockOrder.getRODateDue()}" name="roDeliveryDueDateInput" id="date1" maxlength="10" required><br>
                             Date Delivered: <input type="hidden" value="${restockOrder.getRODateDelivered()}" name="roDateDeliveredInput">${restockOrder.getRODateDelivered()}<br>
                         </c:when>
                         <c:when test="${accountType eq '5'}">
                             Discount: <input type="hidden" value="${restockOrder.getDiscount()}" name="discountInput">${restockOrder.getDiscount()}<br>
                             Amount Paid:<input type="hidden" value="${restockOrder.getAmountPaid()}" name="amountPaidInput">${restockOrder.getAmountPaid()}<br>
+                            Date Paid: <input type="hidden" value="${restockOrder.getDatePaid()}" name="roDatePaidInput">${restockOrder.getDatePaid()}<br>
                             Delivery Due Date: <input type="hidden" value="${restockOrder.getRODateDue()}" name="roDeliveryDueDateInput">${restockOrder.getRODateDue()}<br>
                             Date Delivered: <input type="text" value="${restockOrder.getRODateDelivered()}" name="roDateDeliveredInput" id="date2" maxlength="10" required><br>
                         </c:when>
                         <c:when test="${accountType eq '1'}">
                             Discount: <input type="text" value="${restockOrder.getDiscount()}" name="discountInput" required><br>
                             Amount Paid:<input type="text" value="${restockOrder.getAmountPaid()}" name="amountPaidInput" required><br>
+                            Date Paid: <input type="text" value="${restockOrder.getDatePaid()}" name="roDatePaidInput" id="date3" maxlength="10" required><br>
                             Delivery Due Date: <input type="text" value="${restockOrder.getRODateDue()}" name="roDeliveryDueDateInput" id="date1" maxlength="10" required><br>
                             Date Delivered: <input type="text" value="${restockOrder.getRODateDelivered()}" name="roDateDeliveredInput" id="date2" maxlength="10" required><br>
                         </c:when>

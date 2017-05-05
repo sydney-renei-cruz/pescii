@@ -114,15 +114,19 @@ public class editSupplierServlet extends HttpServlet {
          
          //check supplier name
          String newSupplierName = "";
+         boolean supplierName=false;
          try{
-             newSupplierName = request.getParameter("supplierNameInput");
-             if(newSupplierName.length()>100){
-                message = "Supplier name is too long.";
-                request.setAttribute("message",message);
-                request.getRequestDispatcher("supplier.getDetails?forEdit=yes&suppID="+supplierID).forward(request,response);
-                return;
-             }
+             if(request.getParameter("supplierNameInput")!=null && !request.getParameter("supplierNameInput").equals("")){
+                newSupplierName = request.getParameter("supplierNameInput");
+                if(newSupplierName.length()>100){
+                   message = "Supplier name is too long.";
+                   request.setAttribute("message",message);
+                   request.getRequestDispatcher("supplier.getDetails?forEdit=yes&suppID="+supplierID).forward(request,response);
+                   return;
+                }
+                else{supplierName=true;}
             }
+         }
         catch(Exception e){
             message = "Supplier name was input incorrectly. It should also not be blank.";
             request.setAttribute("message",message);
@@ -133,15 +137,19 @@ public class editSupplierServlet extends HttpServlet {
          
          //check supplier address
          String newSupplierAddress = "";
+         boolean supplierAddress=false;
          try{
-             newSupplierAddress = request.getParameter("supplierAddressInput");
-             if(newSupplierAddress.length()>255){
-                message = "Supplier address is too long.";
-                request.setAttribute("message",message);
-                request.getRequestDispatcher("supplier.getDetails?forEdit=yes&suppID="+supplierID).forward(request,response);
-                return;
-             }
+             if(request.getParameter("supplierAddressInput")!=null && !request.getParameter("supplierAddressInput").equals("")){
+                newSupplierAddress = request.getParameter("supplierAddressInput");
+                if(newSupplierAddress.length()>255){
+                   message = "Supplier address is too long.";
+                   request.setAttribute("message",message);
+                   request.getRequestDispatcher("supplier.getDetails?forEdit=yes&suppID="+supplierID).forward(request,response);
+                   return;
+                }
+                else{supplierAddress=true;}
             }
+         }
         catch(Exception e){
             message = "Supplier address was input incorrectly. It should also not be blank.";
             request.setAttribute("message",message);
@@ -152,23 +160,28 @@ public class editSupplierServlet extends HttpServlet {
          
          //check supplier contact number
          String newSupplierContactNumber = "";
+         boolean supplierContactNumber=false;
          try{
-             newSupplierContactNumber = request.getParameter("supplierContactNumberInput");
-             if(newSupplierContactNumber.length()>12){
-                message = "Contact Number is too long.";
-                request.setAttribute("message",message);
-                request.getRequestDispatcher("supplier.getDetails?forEdit=yes&suppID="+supplierID).forward(request,response);
-                return;
-             }
-             char c;
-             for(int i=0;i<newSupplierContactNumber.length();i++){
-                c = newSupplierContactNumber.charAt(i);
-                if(!Character.isDigit(c)){
-                    message = "Contact Number was input incorrectly.";
-                    request.setAttribute("message",message);
-                    request.getRequestDispatcher("supplier.getDetails?forEdit=yes&suppID="+supplierID).forward(request,response);
-                    return;
+             if(request.getParameter("supplierContactNumberInput")!=null && !request.getParameter("supplierContactNumberInput").equals("")){
+                newSupplierContactNumber = request.getParameter("supplierContactNumberInput");
+                char c;
+                for(int i=0;i<newSupplierContactNumber.length();i++){
+                   c = newSupplierContactNumber.charAt(i);
+                   if(!Character.isDigit(c)){
+                       message = "Contact Number was input incorrectly.";
+                       request.setAttribute("message",message);
+                       request.getRequestDispatcher("supplier.getDetails?forEdit=yes&suppID="+supplierID).forward(request,response);
+                       return;
+                   }
                 }
+                if(newSupplierContactNumber.length()>12){
+                   message = "Contact Number is too long.";
+                   request.setAttribute("message",message);
+                   request.getRequestDispatcher("supplier.getDetails?forEdit=yes&suppID="+supplierID).forward(request,response);
+                   return;
+                }
+                else{supplierContactNumber=true;}
+                
             }
          }
          catch(Exception e){
@@ -181,7 +194,11 @@ public class editSupplierServlet extends HttpServlet {
          
          //check product class
          int newProductClass = 0;
-         try{newProductClass = Integer.parseInt(request.getParameter("productClassInput"));}
+         boolean productClass=false;
+         try{
+             newProductClass = Integer.parseInt(request.getParameter("productClassInput"));
+             productClass=true;
+        }
          catch(Exception e){
             message = "Product Class was input incorrectly.";
             request.setAttribute("message",message);
@@ -191,6 +208,51 @@ public class editSupplierServlet extends HttpServlet {
          String lastEdittedBy = ""+session.getAttribute("userName");
          
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
+         
+         preparedSQL = "update Supplier set supplierName=?, supplierAddress=?, "
+                 + "supplierContactNumber=?, productClassID=?, lastEdittedBy=?"
+                 + " where supplierID=?";
+         
+         if(supplierName==true){
+             preparedSQL = "update Supplier set supplierName=? where supplierID=?";
+             ps = conn.prepareStatement(preparedSQL);
+             ps.setString(1,newSupplierName);
+             ps.setInt(2,supplierID);
+             ps.executeUpdate();
+             context.log("updated the supplierName!");
+         }
+         if(supplierAddress==true){
+             preparedSQL = "update Supplier set supplierAddress=? where supplierID=?";
+             ps = conn.prepareStatement(preparedSQL);
+             ps.setString(1,newSupplierAddress);
+             ps.setInt(2,supplierID);
+             ps.executeUpdate();
+             context.log("updated the supplierAddress!");
+         }
+         if(supplierContactNumber==true){
+             preparedSQL = "update Supplier set supplierContactNumber=? where supplierID=?";
+             ps = conn.prepareStatement(preparedSQL);
+             ps.setString(1,newSupplierContactNumber);
+             ps.setInt(2,supplierID);
+             ps.executeUpdate();
+             context.log("updated the supplierContactNumber!");
+         }
+         if(productClass==true){
+             preparedSQL = "update Supplier set productClassID=? where supplierID=?";
+             ps = conn.prepareStatement(preparedSQL);
+             ps.setInt(1,newProductClass);
+             ps.setInt(2,supplierID);
+             ps.executeUpdate();
+             context.log("updated the Supplier productClassID!");
+         }
+        preparedSQL = "update Supplier set lastEdittedBy=? where supplierID=?";
+        ps = conn.prepareStatement(preparedSQL);
+        ps.setString(1,lastEdittedBy);
+        ps.setInt(2,supplierID);
+        ps.executeUpdate();
+        context.log("updated the supplierName!");
+         /*
+         
          ps.setString(1,newSupplierName);
          ps.setString(2,newSupplierAddress);
          ps.setString(3,newSupplierContactNumber);
@@ -199,7 +261,7 @@ public class editSupplierServlet extends HttpServlet {
          ps.setInt(6,supplierID);
          
          ps.executeUpdate();
-         
+         */
          message = "Supplier successfully editted!";
          request.setAttribute("message", message);
          request.setAttribute("suppID", supplierID);

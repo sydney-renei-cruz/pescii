@@ -22,7 +22,12 @@
         </c:if>
         <c:set var="accountID" value="${requestScope.accID}"/>   
         <a href="account.getTypeStatus">Create a new Account</a><br>
-        <a href="account.getDetails?accID=<c:out value="${accountID}"/>">Edit created Account</a><br>
+        <c:if test="${accountID ne '' && accountID ne null}">
+            <a href="account.getDetails?accID=<c:out value="${accountID}"/>">Edit created Account</a><br><br>
+        </c:if>
+        <a href="account.get">Edit another Account</a><br>
+        <a href="account.getTypeStatus?forSearch=yes">Search Accounts</a><br>
+        <a href="account.get">View All Accounts</a><br><br>
         <br><br>
         <a href="notif.get">Return to Home</a>
         <br><br>

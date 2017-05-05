@@ -103,6 +103,9 @@ public class editAccountServlet extends HttpServlet {
          String preparedSQL = "update Account set userName=?, password=?, accountStatus=?, accountType=? where accountID=?";
          String message = "";
          
+         boolean userName=false;
+         boolean pword=false;
+         
          //check the user name
          String newUserName = "";
          try{
@@ -115,6 +118,14 @@ public class editAccountServlet extends HttpServlet {
                  request.getRequestDispatcher("account.getDetails?accID="+request.getParameter("accountIDInput")).forward(request,response);
                 return;
              }
+             else if(newUserName.equals("")){
+                message = "User name should not be blank.";
+                request.setAttribute("message",message);
+                //request.setAttribute("accID", request.getParameter("accountIDInput"));
+                request.getRequestDispatcher("account.getDetails?accID="+request.getParameter("accountIDInput")).forward(request,response);
+                return;
+             }
+             else{userName = true;}
             }
             catch(Exception e){
                 message = "User name was input incorrectly. It should also not be blank.";
@@ -129,7 +140,7 @@ public class editAccountServlet extends HttpServlet {
          String password = "";
          try{
              password = request.getParameter("newPasswordInput");
-             if(password.length()>255){
+             if(password.length()>255 && !password.equals("") && password!=null){
                  message = "Password is too long.";
                  request.setAttribute("message",message);
                  //request.setAttribute("accID", request.getParameter("accountIDInput"));
@@ -138,7 +149,7 @@ public class editAccountServlet extends HttpServlet {
                  return;
              }
              
-             if(password.length()<8){
+             if(password.length()<8 && !password.equals("") && password!=null){
                  message = "Password must be at least 8 characters.";
                  request.setAttribute("message",message);
                  //request.setAttribute("accID", request.getParameter("accountIDInput"));
@@ -146,55 +157,42 @@ public class editAccountServlet extends HttpServlet {
                  request.getRequestDispatcher("account.getDetails?accID="+request.getParameter("accountIDInput")).forward(request,response);
                  return;
              }
-             
-             boolean digit = false;
-             boolean character = false;
-             boolean caps = false;
-             char c;
-             for(int i=0;i<password.length();i++){
-                 c = password.charAt(i);
-                if(Character.isDigit(c)){
-                    digit = true;
+             else if(!password.equals("") && password!=null){
+                boolean digit = false;
+                boolean character = false;
+                boolean caps = false;
+                char c;
+                for(int i=0;i<password.length();i++){
+                    c = password.charAt(i);
+                   if(Character.isDigit(c)){
+                       digit = true;
+                   }
+                   if(!Character.isDigit(c) && !Character.isLetter(c)){
+                       character = true;
+                   }
+                   if(Character.isUpperCase(c)){
+                       caps = true;
+                   }
                 }
-                if(!Character.isDigit(c) && !Character.isLetter(c)){
-                    character = true;
+                if(digit==false && character==false && caps==false){
+                   message = "Password must contain at least one digit and one special character.";
+                   request.setAttribute("message",message);
+                   request.getRequestDispatcher("account.getDetails?accID="+request.getParameter("accountIDInput")).forward(request,response);
+                   return;
+               }
+                else{
+                    String password2 = request.getParameter("newPasswordInput2");
+                    if(!password.equals(password2)){
+                       message = "Passwords did not match";
+                       request.setAttribute("message",message);
+                       request.getRequestDispatcher("account.getDetails?accID="+request.getParameter("accountIDInput")).forward(request,response);
+                       return;
+                    }
+                    else{
+                    pword=true;
+                    }
                 }
-                if(Character.isUpperCase(c)){
-                    caps = true;
-                }
-             }
-             if(!(digit==true || character==true || caps==false)){
-                message = "Password must contain at least one digit and one special character.";
-                request.setAttribute("message",message);
-                //request.setAttribute("accID", request.getParameter("accountIDInput"));
-                 context.log("here in editAccounServlet, accounID is: "+request.getParameter("accountIDInput"));
-                 request.getRequestDispatcher("account.getDetails?accID="+request.getParameter("accountIDInput")).forward(request,response);
-                return;
-            }
-             
-            }
-            catch(Exception e){
-                message = "Password was input incorrectly. It should also not be blank.";
-                request.setAttribute("message",message);
-                //request.setAttribute("accID", request.getParameter("accountIDInput"));
-                 context.log("here in editAccounServlet, accounID is: "+request.getParameter("accountIDInput"));
-                 request.getRequestDispatcher("account.getDetails?accID="+request.getParameter("accountIDInput")).forward(request,response);
-                return;
-            }
-         
-         
-         String password2 = request.getParameter("newPasswordInput2");
-         if(!password.equals(password2)){
-            message = "Passwords did not match";
-            request.setAttribute("message",message);
-            //request.setAttribute("accID", request.getParameter("accountIDInput"));
-            context.log("here in editAccounServlet, accounID is: "+request.getParameter("accountIDInput"));
-            request.getRequestDispatcher("account.getDetails?accID="+request.getParameter("accountIDInput")).forward(request,response);
-            return;
-         }
-         if(password==null || password==""){password = request.getParameter("oldPassword");}
-         else{
-             try{
+               try{
 
                 //Salts for the hashing
                 String[] salts = new String[10];
@@ -228,19 +226,63 @@ public class editAccountServlet extends HttpServlet {
 
                 password = sb.toString();
                 }
-            catch(NoSuchAlgorithmException e){
-                e.printStackTrace();
+                catch(NoSuchAlgorithmException e){
+                    e.printStackTrace();
+                    message = "Password must contain at least one digit and one special character.";
+                    request.setAttribute("message",message);
+                    //request.setAttribute("accID", request.getParameter("accountIDInput"));
+                    context.log("here in editAccounServlet, accounID is: "+request.getParameter("accountIDInput"));
+                    request.getRequestDispatcher("account.getDetails?accID="+request.getParameter("accountIDInput")).forward(request,response);
+                    return;
+                } 
+                
+               
             }
-
-         }
+             else if(password.equals("") || password!=null){
+                 pword=false;
+             }
+            }
+            catch(Exception e){
+                message = "Password was input incorrectly. It should also not be blank.";
+                request.setAttribute("message",message);
+                //request.setAttribute("accID", request.getParameter("accountIDInput"));
+                 context.log("here in editAccounServlet, accounID is: "+request.getParameter("accountIDInput"));
+                 request.getRequestDispatcher("account.getDetails?accID="+request.getParameter("accountIDInput")).forward(request,response);
+                return;
+            }
+         
          int newAccountStatus = Integer.parseInt(request.getParameter("accountStatusInput"));
          int newAccountType = Integer.parseInt(request.getParameter("accountTypeInput"));
          int accountID = Integer.parseInt(request.getParameter("accountIDInput"));
          
-         
-         
-         
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
+         //preparedSQL = "update Account set userName=?, password=?, accountStatus=?, accountType=? where accountID=?";
+         if(userName==true){
+             preparedSQL = "update Account set userName=? where accountID=?";
+             ps = conn.prepareStatement(preparedSQL);
+             ps.setString(1,newUserName);
+             ps.setInt(2,accountID);
+             ps.executeUpdate();
+             context.log("userName updated!");
+         }
+         if(pword==true){
+             preparedSQL = "update Account set password=? where accountID=?";
+             ps = conn.prepareStatement(preparedSQL);
+             ps.setString(1,password);
+             ps.setInt(2,accountID);
+             ps.executeUpdate();
+             context.log("password updated!");
+         }
+        preparedSQL = "update Account set accountStatus=?, accountType=? where accountID=?";
+        ps = conn.prepareStatement(preparedSQL);
+        ps.setInt(1,newAccountStatus);
+        ps.setInt(2,newAccountType);
+        ps.setInt(3,accountID);
+        ps.executeUpdate();
+        context.log("accountStatus and accountType updated!");
+         
+         
+         /*
          ps.setString(1,newUserName);
          ps.setString(2,password);
          ps.setInt(3,newAccountStatus);
@@ -248,7 +290,7 @@ public class editAccountServlet extends HttpServlet {
          ps.setInt(5,accountID);
          
          ps.executeUpdate();
-         
+         */
          context.log("--->Account successfully updated. AccountID is: "+accountID);
          
          request.setAttribute("message", "Account successfully editted!");

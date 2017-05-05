@@ -51,7 +51,7 @@
             <c:choose>
                 <c:when test="${invoice.getStatusName() eq 'In Progress'}">
                     From: ${invoice.getDeliveryDate()}<br>
-                    To: <input type="text" name="deliveryDateInput" value="${invoice.getDeliveryDate()}" id="date1" maxlength="10"><br>
+                    To: <input type="text" name="deliveryDateInput" value="${invoice.getDeliveryDate()}" id="date1" maxlength="10" required><br>
                 </c:when>
                 <c:when test="${invoice.getStatusName() ne 'In Progress'}">
                     <input type="hidden" value="${invoice.getDeliveryDate()}" name="deliveryDateInput">${invoice.getDeliveryDate()}<br>
@@ -82,9 +82,9 @@
                     
             <b>Payment Due Date:</b><br>        
             <c:choose>
-                <c:when test="${invoice.getDatePaid() eq '0000-00-00'}">
+                <c:when test="${invoice.getDatePaid() eq '0000-00-00' || invoice.getDatePaid() eq null}">
                     From: ${invoice.getPaymentDueDate()}<br>
-                    To: <input type="text" name="paymentDueDateInput" value="${invoice.getPaymentDueDate()}" id="date2" maxlength="10"><br><br>
+                    To: <input type="text" name="paymentDueDateInput" value="${invoice.getPaymentDueDate()}" id="date2" maxlength="10" required><br><br>
                 </c:when>
                 <c:when test="${invoice.getDatePaid() ne '0000-00-00'}">
                     <input type="hidden" value="${invoice.getPaymentDueDate()}" name="paymentDueDateInput">${invoice.getPaymentDueDate()}<br><br>
@@ -136,7 +136,7 @@
             <c:if test="${accountType ne '2'}">
                 <c:choose>
                     <c:when test="${invoice.getStatusName() eq 'In Progress'}">
-                        <input type="text" value="${invoice.getAmountDue()}" name="amountDueInput"><br>
+                        <input type="text" value="${invoice.getAmountDue()}" name="amountDueInput" required><br>
                     </c:when>
                     <c:when test="${invoice.getStatusName() ne 'In Progress'}">
                         <input type="hidden" value="${invoice.getAmountDue()}" name="amountDueInput">
@@ -153,7 +153,7 @@
             <c:if test="${accountType ne '2'}">
             <c:choose>
                 <c:when test="${invoice.getStatusName() eq 'In Progress'}">
-                    <input type="text" value="${invoice.getDiscount()}" name="discountInput"><br>
+                    <input type="text" value="${invoice.getDiscount()}" name="discountInput" required><br>
                 </c:when>
                 <c:when test="${invoice.getStatusName() ne 'In Progress'}">
                     <input type="hidden" value="${invoice.getDiscount()}" name="discountInput">
@@ -170,7 +170,7 @@
             <c:if test="${accountType eq '3' || accountType eq '1'}">
                 <c:choose>
                     <c:when test="${invoice.getStatusName() eq 'In Progress'}">
-                        <input type="text" value="${invoice.getAmountPaid()}" name="amountPaidInput"><br>
+                        <input type="text" value="${invoice.getAmountPaid()}" name="amountPaidInput" required><br>
                     </c:when>
                     <c:when test="${invoice.getStatusName() ne 'In Progress'}">
                         <input type="hidden" value="${invoice.getAmountPaid()}" name="amountPaidInput">
@@ -200,10 +200,10 @@
                     
                     
             Overdue Fee:
-            <c:if test="${accountType eq '3'}">
+            <c:if test="${accountType eq '3' || accountType eq '1'}">
                 <c:choose>
                     <c:when test="${invoice.getStatusName() eq 'In Progress'}">
-                        <input type="text" value="${invoice.getOverdueFee()}" name="overdueFeeInput"><br>
+                        <input type="text" value="${invoice.getOverdueFee()}" name="overdueFeeInput" required><br>
                     </c:when>
                     <c:when test="${invoice.getStatusName() ne 'In Progress'}">
                         <input type="hidden" value="${invoice.getOverdueFee()}" name="overdueFeeInput">
@@ -211,7 +211,7 @@
                     </c:when>
                 </c:choose>
             </c:if>
-            <c:if test="${accountType ne '3'}">
+            <c:if test="${accountType ne '3' && accountType ne '1'}">
                 <input type="hidden" value="${invoice.getOverdueFee()}" name="overdueFeeInput">
                 <fmt:formatNumber pattern="0.00" value="${invoice.getOverdueFee()}" type="number"/><br>
             </c:if>

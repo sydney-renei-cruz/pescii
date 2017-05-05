@@ -24,9 +24,14 @@
         </c:if>
         <c:set var="customerID" value="${requestScope.custID}"/>   
         <a href="salesrep.get?whatFor=addCustomer">Add a new Customer</a><br>
-        <a href="Servlets.viewCustomerDetailsServlet?editWhat=cust&forEdit=yes&custID=<c:out value="${customerID}"/>">Edit created Customer</a><br>
-        <a href="province.get?whatFor=addClinic&custID=<c:out value="${customerID}"/>">Add another Clinic to created Customer</a><br>
-        <a href="Servlets.viewCustomerDetailsServlet?viewDetails=yes&custID=<c:out value="${customerID}"/>">View Customer Details</a>
+        <c:if test="${customerID ne '' && customerID ne null}">
+            <a href="Servlets.viewCustomerDetailsServlet?editWhat=cust&forEdit=yes&custID=<c:out value="${customerID}"/>">Edit created Customer</a><br>
+            <a href="province.get?whatFor=addClinic&custID=<c:out value="${customerID}"/>">Add another Clinic to created Customer</a><br>
+            <a href="Servlets.viewCustomerDetailsServlet?viewDetails=yes&custID=<c:out value="${customerID}"/>">View Customer Details</a><br><br>
+        </c:if>
+        <a href="Servlets.getCustomerServlet">Edit another Customer</a><br>
+        <a href="salesrep.get?whatFor=searchCustomer">Search Customers</a><br>
+        <a href="Servlets.getCustomerServlet">View All Customers</a><br><br>
         <br><br>
         <a href="notif.get">Return to Home</a>
         <br><br>

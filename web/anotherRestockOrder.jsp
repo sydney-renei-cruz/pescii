@@ -30,8 +30,14 @@
                     <a href="Servlets.getProductServlet?forOther=restock">Create a new Restock Order</a><br>      
                 </c:when>
         </c:choose>
-        <a href="restockOrder.getDetails?editRestock=yes&restockID=<c:out value="${restockOrderID}"/>">Edit Restock Order</a><br>
-        <a href="restockOrder.getDetails?restockID=<c:out value="${restockOrderID}"/>">View Restock Order Details</a><br>
+        <c:if test="${restockOrderID ne '' && restockOrderID ne null}">             
+            <a href="restockOrder.getDetails?editRestock=yes&restockID=<c:out value="${restockOrderID}"/>">Edit Restock Order</a><br>
+            <a href="restockOrder.getDetails?restockID=<c:out value="${restockOrderID}"/>">View Restock Order Details</a><br><br>
+        </c:if>
+        <a href="restockOrder.get">Edit another Restock Order</a><br>
+        <a href="unfinished.get?getTable=ro">View Unfinished RO</a><br>
+        <a href="restockOrder.getStatus">Search RO</a><br>
+        <a href="restockOrder.get">View All Restock Orders</a><br><br>
         <br><br>
         <a href="notif.get">Return to Home</a>
         <br><br>

@@ -102,11 +102,11 @@ public class editInvoiceServlet extends HttpServlet {
          
          //---------------
          //first get the invoice details
-         String preparedSQL = "update Invoice set invoiceName=?, deliveryDate=?, termsOfPayment=?, "
+         /*String preparedSQL = "update Invoice set invoiceName=?, deliveryDate=?, termsOfPayment=?, "
                  + "paymentDueDate=?, datePaid=?, dateClosed=?, statusID=?, amountDue=?, "
                  + "discount=?, amountPaid=?, dateDelivered=?, lastEdittedBy=?, overDueFee=? "
                  + "where invoiceID=?";
-         
+         */
          String message = "";
          
          int invoiceID = 0;
@@ -122,14 +122,19 @@ public class editInvoiceServlet extends HttpServlet {
          
          //check the inoice name
          String newInvoiceName = "";
+         boolean invoiceName=false;
          try{
             newInvoiceName = request.getParameter("newInvoiceNameInput");
-            if(newInvoiceName.length()>255){
-                message = "Invoice Name is too long.";
-                request.setAttribute("message",message);
-                request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
-                return;
+            if(!newInvoiceName.equals("") && newInvoiceName!=null){
+                if(newInvoiceName.length()>255){
+                    message = "Invoice Name is too long.";
+                    request.setAttribute("message",message);
+                    request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+                    return;
+                }
+                else{invoiceName=true;}
             }
+            
         }
         catch(Exception e){
             message = "Invoice Name was input incorrectly. It should also not be blank.";
@@ -142,19 +147,27 @@ public class editInvoiceServlet extends HttpServlet {
          
          //check the delivery date
          String newDeliveryDate = "";
+         boolean deliveryDate = false;
          try{
-                newDeliveryDate = request.getParameter("deliveryDateInput");
-                if(newDeliveryDate.length()>10){
-                    message = "Delivery Date format is invalid.";
-                    request.setAttribute("message",message);
-                    request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
-                    return;
-                 }
+                if(request.getParameter("deliveryDateInput")!=null && !request.getParameter("deliveryDateInput").equals("")){
+                    newDeliveryDate = request.getParameter("deliveryDateInput");
+                    if(newDeliveryDate.length()>10){
+                        message = "Delivery Date format is invalid.";
+                        request.setAttribute("message",message);
+                        request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+                        return;
+                     }
 
-                else{
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                    date = sdf.parse(newDeliveryDate);
+                    else{
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                        date = sdf.parse(newDeliveryDate);
+                        deliveryDate=true;
+                    }
                 }
+                /*else if(request.getParameter("deliveryDateInput")==null || request.getParameter("deliveryDateInput").equals("")){
+                    newDeliveryDate=null;
+                    deliveryDate=true;
+                }*/
         }
         catch(Exception e){
            message = "Delivery Date format is invalid.";
@@ -165,13 +178,17 @@ public class editInvoiceServlet extends HttpServlet {
          
          //check terms of payment
          String newTop = "";
+         boolean top=false;
          try{
              newTop = request.getParameter("topInput");
-             if(newTop.length()>20){
-                 message = "Terms of Payment is too long.";
-                 request.setAttribute("message",message);
-                 request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
-                 return;
+             if(!newTop.equals("") && newTop!=null){
+                if(newTop.length()>20){
+                    message = "Terms of Payment is too long.";
+                    request.setAttribute("message",message);
+                    request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+                    return;
+                }
+                else{top=true;}
              }
             }
             catch(Exception e){
@@ -183,18 +200,22 @@ public class editInvoiceServlet extends HttpServlet {
          
          //check payment due date
          String newPaymentDueDate = "";
+         boolean paymentDueDate=false;
          try{
-                newPaymentDueDate = request.getParameter("paymentDueDateInput");
-                if(newPaymentDueDate.length()>10){
-                    message = "Payment Due Date format is invalid.";
-                    request.setAttribute("message",message);
-                request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
-                return;
-                 }
+                if(request.getParameter("paymentDueDateInput")!=null && !request.getParameter("paymentDueDateInput").equals("")){
+                    newPaymentDueDate = request.getParameter("paymentDueDateInput");
+                    if(newPaymentDueDate.length()>10){
+                        message = "Payment Due Date format is invalid.";
+                        request.setAttribute("message",message);
+                    request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+                    return;
+                     }
 
-                else{
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                    date = sdf.parse(newPaymentDueDate);
+                    else{
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                        date = sdf.parse(newPaymentDueDate);
+                        paymentDueDate=true;
+                    }
                 }
              }
              catch(Exception e){
@@ -206,22 +227,28 @@ public class editInvoiceServlet extends HttpServlet {
          
          //check date paid
          String newDatePaid = "";
+         boolean datePaid=false;
          try{
+             if(request.getParameter("datePaidInput")!=null && !request.getParameter("datePaidInput").equals("")){
                 newDatePaid = request.getParameter("datePaidInput");
+                
                 if(newDatePaid.length()>10){
-                    message = "Date Paid format is invalid.";
+                    message = "Date Paid format is too long.";
                     request.setAttribute("message",message);
                     request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
                     return;
                  }
-                
+                /*
                 else if(newDatePaid.equals("") || newDatePaid == null){
                     newDatePaid = null;
                 }
 
-                else if((!(newDatePaid.equals("")) || newDatePaid != null)){
+                else if((!(newDatePaid.equals("")) || newDatePaid != null)){*/
+                else {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     date = sdf.parse(newDatePaid);
+                    datePaid=true;
+                }
                 }
              }
              catch(Exception e){
@@ -233,7 +260,13 @@ public class editInvoiceServlet extends HttpServlet {
          
          //check invoice status
          int newStatus = 0;
-         try{newStatus = Integer.parseInt(request.getParameter("statusInput"));}
+         boolean status=false;
+         try{
+             newStatus = Integer.parseInt(request.getParameter("statusInput"));
+             if(newStatus > 0){
+                 status=true;
+             }
+         }
          catch(Exception e){
                 message = "Invoice Status is invalid.";
                 request.setAttribute("message",message);
@@ -243,14 +276,17 @@ public class editInvoiceServlet extends HttpServlet {
          
          //no need to check, since it'll just set it to the current day
          String newDateClosed = "";
+         boolean dateClosed=false;
          if(newStatus!=2){
             date = new Date();
             newDateClosed = new SimpleDateFormat("yyyy-MM-dd").format(date);
+            dateClosed=true;
          }
          
          
          //check the amount due
          float newAmountDue = 0;
+         boolean amountDue=false;
          try{
                 newAmountDue = Float.parseFloat(request.getParameter("amountDueInput"));
                 if(newAmountDue < 0){
@@ -259,6 +295,7 @@ public class editInvoiceServlet extends HttpServlet {
                     request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
                     return;
                 }
+                else{amountDue=true;}
             }
             catch(Exception e){
                 message = "Amount Due was input incorrectly. It should also not be blank.";
@@ -270,6 +307,7 @@ public class editInvoiceServlet extends HttpServlet {
          
          //check the new discount
          float newDiscount = 0;
+         boolean discount=false;
          try{
                 newDiscount = Float.parseFloat(request.getParameter("discountInput"));
                 if(newDiscount < 0){
@@ -278,6 +316,7 @@ public class editInvoiceServlet extends HttpServlet {
                     request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
                     return;
                 }
+                else{discount=true;}
             }
             catch(Exception e){
                 message = "Discount was input incorrectly.";
@@ -289,6 +328,7 @@ public class editInvoiceServlet extends HttpServlet {
          
          //check the amount paid
          float newAmountPaid = 0;
+         boolean amountPaid=false;
          try{
                 newAmountPaid = Float.parseFloat(request.getParameter("amountPaidInput"));
                 if(newAmountPaid < 0){
@@ -297,6 +337,7 @@ public class editInvoiceServlet extends HttpServlet {
                     request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
                     return;
                 }
+                else{amountPaid=true;}
             }
             catch(Exception e){
                 message = "Amount Paid was input incorrectly.";
@@ -307,34 +348,41 @@ public class editInvoiceServlet extends HttpServlet {
          
          
          //check date delivered
-         String newDateDelivered = request.getParameter("dateDeliveredInput");
+         String newDateDelivered = "";//request.getParameter("dateDeliveredInput");
+         boolean dateDelivered=false;
          try{
+             
+             if(request.getParameter("dateDeliveredInput")!=null && !request.getParameter("dateDeliveredInput").equals("")){
                 newDateDelivered = request.getParameter("dateDeliveredInput");
                 if(newDateDelivered.length()>10){
-                    message = "Date Delivered format is invalid.";
+                    message = "Date Delivered format is too long.";
                     request.setAttribute("message",message);
                     request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
                     return;
                  }
-                
+                /*
                 else if(newDateDelivered.equals("") || newDateDelivered == null){
                     newDateDelivered = null;
                 }
 
-                else if((!(newDateDelivered.equals("")) || newDateDelivered != null)){
+                else if((!(newDateDelivered.equals("")) || newDateDelivered != null)){*/
+                else {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     date = sdf.parse(newDateDelivered);
+                    dateDelivered=true;
                 }
-             }
-             catch(Exception e){
-                message = "Date Delivered format is invalid.";
-                request.setAttribute("message",message);
-                request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
-                return;
-             }
+            }
+        }
+         catch(Exception e){
+            message = "Date Delivered format is invalid.";
+            request.setAttribute("message",message);
+            request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+            return;
+         }
          
          //check the overdue fee
          float newOverdueFee = 0;
+         boolean overdueFee=false;
          try{
                 newOverdueFee = Float.parseFloat(request.getParameter("overdueFeeInput"));
                 if(newOverdueFee < 0){
@@ -343,6 +391,7 @@ public class editInvoiceServlet extends HttpServlet {
                     request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
                     return;
                 }
+                else{overdueFee=true;}
             }
             catch(Exception e){
                 message = "Overdue fee was input incorrectly. It should also not be blank.";
@@ -353,11 +402,114 @@ public class editInvoiceServlet extends HttpServlet {
          
          
          String lastEdittedBy = ""+session.getAttribute("userName");
-         preparedSQL = "update Invoice set invoiceName=?, deliveryDate=?, termsOfPayment=?, "
+         String preparedSQL = "update Invoice set invoiceName=?, deliveryDate=?, termsOfPayment=?, "
                  + "paymentDueDate=?, datePaid=?, dateClosed=?, statusID=?, amountDue=?, "
                  + "discount=?, amountPaid=?, dateDelivered=?, lastEdittedBy=?, overDueFee=? "
                  + "where invoiceID=?";
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
+         if(invoiceName==true){
+             preparedSQL = "update Invoice set invoiceName=? where invoiceID=?";
+             ps = conn.prepareStatement(preparedSQL);
+             ps.setString(1,newInvoiceName);
+             ps.setInt(2,invoiceID);
+             ps.executeUpdate();
+             context.log("updated the invoiceName!");
+         }
+         if(deliveryDate==true){
+             preparedSQL = "update Invoice set deliveryDate=? where invoiceID=?";
+             ps = conn.prepareStatement(preparedSQL);
+             ps.setString(1,newDeliveryDate);
+             ps.setInt(2,invoiceID);
+             ps.executeUpdate();
+             context.log("updated the deliveryDate!");
+         }
+         if(top==true){
+             preparedSQL = "update Invoice set termsOfPayment=? where invoiceID=?";
+             ps = conn.prepareStatement(preparedSQL);
+             ps.setString(1,newTop);
+             ps.setInt(2,invoiceID);
+             ps.executeUpdate();
+             context.log("updated the terms of payment!");
+         }
+         if(paymentDueDate==true){
+             preparedSQL = "update Invoice set paymentDueDate=? where invoiceID=?";
+             ps = conn.prepareStatement(preparedSQL);
+             ps.setString(1,newPaymentDueDate);
+             ps.setInt(2,invoiceID);
+             ps.executeUpdate();
+             context.log("updated the paymentDueDate!");
+         }
+         if(datePaid==true){
+             preparedSQL = "update Invoice set datePaid=? where invoiceID=?";
+             ps = conn.prepareStatement(preparedSQL);
+             ps.setString(1,newDatePaid);
+             ps.setInt(2,invoiceID);
+             ps.executeUpdate();
+             context.log("updated the invoiceName!");
+         }
+         if(dateClosed==true){
+             preparedSQL = "update Invoice set dateClosed=? where invoiceID=?";
+             ps = conn.prepareStatement(preparedSQL);
+             ps.setString(1,newDateClosed);
+             ps.setInt(2,invoiceID);
+             ps.executeUpdate();
+             context.log("updated the invoice dateClosed!");
+         }
+         if(status==true){
+             preparedSQL = "update Invoice set statusID=? where invoiceID=?";
+             ps = conn.prepareStatement(preparedSQL);
+             ps.setInt(1,newStatus);
+             ps.setInt(2,invoiceID);
+             ps.executeUpdate();
+             context.log("updated the invoice status!");
+         }
+         if(amountDue==true){
+             preparedSQL = "update Invoice set amountDue=? where invoiceID=?";
+             ps = conn.prepareStatement(preparedSQL);
+             ps.setFloat(1,newAmountDue);
+             ps.setInt(2,invoiceID);
+             ps.executeUpdate();
+             context.log("updated the amountDue!");
+         }
+         if(discount==true){
+             preparedSQL = "update Invoice set discount=? where invoiceID=?";
+             ps = conn.prepareStatement(preparedSQL);
+             ps.setFloat(1,newDiscount);
+             ps.setInt(2,invoiceID);
+             ps.executeUpdate();
+             context.log("updated the invoice discount!");
+         }
+         if(amountPaid==true){
+             preparedSQL = "update Invoice set amountPaid=? where invoiceID=?";
+             ps = conn.prepareStatement(preparedSQL);
+             ps.setFloat(1,newAmountPaid);
+             ps.setInt(2,invoiceID);
+             ps.executeUpdate();
+             context.log("updated the invoice amountPaid!");
+         }
+         if(dateDelivered==true){
+             preparedSQL = "update Invoice set dateDelivered=? where invoiceID=?";
+             ps = conn.prepareStatement(preparedSQL);
+             ps.setString(1,newDateDelivered);
+             ps.setInt(2,invoiceID);
+             ps.executeUpdate();
+             context.log("updated the invoice dateDelivered!");
+         }
+         if(overdueFee==true){
+             preparedSQL = "update Invoice set overDueFee=? where invoiceID=?";
+             ps = conn.prepareStatement(preparedSQL);
+             ps.setFloat(1,newOverdueFee);
+             ps.setInt(2,invoiceID);
+             ps.executeUpdate();
+             context.log("updated the overdueFee!");
+         }
+         preparedSQL = "update Invoice set lastEdittedBy=? where invoiceID=?";
+         ps = conn.prepareStatement(preparedSQL);
+         ps.setString(1,lastEdittedBy);
+         ps.setInt(2,invoiceID);
+         ps.executeUpdate();
+         context.log("updated the invoice lastEdittedBy!");
+         /*
          ps.setString(1,newInvoiceName);
          ps.setString(2,newDeliveryDate);
          ps.setString(3,newTop);
@@ -377,7 +529,7 @@ public class editInvoiceServlet extends HttpServlet {
          ps.setInt(14,invoiceID);
          
          
-         ps.executeUpdate();
+         ps.executeUpdate();*/
          context.log("--->Invoice successfully updated. InvoiceID is: "+invoiceID);
          
          
