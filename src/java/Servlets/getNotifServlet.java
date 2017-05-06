@@ -85,7 +85,7 @@ public class getNotifServlet extends HttpServlet {
          else if(accountType==4 || accountType==5){
              forWhat = "restock";
          }
-         else if(accountType==1){
+         else if(accountType==1 || accountType==2){
              forWhat = "both";
          }
                  

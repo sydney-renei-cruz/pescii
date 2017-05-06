@@ -207,7 +207,6 @@
                     <p>You have <b>${invoiceList.size()} Invoice/s</b> with deadlines within the next 7 days</p>
                     <table border="1">
                         <tr>
-                            <th>Invoice ID</th>
                             <th>Invoice Name</th>
                             <th>Customer Name</th>
                             <th>Clinic Name</th>
@@ -221,7 +220,6 @@
 
                         <c:forEach items="${invoiceList}" var="inv" begin="0" step="1" varStatus="status">
                             <tr>
-                                <td>${inv.getInvoiceID()}</td>
                                 <td><a href="Servlets.viewInvoiceDetailsServlet?editInvoice=no&invID=<c:out value="${inv.getInvoiceID()}"/>">${inv.getInvoiceName()}</td>
                                 <td>${inv.getCustomerName()}</td>
                                 <td>${inv.getClinicName()}</td>
@@ -262,6 +260,7 @@
                         <td><a href="restockOrder.getDetails?restockID=<c:out value="${ro.getRestockOrderID()}"/>">${ro.getRestockOrderName()}</a></td>
                         <td>${ro.getRODateDue()}</td>
                         <td>${ro.getRODateDelivered()}</td>
+                        <td>${ro.getAmountPaid()}</td>
                         <td>${ro.getDiscount()}</td>
                         <td>${ro.getDatePaid()}</td>
                         <td>${ro.getDateCreated()}</td>
@@ -275,7 +274,7 @@
                 <p>You have <b>${productsList.size()} Products</b> with low stocks.</p>
             </c:if>
             <c:if test="${productsList.size() ne 0}">
-                <p>You have <b>${restocksList.size()} RO/s</b> with deadlines within the next 7 days</p>
+                <p>You have <b>${restocksList.size()} Product/s</b> with low stocks</p>
                 <table border="1">
                     <tr>
                         <th>Product Name</th>

@@ -40,7 +40,9 @@
                     <td>${ro.getDiscount()}</td>
                     <td>${ro.getDatePaid()}</td>
                     <td>${ro.getDateCreated()}</td>
-                    <td><a href="restockOrder.getDetails?editRestock=yes&restockID=<c:out value="${ro.getRestockOrderID()}"/>">Edit</a></td>
+                    <c:if test="${accountType eq '4' || accountType eq '5' || accountType eq '1'}">
+                        <td><a href="restockOrder.getDetails?editRestock=yes&restockID=<c:out value="${ro.getRestockOrderID()}"/>">Edit</a></td>
+                    </c:if>
                 </tr>
 
             </c:forEach>
