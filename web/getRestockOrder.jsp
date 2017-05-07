@@ -24,6 +24,7 @@
                 <tr>
                     <th>Restock Order Name</th>
                     <th>Date Due</th>
+                    <th>Status</th>
                     <th>Date Delivered</th>
                     <th>Amount Paid</th>
                     <th>Discount</th>
@@ -35,6 +36,7 @@
                 <tr>
                     <td><a href="restockOrder.getDetails?restockID=<c:out value="${ro.getRestockOrderID()}"/>">${ro.getRestockOrderName()}</a></td>
                     <td>${ro.getRODateDue()}</td>
+                    <td>${ro.getStatusName()}</td>
                     <td>${ro.getRODateDelivered()}</td>
                     <td>${ro.getAmountPaid()}</td>
                     <td>${ro.getDiscount()}</td>

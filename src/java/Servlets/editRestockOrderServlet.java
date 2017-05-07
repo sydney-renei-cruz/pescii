@@ -134,8 +134,9 @@ public class editRestockOrderServlet extends HttpServlet {
                    request.getRequestDispatcher("restockOrder.getDetails?editRestock=yes&restockID="+inputRestockOrderID).forward(request,response);
                    return;
                 }
+                else{ROName=true;}
              }
-             else{ROName=true;}
+             
         }
         catch(Exception e){
             message = "Restock Order Name is invalid.";
@@ -273,21 +274,23 @@ public class editRestockOrderServlet extends HttpServlet {
          boolean RODatePaid=false;
          try{
              if(request.getParameter("roDatePaidInput")!=null && !request.getParameter("roDatePaidInput").equals("")){
-                newRODateDue = request.getParameter("roDatePaidInput");
-                if(newRODateDue.length()>10){
-                    message = "Date Paid format is invalid.";
+                newDatePaid = request.getParameter("roDatePaidInput");
+                context.log("date paid is: "+request.getParameter("roDatePaidInput"));
+                if(newDatePaid.length()>10){
+                    message = "Date Paid format is invalid. Too many characters.";
                     request.setAttribute("message",message);
                 request.getRequestDispatcher("restockOrder.getDetails?editRestock=yes&restockID="+inputRestockOrderID).forward(request,response);
                 return;
                  }
-
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                Date date = sdf.parse(newRODateDue);
-                RODatePaid=true;
-                
+                else{
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    Date date = sdf.parse(newDatePaid);
+                    RODatePaid=true;
+                }
              }
         }
         catch(Exception e){
+            e.printStackTrace();
            message = "Date Paid format is invalid.";
            request.setAttribute("message",message);
            request.getRequestDispatcher("restockOrder.getDetails?editRestock=yes&restockID="+inputRestockOrderID).forward(request,response);

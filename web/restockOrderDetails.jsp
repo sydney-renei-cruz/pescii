@@ -29,6 +29,7 @@
         <p>Discount: <fmt:formatNumber pattern="0.00" value="${restockOrder.getDiscount()}" type="number"/></p>
         <p>Date Due: ${restockOrder.getRODateDue()}</p>
         <p>Date Received: ${restockOrder.getRODateDelivered()}</p>
+        <p>Status: ${restockOrder.getStatusName()}</p>
         <p>Purpose: ${restockOrder.getPurpose()}</p>
         <p>Date Created: ${restockOrder.getDateCreated()}</p>
         <p>Last Edited By: ${restockOrder.getLastEdittedBy()}</p>
