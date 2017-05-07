@@ -240,6 +240,7 @@ public class editCustomerServlet extends HttpServlet {
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          if(customerLastName==true){
              preparedSQL = "update Customer set customerLastName=? where customerID=?";
+             ps = conn.prepareStatement(preparedSQL);
              ps.setString(1,newCustomerLastName);
              ps.setInt(2,inputCustomerID);
              ps.executeUpdate();
@@ -247,6 +248,7 @@ public class editCustomerServlet extends HttpServlet {
          }
          if(customerFirstName==true){
              preparedSQL = "update Customer set customerFirstName=? where customerID=?";
+             ps = conn.prepareStatement(preparedSQL);
              ps.setString(1,newCustomerFirstName);
              ps.setInt(2,inputCustomerID);
              ps.executeUpdate();
@@ -254,6 +256,7 @@ public class editCustomerServlet extends HttpServlet {
          }
          if(customerMobileNumber==true){
              preparedSQL = "update Customer set customerMobileNumber=? where customerID=?";
+             ps = conn.prepareStatement(preparedSQL);
              ps.setString(1,newCustomerMobileNumber);
              ps.setInt(2,inputCustomerID);
              ps.executeUpdate();
@@ -261,12 +264,14 @@ public class editCustomerServlet extends HttpServlet {
          }
          if(customerTelephoneNumber==true){
              preparedSQL = "update Customer set customerTelephoneNumber=? where customerID=?";
+             ps = conn.prepareStatement(preparedSQL);
              ps.setString(1,newCustomerTelephoneNumber);
              ps.setInt(2,inputCustomerID);
              ps.executeUpdate();
              context.log("updated the customer customerTelephoneNumber!");
          }
-         preparedSQL = "update Customer set salesRepID=? where customerID=?";
+        preparedSQL = "update Customer set salesRepID=? where customerID=?";
+        ps = conn.prepareStatement(preparedSQL);
         ps.setInt(1,newSalesRepID);
         ps.setInt(2,inputCustomerID);
         ps.executeUpdate();
