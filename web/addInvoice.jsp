@@ -113,11 +113,6 @@
             </select><br>
             Payment Due Date: <input type="text" name="paymentDueDateInput" id="date2" required><br>
             <c:if test="${accountType eq '3' || accountType eq '1'}">
-                Status: <select name="statusInput">
-                <c:forEach items="${invStatList}" var="invStat" begin="0" step="1">
-                    <option value="${invStat.getStatusID()}">${invStat.getStatusName()}</option>
-                </c:forEach>
-                </select><br>
                 Amount Paid: <input type="text" name="amountPaidInput" value="0"><br>
                 Date Paid: <input type="text" name="datePaidInput" id="date3"><br>
             </c:if>

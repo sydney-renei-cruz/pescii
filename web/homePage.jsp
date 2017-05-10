@@ -114,6 +114,7 @@
         <c:if test="${accountType == '4'}">
             <a href="product.getProductClass">Add Product</a><br>
             <a href="Servlets.getProductServlet">Edit Product</a><br>
+            <a href="Servlets.getProductServlet?forOther=lowstockLevel">Set Low stock level</a><br><br>
             
             <c:choose>
                 <c:when test="${(suppID eq null || suppID eq 'null' || suppID eq '')}">

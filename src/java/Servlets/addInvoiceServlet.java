@@ -452,7 +452,7 @@ public class addInvoiceServlet extends HttpServlet {
             else{ps.setString(7,inputDatePaid);}
             if(inputStatus==1){ps.setString(8,inputDatePaid);}
             else{ps.setString(8,null);}
-            ps.setInt(9,inputStatus);
+            ps.setInt(9,2);
             ps.setFloat(10, 0);
             ps.setString(11,inputInvoiceName);
             ps.setFloat(12,inputAmountDue);
