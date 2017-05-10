@@ -16,7 +16,7 @@
     </head>
     <body>
         <h1>This is the log in page!</h1>
-        <a href="homePage.jsp">Return to Home</a><br>
+        <a href="notif.get">Return to Home</a><br>
         <c:set var="errorMessage" value="${requestScope.message}"/>
         <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
             <p>${errorMessage}</p><br><br>

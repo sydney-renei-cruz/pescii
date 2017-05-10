@@ -44,7 +44,7 @@ public class IMFilter implements Filter {
             else{
                 String message = "You do not have clearance to perform that function.";
                 request.setAttribute("message", message);
-                request.getRequestDispatcher("homePage.jsp").forward(request, response);
+                request.getRequestDispatcher("logIn.jsp").forward(request, response);
             } 
         }
         else {

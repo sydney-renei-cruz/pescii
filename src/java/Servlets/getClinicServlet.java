@@ -67,40 +67,60 @@ public class getClinicServlet extends HttpServlet {
          stmt = conn.createStatement();
          
          //---------------
-         
+         String inputClinID = request.getParameter("clinID");
          String preparedSQL = "select Clinic.clinicID, Customer.customerID, Customer.PRCID, Clinic.clinicAddress, Clinic.clinicPhoneNumber, Clinic.clinicName, "
-                 + "Province.provinceName, Province.provinceDivision, "
+                 + "Province.provinceName, Province.provinceDivision, Clinic.provinceID, Clinic.dateCreated, Clinic.lastEdittedBy, "
+                 + "Clinic.customerID, Customer.customerFirstName, Customer.customerLastName "
+                 + "from Clinic "
+                 + "inner join Customer on Customer.customerID = Clinic.customerID "
+                 + "inner join Province on Province.provinceID = Clinic.provinceID "
+                 + "order by Clinic.clinicName";
+         PreparedStatement ps = conn.prepareStatement(preparedSQL);
+         if(inputClinID!=null && !inputClinID.equals("")){
+             context.log("there was a clinic ID!");
+            preparedSQL = "select Clinic.clinicID, Customer.customerID, Customer.PRCID, Clinic.clinicAddress, Clinic.clinicPhoneNumber, Clinic.clinicName, "
+                 + "Province.provinceName, Province.provinceDivision, Clinic.provinceID, Clinic.dateCreated, Clinic.lastEdittedBy, "
                  + "Clinic.customerID, Customer.customerFirstName, Customer.customerLastName "
                  + "from Clinic "
                  + "inner join Customer on Customer.customerID = Clinic.customerID "
                  + "inner join Province on Province.provinceID = Clinic.provinceID and clinicID=?";
-         String inputClinID = request.getParameter("clinID");
-         PreparedStatement ps = conn.prepareStatement(preparedSQL);
-         ps.setString(1, inputClinID);
-
-         clinicBean cbean = new clinicBean();
-         ResultSet dbData = ps.executeQuery();
-         while(dbData.next()){
-           cbean.setClinicID(dbData.getString("clinicID"));
-           cbean.setPRCID(dbData.getString("PRCID"));
-           request.setAttribute("custID", dbData.getString("customerID"));
-           cbean.setCustomerFirstName(dbData.getString("customerFirstName"));
-           cbean.setCustomerLastName(dbData.getString("customerLastName"));
-           cbean.setClinicAddress(dbData.getString("clinicAddress"));
-           cbean.setClinicPhoneNumber(dbData.getString("clinicPhoneNumber"));
-           cbean.setClinicName(dbData.getString("clinicName"));
-           cbean.setProvinceName(dbData.getString("provinceName"));
-           cbean.setProvinceDivision(dbData.getString("provinceDivision"));
-           cbean.setCustomerID(dbData.getString("customerID"));
+            ps = conn.prepareStatement(preparedSQL);
+            ps.setString(1, inputClinID);
          }
-         request.setAttribute("clinic", cbean);
+         context.log(preparedSQL);
+
+            ResultSet dbData = ps.executeQuery();
+            ArrayList<clinicBean> clinicsRetrieved = new ArrayList<clinicBean>();
+            while(dbData.next()){
+                clinicBean clinbean = new clinicBean();
+                clinbean.setClinicID(dbData.getString("clinicID"));
+                clinbean.setPRCID(dbData.getString("PRCID"));
+                clinbean.setCustomerID(dbData.getString("customerID"));
+                clinbean.setCustomerFirstName(dbData.getString("customerFirstName"));
+                clinbean.setCustomerLastName(dbData.getString("customerLastName"));
+                clinbean.setClinicAddress(dbData.getString("clinicAddress"));
+                clinbean.setClinicPhoneNumber(dbData.getString("clinicPhoneNumber"));
+                clinbean.setClinicName(dbData.getString("clinicName"));
+                clinbean.setProvinceID(dbData.getInt("provinceID"));
+                clinbean.setProvinceName(dbData.getString("provinceName"));
+                clinbean.setProvinceDivision(dbData.getString("provinceDivision"));
+                clinbean.setDateCreated(dbData.getTimestamp("dateCreated"));
+                clinbean.setLastEdittedBy(dbData.getString("lastEdittedBy"));
+                clinicsRetrieved.add(clinbean);
+            }
+            
+         request.setAttribute("clinicsList", clinicsRetrieved);
          
-         preparedSQL = "select * from Province order by provinceName asc";
-         ps = conn.prepareStatement(preparedSQL);
          
-         dbData = ps.executeQuery();
-         ArrayList<provinceBean> provincesRetrieved = new ArrayList<provinceBean>();
-         //retrieve the information.
+         if(inputClinID!=null && !inputClinID.equals("")){
+            clinicBean clinic = clinicsRetrieved.get(0);
+            request.setAttribute("clinic",clinic);
+            preparedSQL = "select * from Province order by provinceName asc";
+            ps = conn.prepareStatement(preparedSQL);
+
+            dbData = ps.executeQuery();
+            ArrayList<provinceBean> provincesRetrieved = new ArrayList<provinceBean>();
+            //retrieve the information.
             while(dbData.next()){
                provinceBean provBean = new provinceBean();
                provBean.setProvinceID(dbData.getInt("provinceID"));
@@ -109,8 +129,14 @@ public class getClinicServlet extends HttpServlet {
                provincesRetrieved.add(provBean);
             }
             context.log("province list size is: "+provincesRetrieved.size());
-         request.setAttribute("provList", provincesRetrieved);
-         request.getRequestDispatcher("editClinic.jsp").forward(request,response);
+            request.setAttribute("provList", provincesRetrieved);
+            context.log("going to editClinic.jsp...");
+            request.getRequestDispatcher("editClinic.jsp").forward(request,response);
+         }
+         else{
+             context.log("going to getClinic.jsp...");
+             request.getRequestDispatcher("getClinic.jsp").forward(request,response);
+         }
 
         }
         catch(Exception ex){

@@ -30,6 +30,7 @@
         Customer Name: ${clinic.getCustomerLastName()}, ${clinic.getCustomerFirstName()}<br>
         
         <c:set var="customerID" value="${requestScope.custID}"/>
+        <c:set var="clinic" value="${requestScope.clinic}"/>
         <form action="customer.editClinic" method="post">
                 <input type="hidden" value="${clinic.getClinicID()}" name="clinID">
                 <input type='hidden' value='${customerID}' name='custID'>

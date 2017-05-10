@@ -83,7 +83,8 @@
             <a href="salesrep.get?whatFor=addCustomer">Add Customer</a><br>
             <a href="Servlets.getCustomerServlet">Edit Customer</a><br>
             <a href="salesrep.get?whatFor=searchCustomer">Search Customers</a><br>
-            <a href="Servlets.getCustomerServlet">View All Customers</a><br><br>
+            <a href="Servlets.getCustomerServlet">View All Customers</a><br>
+            <a href="customer.getClinic">View All Clinics</a><br><br>
             
             <a href="unfinished.get?getTable=invoice">View Unfinished Invoices</a><br>
             <a href="province.get?whatFor=conditionsInvoice">Search Invoice</a><br>
@@ -163,7 +164,8 @@
             <a href="salesrep.get?whatFor=addCustomer">Add Customer</a><br>
             <a href="Servlets.getCustomerServlet">Edit Customer</a><br>
             <a href="salesrep.get?whatFor=searchCustomer">Search Customers</a><br>
-            <a href="Servlets.getCustomerServlet">View All Customers</a><br><br>
+            <a href="Servlets.getCustomerServlet">View All Customers</a><br>
+            <a href="customer.getClinic">View All Clinics</a><br><br>
             <a href="addSalesRep.jsp">Add Sales Rep</a><br>
             <a href="salesrep.get">Edit Sales Rep</a><br>
             <a href="conditionsSalesRep.jsp">Search Sales Reps</a><br>
