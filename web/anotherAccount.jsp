@@ -17,6 +17,20 @@
         <title>JSP Page</title>
     </head>
     <body>
+        <%@include file="/WEB-INF/source/header-sidebar.jsp" %>
+        
+         <div id="content-wrapper">
+            <div class="mui--appbar-height"></div>
+            <div class="mui--appbar-height"></div>
+            <div class="mui-container">
+                <div class="mui-row">
+                    <div class="mui-col-md-6 mui-col-md-offset-3">
+                        <legend class="mui--text-center mui--text-display3">Account</legend>
+        <c:set var="errorMessage" value="${requestScope.message}"/>
+        <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
+            <p>${errorMessage}</p><br><br>
+        </c:if>
+       
         <c:if test="${message != ''}">
            <h1>${message}</h1>
         </c:if>

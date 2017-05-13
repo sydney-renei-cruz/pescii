@@ -200,6 +200,7 @@ public class editClinicServlet extends HttpServlet {
         ps = conn.prepareStatement(preparedSQL);
         if(clinicName==true){
             preparedSQL = "update Clinic set clinicName=? where clinicID=?";
+            ps = conn.prepareStatement(preparedSQL);
             ps.setString(1,newClinicName);
             ps.setString(2,inputClinID);
             ps.executeUpdate();
@@ -207,6 +208,7 @@ public class editClinicServlet extends HttpServlet {
         }
         if(clinicAddress==true){
             preparedSQL = "update Clinic set clinicAddress=? where clinicID=?";
+            ps = conn.prepareStatement(preparedSQL);
             ps.setString(1,newClinicAddress);
             ps.setString(2,inputClinID);
             ps.executeUpdate();
@@ -214,12 +216,14 @@ public class editClinicServlet extends HttpServlet {
         }
         if(clinicPhoneNumber==true){
             preparedSQL = "update Clinic set clinicPhoneNumber=? where clinicID=?";
+            ps = conn.prepareStatement(preparedSQL);
             ps.setString(1,newClinicPhoneNumber);
             ps.setString(2,inputClinID);
             ps.executeUpdate();
             context.log("updated the clinicPhoneNumber!");
         }
         preparedSQL = "update Clinic set provinceID=? where clinicID=?";
+        ps = conn.prepareStatement(preparedSQL);
         ps.setString(1,provinceID);
         ps.setString(2,inputClinID);
         ps.executeUpdate();

@@ -258,31 +258,6 @@ public class editInvoiceServlet extends HttpServlet {
                 return;
              }
          
-         //check invoice status
-         int newStatus = 0;
-         boolean status=false;
-         try{
-             newStatus = Integer.parseInt(request.getParameter("statusInput"));
-             if(newStatus > 0){
-                 status=true;
-             }
-         }
-         catch(Exception e){
-                message = "Invoice Status is invalid.";
-                request.setAttribute("message",message);
-                request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
-                return;
-         }
-         
-         //no need to check, since it'll just set it to the current day
-         String newDateClosed = "";
-         boolean dateClosed=false;
-         if(newStatus!=2){
-            date = new Date();
-            newDateClosed = new SimpleDateFormat("yyyy-MM-dd").format(date);
-            dateClosed=true;
-         }
-         
          
          //check the amount due
          float newAmountDue = 0;
@@ -378,6 +353,42 @@ public class editInvoiceServlet extends HttpServlet {
             request.setAttribute("message",message);
             request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
             return;
+         }
+         
+         //check invoice status
+         int newStatus = 0;
+         boolean status=false;
+         try{
+             newStatus = Integer.parseInt(request.getParameter("statusInput"));
+             if(newStatus > 0){
+                 status=true;
+             }
+             if(newStatus==1){
+                 if((newDateDelivered!=null && !newDateDelivered.equals("")) && (newDatePaid!=null && !newDatePaid.equals(""))){
+                     status=true;
+                 }
+                 else{
+                    message = "Invoice cannot be 'Complete'. Date Delivered or DatePaid is missing. Confirm with the Secretary and Accountant.";
+                    request.setAttribute("message",message);
+                    request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+                    return;
+                 }
+             }
+         }
+         catch(Exception e){
+                message = "Invoice Status is invalid.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+                return;
+         }
+         
+         //no need to check, since it'll just set it to the current day
+         String newDateClosed = "";
+         boolean dateClosed=false;
+         if(newStatus!=2){
+            date = new Date();
+            newDateClosed = new SimpleDateFormat("yyyy-MM-dd").format(date);
+            dateClosed=true;
          }
          
          //check the overdue fee

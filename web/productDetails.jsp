@@ -20,8 +20,21 @@
         <title>PESCII Product Details</title>
     </head>
     <body>
-        <h1>This is the Product Details Page!</h1>
-        <p>Product ID: ${product.getProductID()}</p>
+        <%@include file="/WEB-INF/source/header-sidebar.jsp" %>
+        
+         <div id="content-wrapper">
+            <div class="mui--appbar-height"></div>
+            <div class="mui--appbar-height"></div>
+            <div class="mui-container">
+                <div class="mui-row">
+                    <div class="mui-col-md-6 mui-col-md-offset-3">
+                        <legend class="mui--text-center mui--text-display3">Product Details</legend>
+        <c:set var="errorMessage" value="${requestScope.message}"/>
+        <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
+            <p>${errorMessage}</p><br><br>
+        </c:if>
+        
+            <p>Product ID: ${product.getProductID()}</p>
         <p>Product Name: ${product.getProductName()}</p>
         <p>Product Description: ${product.getProductDescription()}</p>
         <p>Supplier: ${product.getSupplierName()}</p>

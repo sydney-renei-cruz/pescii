@@ -579,7 +579,7 @@ public class getNewEntryServlet extends HttpServlet {
              //accountStatus field
              String[] inputAccountStatus = request.getParameterValues("accountStatusInput");
              String accountStatuses="";
-             if(inputAccountStatus!=null){
+             if(inputAccountStatus!=null){  
                  if(!(condition.equals(""))){
                      compound=" and ";
                  }

@@ -31,7 +31,8 @@
         </script>
     </head>
     <body onload="init()">
-        <h1>This is the Add Invoice page!</h1>
+        <%@include file="/WEB-INF/source/header-sidebar.jsp" %>
+        <div id="content-wrapper">
         
         <c:set var="customer" value="${requestScope.customer}"/>
         
@@ -40,39 +41,53 @@
         <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
             <p>${errorMessage}</p><br><br>
         </c:if>
+         <div class="mui-textfield mui-textfield--float-label">
+                   
+                    </div>
+        <div id="content-wrapper">
+            <div class="mui--appbar-height"></div>
             
-            <table border="1">
-                <tr>
-                    <th>PRC ID</th>
-                    <th>Customer Name</th>
-                    <th>Mobile #</th>
-                    <th>Telephone #</th>
-                </tr>
-
-                <tr>
-                        <td>${customer.getPRCID()}</td>
-                        <td>${customer.getCustomerLastName()}, ${customer.getCustomerFirstName()}</td>
-                        <td>${customer.getCustomerMobileNumber()}</td>
-                        <td>${customer.getCustomerTelephoneNumber()}</td>
-                </tr>
+            
+         <legend class="mui--text-center mui--text-display3">Add Invoice</legend>
+        
+            <table  class="mui-table mui--text-center" id="customer-table" >
+                 <thead>
+                    <tr>
+                        <th>PRC ID</th>
+                        <th>Customer Name</th>
+                        <th>Mobile #</th>
+                        <th>Telephone #</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                            <td>${customer.getPRCID()}</td>
+                            <td>${customer.getCustomerLastName()}, ${customer.getCustomerFirstName()}</td>
+                            <td>${customer.getCustomerMobileNumber()}</td>
+                            <td>${customer.getCustomerTelephoneNumber()}</td>
+                    </tr>
+                </tbody>
             </table>
             
             <br><br><br>
         
-        <table border="1">
-                <tr>
-                    <th>Product Name</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Total Price</th>
-                </tr>
+        <table class="mui-table mui--text-center" id="customer-table" >
+                 <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total Price</th>
+                    </tr>
+                 </thead>
+                 <tbody>
                 <c:choose>
                     <c:when test="${sessionScope.cart != null}">
                         <c:set var="cartSize" value="${sessionScope.cart.size()}"/>
                         <c:set var="cart" value="${sessionScope.cart}"/>
                         <c:set var="quantity" value="${sessionScope.quantity}"/>
                         <c:set var="totalPrices" value="${sessionScope.totalPrices}"/>
-
+                        <c:if test="${listSize > 0}">
                         <c:forEach items="${cart}" var="prods" begin="0" step="1" varStatus="loop">
                             <tr>
                                 <td><c:out value="${prods.getProductName()}"/></td>
@@ -81,22 +96,26 @@
                                 <td><fmt:formatNumber pattern="0.00" value="${totalPrices[loop.index]}" type="number"/></td>
                             </tr>
                         </c:forEach>
+                        </c:if>
                     </c:when>
 
                     <c:when test="${sessionScope.cart == null}">
                        <p>the size is 0</p>
                     </c:when>
                 </c:choose>
-                
+        </tbody>
                 
             </table>
             
             <br><br><br>
-        
-        <form action="invoice.add" method="POST">
+      </div>
+       <div id="content-wrapper">
+        <form action="invoice.add" method="POST"class="mui-form" id="add-customer-form">
             
-            Enter Invoice Name: <input type="text" name="invoiceNameInput" maxlength="255" required><br>
-            Select Clinic Address: <select name="chosenClinic">
+            Enter Invoice Name: <br> 
+            <input type="text" name="invoiceNameInput" maxlength="255" required><br>
+            Select Clinic Address: <br> 
+            <select name="chosenClinic"><br> 
                 <c:forEach items="${clinicsList}" var="clin" begin="0" step="1">
                     <option value="${clin.getClinicID()}">${clin.getClinicAddress()}</option>
                 </c:forEach>
@@ -105,21 +124,16 @@
             <br><br>
             <input type="hidden" name="customerIDInput" value="${customer.getCustomerID()}">
             
-            Enter Delivery Date: <input type="text" name="deliveryDateInput" id="date1" required><br>
-            Terms of Payment: <select name="topInput">
+            Enter Delivery Date: <br> <input type="text" name="deliveryDateInput" id="date1" required><br>
+            Terms of Payment:<br>  <select name="topInput">
                 <option value="Cash">Cash</option>
                 <option value="Card">Card</option>
                 <option value="Cheque">Cheque</option>
             </select><br>
-            Payment Due Date: <input type="text" name="paymentDueDateInput" id="date2" required><br>
+            Payment Due Date:<br>  <input type="text" name="paymentDueDateInput" id="date2" required><br>
             <c:if test="${accountType eq '3' || accountType eq '1'}">
-                Status: <select name="statusInput">
-                <c:forEach items="${invStatList}" var="invStat" begin="0" step="1">
-                    <option value="${invStat.getStatusID()}">${invStat.getStatusName()}</option>
-                </c:forEach>
-                </select><br>
-                Amount Paid: <input type="text" name="amountPaidInput" value="0"><br>
-                Date Paid: <input type="text" name="datePaidInput" id="date3"><br>
+                Amount Paid: <br> <input type="text" name="amountPaidInput" value="0"><br>
+                Date Paid:<br>  <input type="text" name="datePaidInput" id="date3"><br>
             </c:if>
             <c:if test="${accountType eq '6'}">
                 <input type='hidden' value='2' name='statusInput'>
@@ -127,13 +141,15 @@
                 <input type="hidden" name="datePaidInput" value=""><br>
             </c:if>
             
-            Amount Due: <input type="text" name="amountDueInput" value="0" required><br>
-            Discount: <input type="text" name="discountInput" value="0"><br>
+            Amount Due: <br> <input type="text" name="amountDueInput" value="0" required><br>
+            Discount:<br>  <input type="text" name="discountInput" value="0"><br>
             
-            Sales Representative: <input type="hidden" name="salesRepIDInput" value="${customer.getSalesRepID()}">${customer.getSalesRep()}<br>
-            
-            <input type="submit" value="Add Invoice">
+            Sales Representative: <br> <input type="hidden" name="salesRepIDInput" value="${customer.getSalesRepID()}">${customer.getSalesRep()}<br>
+           
+            <button type="submit"  value="Add Invoice" class="mui-btn mui-btn--raised">Submit</button>
         </form>
+        </div>    
+         <div id="content-wrapper">   
         <br><br>
         <a href="invoice.add?cancel=yes">Cancel Invoice</a>
         <br><br>
@@ -142,6 +158,6 @@
         <a href="notif.get">Return to Home</a>
         <br><br>
         <a href="Servlets.logoutServlet">logout</a>
-
+         </div>
     </body>
 </html>

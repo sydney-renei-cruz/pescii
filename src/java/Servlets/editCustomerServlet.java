@@ -20,6 +20,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -84,6 +85,7 @@ public class editCustomerServlet extends HttpServlet {
         
         Connection conn = null;
         Statement stmt = null;
+        int success = 0;
         
         try{
         //Allocate a database Connection object
@@ -99,36 +101,55 @@ public class editCustomerServlet extends HttpServlet {
          //first get the invoice details
          String preparedSQL = "update Customer set customerLastName=?, customerFirstName=?, customerMobileNumber=?, customerTelephoneNumber=?, salesRepID=? where customerID=?";
          String message = "";
+         boolean customerPRCID=false;
          boolean customerLastName=false;
          boolean customerFirstName=false;
          boolean customerMobileNumber;
          boolean customerTelephoneNumber=false;
+         HttpSession session = request.getSession();
          
-         //check customer last name
+         String newPRCID = "";
+         try{
+             newPRCID = request.getParameter("PRCIDInput");
+             if(newPRCID.length()>50){
+                 message = "PRCID is too long.";
+                 session.setAttribute("error_msg", message);
+                 response.sendRedirect(request.getHeader("referer"));
+                 return;
+             }else{
+                 customerPRCID = true;
+             }
+         }catch(Exception e){
+             message = "PRCID was input incorrectly. It should also not be blank.";
+                session.setAttribute("error_msg", message);
+                  response.sendRedirect(request.getHeader("referer"));
+                  return;
+         }
+        //check customer last name
          String newCustomerLastName = "";
          try{
              newCustomerLastName = request.getParameter("customerLastNameInput");
              if(newCustomerLastName.length()>100){
                  message = "Customer Last Name is too long.";
-                 request.setAttribute("message",message);
-                 request.getRequestDispatcher("Servlets.viewCustomerDetailsServlet?forEdit=yes&custID="+request.getParameter("customerIDInput")).forward(request,response);
-                 return;
+                 session.setAttribute("error_msg", message);
+                   response.sendRedirect(request.getHeader("referer"));
+                   return;
              }
              else if(!newCustomerLastName.equals("") && newCustomerLastName!=null){
                  customerLastName=true;
              }
              else{
                 message = "Customer Last Name was input incorrectly. It should also not be blank.";
-                request.setAttribute("message",message);
-                request.getRequestDispatcher("Servlets.viewCustomerDetailsServlet?forEdit=yes&custID="+request.getParameter("customerIDInput")).forward(request,response);
-                return;
+                session.setAttribute("error_msg", message);
+                   response.sendRedirect(request.getHeader("referer"));
+                   return;
              }
          }
          catch(Exception e){
                  message = "Customer Last Name was input incorrectly. It should also not be blank.";
-                 request.setAttribute("message",message);
-                 request.getRequestDispatcher("Servlets.viewCustomerDetailsServlet?forEdit=yes&custID="+request.getParameter("customerIDInput")).forward(request,response);
-                 return;
+                 session.setAttribute("error_msg", message);
+                   response.sendRedirect(request.getHeader("referer"));
+                   return;
          }
          
          //check first name
@@ -137,25 +158,25 @@ public class editCustomerServlet extends HttpServlet {
              newCustomerFirstName = request.getParameter("customerFirstNameInput");
              if(newCustomerFirstName.length()>100){
                  message = "Customer First Name is too long.";
-                 request.setAttribute("message",message);
-                 request.getRequestDispatcher("Servlets.viewCustomerDetailsServlet?forEdit=yes&custID="+request.getParameter("customerIDInput")).forward(request,response);
-                 return;
+                 session.setAttribute("error_msg", message);
+                   response.sendRedirect(request.getHeader("referer"));
+                   return;
              }
              else if(!newCustomerFirstName.equals("") && newCustomerFirstName!=null){
                  customerFirstName=true;
              }
              else{
                 message = "Customer First Name was input incorrectly. It should also not be blank.";
-                request.setAttribute("message",message);
-                request.getRequestDispatcher("Servlets.viewCustomerDetailsServlet?forEdit=yes&custID="+request.getParameter("customerIDInput")).forward(request,response);
-                return;
+                session.setAttribute("error_msg", message);
+                   response.sendRedirect(request.getHeader("referer"));
+                   return;
              }
          }
          catch(Exception e){
                  message = "Customer First Name was input incorrectly. It should also not be blank.";
-                 request.setAttribute("message",message);
-                 request.getRequestDispatcher("Servlets.viewCustomerDetailsServlet?forEdit=yes&custID="+request.getParameter("customerIDInput")).forward(request,response);
-                 return;
+                 session.setAttribute("error_msg", message);
+                   response.sendRedirect(request.getHeader("referer"));
+                   return;
          }
          
          //check mobile number
@@ -167,16 +188,16 @@ public class editCustomerServlet extends HttpServlet {
                 c = newCustomerMobileNumber.charAt(i);
                 if(!Character.isDigit(c)){
                     message = "Customer Mobile Number should not include letters. It should also not be blank.";
-                    request.setAttribute("message",message);
-                    request.getRequestDispatcher("Servlets.viewCustomerDetailsServlet?forEdit=yes&custID="+request.getParameter("customerIDInput")).forward(request,response);
-                    return;
+                    session.setAttribute("error_msg", message);
+                   response.sendRedirect(request.getHeader("referer"));
+                   return;
                 }
             }
              if(newCustomerMobileNumber.length()>20){
                  message = "Customer Mobile Number is too long.";
-                 request.setAttribute("message",message);
-                 request.getRequestDispatcher("Servlets.viewCustomerDetailsServlet?forEdit=yes&custID="+request.getParameter("customerIDInput")).forward(request,response);
-                 return;
+                 session.setAttribute("error_msg", message);
+                   response.sendRedirect(request.getHeader("referer"));
+                   return;
              }
              else{
                  customerMobileNumber=true;
@@ -184,30 +205,30 @@ public class editCustomerServlet extends HttpServlet {
          }
          catch(Exception e){
                  message = "Customer Mobile Number was input incorrectly.";
-                 request.setAttribute("message",message);
-                 request.getRequestDispatcher("Servlets.viewCustomerDetailsServlet?forEdit=yes&custID="+request.getParameter("customerIDInput")).forward(request,response);
-                 return;
+                 session.setAttribute("error_msg", message);
+                   response.sendRedirect(request.getHeader("referer"));
+                   return;
          }
          
          //check tel number
          String newCustomerTelephoneNumber = "";
          try{
-             newCustomerTelephoneNumber = request.getParameter("customerTelNumInput");
+             newCustomerTelephoneNumber = request.getParameter("customerTelephoneNumberInput");
              char c;
              for(int i=0;i<newCustomerTelephoneNumber.length();i++){
                 c = newCustomerTelephoneNumber.charAt(i);
                 if(!Character.isDigit(c)){
                     message = "Customer Telephone Number was input incorrectly. It should also not be blank.";
-                    request.setAttribute("message",message);
-                    request.getRequestDispatcher("Servlets.viewCustomerDetailsServlet?forEdit=yes&custID="+request.getParameter("customerIDInput")).forward(request,response);
-                    return;
+                    session.setAttribute("error_msg", message);
+                   response.sendRedirect(request.getHeader("referer"));
+                   return;
                 }
             }
             if(newCustomerTelephoneNumber.length()>15){
                 message = "Customer Telephone Number is too long.";
-                request.setAttribute("message",message);
-                request.getRequestDispatcher("Servlets.viewCustomerDetailsServlet?forEdit=yes&custID="+request.getParameter("customerIDInput")).forward(request,response);
-                return;
+                session.setAttribute("error_msg", message);
+                   response.sendRedirect(request.getHeader("referer"));
+                   return;
             }
             else{
                 customerTelephoneNumber=true;
@@ -216,9 +237,9 @@ public class editCustomerServlet extends HttpServlet {
          }
          catch(Exception e){
                  message = "Customer Telephone Number was input incorrectly.";
-                 request.setAttribute("message",message);
-                 request.getRequestDispatcher("Servlets.viewCustomerDetailsServlet?forEdit=yes&custID="+request.getParameter("customerIDInput")).forward(request,response);
-                 return;
+                 session.setAttribute("error_msg", message);
+                   response.sendRedirect(request.getHeader("referer"));
+                   return;
          }
          
          
@@ -238,12 +259,20 @@ public class editCustomerServlet extends HttpServlet {
          }
          preparedSQL = "update Customer set customerLastName=?, customerFirstName=?, customerMobileNumber=?, customerTelephoneNumber=?, salesRepID=? where customerID=?";
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
+         if(customerPRCID==true){
+             preparedSQL = "update Customer set PRCID=? where customerID=?";
+             ps = conn.prepareStatement(preparedSQL);
+             ps.setString(1,newPRCID);
+             ps.setInt(2,inputCustomerID);
+             success = ps.executeUpdate();
+             context.log("updated the customer PRCID!");
+         }
          if(customerLastName==true){
              preparedSQL = "update Customer set customerLastName=? where customerID=?";
              ps = conn.prepareStatement(preparedSQL);
              ps.setString(1,newCustomerLastName);
              ps.setInt(2,inputCustomerID);
-             ps.executeUpdate();
+             success = ps.executeUpdate();
              context.log("updated the customer last name!");
          }
          if(customerFirstName==true){
@@ -251,7 +280,7 @@ public class editCustomerServlet extends HttpServlet {
              ps = conn.prepareStatement(preparedSQL);
              ps.setString(1,newCustomerFirstName);
              ps.setInt(2,inputCustomerID);
-             ps.executeUpdate();
+             success = ps.executeUpdate();
              context.log("updated the customer first name!");
          }
          if(customerMobileNumber==true){
@@ -259,7 +288,7 @@ public class editCustomerServlet extends HttpServlet {
              ps = conn.prepareStatement(preparedSQL);
              ps.setString(1,newCustomerMobileNumber);
              ps.setInt(2,inputCustomerID);
-             ps.executeUpdate();
+             success = ps.executeUpdate();
              context.log("updated the customer customerMobileNumber!");
          }
          if(customerTelephoneNumber==true){
@@ -267,21 +296,28 @@ public class editCustomerServlet extends HttpServlet {
              ps = conn.prepareStatement(preparedSQL);
              ps.setString(1,newCustomerTelephoneNumber);
              ps.setInt(2,inputCustomerID);
-             ps.executeUpdate();
+             success = ps.executeUpdate();
              context.log("updated the customer customerTelephoneNumber!");
          }
         preparedSQL = "update Customer set salesRepID=? where customerID=?";
         ps = conn.prepareStatement(preparedSQL);
         ps.setInt(1,newSalesRepID);
         ps.setInt(2,inputCustomerID);
-        ps.executeUpdate();
+        success = ps.executeUpdate();
         context.log("updated the customer's sales rep!");
          
-         context.log("--->Customer successfully updated. CustomerID is: "+inputCustomerID);
-         
-         request.setAttribute("custID",inputCustomerID);
-         request.setAttribute("message", "Customer successfully editted!");
-         request.getRequestDispatcher("anotherCustomerClinic.jsp").forward(request,response);
+            if(success > 0){
+                context.log("--->Customer successfully updated. CustomerID is: "+inputCustomerID);
+                request.setAttribute("custID",inputCustomerID);
+                message = "Customer Information has been updated";
+                session.setAttribute("success_msg", message);
+                response.sendRedirect(request.getHeader("referer"));
+                
+            }else{
+                message = "Something went wrong. Try again.";
+                session.setAttribute("error_msg", message);
+                  response.sendRedirect(request.getHeader("referer"));
+            }
          
         }
         catch(Exception ex){

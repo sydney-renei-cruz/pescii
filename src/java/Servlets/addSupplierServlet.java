@@ -139,6 +139,7 @@ public class addSupplierServlet extends HttpServlet {
          String inputSupplierContactNumber = "";
          try{
              inputSupplierContactNumber = request.getParameter("supplierContactNumberInput");
+             context.log("contact number: "+inputSupplierContactNumber);
              if(inputSupplierContactNumber.length()>12){
                  message = "Contact Number is too long.";
                  request.setAttribute("message",message);

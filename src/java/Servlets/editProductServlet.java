@@ -85,314 +85,119 @@ public class editProductServlet extends HttpServlet {
         Statement stmt = null;
         
         try{
-        //Allocate a database Connection object
-         //This uses the pageContext servlet.  Look at Web.xml for the params!
-         //This means we don't need to recompile!
-         
-         conn = DriverManager.getConnection(context.getInitParameter("databaseUrl"), context.getInitParameter("databaseUser"), context.getInitParameter("databasePassword"));
-        
-         //Allocate a Statement object within the Connection
-         stmt = conn.createStatement();
-         
-         //---------------
-         
-         String preparedSQL = "update Product set productName=?, productDescription=?, "
-                 + "productPrice=?, restockPrice=?, lowStock=?, brand=?, productClassID=?, color=?, "
-                 + "supplierID=?, lastEdittedBy=? "
-                 + "where productID=?";
-         
-         String message = "";
-         
-         //check the product ID
-         int productID = Integer.parseInt(request.getParameter("productIDInput"));
-         
-         
-         //check the product name
-         String newProductName = "";
-         boolean productName=false;
-         try{
-             if(request.getParameter("productNameInput")!=null && !request.getParameter("productNameInput").equals("")){
-             newProductName = request.getParameter("productNameInput");
-                if(newProductName.length()>255){
-                   message = "Product Name is too long.";
-                   request.setAttribute("message",message);
-                   request.getRequestDispatcher("product.getDetails?forEdit=yes&prodID="+productID).forward(request,response);
+            //Allocate a database Connection object
+             //This uses the pageContext servlet.  Look at Web.xml for the params!
+             //This means we don't need to recompile!
+
+             conn = DriverManager.getConnection(context.getInitParameter("databaseUrl"), context.getInitParameter("databaseUser"), context.getInitParameter("databasePassword"));
+
+             //Allocate a Statement object within the Connection
+             stmt = conn.createStatement();
+
+             //---------------
+
+             String preparedSQL = "update Product set productName=?, productDescription=?, "
+                     + "productPrice=?, restockPrice=?, lowStock=?, brand=?, productClassID=?, color=?, "
+                     + "supplierID=? "
+                     + "where productID=?";
+
+             String message = "";
+             //check the product ID
+             int productID = Integer.parseInt(request.getParameter("productIDInput"));
+    //         int productID = Integer.parseInt((String) session.getAttribute("productIDInput"));
+             context.log("Product ID: " + productID);
+
+             String newProductName = "";
+             String newProductDescription = "";
+             float newProductPrice = 0;
+             float newRestockPrice = 0;
+             int newLowStock = 0;
+             String newBrand = "";
+             int newProductClass = 0;
+             String newColor = "";
+             int newSupplier = 0;
+
+             try{
+                newProductName = newProductName = request.getParameter("productNameInput");
+                newProductDescription = request.getParameter("productDescriptionInput");
+                newProductPrice = Float.parseFloat(request.getParameter("productPriceInput"));
+                newRestockPrice = Float.parseFloat(request.getParameter("restockPriceInput"));
+                newLowStock = Integer.parseInt(request.getParameter("lowStockInput"));
+                newBrand = request.getParameter("brandInput");
+                newProductClass = Integer.parseInt(request.getParameter("productClassInput"));
+                newColor = request.getParameter("colorInput");
+                newSupplier = Integer.parseInt(request.getParameter("supplierInput"));
+                 if(newProductName.length()>255){
+                    message = "Product Name is too long.";
+                    session.setAttribute("error_msg", message);
+                   response.sendRedirect(request.getHeader("referer"));
+                   return;
+                 }
+                 if(newProductPrice < 0){
+                    message = "Product Price was input incorrectly. It should also not be blank.";
+                    session.setAttribute("error_msg", message);
+                   response.sendRedirect(request.getHeader("referer"));
                    return;
                 }
-                else{productName=true;}
-             }
-            }
-            catch(Exception e){
-                message = "Product Name was input incorrectly. It should also not be blank.";
-                request.setAttribute("message",message);
-                request.getRequestDispatcher("product.getDetails?forEdit=yes&prodID="+productID).forward(request,response);
-                return;
-            }
-         
-         String newProductDescription="";
-         boolean productDescription=false;
-         try{
-            if(request.getParameter("productDescriptionInput")!=null && !request.getParameter("productDescriptionInput").equals("")){
-                newProductDescription = request.getParameter("productDescriptionInput");
-                productDescription=true;
-            }
-         }
-         catch(Exception e){
-         message = "Product Name was input incorrectly. It should also not be blank.";
-                request.setAttribute("message",message);
-                request.getRequestDispatcher("product.getDetails?forEdit=yes&prodID="+productID).forward(request,response);
-                return;
-         }
-         
-         //check the product price
-         float newProductPrice = 0;
-         boolean productPrice=false;
-         try{
-             
-            newProductPrice = Float.parseFloat(request.getParameter("productPriceInput"));
-            if(newProductPrice < 0){
-                message = "Product Price was input incorrectly. It should also not be blank.";
-                request.setAttribute("message",message);
-                request.getRequestDispatcher("product.getDetails?forEdit=yes&prodID="+productID).forward(request,response);
-                return;
-            }
-            else{productPrice=true;}
-         }
-         catch(Exception e){
-            message = "Product Price was input incorrectly. It should also not be blank.";
-            request.setAttribute("message",message);
-            request.getRequestDispatcher("product.getDetails?forEdit=yes&prodID="+productID).forward(request,response);
-            return;
-         }
-         
-         //check restock price
-         float newRestockPrice = 0;
-         boolean restockPrice=false;
-         try{
-                newRestockPrice = Float.parseFloat(request.getParameter("restockPriceInput"));
+
                 if(newRestockPrice < 0){
                     message = "Restock Price was input incorrectly. It should also not be blank.";
-                    request.setAttribute("message",message);
-                    request.getRequestDispatcher("product.getDetails?forEdit=yes&prodID="+productID).forward(request,response);
-                    return;
+                    session.setAttribute("error_msg", message);
+                   response.sendRedirect(request.getHeader("referer"));
+                   return;
                 }
-                else{restockPrice=true;}
-            }
-            catch(Exception e){
-                message = "Restock Price was input incorrectly. It should also not be blank.";
-                request.setAttribute("message",message);
-                request.getRequestDispatcher("product.getDetails?forEdit=yes&prodID="+productID).forward(request,response);
-                return;
-            }
-         
-         
-         //check low stock
-         int newLowStock = 0;
-         boolean lowStock=false;
-         try{
-                newLowStock = Integer.parseInt(request.getParameter("lowStockInput"));
+
                 if(newLowStock < 0){
                     message = "Low Stock level was input incorrectly. It should also not be blank.";
-                    request.setAttribute("message",message);
-                    request.getRequestDispatcher("product.getDetails?forEdit=yes&prodID="+productID).forward(request,response);
-                    return;
-                }
-                else{lowStock=true;}
-         }
-         catch(Exception e){
-                message = "Low Stock level was input incorrectly. It should also not be blank.";
-                request.setAttribute("message",message);
-                request.getRequestDispatcher("product.getDetails?forEdit=yes&prodID="+productID).forward(request,response);
-                return;
-            }
-         
-         
-         //check brand
-         String newBrand = "";
-         boolean brand=false;
-         try{
-             if(request.getParameter("brandInput")!=null && !request.getParameter("brandInput").equals("")){
-                newBrand = request.getParameter("brandInput");
-                if(newBrand.length()>255){
-                    message = "Brand name is too long.";
-                    request.setAttribute("message",message);
-                   request.getRequestDispatcher("product.getDetails?forEdit=yes&prodID="+productID).forward(request,response);
+                    session.setAttribute("error_msg", message);
+                   response.sendRedirect(request.getHeader("referer"));
                    return;
                 }
-                else{brand=true;}
-            }
-        }
-        catch(Exception e){
-            message = "Brand name was input incorrectly. It should also not be blank.";
-            request.setAttribute("message",message);
-            request.getRequestDispatcher("product.getDetails?forEdit=yes&prodID="+productID).forward(request,response);
-            return;
-        }
-         
-         //check product lass
-         int newProductClass = 0;
-         boolean productClass=false;
-         try{
-             newProductClass = Integer.parseInt(request.getParameter("productClassInput"));
-             productClass=true;
-         }
-         catch(Exception e){
-                message = "Product Class input incorrectly.";
-                request.setAttribute("message",message);
-                request.getRequestDispatcher("product.getDetails?forEdit=yes&prodID="+productID).forward(request,response);
-                return;
-         }
-         
-         
-         //check color
-         String newColor = "";
-         boolean color=false;
-         try{
-             if(request.getParameter("colorInput")!=null && !request.getParameter("colorInput").equals("")){
-                newColor = request.getParameter("colorInput");
-                if(newColor.length()>20){
-                    message = "Color name is too long.";
-                    request.setAttribute("message",message);
-                   request.getRequestDispatcher("product.getDetails?forEdit=yes&prodID="+productID).forward(request,response);
+                 if(newBrand.length()>255){
+                     message = "Brand name is too long.";
+                     session.setAttribute("error_msg", message);
+                   response.sendRedirect(request.getHeader("referer"));
                    return;
-                }
-                else{color=true;}
-            }
-        }
-        catch(Exception e){
-            message = "Color name was input incorrectly. It should also not be blank.";
-            request.setAttribute("message",message);
-            request.getRequestDispatcher("product.getDetails?forEdit=yes&prodID="+productID).forward(request,response);
-            return;
-        }
-         
-         //check supplier
-         int newSupplier = 0;
-         boolean supplier=false;
-         try{
-             newSupplier = Integer.parseInt(request.getParameter("supplierInput"));
-             supplier=true;
-         }
-         catch(Exception e){
-                message = "Supplier was input incorrectly.";
-                request.setAttribute("message",message);
-                request.getRequestDispatcher("product.getDetails?forEdit=yes&prodID="+productID).forward(request,response);
+                 }
+                 if(newColor.length()>20){
+                     message = "Color name is too long.";
+                     session.setAttribute("error_msg", message);
+                   response.sendRedirect(request.getHeader("referer"));
+                   return;
+                 }
+            }catch(Exception e){
+                message = "All fields are required";
+                session.setAttribute("error_msg", message);
+                response.sendRedirect(request.getHeader("referer"));
                 return;
-         }
-         String lastEdittedBy = ""+session.getAttribute("userName");
-         preparedSQL = "update Product set productName=?, productDescription=?, "
-                 + "productPrice=?, restockPrice=?, lowStock=?, brand=?, productClassID=?, color=?, "
-                 + "supplierID=?, lastEdittedBy=? "
-                 + "where productID=?";
-         PreparedStatement ps = conn.prepareStatement(preparedSQL);
-         if(productName==true){
-            preparedSQL = "update Product set productName=? where productID=?";
-            ps = conn.prepareStatement(preparedSQL);
-            ps.setString(1,newProductName);
-            ps.setInt(2,productID);
-            ps.executeUpdate();
-            context.log("updated the productName!");
-         }
-         if(productDescription==true){
-            preparedSQL = "update Product set productDescription=? where productID=?";
-            ps = conn.prepareStatement(preparedSQL);
-            ps.setString(1,newProductDescription);
-            ps.setInt(2,productID);
-            ps.executeUpdate();
-            context.log("updated the productDescription!");
-         }
-         if(productPrice==true){
-            preparedSQL = "update Product set productPrice=? where productID=?";
-            ps = conn.prepareStatement(preparedSQL);
-            ps.setFloat(1,newProductPrice);
-            ps.setInt(2,productID);
-            ps.executeUpdate();
-            context.log("updated the productPrice!");
-         }
-         if(restockPrice==true){
-            preparedSQL = "update Product set restockPrice=? where productID=?";
-            ps = conn.prepareStatement(preparedSQL);
-            ps.setFloat(1,newRestockPrice);
-            ps.setInt(2,productID);
-            ps.executeUpdate();
-            context.log("updated the restockPrice!");
-         }
-         if(lowStock==true){
-            preparedSQL = "update Product set lowStock=? where productID=?";
-            ps = conn.prepareStatement(preparedSQL);
-            ps.setInt(1,newLowStock);
-            ps.setInt(2,productID);
-            ps.executeUpdate();
-            context.log("updated the lowStock!");
-         }
-         if(brand==true){
-            preparedSQL = "update Product set brand=? where productID=?";
-            ps = conn.prepareStatement(preparedSQL);
-            ps.setString(1,newBrand);
-            ps.setInt(2,productID);
-            ps.executeUpdate();
-            context.log("updated the brand!");
-         }
-         if(productClass==true){
-            preparedSQL = "update Product set productClassID=? where productID=?";
-            ps = conn.prepareStatement(preparedSQL);
-            ps.setInt(1,newProductClass);
-            ps.setInt(2,productID);
-            ps.executeUpdate();
-            context.log("updated the productClassID!");
-         }
-         if(color==true){
-            preparedSQL = "update Product set color=? where productID=?";
-            ps = conn.prepareStatement(preparedSQL);
-            ps.setString(1,newColor);
-            ps.setInt(2,productID);
-            ps.executeUpdate();
-            context.log("updated the product color!");
-         }
-         if(supplier==true){
-            preparedSQL = "update Product set supplierID=? where productID=?";
-            ps = conn.prepareStatement(preparedSQL);
-            ps.setInt(1,newSupplier);
-            ps.setInt(2,productID);
-            ps.executeUpdate();
-            context.log("updated the supplierID!");
-         }
-         
-        preparedSQL = "update Product set lastEdittedBy=? where productID=?";
-        ps = conn.prepareStatement(preparedSQL);
-        ps.setString(1,lastEdittedBy);
-        ps.setInt(2,productID);
-        ps.executeUpdate();
-        context.log("updated the product lastEdittedBy!");
-         
-        /* 
-         ps.setString(1,newProductName);
-         ps.setString(2,newProductDescription);
-         ps.setFloat(3,newProductPrice);
-         ps.setFloat(4,newRestockPrice);
-         ps.setInt(5,newLowStock);
-         ps.setString(6,newBrand);
-         ps.setInt(7,newProductClass);
-         ps.setString(8,newColor);
-         ps.setInt(9, newSupplier);
-         ps.setString(10, lastEdittedBy);
-         ps.setInt(11,productID);
-         
-         context.log(preparedSQL);
-         ps.executeUpdate();
-         */
-         message = "Product successfully editted!";
-         request.setAttribute("message", message);
-         request.setAttribute("prodID", productID);
-         request.getRequestDispatcher("anotherProduct.jsp").forward(request,response);
-         
-        }
-        catch(Exception ex){
+            }
+
+             PreparedStatement ps = conn.prepareStatement(preparedSQL);
+             ps.setString(1,newProductName);
+             ps.setString(2,newProductDescription);
+             ps.setFloat(3,newProductPrice);
+             ps.setFloat(4,newRestockPrice);
+             ps.setInt(5,newLowStock);
+             ps.setString(6,newBrand);
+             ps.setInt(7,newProductClass);
+             ps.setString(8,newColor);
+             ps.setInt(9, newSupplier);
+             ps.setInt(10,productID);
+
+             context.log(preparedSQL);
+             ps.executeUpdate();
+
+             message = "Product successfully edited!";
+             request.setAttribute("prodID", productID);
+             session.setAttribute("success_msg", message);
+            response.sendRedirect(request.getHeader("referer"));
+        }catch(Exception ex){
             ex.printStackTrace();
             //out.println("error: " + ex);
             String message = "Something went wrong. Please try again or contact the administrator.";
             request.setAttribute("message", message);
             request.getRequestDispatcher("errorPage.jsp").forward(request,response);
+            context.log("Exception: " + ex);
         }
         finally {
             out.close();  // Close the output writer
@@ -408,6 +213,7 @@ public class editProductServlet extends HttpServlet {
                 request.setAttribute("message", message);
                 request.getRequestDispatcher("errorPage.jsp").forward(request,response);
             }
+            
      }
         
         

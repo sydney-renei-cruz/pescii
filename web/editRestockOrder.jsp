@@ -32,7 +32,21 @@
         </script>
     </head>
     <body onload="init()">
-        <h1>This is the Edit Restock Order page!</h1>
+        <%@include file="/WEB-INF/source/header-sidebar.jsp" %>
+        
+         <div id="content-wrapper">
+            <div class="mui--appbar-height"></div>
+            <div class="mui--appbar-height"></div>
+            <div class="mui-container">
+                <div class="mui-row">
+                    <div class="mui-col-md-6 mui-col-md-offset-3">
+                        <legend class="mui--text-center mui--text-display3">Edit Restock Order</legend>
+        <c:set var="errorMessage" value="${requestScope.message}"/>
+        <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
+            <p>${errorMessage}</p><br><br>
+        </c:if>
+        
+    
         <c:set var="errorMessage" value="${requestScope.message}"/>
         <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
             <p>${errorMessage}</p><br><br>
@@ -115,14 +129,14 @@
                             Amount Paid:<input type="hidden" value="${restockOrder.getAmountPaid()}" name="amountPaidInput">${restockOrder.getAmountPaid()}<br>
                             Date Paid: <input type="hidden" value="${restockOrder.getDatePaid()}" name="roDatePaidInput">${restockOrder.getDatePaid()}<br>
                             Delivery Due Date: <input type="hidden" value="${restockOrder.getRODateDue()}" name="roDeliveryDueDateInput">${restockOrder.getRODateDue()}<br>
-                            Date Delivered: <input type="text" value="${restockOrder.getRODateDelivered()}" name="roDateDeliveredInput" id="date2" maxlength="10" required><br>
+                            Date Delivered: <input type="text" value="${restockOrder.getRODateDelivered()}" name="roDateDeliveredInput" id="date2" maxlength="10"><br>
                         </c:when>
                         <c:when test="${accountType eq '1'}">
                             Discount: <input type="text" value="${restockOrder.getDiscount()}" name="discountInput" required><br>
                             Amount Paid:<input type="text" value="${restockOrder.getAmountPaid()}" name="amountPaidInput" required><br>
                             Date Paid: <input type="text" value="${restockOrder.getDatePaid()}" name="roDatePaidInput" id="date3" maxlength="10"><br>
-                            Delivery Due Date: <input type="text" value="${restockOrder.getRODateDue()}" name="roDeliveryDueDateInput" id="date1" maxlength="10" required><br>
-                            Date Delivered: <input type="text" value="${restockOrder.getRODateDelivered()}" name="roDateDeliveredInput" id="date2" maxlength="10" required><br>
+                            Delivery Due Date: <input type="text" value="${restockOrder.getRODateDue()}" name="roDeliveryDueDateInput" id="date1" maxlength="10"><br>
+                            Date Delivered: <input type="text" value="${restockOrder.getRODateDelivered()}" name="roDateDeliveredInput" id="date2" maxlength="10"><br>
                         </c:when>
                     </c:choose>
                 </c:when>

@@ -18,51 +18,118 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>PESCII Edit Customer</title>
     </head>
     <body>
-        <h1>This is the Edit Customer page!</h1>
+        <%@include file="/WEB-INF/source/header-sidebar.jsp" %>
+        <div id="content-wrapper">
+            <div class="mui--appbar-height"></div>
+            <div class="mui--appbar-height"></div>
+            <div class="mui-container">
+                <div class="mui-row">
+                    <div class="mui-col-md-6 mui-col-md-offset-3">
+                        <legend class="mui--text-center mui--text-display3">EDIT CUSTOMER</legend>
+                        <div class="mui-col-md-12 mui--text-center">
+                            <c:if test="${success_msg != null}">
+                                    <div id="success-msg">${success_msg}</div>
+                                    <c:remove var="success_msg" scope="session"/>
+                            </c:if>
+                        </div>
+                    </div>
+                    <div class="mui-col-md-8 mui-col-md-offset-2">
+                        <form action="customer.edit" method="post" class="mui-form" id="edit-customer-form">
+                            <br>
+                            <div class="mui-col-md-12">
+                                <legend>Customer Information</legend>
+                            </div>
+                            <div class="mui-col-md-12">
+                                <div class="mui-textfield mui-textfield--float-label">
+                                    <input type="number" name="PRCIDInput" id="PRCIDInput" value="${customer.getPRCID()}">
+                                    <label for="PRCIDInput">Customer Professional Regulation Comission ID</label>
+                                </div>
+                            </div>
+                            <div class="mui-col-md-6">
+                                <div class="mui-textfield mui-textfield--float-label">
+                                    <input type="text" name="customerFirstNameInput" id="customerFirstNameInput" value="${customer.getCustomerFirstName()}">
+                                    <label for="customerFirstNameInput">First Name</label>
+                                </div>
+                            </div>
+                            <div class="mui-col-md-6">
+                                <div class="mui-textfield mui-textfield--float-label">
+                                    <input type="text" name="customerLastNameInput" id="customerLastNameInput" value="${customer.getCustomerLastName()}">
+                                    <label for="customerLastNameInput">Last Name</label>
+                                </div>
+                            </div>
+                            <div class="mui-col-md-6">
+                                <div class="mui-textfield mui-textfield--float-label">
+                                    <input type="text" name="customerMobileNumberInput" id="customerMobileNumberInput" value="${customer.getCustomerMobileNumber()}">
+                                    <label for="customerMobileNumberInput">Mobile Number</label>
+                                </div>
+                            </div>
+                            <div class="mui-col-md-6">
+                                <div class="mui-textfield mui-textfield--float-label">
+                                    <input type="text" name="customerTelephoneNumberInput" id="customerTelephoneNumberInput" value="${customer.getCustomerTelephoneNumber()}">
+                                    <label for="customerTelephoneNumberInput">Telephone Number</label>
+                                </div>
+                            </div>
+                            <div class="mui-col-md-12">
+                                <legend>Sales Representative</legend>
+                                <div class="mui-col-md-6">
+                                    <div class="mui-select">
+                                        <select name="fromSalesRepInput" id="fromSalesRepInput">
+                                            <option value="${customer.getSalesRepID()}">${customer.getSalesRep()}</option>
+                                        </select>
+                                        <label for="fromSalesRepInput">From</label>
+                                    </div>
+                                </div>
+                                <div class="mui-col-md-6">
+                                    <div class="mui-select">
+                                        <select name="chosenSalesRep" id="chosenSalesRep">
+                                            <c:forEach items="${salesRepList}" var="sr" begin="0" step="1">
+                                                <option value="${sr.getSalesRepID()}">${sr.getSalesRepLastName()} ${sr.getSalesRepFirstName()}</option>
+                                            </c:forEach>
+                                        </select>
+                                        <label for="chosenSalesRep">To</label>
+                                    </div>
+                                </div>
+                            </div>                            
+                            <c:if test="${error_msg != null}">
+                                <div class="mui--text-center">
+                                    <div class="text-center">
+                                        <div id="error-msg">${error_msg}</div>
+                                        <c:remove var="error_msg" scope="session"/>
+                                    </div>
+                                </div>
+                            </c:if>
+                            <div class="mui--text-center">
+                                <input type="hidden" name="customerIDInput" id="customerIDInput" value="${customer.getCustomerID()}">
+                                <button type="submit" class="mui-btn mui-btn--raised">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
         
-        <c:set var="errorMessage" value="${message}"/>
-        <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
-            <p>${errorMessage}</p><br><br>
-        </c:if>
+        <br><br>
+        <footer id="footer">
+            <div class="mui-container-fluid">
+                  <div class="mui-row">
+                      <div class="mui-col-md-6 mui-col-md-offset-3 mui--text-center">                            
+                          <c:if test="${accountType eq '2' || accountType eq '1'}">
+                              <a href="province.get?whatFor=addClinic&custID=${customer.getCustomerID()}">Add Clinic</a><br>
+                            </c:if>
+                            <a href="Servlets.viewCustomerDetailsServlet?viewDetails=yes&custID=<c:out value="${customer.getCustomerID()}"/>">Go to Customer Details</a>
+                            <br>
+                            <a href="Servlets.getCustomerServlet">Go to list of customers</a>
+                            <br>
+                            <a href="salesrep.get?whatFor=searchCustomer">Search Customers</a>
+                      </div>
+                  </div>
+                  <br>
+              </div>
+        </footer>
         
-        <form action="customer.edit" method="post">
-            <input type="hidden" value="${customer.getCustomerID()}" name="customerIDInput">
-            PRCID: <input type="hidden" value="${customer.getPRCID()}" name="PRCIDInput">${customer.getPRCID()}<br>
-            Last Name: <input type="text" value="${customer.getCustomerLastName()}" name="customerLastNameInput" maxlength="100"><br>
-            First Name: <input type="text" value="${customer.getCustomerFirstName()}" name="customerFirstNameInput" maxlength="100"><br>
-            Mobile Number: <input type="text" value="${customer.getCustomerMobileNumber()}" name="customerMobileNumberInput" maxlength="20"><br>
-            Telephone Number: <input type="text" value="${customer.getCustomerTelephoneNumber()}" name="customerTelNumInput" maxlength="15"><br><br>
-            <b>Sales Representative</b><br>
-            From: ${customer.getSalesRep()}<br>
-            To:<select name="chosenSalesRep">
-                <c:forEach items="${salesRepList}" var="sr" begin="0" step="1">
-                    <option value="${sr.getSalesRepID()}">${sr.getSalesRepLastName()} ${sr.getSalesRepFirstName()}</option>
-                </c:forEach>
-            </select><br><br>
-            <br><input type="submit" value="Save Changes"><br>
-        </form>
-        <br><br>
-        <c:if test="${accountType eq '2' || accountType eq '1'}">
-            <form action="province.get">
-                <input type="hidden" value="addClinic" name="whatFor">
-                <input type="hidden" value="${customer.getCustomerID()}" name="custID">
-                <input type="submit" value="Add Clinic">
-            </form>
-        </c:if>
-        <br><br>
-        <a href="Servlets.viewCustomerDetailsServlet?viewDetails=yes&custID=<c:out value="${customer.getCustomerID()}"/>">Go to Customer Details</a>
-        <br><br>
-        <a href="Servlets.getCustomerServlet">Go to list of customers</a>
-        <br><br>
-        <a href="salesrep.get?whatFor=searchCustomer">Search Customers</a>
-        <br><br>
-        <a href="notif.get">Return to Home</a>
-        <br><br>
-        <a href="Servlets.logoutServlet">logout</a>
-        
+        <%@include file="/WEB-INF/source/footer.jsp" %>
+        <script type="text/javascript" src="js/form-validation/edit-customer-validation.js"></script>
     </body>
 </html>

@@ -27,42 +27,60 @@
         </script>
     </head>
     <body onload="init()">
-        <h1>This is the Conditions Restock Order page!</h1>
-        
-        <!--this is the error message-->
+         <%@include file="/WEB-INF/source/header-sidebar.jsp" %>
+        <div id="content-wrapper">
+
+            <div class="mui--appbar-height"></div>
+            <div class="mui--appbar-height"></div>
+            <div class="mui--appbar-height"></div>
+                        <legend class="mui--text-center mui--text-display3">Search Restock Order</legend>
+            <div class="mui-container">
+                <div class="mui-row">
+                    <div class="mui-col-md-6 mui-col-md-offset-3">
+                        
+                        <c:if test="${success_msg != null}">
+                            <div class="mui-col-md-12 mui--text-center">
+                                <div id="success-msg">${success_msg}</div>
+                                <c:remove var="success_msg" scope="session"/>
+                            </div>
+                        </c:if>
+                    </div>
+                    <div class="mui-col-md-6 mui-col-md-offset-3">
+                       <!--this is the error message-->
         <c:set var="errorMessage" value="${requestScope.message}"/>
         <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
             <p>${errorMessage}</p><br><br>
         </c:if>
         
-        <h4>Set the conditions of your search</h4>
+        <h4>Set the conditions of your search</h4><br>
         
-        <p><b>Search</b></p>
-        <form action="new.get">
+        <p><b>Search</b></p><br>
+        <form action="new.get" class="mui-form">
             <input type="hidden" name="getWhat" value="customSearch">
             <input type="hidden" name="whatFor" value="restockOrder">
-            Search by Restock Order Name:<input type="text" name="searchNameInput" maxlength="255">
+            Search by Restock Order Name:<br><input type="text" name="searchNameInput" maxlength="255">
             <br><br>
-            Search by Supplier:<input type="text" name="searchSupplierInput" maxlength="255">
+            Search by Supplier:<br><input type="text" name="searchSupplierInput" maxlength="255">
             <br><br>
-            Search by Date:<select name="searchDateInput">
-                    <option value="RODateDue">Expected Arrival Date</option>
-                    <option value="RODateDelivered">Date Received</option>
-                    <option value="RestockOrder.dateCreated">Date Created</option>
+            Search by Date:<br><select name="searchDateInput">
+                    <br><option value="RODateDue">Expected Arrival Date</option>
+                    <br><option value="RODateDelivered">Date Received</option>
+                    <br><option value="RestockOrder.dateCreated">Date Created</option>
             </select><br><br>
-            From:<input type="text" name="fromDate" id="date1" maxlength="10"><br>
-            To:<input type="text" name="toDate" id="date2" maxlength="10"><br><br>
+            From:<br><input type="text" name="fromDate" id="date1" maxlength="10"><br>
+            To:<br><input type="text" name="toDate" id="date2" maxlength="10"><br><br>
             
             <c:set var="rostatList" value="${requestScope.roStatList}"/> 
-            Search by Status:
+            Search by Status:<br>
                 <c:forEach items="${rostatList}" var="rStatList" begin="0" step="1">
                     <input type="checkbox" name="searchStatusInput" value="${rStatList.getStatusName()}">${rStatList.getStatusName()}
                 </c:forEach>
             <br><br>
-            <input type="submit" value="Search"><br><br><br>
+             <button type="submit" class="mui-btn mui-btn--raised" value="Search">Search</button>
+             <br><br><br>
         </form>
         
-        <form action="new.get">
+        <form action="new.get" class="mui-form">
             <input type="hidden" name="whatFor" value="restockOrder">
             
             <b>Shortcuts</b><br>
@@ -70,8 +88,13 @@
                 <input type="radio" name="getWhat" value="completed">View Recently Completed Restock Orders<br>
                 <input type="radio" name="getWhat" value="close">View Restock Orders Arriving Soon<br>
                 <br>
-            <input type="submit" value="Get">    
+             <button type="submit" class="mui-btn mui-btn--raised" value="Get">Get</button>
+   
         </form>
+                    </div>
+                    
+        
+        
         
         
         <br><br>

@@ -14,14 +14,24 @@
         <title>PESCII Account List</title>
     </head>
     <body>
-        <h1>This is the Accounts list!</h1>
+        <%@include file="/WEB-INF/source/header-sidebar.jsp" %>
+        
         
         <c:set var="accountType" value="${sessionScope.accountType}"/>
         <c:set var="accountsList" value="${requestScope.accountsList}"/>
         <c:set var="listSize" value="${accountsList.size()}"/>
         
+        <div class="mui-textfield mui-textfield--float-label">
+                   
+                    </div>
+        <div id="content-wrapper">
+            <div class="mui--appbar-height"></div>
+            
+            
+         <legend class="mui--text-center mui--text-display3">Accounts</legend>
         <c:if test="${listSize > 0}">
-            <table border="1">
+             <table class="mui-table mui--text-center" id="customer-table">
+             <thead>
                 <tr>
                     <th>Account ID</th>
                     <th>User Name</th>
@@ -29,7 +39,8 @@
                     <th>Account Status</th>
                     <th>Date Created</th>
                 </tr>
-
+             </thead>
+             <tbody>
             <c:forEach items="${accountsList}" var="acc" begin="0" step="1" varStatus="status">
                 <tr>
                         <td>${acc.getAccountID()}</td>
@@ -41,20 +52,31 @@
                 </tr>
 
             </c:forEach>
+             </tbody>
             </table>
         </c:if>
-        
-        <c:if test="${listSize eq 0}">
+</div>
+        <div class="text-center">
+            <div id="error-msg">${error_msg}</div>
+            <c:if test="${listSize eq 0}">
             <p> 0 accounts found.</p>
         </c:if>
-        
-        <br><br>
-        
+         </div>
+        </div>    
+            
+       
+       <footer id="footer">
+            <div class="mui-container-fluid">
+                  <div class="mui-row">
+                      <div class="mui-col-md-6 mui-col-md-offset-3 mui--text-center">  
         <a href="account.getTypeStatus?forSearch=yes">Search Account</a>
         <br><br>
         <a href="notif.get">Return to Home</a>
         <br><br>
-        <a href="Servlets.logoutServlet">logout</a>
-    
+        <a href="Servlets.logoutServlet">Logout</a>
+      
+                  </div>
+            </div>
+        </footer> 
     </body>
 </html>

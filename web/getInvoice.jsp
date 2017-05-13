@@ -14,15 +14,36 @@
         <title>PESCII View Invoice</title>
     </head>
     <body>
-        <h1>This is the View Invoice page!</h1>
+        <%@include file="/WEB-INF/source/header-sidebar.jsp" %>
+        <h1>View Invoice</h1>
+       
+            
         
         <c:set var="accountType" value="${sessionScope.accountType}"/>
         <c:set var="invoiceList" value="${requestScope.invoiceList}"/>
         <c:set var="listSize" value="${invoiceList.size()}"/>
+       
+        
+        
+        <div class="mui-textfield mui-textfield--float-label">
+                   
+                    </div>
+        <div id="content-wrapper">
+            <div class="mui--appbar-height"></div>
+            
+            
+         <legend class="mui--text-center mui--text-display3">Invoices</legend>
+         <div class="text-center">
+            <div id="error-msg">${error_msg}</div>
+        <c:if test="${listSize eq 0}">
+            <p> 0 invoices found.</p>
+        </c:if>
+        </div>
         
         <c:if test="${listSize > 0}">
-            <table border="1">
-                <tr>
+            <table class="mui-table mui--text-center" id="customer-table">
+             <thead>    
+                 <tr>
                     <th>Invoice ID</th>
                     <th>Invoice Name</th>
                     <th>Customer Name</th>
@@ -34,7 +55,8 @@
                     <th>Date Paid</th>
                     <th>Delivery Date</th>
                 </tr>
-
+</thead>
+             <tbody>
             <c:forEach items="${invoiceList}" var="inv" begin="0" step="1" varStatus="status">
                 <tr>
                     <td>${inv.getInvoiceID()}</td>
@@ -52,19 +74,26 @@
                     </c:if>
                 </tr>
             </c:forEach>
+        </tbody>
             </table>
         </c:if>
+        </div>
         
-        <c:if test="${listSize eq 0}">
-            <p> 0 invoices found.</p>
-        </c:if>
-
+        </div>    
+            
+            
+<footer id="footer">
+            <div class="mui-container-fluid">
+                  <div class="mui-row">
+                      <div class="mui-col-md-6 mui-col-md-offset-3 mui--text-center"> 
         <br><br>
         <a href="province.get?whatFor=conditionsInvoice">Search Invoice</a>
         <br><br>
         <a href="notif.get">Return to Home</a>
         <br><br>
-        <a href="Servlets.logoutServlet">logout</a>
-        
+        <a href="Servlets.logoutServlet">Logout</a>
+         </div>
+            </div>
+        </footer> 
     </body>
 </html>

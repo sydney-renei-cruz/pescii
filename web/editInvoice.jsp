@@ -25,8 +25,22 @@
         </script>
     </head>
     <body onload="init()">
-        <h1>This is the Edit Invoice page!</h1>
-        
+       <%@include file="/WEB-INF/source/header-sidebar.jsp" %>
+        <div id="content-wrapper">
+            <div class="mui--appbar-height"></div>
+            <div class="mui--appbar-height"></div>
+            <div class="mui-container">
+                <div class="mui-row">
+                    <div class="mui-col-md-6 mui-col-md-offset-3">
+                        <legend class="mui--text-center mui--text-display3">EDIT CUSTOMER</legend>
+                        <div class="mui-col-md-12 mui--text-center">
+                            <c:if test="${success_msg != null}">
+                                    <div id="success-msg">${success_msg}</div>
+                                    <c:remove var="success_msg" scope="session"/>
+                            </c:if>
+                        </div>
+                    </div>
+                    <div class="mui-col-md-8 mui-col-md-offset-2">
          <c:set var="accountType" value="${sessionScope.accountType}"/>
         <c:set var="invoice" value="${requestScope.invoice}"/>
         <c:set var="invitemsList" value="${requestScope.invitemsList}"/>
@@ -93,7 +107,7 @@
                     
             
             <b>Date Paid:</b>
-            <c:if test="${accounType eq '3' || accountType eq '1'}">        
+            <c:if test="${accountType eq '3' || accountType eq '1'}">        
                 <c:choose>
                     <c:when test="${invoice.getStatusName() eq 'In Progress'}">
                         <br>

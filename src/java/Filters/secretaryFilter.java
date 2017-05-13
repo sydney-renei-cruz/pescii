@@ -35,7 +35,7 @@ public class secretaryFilter implements Filter {
 
         HttpSession session = request.getSession();
         if (session == null || session.getAttribute("accountType") == null) {
-            response.sendRedirect(request.getContextPath() + "/logIn.jsp");
+            response.sendRedirect(request.getContextPath() + "notif.get");
         } 
         else if(!session.getAttribute("accountType").equals("2")){
             ServletContext context = request.getSession().getServletContext();
@@ -47,7 +47,7 @@ public class secretaryFilter implements Filter {
             else{
                 String message = "You do not have clearance to perform that function.";
                 request.setAttribute("message", message);
-                request.getRequestDispatcher("homePage.jsp").forward(request, response);
+                request.getRequestDispatcher("notif.get").forward(request, response);
             } 
         }
         else {

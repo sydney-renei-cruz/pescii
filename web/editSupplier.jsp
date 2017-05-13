@@ -20,7 +20,20 @@
         <title>PESCII Edit Supplier</title>
     </head>
     <body>
-        <h1>This is the Edit Supplier page!</h1>
+       <%@include file="/WEB-INF/source/header-sidebar.jsp" %>
+        
+         <div id="content-wrapper">
+            <div class="mui--appbar-height"></div>
+            <div class="mui--appbar-height"></div>
+            <div class="mui-container">
+                <div class="mui-row">
+                    <div class="mui-col-md-6 mui-col-md-offset-3">
+                        <legend class="mui--text-center mui--text-display3">Edit Supplier Information</legend>
+        <c:set var="errorMessage" value="${requestScope.message}"/>
+        <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
+            <p>${errorMessage}</p><br><br>
+        </c:if>
+        
         
         <c:set var="supb" value="${requestScope.supplier}"/>
         
@@ -30,7 +43,6 @@
         </c:if>
         
          <form action="supplier.edit" method="post">
-             ${supb.getSupplierID()}
             <input type="hidden" value="${supb.getSupplierID()}" name="supplierIDInput">
             Enter Supplier Name:<input type="text" name="supplierNameInput" value="${supb.getSupplierName()}" maxlength="100"><br>
             Enter Supplier Address: <input type="text" name="supplierAddressInput" value="${supb.getSupplierAddress()}" maxlength="255"><br>

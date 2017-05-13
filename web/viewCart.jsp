@@ -18,8 +18,15 @@
         <title>PESCII view cart</title>
     </head>
     <body>
-        <h1>This is the View Cart page!</h1>
+       <%@include file="/WEB-INF/source/header-sidebar.jsp" %>
         
+         <div id="content-wrapper">
+            <div class="mui--appbar-height"></div>
+            <div class="mui--appbar-height"></div>
+            <div class="mui-container">
+                <div class="mui-row">
+                    <div class="mui-col-md-6 mui-col-md-offset-3">
+                        <legend class="mui--text-center mui--text-display3">Cart</legend>
         <c:set var="errorMessage" value="${requestScope.message}"/>
         <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
             <p>${errorMessage}</p><br><br>
@@ -31,6 +38,7 @@
                 <c:set var="cart" value="${sessionScope.cart}"/>
                 <c:set var="quantity" value="${sessionScope.quantity}"/>
                 <h4>the size is <c:out value="${cartSize}"/></h4>
+                <c:if test="${cartSize>0}">
                 <p>Please enter the quantity you wish to purchase.</p>
                 
                 <!--Now make the table-->
@@ -43,7 +51,7 @@
                         <br>
                         <input type="submit" value="Select Customer">
                 </form>
-                
+                </c:if>
                 
             </c:when>
 

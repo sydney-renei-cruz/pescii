@@ -27,41 +27,54 @@
         </script>
     </head>
     <body onload="init()">
-        <h1>This is the Conditions Invoice page!</h1>
-        
-        
+         <%@include file="/WEB-INF/source/header-sidebar.jsp" %>
+        <div id="content-wrapper">
+            <div class="mui--appbar-height"></div>
+            <div class="mui--appbar-height"></div>
+            <div class="mui-container">
+                <div class="mui-row">
+                    <div class="mui-col-md-6 mui-col-md-offset-3">
+                        <legend class="mui--text-center mui--text-display3">Search for Invoice</legend>
+                        <c:if test="${success_msg != null}">
+                            <div class="mui-col-md-12 mui--text-center">
+                                <div id="success-msg">${success_msg}</div>
+                                <c:remove var="success_msg" scope="session"/>
+                            </div>
+                        </c:if>
+                    </div>
         <!--this is the error message-->
         <c:set var="errorMessage" value="${requestScope.message}"/>
         <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
             <p>${errorMessage}</p><br><br>
         </c:if>
-        
+        <div class="mui-col-md-8 mui-col-md-offset-2">
+            
         <h4>Set the conditions of your search</h4>
         
         <p><b>Search</b></p>
-        <form action="new.get">
+        <form action="new.get" class="mui-form" id="add-product-form">
             <input type="hidden" name="getWhat" value="customSearch">
             <input type="hidden" name="whatFor" value="invoice">
-            Search by Invoice Name:<input type="text" name="searchNameInput" maxlength="255">
+            Search by Invoice Name:<br><input type="text" name="searchNameInput" maxlength="255">
             <br><br>
-            Search by Status:
+            Search by Status:<br>
                     <c:forEach items="${invStatList}" var="invStat" begin="0" step="1">
                         <input type="checkbox" name="searchStatusInput" value="${invStat.getStatusName()}">${invStat.getStatusName()}
                     </c:forEach>
                     
             <br><br>
             <b>Search by Customer Name:</b><br>
-            Last Name: <input type="text" name="searchCustomerLastNameInput" maxlength="100"><br>
-            First Name: <input type="text" name="searchCustomerFirstNameInput" maxlength="100"><br>
+            Last Name:<br> <input type="text" name="searchCustomerLastNameInput" maxlength="100"><br>
+            First Name:<br> <input type="text" name="searchCustomerFirstNameInput" maxlength="100"><br>
             <br>
-            Search by Province:<select name="searchProvinceInput">
+            Search by Province:<br><select name="searchProvinceInput">
                     <option value="all">All</option>
                     <c:forEach items="${provList}" var="pro" begin="0" step="1">
                         <option value="${pro.getProvinceID()}">${pro.getProvinceName()}</option>
                     </c:forEach>    
                 </select>
             <br><br>
-            Search by Date:<select name="searchDateInput">
+            Search by Date:<br><select name="searchDateInput">
                     <option value="Invoice.invoiceDate">Invoice Date</option>
                     <option value="Invoice.deliveryDate">Delivery Date</option>
                     <option value="Invoice.paymentDueDate">Payment Deadline</option>
@@ -71,20 +84,25 @@
                     <option value="Invoice.dateCreated">Date Created</option>
             </select>
             <br><br>
-            From:<input type="text" name="fromDate" id="date1" maxlength="10"><br>
-            To:<input type="text" name="toDate" id="date2" maxlength="10"><br><br>
+            From:<br><input type="text" name="fromDate" id="date1" maxlength="10"><br>
+            <br><input type="text" name="toDate" id="date2" maxlength="10"><br><br>
             
             <br><br>
             <b>Search by Sales Representative:</b><br>
-            Last Name: <input type="text" name="searchSalesRepLastNameInput" maxlength="100"><br>
-            First Name: <input type="text" name="searchSalesRepFirstNameInput" maxlength="100"><br>
+            Last Name: <br><input type="text" name="searchSalesRepLastNameInput" maxlength="100"><br>
+            First Name:<br> <input type="text" name="searchSalesRepFirstNameInput" maxlength="100"><br>
             <br>
             
-            <input type="submit" value="Search"><br><br><br>
-        </form>
+            
+           <button type="submit" class="mui-btn mui-btn--raised"  value="Search">Search</button>
+                            </div>
+                        </form>
+                    </div>
+               
+         
         
-        
-        <form action="new.get">
+        <div class="mui-col-md-8 mui-col-md-offset-2">
+        <form action="new.get"class="mui-form" id="add-product-form">
             <input type="hidden" name="whatFor" value="invoice">
             
             <b>Shortcuts</b><br>
@@ -97,16 +115,18 @@
                 <br>
             <input type="submit" value="Get">    
         </form>
+        </div>
         
         
+         <div class="mui-col-md-8 mui-col-md-offset-2">
         <br><br>
         <a href="Servlets.getInvoiceServlet">View All Invoices</a>
         <br><br>
         <a href="notif.get">Return to Home</a>
         <br><br>
-        <a href="Servlets.logoutServlet">logout</a>
-
-        
+        <a href="Servlets.logoutServlet">Logout</a>
+<br><br><br><br><br><br>
+        </div>
         
     </body>
 </html>

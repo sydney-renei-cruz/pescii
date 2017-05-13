@@ -202,17 +202,7 @@ public class editRestockOrderServlet extends HttpServlet {
             return;
          }
          
-         //check status ID
-        int newStatusID = 0;
-        try{newStatusID = Integer.parseInt(request.getParameter("statusInput"));}
-        catch(Exception e){
-               message = "Restock Order Status is invalid.";
-               request.setAttribute("message",message);
-               request.setAttribute("forRestock", "yes");
-               request.getRequestDispatcher("restockOrder.getStatus").forward(request,response);
-               return;
-        }
-         
+        
          //check RO date delivered
          String newRODateDelivered = "";
          boolean RODateDelivered=false;
@@ -297,6 +287,37 @@ public class editRestockOrderServlet extends HttpServlet {
            return;
         }
          
+          //check status ID
+        boolean statusID = false;
+        int newStatusID = 0;
+        try{
+            newStatusID = Integer.parseInt(request.getParameter("statusInput"));
+            if(newStatusID > 0){
+                statusID=true;
+            }
+            if(newStatusID==1){
+                if((newDatePaid!=null && !newDatePaid.equals("")) && (newRODateDelivered!=null && !newRODateDelivered.equals(""))){
+                   statusID=true;
+                   context.log("it changed! ROStatus is now: "+newStatusID);
+                }
+                else{
+                   message = "Restock Order Status is invalid. Cannot be 'Completed' without date paid and date delivered. Confirm with Inventory Manager.";
+                   request.setAttribute("message",message);
+                   request.setAttribute("forRestock", "yes");
+                   request.getRequestDispatcher("restockOrder.getStatus").forward(request,response);
+                   return;
+                }
+            }
+        
+        }
+        catch(Exception e){
+               message = "Restock Order Status is invalid.";
+               request.setAttribute("message",message);
+               request.setAttribute("forRestock", "yes");
+               request.getRequestDispatcher("restockOrder.getStatus").forward(request,response);
+               return;
+        }
+         
          String lastEdittedBy = ""+session.getAttribute("userName");
          
          
@@ -359,6 +380,14 @@ public class editRestockOrderServlet extends HttpServlet {
              ps.executeUpdate();
              context.log("updated the RO discount!");
          }
+         if(statusID==true){
+        preparedSQL = "update RestockOrder set statusID=? where restockOrderID=?";
+             ps = conn.prepareStatement(preparedSQL);
+             ps.setInt(1,newStatusID);
+             ps.setInt(2,inputRestockOrderID);
+             ps.executeUpdate();
+             context.log("updated the RODatePaid!");
+        }
          if(RODatePaid==true){
              preparedSQL = "update RestockOrder set datePaid=? where restockOrderID=?";
              ps = conn.prepareStatement(preparedSQL);

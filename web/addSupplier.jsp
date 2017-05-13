@@ -16,33 +16,65 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>PECII Edit Product</title>
+        <title>PECII Add Supplier</title>
     </head>
     <body>
-        <h1>This is the Add Supplier page!</h1>
-        
+         <%@include file="/WEB-INF/source/header-sidebar.jsp" %>
+       
+         <div id="content-wrapper">
+            <div class="mui--appbar-height"></div>
+            <div class="mui--appbar-height"></div>
+            <div class="mui-container">
+                <div class="mui-row">
+                    <div class="mui-col-md-6 mui-col-md-offset-3">
+                        <legend class="mui--text-center mui--text-display3">Add Supplier</legend>
+                        
         <!--this is the error message-->
         <c:set var="errorMessage" value="${requestScope.message}"/>
         <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
             <p>${errorMessage}</p><br><br>
         </c:if>
-            
+        <div class="mui-col-md-8 mui-col-md-offset-2">    
          <form action="supplier.add" method="post">
-            Enter Supplier Name:<input type="text" name="supplierNameInput" maxlength="100" required><br>
-            Enter Supplier Address: <input type="text" name="supplierAddressInput" maxlength="255" required><br>
-            Enter Supplier Contact Number:<input type="text" name="supplierContactNumberInput" maxlength="12" required><br>
-            Enter Product Class: <select name="productClassInput">
+             <div class="mui-col-md-12">
+                <div class="mui-textfield mui-textfield--float-label">
+                <input type="text" name="supplierNameInput" id="supplierNameInput"required>
+                <label for="supplierNameInput">Supplier Name</label>
+                </div>
+            </div>
+             <br>
+             <div class="mui-col-md-12">
+                <div class="mui-textfield mui-textfield--float-label">
+                <input type="text" name="supplierAddressInput" id="supplierAddressInput"required>
+                <label for="supplierAddressInput">Supplier Address</label>
+                </div>
+            </div>
+             <br>
+             <div class="mui-col-md-12">
+                <div class="mui-textfield mui-textfield--float-label">
+                <input type="text" name="supplierContactNumberInput" id="supplierContactNumberInput"required>
+                <label for="supplierContactNumberInput">Supplier Contact Number</label>
+                </div>
+            </div>
+             <br><br><br>
+          
+            Enter Product Class: <br><select name="productClassInput">
                 <c:forEach items="${prodClassList}" var="pro" begin="0" step="1">
                         <option value="${pro.getProductClassID()}">${pro.getProductClassName()}</option>
                 </c:forEach>
             </select><br>
+            <br><br>
+            <button type="submit" class="mui-btn mui-btn--raised">Add Supplier</button>
             
-            <input type="submit" value="Add Supplier">
         </form>
         <br><br>
+        </div>
+                    </div>
+                </div>
+        <center>
         <a href="notif.get">Return to Home</a>
         <br><br>
-        <a href="Servlets.logoutServlet">logout</a>
-        
+        <a href="Servlets.logoutServlet">Logout</a>
+        </center>
     </body>
 </html>

@@ -26,14 +26,25 @@
         </script>
     </head>
     <body onload="init()">
+         <%@include file="/WEB-INF/source/header-sidebar.jsp" %>
         <h1>This is the Conditions Supplier page!</h1>
-        
+        <div id="content-wrapper">
+            <div class="mui--appbar-height"></div>
+            <div class="mui--appbar-height"></div>
+            <div class="mui-container">
+                <div class="mui-row">
+                    
+                        <legend class="mui--text-center mui--text-display3">Search Supplier</legend>
         <h4>Set the conditions of your search</h4>
         
         <form action="new.get">
             <input type="hidden" name="whatFor" value="supplier">
-            
-            Search by Supplier Name:<input type="text" name="searchSupplierNameInput" maxlength="100">
+         
+                <div class="mui-textfield mui-textfield--float-label">
+                    <input type="text" name="searchSupplierNameInput" id="clinicNameInput">
+                    <label for="searchSupplierNameInput"> Search by Supplier Name</label>
+                </div>
+           
             <br><br>
             Search by Product Class:<br>
                <c:forEach items="${prodClassList}" var="pro" begin="0" step="1">
@@ -42,11 +53,16 @@
             <br>
             <b>Search by Date Created</b>
             <br><br>
-            From:<input type="text" name="fromDate" id="date1" maxlength="10"><br>
-            To:<input type="text" name="toDate" id="date2" maxlength="10"><br>
+            
+          
+            
+            From:
+            <br><input type="text" name="fromDate" id="date1" maxlength="10"><br>
+            To:
+            <br><input type="text" name="toDate" id="date2" maxlength="10"><br>
             <br><br> 
-                
-            <input type="submit" value="Search">    
+              <button type="submit" class="mui-btn mui-btn--raised" value="Search">Search</button>
+            
         </form>
         
         <br><br>
@@ -54,7 +70,7 @@
         <br><br>
         <a href="notif.get">Return to Home</a>
         <br><br>
-        <a href="Servlets.logoutServlet">logout</a>
+        <a href="Servlets.logoutServlet">Logout</a>
         
         
     </body>

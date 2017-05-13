@@ -15,14 +15,14 @@
           <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
-        <h1>This is the log in page!</h1>
-        <a href="homePage.jsp">Return to Home</a><br>
+        
+        <a href="notif.get">Return to Home</a><br>
         <c:set var="errorMessage" value="${requestScope.message}"/>
         <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
             <p>${errorMessage}</p><br><br>
         </c:if>
             <div class="login">
-            <div class="login-triangle"></div>
+            
             <h2 class="login-header">Log In</h2>
         <form action="Servlets.logInServlet" method="post" class="login-container">
             <p>Enter username:<input type="text" name="usernameInput" maxlength="30"></p><br>

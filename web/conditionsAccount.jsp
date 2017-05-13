@@ -27,8 +27,15 @@
         </script>
     </head>
     <body onload="init()">
-        <h1>This is the Conditions Account page!</h1>
+         <%@include file="/WEB-INF/source/header-sidebar.jsp" %>
         
+         <div id="content-wrapper">
+            <div class="mui--appbar-height"></div>
+            <div class="mui--appbar-height"></div>
+            <div class="mui-container">
+                <div class="mui-row">
+                    <div class="mui-col-md-6 mui-col-md-offset-3">
+                        <legend class="mui--text-center mui--text-display3">Search Account</legend>
         <h4>Set the conditions of your search</h4>
         
         <c:set var="accountStatusList" value="${requestScope.accountStatusesList}"/>
@@ -43,7 +50,7 @@
         <form action="new.get">
             <input type="hidden" name="whatFor" value="account">
             
-            Search by User Name:<input type="text" name="userNameInput" maxlength="30">
+            Search by User Name:<br><input type="text" name="userNameInput" maxlength="30">
             <br><br>
             Search by Account Status:<br>
                 <c:forEach items="${accountStatusList}" var="astat" begin="0" step="1">
@@ -59,8 +66,8 @@
             <br><br>
             <b>Search by Date Created</b>
             <br><br>
-            From:<input type="text" name="fromDate" id="date1" maxlength="10"><br>
-            To:<input type="text" name="toDate" id="date2" maxlength=10><br>
+            From:<br><input type="text" name="fromDate" id="date1" maxlength="10"><br>
+            To:<br><input type="text" name="toDate" id="date2" maxlength=10><br>
             <br><br> 
                 
             <input type="submit" value="Search">    

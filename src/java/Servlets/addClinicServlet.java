@@ -111,7 +111,7 @@ public class addClinicServlet extends HttpServlet {
          String inputClinicName="";
          String provinceID="";
          String lastEdittedBy=""+session.getAttribute("userName");
-         
+         int success = 0;
          try{
             context.log("CUSTOMER ID ISSSSSSS: "+request.getParameter("customerIDInput"));
             inputCustomerID = Integer.parseInt(request.getParameter("customerIDInput"));
@@ -137,49 +137,49 @@ public class addClinicServlet extends HttpServlet {
          }
          
          //check clinic phone number
-         try{inputClinPhoneNum = request.getParameter("clinicPhoneNumInput");
+         try{inputClinPhoneNum = request.getParameter("clinicPhoneNumberInput");
             char c;
             for(int i=0;i<inputClinPhoneNum.length();i++){
                 c = inputClinPhoneNum.charAt(i);
                 if(!Character.isDigit(c)){
                     message = "Clinic Phone Number was input incorrectly. It should also not be blank.";
-                    request.setAttribute("message",message);
                     request.setAttribute("whatFor","addClinic");
                     request.setAttribute("custID", request.getParameter("customerIDInput"));
-                    request.getRequestDispatcher("province.get").forward(request,response);
+                    session.setAttribute("error_msg", message);
+                    response.sendRedirect(request.getHeader("referer"));
                     return;
                 }
             }
          }
          catch(Exception e){
              message = "Clinic Phone Number was input incorrectly. It should also not be blank.";
-             request.setAttribute("message",message);
              request.setAttribute("whatFor","addClinic");
              request.setAttribute("custID", request.getParameter("customerIDInput"));
-             request.getRequestDispatcher("province.get").forward(request,response);
-             return;
+             session.setAttribute("error_msg", message);
+            response.sendRedirect(request.getHeader("referer"));
+            return;
          }
          
          //check clinic name
          try{inputClinicName = request.getParameter("clinicNameInput");}
          catch(Exception e){
              message = "Clinic Name was input incorrectly. It should also not be blank.";
-             request.setAttribute("message",message);
              request.setAttribute("whatFor","addClinic");
              request.setAttribute("custID", request.getParameter("customerIDInput"));
-             request.getRequestDispatcher("province.get").forward(request,response);
-             return;
+             session.setAttribute("error_msg", message);
+            response.sendRedirect(request.getHeader("referer"));
+            return;
          }
          
          //check province
          try{provinceID = request.getParameter("chosenProvince");}
          catch(Exception e){
              message = "Province was input incorrectly. Please try again.";
-             request.setAttribute("message",message);
              request.setAttribute("whatFor","addClinic");
              request.setAttribute("custID", request.getParameter("customerIDInput"));
-             request.getRequestDispatcher("province.get").forward(request,response);
-             return;
+             session.setAttribute("error_msg", message);
+            response.sendRedirect(request.getHeader("referer"));
+            return;
          }
          ps.setInt(1,inputCustomerID);
          ps.setString(2,inputClinicAddress);
@@ -187,13 +187,20 @@ public class addClinicServlet extends HttpServlet {
          ps.setString(4,inputClinicName);
          ps.setString(5,provinceID);
          ps.setString(6,lastEdittedBy);
-         ps.executeUpdate();
+         success = ps.executeUpdate();
          
+         if(success > 0){
+             message = "Clinic successfully added!";
+            request.setAttribute("message", message);
+            request.setAttribute("custID",inputCustomerID);
+            session.setAttribute("success_msg", message);
+            response.sendRedirect(request.getHeader("referer"));
+         }else{
+             message = "Something went wrong. Try again.";
+             session.setAttribute("error_msg", message);
+            response.sendRedirect(request.getHeader("referer"));
+         }
          
-         message = "Clinic successfully added!";
-         request.setAttribute("message", message);
-         request.setAttribute("custID",inputCustomerID);
-         request.getRequestDispatcher("anotherCustomerClinic.jsp").forward(request,response);
             
          
         }

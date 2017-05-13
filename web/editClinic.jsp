@@ -20,7 +20,21 @@
         <title>PESCII Edit Clinic</title>
     </head>
     <body>
-        <h1>This is the Edit Clinic Page!</h1>
+        
+         <%@include file="/WEB-INF/source/header-sidebar.jsp" %>
+        
+         <div id="content-wrapper">
+            <div class="mui--appbar-height"></div>
+            <div class="mui--appbar-height"></div>
+            <div class="mui-container">
+                <div class="mui-row">
+                    <div class="mui-col-md-6 mui-col-md-offset-3">
+                        <legend class="mui--text-center mui--text-display3">Edit Clinic</legend>
+        <c:set var="errorMessage" value="${requestScope.message}"/>
+        <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
+            <p>${errorMessage}</p><br><br>
+        </c:if>
+       
         
         <c:set var="errorMessage" value="${requestScope.message}"/>
         <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
@@ -30,6 +44,7 @@
         Customer Name: ${clinic.getCustomerLastName()}, ${clinic.getCustomerFirstName()}<br>
         
         <c:set var="customerID" value="${requestScope.custID}"/>
+        <c:set var="clinic" value="${requestScope.clinic}"/>
         <form action="customer.editClinic" method="post">
                 <input type="hidden" value="${clinic.getClinicID()}" name="clinID">
                 <input type='hidden' value='${customerID}' name='custID'>

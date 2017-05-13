@@ -138,7 +138,7 @@ public class logInServlet extends HttpServlet {
              //response.sendRedirect("index.jsp");
              message = "Username or password is incorrect.";
              request.setAttribute("message", message);
-             request.getRequestDispatcher("logIn.jsp").forward(request, response);
+             request.getRequestDispatcher("notif.get").forward(request, response);
              return;
          }
          
@@ -173,7 +173,7 @@ public class logInServlet extends HttpServlet {
                             message = "The specified account is deactivated and unusable.";
                             //response.sendRedirect("index.jsp");
                             request.setAttribute("message", message);
-                            request.getRequestDispatcher("logIn.jsp").forward(request, response);
+                            request.getRequestDispatcher("notif.get").forward(request, response);
 
                         }
                         else{
@@ -204,7 +204,7 @@ public class logInServlet extends HttpServlet {
             if(match==false){
                 message = "Password or username is incorrect.";
                 request.setAttribute("message",message);
-                request.getRequestDispatcher("logIn.jsp").forward(request,response);
+                request.getRequestDispatcher("notif.get").forward(request,response);
             }
             
          

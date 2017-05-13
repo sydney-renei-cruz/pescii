@@ -16,50 +16,111 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>PESCII Add Product</title>
     </head>
     <body>
-        
-        <h1>This is the Add Product page!</h1>
+        <%@include file="/WEB-INF/source/header-sidebar.jsp" %>
         
         <c:set var="suppList" value="${requestScope.suppliersList}"/>
         
-        <!--this is the error message-->
-        <c:set var="errorMessage" value="${requestScope.message}"/>
-        <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
-            <p>${errorMessage}</p><br><br>
-        </c:if>
-            
-         <form action="Servlets.addProductServlet" method="post">
-            <!-- Product ID self generated -->
-            Enter Product Name:<input type="text" name="productNameInput" maxlength="255" required><br>
-            Enter Product Description:<br> <textarea name="productDescInput" rows="5" cols="50"></textarea><br>
-            Enter Product Price:<input type="text" name="productPriceInput" value="0" required><br>
-            Enter Restock Price:<input type="text" name="restockPriceInput" value="0" required><br>
-            <!--you don't put Stocks Remaining because it's 0 by default.
-                    - it'll be filled if a Restock Order is completed-->
-            Enter Low Stock Level:<input type="text" name="lowStockInput" value="0" required><br>
-            Enter Brand: <input type="text" name="brandInput" maxlength="50" required><br>
-            Enter Product Class: <select name="productClassInput">
-                <c:forEach items="${prodClassList}" var="pro" begin="0" step="1">
-                        <option value="${pro.getProductClassID()}">${pro.getProductClassName()}</option>
-                </c:forEach>
-            </select><br>
-            Enter Color: <input type="text" name="colorInput" maxlength="20"><br>
-            Enter Supplier: <select name="supplierInput">
-                <c:forEach items="${suppList}" var="sup" begin="0" step="1">
-                        <option value="${sup.getSupplierID()}">${sup.getSupplierName()}</option>
-                </c:forEach>
-            </select><br><br>
-            <input type="submit" value="Add Product">
-        </form>
-        <br><br>
-        
-        <a href="notif.get">Return to Home</a>
-            
-        <br><br>
-        <a href="Servlets.logoutServlet">logout</a>
-        
+        <div id="content-wrapper">
+            <div class="mui--appbar-height"></div>
+            <div class="mui--appbar-height"></div>
+            <div class="mui-container">
+                <div class="mui-row">
+                    <div class="mui-col-md-6 mui-col-md-offset-3">
+                        <legend class="mui--text-center mui--text-display3">ADD PRODUCT</legend>
+                        <c:if test="${success_msg != null}">
+                            <div class="mui-col-md-12 mui--text-center">
+                                <div id="success-msg">${success_msg}</div>
+                                <c:remove var="success_msg" scope="session"/>
+                            </div>
+                        </c:if>
+                    </div>
+                    <div class="mui-col-md-8 mui-col-md-offset-2">
+                        <form action="Servlets.addProductServlet" method="post" class="mui-form" id="add-product-form">
+                            <div class="mui-col-md-12">
+                                <div class="mui-textfield mui-textfield--float-label">
+                                    <input type="text" name="productNameInput" id="productNameInput">
+                                    <label for="productNameInput">Product Name</label>
+                                </div>
+                            </div>
+                            <div class="mui-col-md-12">
+                                <div class="mui-textfield mui-textfield--float-label">
+                                    <textarea type="text" name="productDescriptionInput" id="productDescriptionInput"></textarea>
+                                  <label for="passwordInput">Product Description</label>
+                                </div>
+                            </div>
+                            <div class="mui-col-md-6">
+                                <div class="mui-textfield mui-textfield--float-label">
+                                    <input type="text" name="productPriceInput" id="productPriceInput">
+                                    <label for="productPriceInput">Product Price</label>
+                                </div>
+                            </div>
+                            <div class="mui-col-md-6">
+                                <div class="mui-textfield mui-textfield--float-label">
+                                    <input type="text" name="restockPriceInput" id="restockPriceInput">
+                                    <label for="restockPriceInput">Restock Price</label>
+                                </div>
+                            </div>
+                            <div class="mui-col-md-12">
+                                <div class="mui-textfield mui-textfield--float-label">
+                                    <input type="text" name="lowStockInput" id="lowStockInput">
+                                    <label for="lowStockInput">Low Stock Level</label>
+                                </div>
+                            </div>
+                            <div class="mui-col-md-6">
+                                <div class="mui-textfield mui-textfield--float-label">
+                                    <input type="text"  name="brandInput" id="brandInput">
+                                    <label for="brandInput">Brand</label>
+                                </div>
+                            </div>
+                            <div class="mui-col-md-6">
+                                <div class="mui-textfield mui-textfield--float-label">
+                                    <input type="text" name="colorInput" id="coloInput">
+                                    <label for="colorInput">Color</label>
+                                </div>
+                            </div>
+                            
+                            <div class="mui-col-md-12">
+                                <div class="mui-col-md-6">
+                                    <div class="mui-select">
+                                        <select name="productClassInput" id="productClassInput">
+                                            <c:forEach items="${prodClassList}" var="pro" begin="0" step="1">
+                                                    <option value="${pro.getProductClassID()}">${pro.getProductClassName()}</option>
+                                            </c:forEach>
+                                        </select>
+                                        <label for="productClassInput">Product Class</label>
+                                    </div>
+                                </div>
+                                <div class="mui-col-md-6">
+                                    <div class="mui-select">
+                                        <select name="supplierInput" id="supplierInput">
+                                            <c:forEach items="${suppliersList}" var="sup" begin="0" step="1">
+                                                    <option value="${sup.getSupplierID()}">${sup.getSupplierName()}</option>
+                                            </c:forEach>
+                                        </select>
+                                        <label for="supplierInput">Supplier</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mui-col-md-12 mui--text-center">
+                                <c:if test="${error_msg != null}">
+                                    <div>
+                                        <div class="text-center">
+                                            <div id="error-msg">${error_msg}</div>
+                                            <c:remove var="error_msg" scope="session"/>
+                                        </div>
+                                    </div>
+                                </c:if>
+                                <button type="submit" class="mui-btn mui-btn--raised">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mui--appbar-height"></div>
+        <%@include file="/WEB-INF/source/footer.jsp" %>
+        <script type="text/javascript" src="js/form-validation/add-product-validation.js"></script>
     </body>
 </html>

@@ -14,12 +14,9 @@
     </context-param>
     <context-param>
         <param-name>databasePassword</param-name>
-        <param-value/>
+        <param-value>ascii</param-value>
     </context-param>
-    
-    
     <!-- Servlets   -->
-    
     <servlet>
         <servlet-name>logInServlet</servlet-name>
         <servlet-class>Servlets.logInServlet</servlet-class>
@@ -208,9 +205,71 @@
         <servlet-name>setLowstockLevelServlet</servlet-name>
         <servlet-class>Servlets.setLowstockLevelServlet</servlet-class>
     </servlet>
-    
+    <servlet>
+        <servlet-name>ValidateAddProductName</servlet-name>
+        <servlet-class>com.pescii.controller.form.validation.ValidateAddProductName</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ValidateEditProductName</servlet-name>
+        <servlet-class>com.pescii.controller.form.validation.ValidateEditProductName</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>getProductDetailsServlet</servlet-name>
+        <servlet-class>com.pescii.controller.page.modal.json.getProductDetailsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ValidateAddCustomerPRCID</servlet-name>
+        <servlet-class>com.pescii.controller.form.validation.ValidateAddCustomerPRCID</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>HomePageServlet</servlet-name>
+        <servlet-class>com.pescii.general.page.servlet.HomePageServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>IndexPageController</servlet-name>
+        <servlet-class>com.pescii.controller.page.general.IndexPageController</servlet-class>
+    </servlet>
     <!-- Servlet Mapping-->
-    
+    <servlet>
+        <servlet-name>getInvoiceDetailsServlet</servlet-name>
+        <servlet-class>com.pescii.controller.page.modal.json.getInvoiceDetailsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>getInvoiceItemsServlet</servlet-name>
+        <servlet-class>com.pescii.controller.page.modal.json.getInvoiceItemsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>getRestockOrderDetailsServlet</servlet-name>
+        <servlet-class>com.pescii.controller.page.modal.json.getRestockOrderDetailsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>getRestockOrderItemsServlet</servlet-name>
+        <servlet-class>com.pescii.controller.page.modal.json.getRestockOrderItemsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>getCustomerDetailsServlet</servlet-name>
+        <servlet-class>com.pescii.controller.page.modal.json.getCustomerDetailsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>getCustomerClinicDetailsServlet</servlet-name>
+        <servlet-class>com.pescii.controller.page.modal.json.getCustomerClinicDetailsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>getCustomerInvoiceDetailsServlet</servlet-name>
+        <servlet-class>com.pescii.controller.page.modal.json.getCustomerInvoiceDetailsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ValidateEditCustomerPRCID</servlet-name>
+        <servlet-class>com.pescii.controller.form.validation.ValidateEditCustomerPRCID</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ValidateAddClinicName</servlet-name>
+        <servlet-class>com.pescii.controller.form.validation.ValidateAddClinicName</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>getCustomerInvoiceItems</servlet-name>
+        <servlet-class>com.pescii.controller.page.modal.json.page.getCustomerInvoiceItems</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>logInServlet</servlet-name>
         <url-pattern>/Servlets.logInServlet</url-pattern>
@@ -403,10 +462,31 @@
         <servlet-name>setLowstockLevelServlet</servlet-name>
         <url-pattern>/product.setLowstockLevel</url-pattern>
     </servlet-mapping>
-    
-    
+    <servlet-mapping>
+        <servlet-name>HomePageServlet</servlet-name>
+        <url-pattern>/home</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>IndexPageController</servlet-name>
+        <url-pattern>/pescii.index</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ValidateAddProductName</servlet-name>
+        <url-pattern>/valaddproductname</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ValidateEditProductName</servlet-name>
+        <url-pattern>/valeditproductname</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getProductDetailsServlet</servlet-name>
+        <url-pattern>/getproductdetails</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ValidateAddCustomerPRCID</servlet-name>
+        <url-pattern>/valaddcustomerprcid</url-pattern>
+    </servlet-mapping>
     <!--Filters-->
-    
     <filter>
         <filter-name>accountantFilter</filter-name>
         <filter-class>Filters.accountantFilter</filter-class>
@@ -502,13 +582,52 @@
         <url-pattern>/supplierDetails.jsp</url-pattern>
         <!--<url-pattern>/viewCart.jsp</url-pattern>-->
     </filter-mapping>
-    
+    <servlet-mapping>
+        <servlet-name>getInvoiceDetailsServlet</servlet-name>
+        <url-pattern>/getinvoicedetails</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getInvoiceItemsServlet</servlet-name>
+        <url-pattern>/getinvoiceitems</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getRestockOrderDetailsServlet</servlet-name>
+        <url-pattern>/getrestockorderdetails</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getRestockOrderItemsServlet</servlet-name>
+        <url-pattern>/getrestockorderitems</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getCustomerDetailsServlet</servlet-name>
+        <url-pattern>/getcustomerdetails</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getCustomerClinicDetailsServlet</servlet-name>
+        <url-pattern>/getcustomerclinicdetails</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getCustomerInvoiceDetailsServlet</servlet-name>
+        <url-pattern>/getcustomerinvoicedetails</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ValidateEditCustomerPRCID</servlet-name>
+        <url-pattern>/valeditcustomerprcid</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ValidateAddClinicName</servlet-name>
+        <url-pattern>/valaddclinicname</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>getCustomerInvoiceItems</servlet-name>
+        <url-pattern>/getcustomerinvoiceitems</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30
         </session-timeout>
     </session-config>
     <welcome-file-list>
-        <welcome-file>homePage.jsp</welcome-file>
+        <welcome-file>pescii.index</welcome-file>
     </welcome-file-list>
 </web-app>

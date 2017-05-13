@@ -18,9 +18,15 @@
         <title>JSP Page</title>
     </head>
     <body>
+       <%@include file="/WEB-INF/source/header-sidebar.jsp" %>
         
-        <h1>This is the View Product Cart page!</h1>
-        
+         <div id="content-wrapper">
+            <div class="mui--appbar-height"></div>
+            <div class="mui--appbar-height"></div>
+            <div class="mui-container">
+                <div class="mui-row">
+                    <div class="mui-col-md-6 mui-col-md-offset-3">
+                        <legend class="mui--text-center mui--text-display3">View Cart</legend>
         <c:set var="errorMessage" value="${requestScope.message}"/>
         <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
             <p>${errorMessage}</p><br><br>
@@ -30,7 +36,8 @@
             <c:when test="${sessionScope.prodCart != null}">
                 <c:set var="prodCartSize" value="${sessionScope.prodCart.size()}"/>
                 <c:set var="prodCart" value="${sessionScope.prodCart}"/>
-                <h4>Products selected: <c:out value="${prodCartSize}"/></h4>
+               <h4>Products selected: <c:out value="${prodCartSize}"/></h4>
+                <c:if test="${prodCartSize>0}">
                 <p>Please set the level in which the following product/s will be considered low in stock.</p>
                 
                 <form action="product.setLowstockLevel" method="post">
@@ -64,10 +71,10 @@
 
                     </c:forEach>
                 </table>
+                </c:if>
             </c:when>
 
             <c:when test="${sessionScope.prodCart == null}">
-                <%LinkedList<String> emptyCart = new LinkedList<String>();%>
                 <c:set var="cartSize" value="0"/>
                 <p>0 products selected</p>
             </c:when>

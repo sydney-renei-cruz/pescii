@@ -20,8 +20,16 @@
         <title>PESCII View Product</title>
     </head>
     <body>
-        <h1>This is the Conditions Product page!</h1>
+       <%@include file="/WEB-INF/source/header-sidebar.jsp" %>
         
+         <div id="content-wrapper">
+            <div class="mui--appbar-height"></div>
+            <div class="mui--appbar-height"></div>
+            <div class="mui-container">
+                <div class="mui-row">
+                    <div class="mui-col-md-6 mui-col-md-offset-3">
+                        <legend class="mui--text-center mui--text-display3">Search Product</legend>
+        <h4>Set the conditions of your search</h4>
         <c:set var="suppList" value="${requestScope.suppliersList}"/>
         
         <!--this is the error message-->
@@ -30,7 +38,7 @@
             <p>${errorMessage}</p><br><br>
         </c:if>
         
-        <h4>Set the conditions of your search</h4>
+     
         
         <form action="new.get">
             <input type="hidden" name="whatFor" value="product">
@@ -41,9 +49,9 @@
                 <input type="hidden" name="forOther" value="restock">
             </c:if>
             
-            Search by Name:<input type="text" name="searchNameInput"  maxlength="255">
+            Search by Name:<br><br><input type="text" name="searchNameInput"  maxlength="255">
             <br><br>
-            Search by Brand:<input type="text" name="searchBrandInput"  maxlength="50">
+            Search by Brand:<br><input type="text" name="searchBrandInput"  maxlength="50">
             <br><br>
             Product Class:<br>
                 
@@ -57,7 +65,7 @@
                 <input type="radio" name="lowStockInput" value="cancel">Both<br>
                 <br><br>
                 
-            Search by Supplier:<select name="searchSupplierInput">
+            Search by Supplier:<br><select name="searchSupplierInput">
                 <option value="All">All</option>
                 <c:forEach items="${suppList}" var="sup" begin="0" step="1">
                         <option value="${sup.getSupplierName()}">${sup.getSupplierName()}</option>
