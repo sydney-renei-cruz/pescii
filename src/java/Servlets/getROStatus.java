@@ -71,7 +71,7 @@ public class getROStatus extends HttpServlet {
          //---------------
          String preparedSQL = "select * from RestockOrderStatus order by statusName asc";
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
-         
+         String message = "";
          ResultSet dbData = ps.executeQuery();
          ArrayList<restockOrderStatusBean> restockOrderStatusRetrieved = new ArrayList<restockOrderStatusBean>();
          //retrieve the information.
@@ -90,10 +90,18 @@ public class getROStatus extends HttpServlet {
          if(session.getAttribute("ROcart")!=null && (""+session.getAttribute("cartType")).equals("restock")){
              request.setAttribute("ROquantity", request.getAttribute("ROquantity"));
              request.setAttribute("message",request.getAttribute("message"));
-             request.getRequestDispatcher("createRestockOrder.jsp").forward(request,response);
+            if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("4")){
+                request.getRequestDispatcher("createRestockOrder.jsp").forward(request,response);
              return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+             
          }
-         
          
          
          else if(cartType.equals("restock")){
@@ -105,12 +113,32 @@ public class getROStatus extends HttpServlet {
              request.setAttribute("ROItemsList", request.getAttribute("ROItemsList"));
              request.setAttribute("message",request.getAttribute("message"));
              context.log("now sending to editRestockOrder.jsp!");
-             request.getRequestDispatcher("editRestockOrder.jsp").forward(request,response);
+            if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("4") || (session.getAttribute("accountType")+"").equals("5")){
+                request.getRequestDispatcher("editRestockOrder.jsp").forward(request,response);
+                return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+             
          }
          
          else{// if((""+request.getAttribute("whatFor")).equals("conditionsRestockOrder")){
              context.log("going to Search RO...");
-             request.getRequestDispatcher("conditionsRestockOrder.jsp").forward(request,response);
+             if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("4") || (session.getAttribute("accountType")+"").equals("5")){
+                request.getRequestDispatcher("conditionsRestockOrder.jsp").forward(request,response);
+                return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+             
          }
          
          

@@ -21,6 +21,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -45,7 +46,7 @@ public class getProvinceServlet extends HttpServlet {
         
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
-        
+        HttpSession session = request.getSession();
         try {
          Class.forName(context.getInitParameter("jdbcDriver"));
       } catch(ClassNotFoundException ex) {
@@ -69,7 +70,7 @@ public class getProvinceServlet extends HttpServlet {
          //---------------
          String preparedSQL = "select * from Province order by provinceName asc";
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
-         
+         String message="";
          ResultSet dbData = ps.executeQuery();
          ArrayList<provinceBean> provincesRetrieved = new ArrayList<provinceBean>();
          //retrieve the information.
@@ -97,22 +98,62 @@ public class getProvinceServlet extends HttpServlet {
             }
             request.setAttribute("custID", customerID);
             context.log("2nd to final custID is "+customerID);
-            request.getRequestDispatcher("addClinic.jsp").forward(request,response);
+            if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2")){
+                request.getRequestDispatcher("addClinic.jsp").forward(request,response);
+                return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+            
          }
          else if(whatFor.equals("conditionsInvoice")){
              request.setAttribute("whatFor", "conditionsInvoice");
-             request.getRequestDispatcher("invoice.getStatus").forward(request,response);
+             if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2")|| (session.getAttribute("accountType")+"").equals("3") || (session.getAttribute("accountType")+"").equals("6")){
+                request.getRequestDispatcher("invoice.getStatus").forward(request,response);
+                return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+             
          }
          else if(whatFor.equals("searchCustomer")){
              context.log("sending provinces and salesReps to conditionsCustomer...");
              request.setAttribute("salesRepsList", request.getAttribute("salesRepsList"));
-             request.getRequestDispatcher("conditionsCustomer.jsp").forward(request,response);
+            if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2")|| (session.getAttribute("accountType")+"").equals("3") || (session.getAttribute("accountType")+"").equals("6")){
+                request.getRequestDispatcher("conditionsCustomer.jsp").forward(request,response);
+                return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+             
          }
          else if(whatFor.equals("addCustomer")){
              context.log("sending provinces and salesReps to conditionsCustomer...");
              request.setAttribute("salesRepsList", request.getAttribute("salesRepsList"));
              request.setAttribute("message",""+request.getAttribute("message"));
-             request.getRequestDispatcher("addCustomer.jsp").forward(request,response);
+             if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2")){
+                request.getRequestDispatcher("addCustomer.jsp").forward(request,response);
+                return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+             
          }
          
          

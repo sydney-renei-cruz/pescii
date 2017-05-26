@@ -72,6 +72,7 @@ public class getAccountTypeStatusServlet extends HttpServlet {
          //THIS IS WHERE YOU START CHANGING
          //String accountType = ""+session.getAttribute("accountType");
          String preparedSQL = "select * from AccountStatus";
+         String message="";
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          ResultSet dbData = ps.executeQuery();
          ArrayList<accountStatusBean> accountStatusesRetrieved = new ArrayList<accountStatusBean>();
@@ -103,16 +104,43 @@ public class getAccountTypeStatusServlet extends HttpServlet {
              context.log("Account found! Account ID is: "+((accountBean)request.getAttribute("account")).getAccountID());
              request.setAttribute("message",""+request.getAttribute("message"));
              request.setAttribute("account", request.getAttribute("account"));
-             request.getRequestDispatcher("editAccount.jsp").forward(request,response);
-             return;
+             if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2")){
+                    request.getRequestDispatcher("editAccount.jsp").forward(request,response);
+                    return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+             
          }
          else if((""+request.getParameter("forSearch")).equals("yes")){
-             request.getRequestDispatcher("conditionsAccount.jsp").forward(request,response);
-             return;
+             if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2")){
+                request.getRequestDispatcher("conditionsAccount.jsp").forward(request,response);
+                return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+             
          }
          else{
-            request.getRequestDispatcher("createAccount.jsp").forward(request,response);
-            return;
+            if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2")){
+                request.getRequestDispatcher("createAccount.jsp").forward(request,response);
+                return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+            
          }
          
         }

@@ -303,19 +303,17 @@ public class editRestockOrderServlet extends HttpServlet {
                 else{
                    message = "Restock Order Status is invalid. Cannot be 'Completed' without date paid and date delivered. Confirm with Inventory Manager.";
                    request.setAttribute("message",message);
-                   request.setAttribute("forRestock", "yes");
-                   request.getRequestDispatcher("restockOrder.getStatus").forward(request,response);
+                   request.getRequestDispatcher("restockOrder.getDetails?editRestock=yes&restockID="+inputRestockOrderID).forward(request,response);
                    return;
                 }
             }
         
         }
         catch(Exception e){
-               message = "Restock Order Status is invalid.";
-               request.setAttribute("message",message);
-               request.setAttribute("forRestock", "yes");
-               request.getRequestDispatcher("restockOrder.getStatus").forward(request,response);
-               return;
+               message = "Restock Order Status is invalid. Cannot be 'Completed' without date paid and date delivered. Confirm with Inventory Manager.";
+                request.setAttribute("message",message);
+                request.getRequestDispatcher("restockOrder.getDetails?editRestock=yes&restockID="+inputRestockOrderID).forward(request,response);
+                return;
         }
          
          String lastEdittedBy = ""+session.getAttribute("userName");
@@ -403,32 +401,14 @@ public class editRestockOrderServlet extends HttpServlet {
         ps.executeUpdate();
         context.log("updated the RO lastEdittedBy!");
          
-         /*
-         ps.setString(1,newROName);
-         ps.setString(2,newPurpose);
-         ps.setString(3,newRODateDue);
-         if(newRODateDelivered==null || newRODateDelivered.equals("")){ps.setString(4,null);}
-         else{ps.setString(4,newRODateDelivered);}
-         ps.setFloat(5,newAmountPaid);
-         ps.setFloat(6,newDiscount);
-         if(newRODateDelivered==null || newRODateDelivered.equals("")){ps.setString(7,null);}
-         else{ps.setString(7,newRODateDelivered);}
-         ps.setString(8,lastEdittedBy);
-         ps.setInt(9,newStatusID);
-         ps.setInt(10,inputRestockOrderID);
-         
-         ps.executeUpdate();
-         
-         context.log("--->Restock Order successfully updated. RestockID is: "+inputRestockOrderID);
-         */
-         
+        
          int roitems = Integer.parseInt(request.getParameter("roitems"));
          String[] qo = request.getParameterValues("QO");
          String[] qr = request.getParameterValues("QR");
          String[] roiidInput = request.getParameterValues("ROIID");
          String[] pidInput = request.getParameterValues("pid");
          
-         if(newStatusID!=2){
+         //if(newStatusID!=2){
             //now update the product if an RODateDelivered was entered
 
             LinkedList<Integer> ROquantity = new LinkedList<Integer>();
@@ -462,7 +442,7 @@ public class editRestockOrderServlet extends HttpServlet {
                     ps.setInt(3,inputRestockOrderID);
                     ps.setInt(4,roiid);
                     ps.executeUpdate();
-                    
+                    /*
                     if(quantityReceived!=quantityPurchased){
                         context.log("now updating the inventory!");
                         if(quantityReceived<quantityPurchased){
@@ -475,6 +455,11 @@ public class editRestockOrderServlet extends HttpServlet {
                         ps.setInt(1,pid);
                         ps.executeUpdate();
                     }
+                    */
+                    preparedSQL = "update Product set stocksRemaining = stocksRemaining + "+quantityReceived+" where productID=?";
+                    ps = conn.prepareStatement(preparedSQL);
+                    ps.setInt(1,pid);
+                    ps.executeUpdate();
                     
                 }
                 catch(Exception e){
@@ -488,7 +473,7 @@ public class editRestockOrderServlet extends HttpServlet {
             
             
             message = "Restock Order successfully editted! Inventory updated.";
-         }
+         //}
          
          
          

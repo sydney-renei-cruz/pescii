@@ -114,7 +114,13 @@ public class createAccountServlet extends HttpServlet {
          try{
              inputUsername = request.getParameter("usernameInput");
              if(inputUsername.length()>30){
-                 message = "User name is too long.";
+                 message = "User name is too long. Must be within 30 characters.";
+                 request.setAttribute("message",message);
+                request.getRequestDispatcher("account.getTypeStatus").forward(request,response);
+                return;
+             }
+             if(inputUsername.length()<5){
+                 message = "User name is too short. Must be above 5 characters.";
                  request.setAttribute("message",message);
                 request.getRequestDispatcher("account.getTypeStatus").forward(request,response);
                 return;

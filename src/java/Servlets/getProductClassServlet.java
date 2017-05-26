@@ -21,6 +21,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -45,6 +46,7 @@ public class getProductClassServlet extends HttpServlet {
         
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
+        HttpSession session = request.getSession();
         
         try {
          Class.forName(context.getInitParameter("jdbcDriver"));
@@ -67,6 +69,8 @@ public class getProductClassServlet extends HttpServlet {
          stmt = conn.createStatement();
          
          //---------------
+         String message = "";
+         
          String preparedSQL = "select * from ProductClass order by productClassName asc";
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          
@@ -89,12 +93,29 @@ public class getProductClassServlet extends HttpServlet {
          //this is for searching invoices
          if(request.getParameter("product")!=null){
              request.setAttribute("product", request.getAttribute("product"));
-             request.getRequestDispatcher("conditionsInvoice.jsp").forward(request,response);
+             if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2") || (session.getAttribute("accountType")+"").equals("3") || (session.getAttribute("accountType")+"").equals("6")){
+                request.getRequestDispatcher("conditionsInvoice.jsp").forward(request,response);
+                return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+             
          }
          //this is for adding supplier
          else if((""+request.getParameter("addSupp")).equals("yes")){
              context.log("MADE IT TO SUPPPPP!!!");
-             request.getRequestDispatcher("addSupplier.jsp").forward(request,response);
+             if((session.getAttribute("accountType")+"").equals("4") || (session.getAttribute("accountType")+"").equals("1")){
+                request.getRequestDispatcher("addSupplier.jsp").forward(request,response);
+             }
+             else{
+                 message = "You do not have permission to perform that function.";
+                 request.setAttribute("message", message);
+                 request.getRequestDispatcher("notif.get").forward(request,response);
+             }
          }
          //this is for searching in general. Not sure if it's obsolete haha
          else if((""+request.getParameter("search")).equals("yes")){
@@ -106,16 +127,43 @@ public class getProductClassServlet extends HttpServlet {
              if(searchWhat.equalsIgnoreCase("prod")){request.setAttribute("searchWhat","prod");}
              else if(searchWhat.equalsIgnoreCase("ro")){request.setAttribute("searchWhat", "ro");}
              else if(searchWhat.equalsIgnoreCase("supp")){
-                request.getRequestDispatcher("conditionsSupplier.jsp").forward(request,response);
-                return;
+                if((session.getAttribute("accountType")+"").equals("4") || (session.getAttribute("accountType")+"").equals("1")){
+                    request.getRequestDispatcher("conditionsSupplier.jsp").forward(request,response);
+                    return;
+                }
+                else{
+                    message = "You do not have permission to perform that function.";
+                    request.setAttribute("message", message);
+                    request.getRequestDispatcher("notif.get").forward(request,response);
+                    return;
+                }
              }
-             request.getRequestDispatcher("supplier.get").forward(request,response);
-             return;
+             if((session.getAttribute("accountType")+"").equals("4") || (session.getAttribute("accountType")+"").equals("1")){
+                request.getRequestDispatcher("supplier.get").forward(request,response);
+                return;
+                }
+                else{
+                    message = "You do not have permission to perform that function.";
+                    request.setAttribute("message", message);
+                    request.getRequestDispatcher("notif.get").forward(request,response);
+                    return;
+                }
+             
          }
          //this is for edit supplier
          else if((""+request.getAttribute("editSupplier")).equals("yes")){
              request.setAttribute("supplier", request.getAttribute("supplier"));
-             request.getRequestDispatcher("editSupplier.jsp").forward(request,response);
+             if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("4")){
+                request.getRequestDispatcher("editSupplier.jsp").forward(request,response);
+                return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+             
          }
          //otherwise, this servlet is called for editing product(?)
          else{
@@ -126,7 +174,17 @@ public class getProductClassServlet extends HttpServlet {
              }
              context.log("getting Suppliers now...");
              request.setAttribute("message",request.getAttribute("message"));
-            request.getRequestDispatcher("supplier.get").forward(request,response);
+            if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("4")){
+                request.getRequestDispatcher("supplier.get").forward(request,response);
+                return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+            
         }
          
          

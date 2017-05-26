@@ -46,13 +46,6 @@
             <p>${errorMessage}</p><br><br>
         </c:if>
         
-    
-        <c:set var="errorMessage" value="${requestScope.message}"/>
-        <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
-            <p>${errorMessage}</p><br><br>
-        </c:if>
-        
-        
 
         <form action="restock.edit" method="post">
             <input type="hidden" value="${restockOrder.getRestockOrderID()}" name="restockOrderIDInput">

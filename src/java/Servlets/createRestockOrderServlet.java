@@ -320,13 +320,15 @@ public class createRestockOrderServlet extends HttpServlet {
                }
            }
             context.log("now in createRestockOrderServlet! 5");
+            /*
                //it has just occured to us that the inventory should update regardless of completion
                preparedSQL = "select * from RestockOrderItem where RestockOrderID = ?";
                ps = conn.prepareStatement(preparedSQL);
                ps.setInt(1,restockOrderIDInput);
-
+               
                ResultSet dbData = ps.executeQuery();
                //you might wanna change this to an array one of these days
+               
                ArrayList<restockOrderItemBean> restockOrderItemsRetrieved = new ArrayList<restockOrderItemBean>();
                //retrieve the information.
                   while(dbData.next()){
@@ -337,9 +339,6 @@ public class createRestockOrderServlet extends HttpServlet {
                      restockOrderItemsRetrieved.add(restockOrderItemBean);
                   }
 
-              /* UPDATE Product JOIN InvoiceItem ON Product.productID=InvoiceItem.productID
-               SET Product.stocksRemaining = Product.stocksRemaining-InvoiceItem.quantityPurchased
-               WHERE Product.productID=1 and InvoiceItem.invoiceID=9;*/
                for(restockOrderItemBean roibean : restockOrderItemsRetrieved){
                    preparedSQL = "UPDATE Product JOIN RestockOrderItem ON Product.productID=RestockOrderItem.productID " +
                     "SET Product.stocksRemaining = Product.stocksRemaining+RestockOrderItem.quantityPurchased " +
@@ -354,6 +353,7 @@ public class createRestockOrderServlet extends HttpServlet {
 
                    message = "Restock Order successfully created! Inventory Updated.";
                }
+               */
             //}
 
             context.log("now in createRestockOrderServlet 6!");
@@ -367,6 +367,7 @@ public class createRestockOrderServlet extends HttpServlet {
             session.setAttribute("ROtotalPrices", null);
             session.setAttribute("cartType", null);
             session.setAttribute("supplier", null);
+            session.setAttribute("suppID", null);
             request.getRequestDispatcher("anotherRestockOrder.jsp").forward(request,response);
 
            }

@@ -71,7 +71,7 @@ public class getInvoiceStatusServlet extends HttpServlet {
          //---------------
          String preparedSQL = "select * from InvoiceStatus order by statusName asc";
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
-         
+         String message = "";
          ResultSet dbData = ps.executeQuery();
          ArrayList<invoiceStatusBean> invoiceStatusRetrieved = new ArrayList<invoiceStatusBean>();
          //retrieve the information.
@@ -89,10 +89,18 @@ public class getInvoiceStatusServlet extends HttpServlet {
              request.setAttribute("customer", request.getAttribute("customer"));
              request.setAttribute("clinicsList", request.getAttribute("clinicsList"));
              request.setAttribute("message",request.getAttribute("message"));
-             //request.setAttribute("invoicesList", invoicesList);
-             //request.getRequestDispatcher("invoice.getStatus").forward(request, response);
-             request.getRequestDispatcher("addInvoice.jsp").forward(request,response);
-             return;
+             
+           if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2")|| (session.getAttribute("accountType")+"").equals("3")|| (session.getAttribute("accountType")+"").equals("6")){
+               request.getRequestDispatcher("addInvoice.jsp").forward(request,response);
+               return;
+           }
+           else{
+               message = "You do not have permission to perform that function.";
+               request.setAttribute("message", message);
+               request.getRequestDispatcher("notif.get").forward(request,response);
+               return;
+           }
+             
          }
          context.log("editInvoice issss: "+request.getAttribute("editInvoice"));
          if((""+request.getAttribute("editInvoice")).equals("yes")){
@@ -100,11 +108,31 @@ public class getInvoiceStatusServlet extends HttpServlet {
              request.setAttribute("invitemsList", request.getAttribute("invitemsList"));
              request.setAttribute("message",request.getAttribute("message"));
              context.log("now sending to editInvoice.jsp!");
-             request.getRequestDispatcher("editInvoice.jsp").forward(request,response);
+             
+            if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2")|| (session.getAttribute("accountType")+"").equals("3")|| (session.getAttribute("accountType")+"").equals("6")){
+               request.getRequestDispatcher("editInvoice.jsp").forward(request,response);
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+             
          }
          else if((""+request.getAttribute("whatFor")).equals("conditionsInvoice")){
              request.setAttribute("provList", request.getAttribute("provList"));
-             request.getRequestDispatcher("conditionsInvoice.jsp").forward(request,response);
+             
+            if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2")|| (session.getAttribute("accountType")+"").equals("3")|| (session.getAttribute("accountType")+"").equals("6")){
+               request.getRequestDispatcher("conditionsInvoice.jsp").forward(request,response);
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+             
          }
          
          

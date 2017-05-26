@@ -27,9 +27,7 @@
         
         <!--this is the error message-->
         <c:set var="errorMessage" value="${requestScope.message}"/>
-        <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
-            <p>${errorMessage}</p><br><br>
-        </c:if>
+        
          <div id="content-wrapper">
             <div class="mui--appbar-height"></div>
             <div class="mui--appbar-height"></div>
@@ -37,11 +35,13 @@
                 <div class="mui-row">
                     <div class="mui-col-md-6 mui-col-md-offset-3">
                         <legend class="mui--text-center mui--text-display3">Create Account</legend>
-                        
+                        <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
+                            <p>${errorMessage}</p><br><br>
+                        </c:if>
         <form action="Servlets.createAccountServlet" method="post"class="mui-form" id="add-customer-form"required>
             <div class="mui-col-md-12">
                                 <div class="mui-textfield mui-textfield--float-label">
-                                    <input type="text" name="usernameInput" id="customerIDInput">
+                                    <input type="text" name="usernameInput" id="customerIDInput" required>
                                     <label for="usernameInput">Username</label>
                                 </div>
                             </div>

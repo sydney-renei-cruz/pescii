@@ -40,7 +40,7 @@
                         <form action="product.edit" method="post" class="mui-form" id="edit-product-form">
                             <div class="mui-col-md-12">
                                 <div class="mui-textfield mui-textfield--float-label">
-                                    <input type="text" value="${product.getProductName()}" name="productNameInput" id="productNameInput">
+                                    <input type="text" value="${product.getProductName()}" name="productNameInput" id="productNameInput" required>
                                     <label for="productNameInput">Product Name</label>
                                 </div>
                             </div>
@@ -52,31 +52,31 @@
                             </div>
                             <div class="mui-col-md-6">
                                 <div class="mui-textfield mui-textfield--float-label">
-                                    <input type="text" value="${product.getProductPrice()}" name="productPriceInput" id="productPriceInput">
+                                    <input type="text" value="${product.getProductPrice()}" name="productPriceInput" id="productPriceInput" required>
                                     <label for="productPriceInput">Product Price</label>
                                 </div>
                             </div>
                             <div class="mui-col-md-6">
                                 <div class="mui-textfield mui-textfield--float-label">
-                                    <input type="text" value="${product.getRestockPrice()}" name="restockPriceInput" id="restockPriceInput">
+                                    <input type="text" value="${product.getRestockPrice()}" name="restockPriceInput" id="restockPriceInput" required>
                                     <label for="restockPriceInput">Restock Price</label>
                                 </div>
                             </div>
                             <div class="mui-col-md-12">
                                 <div class="mui-textfield mui-textfield--float-label">
-                                    <input type="text" value="${product.getLowStock()}" name="lowStockInput" id="lowStockInput">
+                                    <input type="text" value="${product.getLowStock()}" name="lowStockInput" id="lowStockInput" required>
                                     <label for="lowStockInput">Low Stock Level</label>
                                 </div>
                             </div>
                             <div class="mui-col-md-6">
                                 <div class="mui-textfield mui-textfield--float-label">
-                                    <input type="text" value="${product.getBrand()}" name="brandInput" id="brandInput">
+                                    <input type="text" value="${product.getBrand()}" name="brandInput" id="brandInput" required>
                                     <label for="brandInput">Brand</label>
                                 </div>
                             </div>
                             <div class="mui-col-md-6">
                                 <div class="mui-textfield mui-textfield--float-label">
-                                    <input type="text" value="${product.getColor()}" name="colorInput" id="coloInput">
+                                    <input type="text" value="${product.getColor()}" name="colorInput" id="coloInput" required>
                                     <label for="colorInput">Color</label>
                                 </div>
                             </div>

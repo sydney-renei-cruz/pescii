@@ -94,7 +94,7 @@ public class addSalesRepServlet extends HttpServlet {
          //---------------
          //THIS IS WHERE YOU START CHANGING
          HttpSession session = request.getSession();
-         String preparedSQL = "insert into SalesRep(salesRepFirstName, salesRepMobileNumber, salesRepAddress, salesRepLastName, lastEdittedBy) values (?,?,?,?,?)";
+         String preparedSQL = "insert into SalesRep(salesRepFirstName, salesRepMobileNumber, salesRepAddress, salesRepLastName, lastEdittedBy, accountID) values (?,?,?,?,?,?)";
          PreparedStatement ps = conn.prepareStatement(preparedSQL, Statement.RETURN_GENERATED_KEYS);
          String message;
          
@@ -187,6 +187,7 @@ public class addSalesRepServlet extends HttpServlet {
          ps.setString(3,inputSalesRepAddress);
          ps.setString(4,inputSalesRepLastName);
          ps.setString(5,lastEdittedBy);
+         ps.setInt(6,Integer.parseInt(request.getParameter("selectedAccount")));
          
          ps.executeUpdate();                   //at this point, you have already inserted into the database
          

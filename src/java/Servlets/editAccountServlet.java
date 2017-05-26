@@ -111,11 +111,17 @@ public class editAccountServlet extends HttpServlet {
          try{
              newUserName = request.getParameter("userNameInput");
              if(newUserName.length()>30){
-                message = "User name is too long.";
+                message = "User name is too long. Must be within 30 characters.";
                 request.setAttribute("message",message);
-                //request.setAttribute("accID", request.getParameter("accountIDInput"));
-                 context.log("here in editAccounServlet, accounID is: "+request.getParameter("accountIDInput"));
-                 request.getRequestDispatcher("account.getDetails?accID="+request.getParameter("accountIDInput")).forward(request,response);
+                context.log("here in editAccounServlet, accounID is: "+request.getParameter("accountIDInput"));
+                request.getRequestDispatcher("account.getDetails?accID="+request.getParameter("accountIDInput")).forward(request,response);
+                return;
+             }
+             if(newUserName.length()<5){
+                message = "User name is too short. Must be above 5 characters.";
+                request.setAttribute("message",message);
+                context.log("here in editAccounServlet, accounID is: "+request.getParameter("accountIDInput"));
+                request.getRequestDispatcher("account.getDetails?accID="+request.getParameter("accountIDInput")).forward(request,response);
                 return;
              }
              else if(newUserName.equals("")){

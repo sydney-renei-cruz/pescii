@@ -46,7 +46,7 @@ public class getRestockOrderServlet extends HttpServlet {
         
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
-        
+        HttpSession session = request.getSession();
         try {
          Class.forName(context.getInitParameter("jdbcDriver"));
       } catch(ClassNotFoundException ex) {
@@ -69,20 +69,7 @@ public class getRestockOrderServlet extends HttpServlet {
          
          //---------------
          //THIS IS WHERE YOU START CHANGING
-         /*String preparedSQL = "select RestockOrder.restockOrderID, Product.productID, RestockOrder.productID, "
-                 + "RestockOrder.ROName, RestockOrder.numberOfPiecesOrdered, Product.restockPrice, "
-                 + "RestockOrder.numberOfPiecesReceived, Product.supplierID, RestockOrder.purpose, "
-                 + "RestockOrder.RODateDue, RestockOrder.RODateDelivered, RestockOrder.amountPaid, "
-                 + "RestockOrder.discount, RestockOrder.dateCreated, RestockOrder.lastEdittedBy, "
-                 + "RestockOrder.datePaid, Product.productClassID, ProductClass.productClassID, "
-                 + "ProductClass.productClassName, Supplier.supplierID, Supplier.supplierName, "
-                 + "Product.productName "
-                 + "from RestockOrder "
-                 + "inner join Product on Product.productID = RestockOrder.productID "
-                 + "inner join Supplier on Supplier.supplierID = Product.supplierID "
-                 + "inner join ProductClass on ProductClass.productClassID = Product.productClassID "
-                 + "order by RestockOrder.datecreated desc";
-         */
+         
     
          String preparedSQL = "select RestockOrder.*, RestockOrderStatus.statusName "
                  + "from RestockOrder "
@@ -91,7 +78,7 @@ public class getRestockOrderServlet extends HttpServlet {
          
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          context.log(preparedSQL);
-         
+         String message = "";
          
          ResultSet dbData = ps.executeQuery();
          ArrayList<restockOrderBean> restocksRetrieved = new ArrayList<restockOrderBean>();
@@ -115,7 +102,17 @@ public class getRestockOrderServlet extends HttpServlet {
             }
          request.setAttribute("restocksList", restocksRetrieved);
          
-         request.getRequestDispatcher("getRestockOrder.jsp").forward(request,response);
+         if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2") || (session.getAttribute("accountType")+"").equals("4") || (session.getAttribute("accountType")+"").equals("5")){
+                request.getRequestDispatcher("getRestockOrder.jsp").forward(request,response);
+                return;
+        }
+        else{
+            message = "You do not have permission to perform that function.";
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("notif.get").forward(request,response);
+            return;
+        }
+         
             
          
         }

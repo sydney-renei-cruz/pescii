@@ -30,11 +30,6 @@
                 <div class="mui-row">
                     <div class="mui-col-md-6 mui-col-md-offset-3">
                         <legend class="mui--text-center mui--text-display3">Edit Account</legend>
-        <c:set var="errorMessage" value="${requestScope.message}"/>
-        <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
-            <p>${errorMessage}</p><br><br>
-        </c:if>
-       
         
         <c:set var="accountStatusList" value="${requestScope.accountStatusesList}"/>
         <c:set var="accountTypes" value="${requestScope.atypeList}"/>
@@ -49,7 +44,7 @@
         <form action="account.edit" method="post">
             <input type="hidden" value="${account.getAccountID()}" name="accountIDInput"><br>
             <input type="hidden" value="${account.getPassword()}" name="oldPassword">
-            User Name: <input type="text" value="${account.getUserName()}" name="userNameInput" maxlength="30"><br>
+            User Name: <input type="text" value="${account.getUserName()}" name="userNameInput" maxlength="30" required><br>
             Password: <input type="password" name="newPasswordInput" maxlength="255"><br>
             Enter password again:<input type="password" name="newPasswordInput2" maxlength="255"><br><br>
             <b>Account Type</b><br>

@@ -21,6 +21,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -45,7 +46,7 @@ public class viewSupplierDetailsServlet extends HttpServlet {
         
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
-        
+        HttpSession session = request.getSession();
         try {
          Class.forName(context.getInitParameter("jdbcDriver"));
       } catch(ClassNotFoundException ex) {
@@ -93,10 +94,30 @@ public class viewSupplierDetailsServlet extends HttpServlet {
          if((""+request.getParameter("forEdit")).equals("yes")){
              request.setAttribute("message",request.getAttribute("message"));
              request.setAttribute("editSupplier", "yes");
-             request.getRequestDispatcher("product.getProductClass").forward(request,response);
+             if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("4")){
+                request.getRequestDispatcher("product.getProductClass").forward(request,response);
+                return;
+            }
+            else{
+                String message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+             
          }
          else{
-             request.getRequestDispatcher("supplierDetails.jsp").forward(request,response);
+             if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("4")){
+                request.getRequestDispatcher("supplierDetails.jsp").forward(request,response);
+                return;
+            }
+            else{
+                String message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+             
          }
          
         }

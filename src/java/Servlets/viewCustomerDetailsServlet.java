@@ -67,7 +67,7 @@ public class viewCustomerDetailsServlet extends HttpServlet {
         
          //Allocate a Statement object within the Connection
          stmt = conn.createStatement();
-         
+         String message = "";
          //---------------
          //first get the customer details
          //String preparedSQL = "select * from Customer where customerID = ?";
@@ -229,17 +229,37 @@ public class viewCustomerDetailsServlet extends HttpServlet {
                        data.setSalesRepID(dbData.getInt("salesRepID"));
                        salesRepsRetrieved.add(data);
                    }
-             String message = "";
              try{message = request.getParameter("message");}
              catch(Exception e){
                  message = ""+request.getAttribute("message");
              }
              request.setAttribute("salesRepList", salesRepsRetrieved);
-             request.getRequestDispatcher("editCustomer.jsp").forward(request, response);
+             if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2")){
+                request.getRequestDispatcher("editCustomer.jsp").forward(request, response);
+                return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+             
          }
          //else if(viewDetails!=null || viewDetails==null){
          else{
-            request.getRequestDispatcher("customerDetails.jsp").forward(request,response);
+             request.setAttribute("product", request.getAttribute("product"));
+             if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2") || (session.getAttribute("accountType")+"").equals("3") || (session.getAttribute("accountType")+"").equals("6")){
+                request.getRequestDispatcher("customerDetails.jsp").forward(request,response);
+                return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+            
          }
         }
         catch(Exception ex){

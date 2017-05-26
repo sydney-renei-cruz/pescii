@@ -4,7 +4,7 @@
         <param-name>jdbcDriver</param-name>
         <param-value>com.mysql.jdbc.Driver</param-value>
     </context-param>
-    <context-param>
+    <context-param> 
         <param-name>databaseUrl</param-name>
         <param-value>jdbc:mysql://localhost:3306/PESCII</param-value>
     </context-param>
@@ -14,7 +14,7 @@
     </context-param>
     <context-param>
         <param-name>databasePassword</param-name>
-        <param-value>ascii</param-value>
+        <param-value></param-value>
     </context-param>
     <!-- Servlets   -->
     <servlet>

@@ -149,53 +149,7 @@ public class getNotifServlet extends HttpServlet {
          
          
          //get notifs for RestockOrders
-         if(forWhat.equals("restock") || forWhat.equals("both")){/*
-                preparedSQL = "select RestockOrder.restockOrderID, Product.productID, RestockOrder.productID, "
-                    + "RestockOrder.ROName, RestockOrder.numberOfPiecesOrdered, Product.restockPrice, "
-                    + "RestockOrder.numberOfPiecesReceived, Product.supplierID, RestockOrder.purpose, "
-                    + "RestockOrder.RODateDue, RestockOrder.RODateDelivered, RestockOrder.amountPaid, "
-                    + "RestockOrder.discount, RestockOrder.dateCreated, RestockOrder.lastEdittedBy, "
-                    + "RestockOrder.datePaid, Product.productClassID, ProductClass.productClassID, "
-                    + "ProductClass.productClassName, Supplier.supplierID, Supplier.supplierName, "
-                    + "Product.productName "
-                    + "from RestockOrder "
-                    + "inner join Product on Product.productID = RestockOrder.productID "
-                    + "inner join Supplier on Supplier.supplierID = Product.supplierID "
-                    + "inner join ProductClass on ProductClass.productClassID = Product.productClassID "
-                    + "where "
-                       + "RestockOrder.RODateDue between now() and date_add(now(), interval 7 day) "
-                       + "and RestockOrder.RODateDelivered = null "
-                    + "order by RestockOrder.RODateDue asc";
-
-                ps = conn.prepareStatement(preparedSQL);
-                context.log(preparedSQL);
-
-                dbData = ps.executeQuery();
-                ArrayList<restockOrderBean> restocksRetrieved = new ArrayList<restockOrderBean>();
-                //retrieve the information.
-                   while(dbData.next()){
-                      restockOrderBean rbean = new restockOrderBean();
-                       rbean.setRestockOrderID(dbData.getInt("restockOrderID"));
-                       rbean.setRestockOrderName(dbData.getString("ROName"));
-                       //rbean.setProductID(dbData.getInt("productID"));
-                       rbean.setProductName(dbData.getString("productName"));
-                       //rbean.setNumberOfPiecesOrdered(dbData.getInt("numberOfPiecesOrdered"));
-                       //rbean.setNumberOfPiecesReceived(dbData.getInt("numberOfPiecesReceived"));
-                       //rbean.setSupplierID(dbData.getInt("supplierID"));
-                       //rbean.setSupplierName(dbData.getString("supplierName"));
-                       rbean.setPurpose(dbData.getString("purpose"));
-                       rbean.setRODateDue(dbData.getDate("RODateDue"));
-                       rbean.setRODateDelivered(dbData.getDate("RODateDelivered"));
-                       rbean.setRestockPrice(dbData.getFloat("restockPrice"));
-                       rbean.setAmountPaid(dbData.getFloat("amountPaid"));
-                       rbean.setDiscount(dbData.getFloat("discount"));
-                       rbean.setDatePaid(dbData.getDate("datePaid"));
-                       rbean.setDateCreated(dbData.getTimestamp("dateCreated"));
-                       rbean.setLastEdittedBy(dbData.getString("lastEdittedBy"));
-                       restocksRetrieved.add(rbean);
-                   }
-                request.setAttribute("restocksList", restocksRetrieved);
-             */
+         if(forWhat.equals("restock") || forWhat.equals("both")){
              preparedSQL = "select RestockOrder.*, RestockOrderStatus.statusName from "
                      + "RestockOrder "
                      + "inner join RestockOrderStatus on RestockOrderStatus.statusID=RestockOrder.statusID "

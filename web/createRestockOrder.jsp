@@ -90,7 +90,7 @@
             Enter Purpose:<br><textarea name="purposeInput" rows="5" cols="50"></textarea><br>
             Enter Date Due:<input type="text" name="dateDueInput" id="date1" maxlength="10" required><br>
             Total due: <c:out value="${total}"/><br>
-            Enter discount:<input type="text" name="discountInput" value="0"><br>
+            Enter discount:<input type="text" name="discountInput" value="0" required><br>
             <input type="Submit" value="Create Restock Order">
         </form>
         

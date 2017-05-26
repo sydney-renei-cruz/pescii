@@ -70,6 +70,7 @@ public class getCustomerServlet extends HttpServlet {
          
          //---------------
          //THIS IS WHERE YOU START CHANGING
+         String message = "";
          String preparedSQL = "select Customer.customerID, Customer.PRCID, "
                  + "Customer.customerFirstName, Customer.customerLastName, "
                  + "Customer.customerMobileNumber, "
@@ -105,8 +106,17 @@ public class getCustomerServlet extends HttpServlet {
                 request.setAttribute("addInvoice", "yes");
             }
             
-            
+            if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2")|| (session.getAttribute("accountType")+"").equals("3")|| (session.getAttribute("accountType")+"").equals("6")){
                 request.getRequestDispatcher("getCustomer.jsp").forward(request,response);
+                return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+                
         }
         catch(Exception ex){
             ex.printStackTrace();

@@ -46,6 +46,7 @@ public class getSalesRepServlet extends HttpServlet {
         String message="";
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
+        HttpSession session = request.getSession();
         
         try {
          Class.forName(context.getInitParameter("jdbcDriver"));
@@ -89,16 +90,47 @@ public class getSalesRepServlet extends HttpServlet {
          if((""+request.getParameter("whatFor")).equals("searchCustomer")){
              context.log("getting salesReps for searchCustomer...");
              request.setAttribute("whatFor","searchCustomer");
-             request.getRequestDispatcher("province.get").forward(request,response);
+             
+            if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2") || (session.getAttribute("accountType")+"").equals("3") || (session.getAttribute("accountType")+"").equals("6")){
+                request.getRequestDispatcher("province.get").forward(request,response);
+                return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+             
          }
          else if(whatFor.equals("addCustomer")){
              context.log("getting salesReps for addCustomer...");
              request.setAttribute("whatFor","addCustomer");
              request.setAttribute("message",""+request.getAttribute("message"));
-             request.getRequestDispatcher("province.get").forward(request,response);
+            if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2")){
+                request.getRequestDispatcher("province.get").forward(request,response);
+                return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+             
          }
          else{
-            request.getRequestDispatcher("getSalesRep.jsp").forward(request,response);
+             if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2")){
+                request.getRequestDispatcher("getSalesRep.jsp").forward(request,response);
+                return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+            
          }
         }
         catch(Exception ex){

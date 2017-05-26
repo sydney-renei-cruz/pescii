@@ -21,6 +21,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -45,6 +46,7 @@ public class getClinicServlet extends HttpServlet {
         
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
+        HttpSession session = request.getSession();
         context.log("HEEEEEERE!!!!!");
         try {
          Class.forName(context.getInitParameter("jdbcDriver"));
@@ -67,13 +69,14 @@ public class getClinicServlet extends HttpServlet {
          stmt = conn.createStatement();
          
          //---------------
+         String message = "";
          String inputClinID = request.getParameter("clinID");
          String preparedSQL = "select Clinic.clinicID, Customer.customerID, Customer.PRCID, Clinic.clinicAddress, Clinic.clinicPhoneNumber, Clinic.clinicName, "
                  + "Province.provinceName, Province.provinceDivision, Clinic.provinceID, Clinic.dateCreated, Clinic.lastEdittedBy, "
                  + "Clinic.customerID, Customer.customerFirstName, Customer.customerLastName "
                  + "from Clinic "
                  + "inner join Customer on Customer.customerID = Clinic.customerID "
-                 + "inner join Province on Province.provinceID = Clinic.provinceID and clinicID=? "
+                 + "inner join Province on Province.provinceID = Clinic.provinceID "
                  + "order by Clinic.clinicName";
           PreparedStatement ps = conn.prepareStatement(preparedSQL);
           if(inputClinID!=null && !inputClinID.equals("")){
@@ -131,11 +134,31 @@ public class getClinicServlet extends HttpServlet {
             context.log("province list size is: "+provincesRetrieved.size());
             request.setAttribute("provList", provincesRetrieved);
             context.log("going to editClinic.jsp...");
-            request.getRequestDispatcher("editClinic.jsp").forward(request,response);
+            if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2")){
+                request.getRequestDispatcher("editClinic.jsp").forward(request,response);
+                return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+            
          }
          else{
              context.log("going to getClinic.jsp...");
-             request.getRequestDispatcher("getClinic.jsp").forward(request,response);
+             if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2")|| (session.getAttribute("accountType")+"").equals("3")|| (session.getAttribute("accountType")+"").equals("6")){
+                request.getRequestDispatcher("getClinic.jsp").forward(request,response);
+                return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+             
          }
         }
         catch(Exception ex){

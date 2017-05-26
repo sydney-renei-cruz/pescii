@@ -207,15 +207,27 @@ public class editInvoiceServlet extends HttpServlet {
                     if(newPaymentDueDate.length()>10){
                         message = "Payment Due Date format is invalid.";
                         request.setAttribute("message",message);
-                    request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
-                    return;
-                     }
-
+                        request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+                        return;
+                    }
                     else{
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                         date = sdf.parse(newPaymentDueDate);
                         paymentDueDate=true;
                     }
+                    char c;
+                    for(int i=0;i<newPaymentDueDate.length();i++){
+                        c=newPaymentDueDate.charAt(i);
+                        if(Character.isLetter(c)){
+                            paymentDueDate=false;
+                            message = "Payment Due Date format is invalid.";
+                            request.setAttribute("message",message);
+                            request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+                            return;
+                        }
+                    }
+
+                    
                 }
              }
              catch(Exception e){
@@ -238,18 +250,26 @@ public class editInvoiceServlet extends HttpServlet {
                     request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
                     return;
                  }
-                /*
-                else if(newDatePaid.equals("") || newDatePaid == null){
-                    newDatePaid = null;
-                }
-
-                else if((!(newDatePaid.equals("")) || newDatePaid != null)){*/
+                
                 else {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     date = sdf.parse(newDatePaid);
                     datePaid=true;
                 }
-                }
+                
+                char c;
+                    for(int i=0;i<newDatePaid.length();i++){
+                        c=newDatePaid.charAt(i);
+                        if(Character.isLetter(c)){
+                            paymentDueDate=false;
+                            message = "Date Paid format is invalid.";
+                            request.setAttribute("message",message);
+                            request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+                            return;
+                        }
+                    }
+                
+             }
              }
              catch(Exception e){
                 message = "Date Paid format is invalid.";
@@ -335,17 +355,24 @@ public class editInvoiceServlet extends HttpServlet {
                     request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
                     return;
                  }
-                /*
-                else if(newDateDelivered.equals("") || newDateDelivered == null){
-                    newDateDelivered = null;
-                }
-
-                else if((!(newDateDelivered.equals("")) || newDateDelivered != null)){*/
+                
                 else {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                     date = sdf.parse(newDateDelivered);
                     dateDelivered=true;
                 }
+                
+                char c;
+                    for(int i=0;i<newDateDelivered.length();i++){
+                        c=newDateDelivered.charAt(i);
+                        if(Character.isLetter(c)){
+                            paymentDueDate=false;
+                            message = "Date Delivered format is invalid.";
+                            request.setAttribute("message",message);
+                            request.getRequestDispatcher("Servlets.viewInvoiceDetailsServlet?editInvoice=yes&invID="+invoiceID).forward(request,response);
+                            return;
+                        }
+                    }
             }
         }
          catch(Exception e){

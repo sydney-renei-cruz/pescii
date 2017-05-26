@@ -44,9 +44,9 @@
         
          <form action="supplier.edit" method="post">
             <input type="hidden" value="${supb.getSupplierID()}" name="supplierIDInput">
-            Enter Supplier Name:<input type="text" name="supplierNameInput" value="${supb.getSupplierName()}" maxlength="100"><br>
-            Enter Supplier Address: <input type="text" name="supplierAddressInput" value="${supb.getSupplierAddress()}" maxlength="255"><br>
-            Enter Supplier Contact Number:<input type="text" name="supplierContactNumberInput" value="${supb.getSupplierContactNumber()}" maxlength="12"><br>
+            Enter Supplier Name:<input type="text" name="supplierNameInput" value="${supb.getSupplierName()}" maxlength="100" required><br>
+            Enter Supplier Address: <input type="text" name="supplierAddressInput" value="${supb.getSupplierAddress()}" maxlength="255" required><br>
+            Enter Supplier Contact Number:<input type="text" name="supplierContactNumberInput" value="${supb.getSupplierContactNumber()}" maxlength="12" required><br>
             <b>Product Class</b><br>
             From: ${supb.getProductClassName()}<br>
             To: <select name="productClassInput">

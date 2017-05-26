@@ -39,19 +39,19 @@
                         <form action="customer.addClinic" method="post" class="mui-form" id="add-clinic-form"> 
                             <div class="mui-col-md-12">
                                 <div class="mui-textfield mui-textfield--float-label">
-                                    <input type="text" name="clinicNameInput" id="clinicNameInput">
+                                    <input type="text" name="clinicNameInput" id="clinicNameInput" required>
                                     <label for="clinicNameInput">Clinic Name</label>
                                 </div>
                             </div>
                             <div class="mui-col-md-12">
                                 <div class="mui-textfield mui-textfield--float-label">
-                                    <textarea type="text" name="clinicAddressInput" id="clinicAddressInput"></textarea>
+                                    <textarea name="clinicAddressInput" id="clinicAddressInput" required></textarea>
                                     <label for="clinicAddressInput">Clinic Address</label>
                                 </div>
                             </div>
                             <div class="mui-col-md-12">
                                 <div class="mui-textfield mui-textfield--float-label">
-                                    <input type="text" name="clinicPhoneNumberInput" id="clinicPhoneNumberInput">
+                                    <input type="text" name="clinicPhoneNumberInput" id="clinicPhoneNumberInput" required>
                                     <label for="clinicPhoneNumberInput">Clinic Phone Number</label>
                                 </div>
                             </div>

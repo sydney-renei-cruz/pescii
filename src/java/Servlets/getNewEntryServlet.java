@@ -71,6 +71,7 @@ public class getNewEntryServlet extends HttpServlet {
          
          //---------------
          //first get the customer details
+         String message = "";
          String preparedSQL = "";
          PreparedStatement ps;
          String whatFor = ""+request.getParameter("whatFor");
@@ -101,11 +102,6 @@ public class getNewEntryServlet extends HttpServlet {
                  interval = "";
                  status = "";
                  orderBy = "";
-                 /*forWhere = "where Invoice.paymentDueDate";
-                 interval = " between now() and date_add(now(), interval 7 day)";
-                 status = " and InvoiceStatus.statusName='In Progress' and Invoice.datePaid = null";
-                 orderBy = " order by Invoice.paymentDueDate asc";
-                 */
                 condition = " Invoice.paymentDueDate between now() and date_add(now(), interval 7 day) "
                         + "and InvoiceStatus.statusName='In Progress' and Invoice.datePaid is null "
                         + "order by Invoice.paymentDueDate asc";
@@ -117,11 +113,6 @@ public class getNewEntryServlet extends HttpServlet {
                  interval = "";
                  status = "";
                  orderBy = "";
-                /* forWhere = "where Invoice.datePaid";
-                 status = " and InvoiceStatus.statusName='In Progress'";
-                 interval = "!=''";
-                 orderBy = " order by Invoice.deliveryDate asc";
-                 */
                  condition = " InvoiceStatus.statusName='In Progress' and Invoice.datePaid is not null order by Invoice.deliveryDate asc";
              }
              //this sets up the SQL statement for invoices undelivered, regardless of date
@@ -146,11 +137,6 @@ public class getNewEntryServlet extends HttpServlet {
                  interval = "";
                  status = "";
                  orderBy = "";
-                /* forWhere = "where Invoice.datePaid";
-                 status = " and InvoiceStatus.statusName='In Progress'";
-                 interval = "!=''";
-                 orderBy = " order by Invoice.deliveryDate asc";
-                 */
                  condition = " InvoiceStatus.statusName='In Progress' and Invoice.datePaid is null and Invoice.paymentDueDate < Curdate() order by Invoice.deliveryDate asc";
              }
              
@@ -211,14 +197,14 @@ public class getNewEntryServlet extends HttpServlet {
                      compound="";
                  }
                  //date fields
-                 /*can be:
-                    invoiceDate
-                    deliveryDate
-                    paymentDueDate
-                    datePaid
-                    dateClosed
-                    dateCreated
-                 */
+                    /*can be:
+                       invoiceDate
+                       deliveryDate
+                       paymentDueDate
+                       datePaid
+                       dateClosed
+                       dateCreated
+                    */
                  if(!(request.getParameter("searchDateInput").equals(""))){
                      if(!(searchDateFrom.equals(""))){
                         if(!(condition.equals(""))){
@@ -260,21 +246,6 @@ public class getNewEntryServlet extends HttpServlet {
              }
              
              if(!condition.equals("")){condition = "where " + condition;}
-             /*preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, "
-                 + "Customer.customerFirstName, Customer.customerLastName, "
-                 + "Invoice.clinicID, Clinic.clinicName, Clinic.provinceID, "
-                 + "Province.provinceID, Province.provinceName, Province.provinceDivision, "
-                 + "Invoice.invoiceDate, Invoice.deliveryDate, "
-                 + "Invoice.termsOfPayment, Invoice.paymentDueDate, Invoice.datePaid, "
-                 + "Invoice.dateClosed, Invoice.statusID, InvoiceStatus.statusName, "
-                 + "Invoice.overdueFee, Invoice.amountDue, Invoice.amountPaid, Invoice.discount, "
-                 + "Invoice.dateDelivered, Invoice.dateCreated, Invoice.lastEdittedBy "
-                 + "from Invoice "
-                 + "inner join Customer on Customer.customerID = Invoice.customerID "
-                 + "inner join Clinic on Clinic.clinicID = Invoice.clinicID "
-                 + "inner join Province on Province.provinceID = Clinic.provinceID "
-                 + "inner join InvoiceStatus on InvoiceStatus.statusID = Invoice.statusID "
-                 + condition + forWhere + searchName + interval + status + orderBy;*/
              preparedSQL = "select Invoice.*, "
                  + "Customer.*, "
                  + "Clinic.*, "
@@ -325,9 +296,17 @@ public class getNewEntryServlet extends HttpServlet {
                 invoicesRetrieved.add(invBean);
              }
 
-                 request.setAttribute("invoiceList", invoicesRetrieved);
-                 request.getRequestDispatcher("getInvoice.jsp").forward(request,response);
-                 return;
+                request.setAttribute("invoiceList", invoicesRetrieved);
+                if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2")|| (session.getAttribute("accountType")+"").equals("3")|| (session.getAttribute("accountType")+"").equals("6")){
+                   request.getRequestDispatcher("getInvoice.jsp").forward(request,response);
+                   return;
+                }
+                else{
+                    message = "You do not have permission to perform that function.";
+                    request.setAttribute("message", message);
+                    request.getRequestDispatcher("notif.get").forward(request,response);
+                    return;
+                }
          }
          
          //this part is for when a Customer is being searched. Currently not implemented
@@ -372,18 +351,8 @@ public class getNewEntryServlet extends HttpServlet {
                         condition = condition + compound + " Clinic.clinicName like '%"+request.getParameter("searchClinicNameInput")+"%'";
                         compound="";
                 }
-                 //SalesRep field
-                 /*if(!request.getParameter("searchSalesRepInput").equals("")){
-                     if(!(condition.equals(""))){
-                         compound=" and";
-                     }
-                     if(!(request.getParameter("searchSalesRepInput").equalsIgnoreCase("all"))){
-                        condition = condition + compound + " SalesRep.salesRepID = '"+request.getParameter("searchSalesRepInput")+"'";
-                     }
-                     compound="";
-                 }*/
                  
-                 //salesRep name field
+                //salesRep name field
                 if(!request.getParameter("searchSalesRepLastNameInput").equals("")){
                         if(!(condition.equals(""))){
                             compound=" and";
@@ -425,13 +394,10 @@ public class getNewEntryServlet extends HttpServlet {
                      + "SalesRep.salesRepID, SalesRep.salesRepFirstName, SalesRep.salesRepLastName, "
                      + "Customer.customerID, Clinic.customerID, Clinic.provinceID, Clinic.clinicName, "
                      + "Province.provinceID, Province.provinceName "
-                     //+ "Invoice.invoiceID, InvoiceStatus.statusID "
                      + "from Customer "
                      + "inner join SalesRep on SalesRep.salesRepID = Customer.salesRepID "
                      + "inner join Clinic on Clinic.customerID = Customer.customerID "
                      + "inner join Province on Province.provinceID = Clinic.provinceID "
-                     //+ "inner join Invoice on Invoice.customerID = Customer.customerID "
-                     //+ "inner join InvoiceStatus on InvoiceStatus.statusID = Invoice.statusID "
                      + condition + forWhere + searchName + interval + orderBy;
              
              preparedSQL = "select Customer.*, "
@@ -462,8 +428,17 @@ public class getNewEntryServlet extends HttpServlet {
             }
             
             request.setAttribute("customersList", customersRetrieved);
-            request.getRequestDispatcher("getCustomer.jsp").forward(request,response);
-            return;
+            if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2")|| (session.getAttribute("accountType")+"").equals("3")|| (session.getAttribute("accountType")+"").equals("6")){
+                   request.getRequestDispatcher("getCustomer.jsp").forward(request,response);
+                   return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+            
          }
          
          //this part is for when a Product is being searched
@@ -641,14 +616,21 @@ public class getNewEntryServlet extends HttpServlet {
                 abean.setPassword(dbData.getString("password"));
                 abean.setAccountStatus(dbData.getString("accountStatusName"));
                 abean.setAccountType(dbData.getString("accountTypeName"));
-                //abean.setDateCreated(dbData.getTimestamp("dateCreated"));
                 abean.setDateCreated(dbData.getTimestamp("dateCreated"));
                 accountsRetrieved.add(abean);
             }
             request.setAttribute("accountsList", accountsRetrieved);
-         
-            request.getRequestDispatcher("getAccount.jsp").forward(request,response);
-            return;
+            if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2")){
+               request.getRequestDispatcher("getAccount.jsp").forward(request,response);
+               return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+            
          }
          
          
@@ -702,8 +684,17 @@ public class getNewEntryServlet extends HttpServlet {
                 salesRepsRetrieved.add(srbean);
             }
             request.setAttribute("salesRepsList", salesRepsRetrieved);
-            request.getRequestDispatcher("getSalesRep.jsp").forward(request,response);
+            if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2")){
+               request.getRequestDispatcher("getSalesRep.jsp").forward(request,response);
             return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+            
          }
          
          //this part is for when a Supplier is being searched
@@ -768,8 +759,17 @@ public class getNewEntryServlet extends HttpServlet {
                    suppliersRetrieved.add(suppbean);
                }
             request.setAttribute("suppliersList", suppliersRetrieved);
-            request.getRequestDispatcher("getSupplier.jsp").forward(request,response);
-            return;
+            if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("4")){
+               request.getRequestDispatcher("getSupplier.jsp").forward(request,response);
+               return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+            
          }
          
          
@@ -809,31 +809,7 @@ public class getNewEntryServlet extends HttpServlet {
                      }
                      compound="";
                  }
-                 /*
-                 //productName field
-                 if(!request.getParameter("searchProductNameInput").equals("")){
-                     if(!(condition.equals(""))){
-                         compound=" and";
-                     }
-                     condition = condition + compound + " Product.productName like '%"+request.getParameter("searchProductNameInput")+"%'";
-                     compound="";
-                 }
-                 //productClass field
-                 String[] inputProductClass = request.getParameterValues("productClassInput");
-                 String productClasses="";
-                 if(inputProductClass!=null){
-                    if(!(condition.equals(""))){
-                        compound=" and ";
-                    }
-                   productClasses = "(ProductClass.productClassName = ";
-                   for(int i=0;i<inputProductClass.length;i++){
-                       if(i==0){productClasses=productClasses+"'"+inputProductClass[i]+"'";}
-                       else{productClasses=productClasses+" or ProductClass.productClassName = '"+inputProductClass[i]+"'";}
-                   }
-                   condition = condition + compound + productClasses+")";
-                   compound="";
-                 }
-                 */
+                 
                  //date fields (can be expected date delivered, date created, or date received
                  if(!(request.getParameter("searchDateInput").equals(""))){
                      if(!(searchDateFrom.equals(""))){
@@ -867,20 +843,7 @@ public class getNewEntryServlet extends HttpServlet {
                  orderBy = " order by RestockOrder.ROName";
              }
              if(!condition.equals("")){condition = "where " + condition;}
-            /*preparedSQL = "select RestockOrder.restockOrderID, Product.productID, RestockOrder.productID, "
-                 + "RestockOrder.ROName, RestockOrder.numberOfPiecesOrdered, Product.restockPrice, "
-                 + "RestockOrder.numberOfPiecesReceived, Product.supplierID, RestockOrder.purpose, "
-                 + "RestockOrder.RODateDue, RestockOrder.RODateDelivered, RestockOrder.amountPaid, "
-                 + "RestockOrder.discount, RestockOrder.dateCreated, RestockOrder.lastEdittedBy, "
-                 + "RestockOrder.datePaid, Product.productClassID, ProductClass.productClassID, "
-                 + "ProductClass.productClassName, Supplier.supplierID, Supplier.supplierName, "
-                 + "Product.productName "
-                 + "from RestockOrder "
-                 + "inner join Product on Product.productID = RestockOrder.productID "
-                 + "inner join Supplier on Supplier.supplierID = Product.supplierID "
-                 + "inner join ProductClass on ProductClass.productClassID = Product.productClassID "
-                 + condition + forWhere + searchName + interval + orderBy;
-            */
+            
             preparedSQL = "select RestockOrder.*, RestockOrderStatus.statusName, Supplier.supplierName "
                  + "from RestockOrder "
                  + "inner join RestockOrderStatus on RestockOrderStatus.statusID=RestockOrder.statusID "
@@ -896,10 +859,6 @@ public class getNewEntryServlet extends HttpServlet {
                   restockOrderBean rbean = new restockOrderBean();
                 rbean.setRestockOrderID(dbData.getInt("restockOrderID"));
                 rbean.setRestockOrderName(dbData.getString("ROName"));
-                //rbean.setProductID(dbData.getInt("productID"));
-                //rbean.setProductName(dbData.getString("productName"));
-                //rbean.setNumberOfPiecesOrdered(dbData.getInt("numberOfPiecesOrdered"));
-                //rbean.setNumberOfPiecesReceived(dbData.getInt("numberOfPiecesReceived"));
                 rbean.setSupplierID(dbData.getInt("supplierID"));
                 rbean.setSupplierName(dbData.getString("supplierName"));
                 rbean.setPurpose(dbData.getString("purpose"));
@@ -916,7 +875,16 @@ public class getNewEntryServlet extends HttpServlet {
             request.setAttribute("restocksList", restocksRetrieved);
             context.log("THE SIZE OF LIST IS------"+restocksRetrieved.size());
 
-            request.getRequestDispatcher("getRestockOrder.jsp").forward(request,response);
+            if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("4") || (session.getAttribute("accountType")+"").equals("5") || (session.getAttribute("accountType")+"").equals("2")){
+               request.getRequestDispatcher("getRestockOrder.jsp").forward(request,response);
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+            
 
          }
             

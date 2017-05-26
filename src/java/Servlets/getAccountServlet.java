@@ -77,6 +77,16 @@ public class getAccountServlet extends HttpServlet {
                      + "AccountStatus.accountStatusName, AccountType.accountTypeName from Account "
                      + "inner join AccountStatus on AccountStatus.accountStatusID = Account.accountStatus "
                      + "inner join AccountType on AccountType.accountTypeID = Account.accountType";
+             if(request.getParameter("whatFor")!=null){
+                if(request.getParameter("whatFor").equals("addSR")){
+                    preparedSQL = "select Account.accountID, Account.userName, Account.password, Account.dateCreated, "
+                     + "AccountStatus.accountStatusName, AccountType.accountTypeName "
+                     + "from Account "
+                     + "inner join AccountStatus on AccountStatus.accountStatusID = Account.accountStatus "
+                     + "inner join AccountType on AccountType.accountTypeID = Account.accountType "
+                     + "where Account.accountType=6 and Account.accountID not in (select accountID from SalesRep)";
+                }
+            }
          }
          else{
              String accountID = ""+session.getAttribute("accountID");
@@ -89,7 +99,7 @@ public class getAccountServlet extends HttpServlet {
          }
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
          
-         
+         String message = "";
          
          ResultSet dbData = ps.executeQuery();
          ArrayList<accountBean> accountsRetrieved = new ArrayList<accountBean>();
@@ -107,8 +117,25 @@ public class getAccountServlet extends HttpServlet {
             }
          request.setAttribute("accountsList", accountsRetrieved);
          
-         request.getRequestDispatcher("getAccount.jsp").forward(request,response);
-            
+         if(request.getParameter("whatFor")!=null){
+             if(request.getParameter("whatFor").equals("addSR")){
+                if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2")){
+                    request.getRequestDispatcher("addSalesRep.jsp").forward(request,response);
+                    return;
+                }
+                else{
+                    message = "You do not have permission to perform that function.";
+                    request.setAttribute("message", message);
+                    request.getRequestDispatcher("notif.get").forward(request,response);
+                    return;
+                }
+                 
+             }
+         }
+         else{
+            request.getRequestDispatcher("getAccount.jsp").forward(request,response);
+         }
+         
         }
         catch(Exception ex){
             ex.printStackTrace();

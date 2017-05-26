@@ -56,7 +56,7 @@
                     </li>
                 </c:if>
                 <c:if test="${state eq 'logged in'}">
-                    <c:if test="${accountType eq '1' || accountType eq '2' || accountType eq '6'}">
+                    <c:if test="${accountType eq '1' || accountType eq '2'}">
                                 <li>
                                     <strong>Customer</strong>
                                     <ul>
@@ -68,7 +68,16 @@
                                     </ul>
                                 </li>
                             </c:if>
-                                
+                    <c:if test="${accountType eq '3' || accountType eq '6'}">
+                                <li>
+                                    <strong>Customer</strong>
+                                    <ul>
+                                        <li><a href="Servlets.getCustomerServlet">View All Customers</a></li>
+                                        <li><a href="customer.getClinic">View All Clinics</a></li>
+                                        <li><a href="salesrep.get?whatFor=searchCustomer">Search Customers</a></li>
+                                    </ul>
+                                </li>
+                            </c:if>            
                     <c:if test="${accountType eq '1' || accountType eq '4'}">
                                 <li>
                                     <strong>Supplier</strong>
@@ -84,7 +93,7 @@
                                 <li>
                                     <strong>Sales Rep.</strong>
                                     <ul>
-                                        <li><a href="addSalesRep.jsp">Add Sales Rep</a></li>
+                                        <li><a href="account.get?whatFor=addSR">Add Sales Rep</a></li>
                                         <li><a href="salesrep.get">Edit Sales Rep</a></li>
                                         <li><a href="salesrep.get">View All Sales Reps</a></li>
                                         <li><a href="conditionsSalesRep.jsp">Search Sales Reps</a></li>
@@ -115,7 +124,7 @@
                             </ul>
                         </li>
                     </c:if>
-                    <c:if test="${accountType eq '1' || accountType eq '3' || accountType eq '6'}">
+                    <c:if test="${accountType eq '1' || accountType eq '2' || accountType eq '3' || accountType eq '6'}">
                         <li>
                             <strong>Invoice</strong>
                             <ul>
@@ -127,23 +136,33 @@
                             </ul>
                         </li>
                     </c:if>
-                    <c:if test="${accountType eq '1' || accountType eq '5' || accountType eq '4' || accountType eq '2'}">
+                    <c:if test="${accountType eq '1' || accountType eq '5' || accountType eq '4'}">
                         <li>
                             <strong>Restock Order</strong>
                             <ul>
                                 <c:if test="${accountType eq '1' || accountType eq '4'}">
                                     <li>
                                         <c:choose>
-                                            <c:when test="${(suppID eq null)}">
-                                                <a href="supplier.get?viewSupp=yes&forRestock=yes">Create Restock Order</a><br>      
-                                            </c:when>
                                             <c:when test="${cartType eq 'restock' && (suppID ne null)}">
                                                 <a href="Servlets.getProductServlet?forOther=restock">Create Restock Order</a><br>      
                                             </c:when>
+                                            <c:otherwise>
+                                                <a href="supplier.get?viewSupp=yes&forRestock=yes">Create Restock Order</a><br>
+                                            </c:otherwise>
                                         </c:choose>
                                     </li>
                                 </c:if>
                                 <li><a href="restockOrder.get">Edit Restock Orders</a></li>
+                                <li><a href="restockOrder.get">View All Restock Orders</a></li>
+                                <li><a href="unfinished.get?getTable=ro">View Unfinished RO</a></li>
+                                <li><a href="restockOrder.getStatus">Search RO</a></li>
+                            </ul>
+                        </li>
+                    </c:if>
+                    <c:if test="${accountType eq '2'}">
+                        <li>
+                            <strong>Restock Order</strong>
+                            <ul>
                                 <li><a href="restockOrder.get">View All Restock Orders</a></li>
                                 <li><a href="unfinished.get?getTable=ro">View Unfinished RO</a></li>
                                 <li><a href="restockOrder.getStatus">Search RO</a></li>

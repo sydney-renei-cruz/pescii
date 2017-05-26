@@ -54,7 +54,7 @@ $(document).ready(function(){
            productDescriptionInput: "Product Description is required",
            productPriceInput: {
                required: "Product Price is required",
-               number: "Product Price input should be numberical",
+               number: "Product Price input should be numerical",
                min: "Product Price should not go below 1"
            },
            restockPriceInput: {

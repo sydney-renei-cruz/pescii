@@ -22,6 +22,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -47,7 +48,7 @@ public class viewInvoiceDetailsServlet extends HttpServlet {
         
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
-        
+        HttpSession session = request.getSession();
         try {
          Class.forName(context.getInitParameter("jdbcDriver"));
       } catch(ClassNotFoundException ex) {
@@ -152,10 +153,30 @@ public class viewInvoiceDetailsServlet extends HttpServlet {
          if(editInvoice!=null && editInvoice.equals("yes")){
             String message = ""+request.getAttribute("message");
             request.setAttribute("editInvoice","yes");
-            request.getRequestDispatcher("invoice.getStatus").forward(request, response);
+            if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2") || (session.getAttribute("accountType")+"").equals("3") || (session.getAttribute("accountType")+"").equals("6")){
+                request.getRequestDispatcher("invoice.getStatus").forward(request, response);
+                return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+            
          }
          else{
-            request.getRequestDispatcher("invoiceDetails.jsp").forward(request,response);
+            if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2") || (session.getAttribute("accountType")+"").equals("3") || (session.getAttribute("accountType")+"").equals("6")){
+                request.getRequestDispatcher("invoiceDetails.jsp").forward(request,response);
+                return;
+            }
+            else{
+                String message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+            
          }   
          
         }

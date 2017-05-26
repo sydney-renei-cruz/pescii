@@ -69,8 +69,9 @@
         </table>
         
         <br><br>
+        <c:if test="${accountType eq '1' || accountType eq '4' || accountType eq '5'}">
         <a href="restockOrder.getDetails?editRestock=yes&restockID=<c:out value="${restockOrder.getRestockOrderID()}"/>">Edit</a>
-        
+        </c:if>
         <br><br>
         <a href="restockOrder.getStatus">Search RO</a><br>
         <br>

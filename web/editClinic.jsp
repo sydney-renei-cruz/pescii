@@ -49,9 +49,9 @@
                 <input type="hidden" value="${clinic.getClinicID()}" name="clinID">
                 <input type='hidden' value='${customerID}' name='custID'>
                 PRCID: ${clinic.getPRCID()}<br>
-                Clinic Name: <input type="text" value="${clinic.getClinicName()}" name="clinicNameInput" maxlength="255"><br>
-                Clinic Address: <input type="text" value="${clinic.getClinicAddress()}" name="clinicAddressInput" maxlength="255"><br>
-                Clinic Phone Number: <input type="text" value="${clinic.getClinicPhoneNumber()}" name="clinicPhoneNumberInput" maxlength="15"><br>
+                Clinic Name: <input type="text" value="${clinic.getClinicName()}" name="clinicNameInput" maxlength="255" required><br>
+                Clinic Address: <input type="text" value="${clinic.getClinicAddress()}" name="clinicAddressInput" maxlength="255" required><br>
+                Clinic Phone Number: <input type="text" value="${clinic.getClinicPhoneNumber()}" name="clinicPhoneNumberInput" maxlength="15" required><br>
                 <b>Province</b><br>
                 From: ${clinic.getProvinceName()}<br>
                 To:<select name="chosenProvince">

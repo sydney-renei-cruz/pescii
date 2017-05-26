@@ -38,21 +38,21 @@
          <form action="supplier.add" method="post">
              <div class="mui-col-md-12">
                 <div class="mui-textfield mui-textfield--float-label">
-                <input type="text" name="supplierNameInput" id="supplierNameInput"required>
+                <input type="text" name="supplierNameInput" id="supplierNameInput" required>
                 <label for="supplierNameInput">Supplier Name</label>
                 </div>
             </div>
              <br>
              <div class="mui-col-md-12">
                 <div class="mui-textfield mui-textfield--float-label">
-                <input type="text" name="supplierAddressInput" id="supplierAddressInput"required>
+                <input type="text" name="supplierAddressInput" id="supplierAddressInput" required>
                 <label for="supplierAddressInput">Supplier Address</label>
                 </div>
             </div>
              <br>
              <div class="mui-col-md-12">
                 <div class="mui-textfield mui-textfield--float-label">
-                <input type="text" name="supplierContactNumberInput" id="supplierContactNumberInput"required>
+                <input type="text" name="supplierContactNumberInput" id="supplierContactNumberInput" required>
                 <label for="supplierContactNumberInput">Supplier Contact Number</label>
                 </div>
             </div>

@@ -79,9 +79,7 @@ public class viewProductDetailsServlet extends HttpServlet {
                  + "inner join Supplier on Supplier.supplierID = Product.supplierID "
                  + "where productID = ? order by productName asc";
          String inputProductID = "";
-         //String forRestock = "";
          String forEdit = "";
-         //String forInvoice = "";
          String cartSession="";
          String message = "";
          try{
@@ -91,20 +89,6 @@ public class viewProductDetailsServlet extends HttpServlet {
              else{
                 inputProductID = ""+request.getAttribute("prodID");
              }
-             /*
-             if(request.getParameter("forInvoice")!=null){
-                 forInvoice = request.getParameter("forInvoice");
-             }
-             else{
-                 forInvoice = ""+request.getAttribute("forInvoice");
-             }
-             if(request.getParameter("forRestock")!=null){
-                 forRestock = request.getParameter("forRestock");
-             }
-             else{
-                 forRestock = ""+request.getAttribute("forRestock");
-             }
-             */
              cartSession = ""+session.getAttribute("cartType");
              
              if(request.getParameter("forEdit")!=null){
@@ -146,20 +130,26 @@ public class viewProductDetailsServlet extends HttpServlet {
          }
          request.setAttribute("product", pbean);
          request.setAttribute("message",message);
-         //if(forInvoice.equals("yes") || session.getAttribute("cart")!=null){
          if(cartSession.equals("invoice")){
             request.setAttribute("forInvoice", "yes");
          }
-         //if(forRestock.equals("yes")){
          if(cartSession.equals("restock")){
-             //request.getRequestDispatcher("restockOrder.getStatus").forward(request,response);
              request.setAttribute("forRestock", "yes");
          }
          if(forEdit.equals("yes")){
              request.setAttribute("message",request.getAttribute("message"));
              request.setAttribute("forEdit", ""+request.getParameter("forEdit"));
-             request.getRequestDispatcher("product.getProductClass").forward(request,response);
-             return;
+             if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("4")){
+                request.getRequestDispatcher("product.getProductClass").forward(request,response);
+                return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+             
          }
          request.getRequestDispatcher("productDetails.jsp").forward(request,response);
          

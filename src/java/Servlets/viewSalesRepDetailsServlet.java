@@ -21,6 +21,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -62,7 +63,7 @@ public class viewSalesRepDetailsServlet extends HttpServlet {
          //This means we don't need to recompile!
          
          conn = DriverManager.getConnection(context.getInitParameter("databaseUrl"), context.getInitParameter("databaseUser"), context.getInitParameter("databasePassword"));
-        
+         HttpSession session = request.getSession();
          //Allocate a Statement object within the Connection
          stmt = conn.createStatement();
          
@@ -83,7 +84,17 @@ public class viewSalesRepDetailsServlet extends HttpServlet {
          request.setAttribute("srbean", srbean);
          
          request.setAttribute("message",request.getAttribute("message"));
-         request.getRequestDispatcher("editSalesRep.jsp").forward(request,response);
+         if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2")){
+                request.getRequestDispatcher("editSalesRep.jsp").forward(request,response);
+                return;
+        }
+        else{
+            String message = "You do not have permission to perform that function.";
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("notif.get").forward(request,response);
+            return;
+        }
+
             
         }
         catch(Exception ex){

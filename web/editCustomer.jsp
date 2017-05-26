@@ -49,13 +49,13 @@
                             </div>
                             <div class="mui-col-md-6">
                                 <div class="mui-textfield mui-textfield--float-label">
-                                    <input type="text" name="customerFirstNameInput" id="customerFirstNameInput" value="${customer.getCustomerFirstName()}">
+                                    <input type="text" name="customerFirstNameInput" id="customerFirstNameInput" value="${customer.getCustomerFirstName()}" required>
                                     <label for="customerFirstNameInput">First Name</label>
                                 </div>
                             </div>
                             <div class="mui-col-md-6">
                                 <div class="mui-textfield mui-textfield--float-label">
-                                    <input type="text" name="customerLastNameInput" id="customerLastNameInput" value="${customer.getCustomerLastName()}">
+                                    <input type="text" name="customerLastNameInput" id="customerLastNameInput" value="${customer.getCustomerLastName()}" required>
                                     <label for="customerLastNameInput">Last Name</label>
                                 </div>
                             </div>

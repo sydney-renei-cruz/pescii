@@ -178,26 +178,14 @@ public class setLowstockLevelServlet extends HttpServlet {
          }
          
             message = "Low stock successfully set!";
-            //context.log("now in createRestockOrderServlet 6!");
             request.setAttribute("message", message);
-            //request.setAttribute("restockID", restockOrderIDInput);
             session.setAttribute("prodCart", null);
-            /*session.setAttribute("ROprodNames", null);
-            session.setAttribute("ROsuppIDs", null);
-            session.setAttribute("ROsuppNames", null);
-            session.setAttribute("ROquantity", null);
-            session.setAttribute("ROtotalPrices", null);*/
+            
             session.setAttribute("cartType", null);
-            //session.setAttribute("supplier", null);
             request.getRequestDispatcher("notif.get").forward(request,response);
 
            }
          
-         /*
-         message = "Restock Order successfully created!";
-         request.setAttribute("message", message);
-         request.getRequestDispatcher("notif.get").forward(request,response);
-         */
         }
          catch(Exception ex){
             ex.printStackTrace();

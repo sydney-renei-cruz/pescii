@@ -44,10 +44,10 @@
         
         <form action="salesrep.edit" method="post">
                 <input type="hidden" value="${salesRep.getSalesRepID()}" name="srID">
-                Last Name: <input type="text" value="${salesRep.getSalesRepLastName()}" name="newSalesRepLastNameInput" maxlength="100"><br>
-                First Name: <input type="text" value="${salesRep.getSalesRepFirstName()}" name="newSalesRepFirstNameInput" maxlength="100"><br>
-                Mobile Number: <input type="text" value="${salesRep.getSalesRepMobileNumber()}" name="newSalesRepMNInput" maxlength="12"><br>
-                Address: <input type="text" value="${salesRep.getSalesRepAddress()}" name="newSalesRepAddressInput" maxlength="255"><br>
+                Last Name: <input type="text" value="${salesRep.getSalesRepLastName()}" name="newSalesRepLastNameInput" maxlength="100" required><br>
+                First Name: <input type="text" value="${salesRep.getSalesRepFirstName()}" name="newSalesRepFirstNameInput" maxlength="100" required><br>
+                Mobile Number: <input type="text" value="${salesRep.getSalesRepMobileNumber()}" name="newSalesRepMNInput" maxlength="12" required><br>
+                Address: <input type="text" value="${salesRep.getSalesRepAddress()}" name="newSalesRepAddressInput" maxlength="255" required><br>
                 
                 <br><input type="submit" value="Save Changes">
         </form>

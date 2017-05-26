@@ -46,7 +46,7 @@ public class viewAccountDetailsServlet extends HttpServlet {
         
         ServletContext context = request.getSession().getServletContext();
         response.setContentType("text/html");
-        
+        HttpSession session = request.getSession();
         try {
          Class.forName(context.getInitParameter("jdbcDriver"));
       } catch(ClassNotFoundException ex) {
@@ -66,7 +66,7 @@ public class viewAccountDetailsServlet extends HttpServlet {
         
          //Allocate a Statement object within the Connection
          stmt = conn.createStatement();
-         
+         String message = "";
          //---------------
          //first get the customer details
          String preparedSQL = "select Account.accountID, Account.userName, Account.password, "
@@ -91,7 +91,17 @@ public class viewAccountDetailsServlet extends HttpServlet {
          }
          request.setAttribute("account", abean);
          request.setAttribute("message",""+request.getAttribute("message"));
-         request.getRequestDispatcher("account.getTypeStatus").forward(request,response);
+         if((session.getAttribute("accountType")!=null)){
+            request.getRequestDispatcher("account.getTypeStatus").forward(request,response);
+            return;
+        }
+        else{
+            message = "You do not have permission to perform that function.";
+            request.setAttribute("message", message);
+            request.getRequestDispatcher("notif.get").forward(request,response);
+            return;
+        }
+         
          
         }
         catch(Exception ex){

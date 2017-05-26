@@ -70,20 +70,7 @@ public class viewRODetailsServlet extends HttpServlet {
          
          //---------------
          //first get the RestockOrder details
-        /* String preparedSQL = "select RestockOrder.restockOrderID, Product.productID, RestockOrder.productID, "
-                 + "RestockOrder.ROName, RestockOrder.numberOfPiecesOrdered, Product.restockPrice, "
-                 + "RestockOrder.numberOfPiecesReceived, Product.supplierID, RestockOrder.purpose, "
-                 + "RestockOrder.RODateDue, RestockOrder.RODateDelivered, RestockOrder.amountPaid, "
-                 + "RestockOrder.discount, RestockOrder.dateCreated, RestockOrder.lastEdittedBy, "
-                 + "RestockOrder.datePaid, Product.productClassID, ProductClass.productClassID, "
-                 + "ProductClass.productClassName, Supplier.supplierID, Supplier.supplierName, "
-                 + "Product.productName "
-                 + "from RestockOrder "
-                 + "inner join Product on Product.productID = RestockOrder.productID "
-                 + "inner join Supplier on Supplier.supplierID = Product.supplierID "
-                 + "inner join ProductClass on ProductClass.productClassID = Product.productClassID "
-                 + "where RestockOrder.restockOrderID=? "
-                 + "order by RestockOrder.datecreated desc";*/
+        
          String preparedSQL = "select RestockOrder.*, RestockOrderStatus.statusName, Supplier.supplierName from "
                  + "RestockOrder "
                  + "inner join RestockOrderStatus on RestockOrderStatus.statusID=RestockOrder.statusID "
@@ -91,7 +78,7 @@ public class viewRODetailsServlet extends HttpServlet {
                  + "where restockOrderID=?";
          String inputRestockOrderID = request.getParameter("restockID");
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
-         
+         String message="";
          ps.setString(1, inputRestockOrderID);
          context.log(preparedSQL);
          
@@ -144,37 +131,33 @@ public class viewRODetailsServlet extends HttpServlet {
             }
          request.setAttribute("roitemsList", ROItemsRetrieved);
          
-         //now you get the Product's details
-         /*
-         preparedSQL = "select * from Product where productID = ?";
-         int inputProductID = rbean.getProductID();
-         ps = conn.prepareStatement(preparedSQL);
-         ps.setInt(1, inputProductID);
-         
-         productBean pbean = new productBean();
-         dbData = ps.executeQuery();
-         while(dbData.next()){
-            pbean.setProductID(dbData.getString("productID"));
-            pbean.setProductName(dbData.getString("productName"));
-            pbean.setProductDescription(dbData.getString("productDescription"));
-            pbean.setProductPrice(dbData.getFloat("productPrice"));
-            pbean.setRestockPrice(dbData.getFloat("restockPrice"));
-            pbean.setStocksRemaining(dbData.getInt("stocksRemaining"));
-            pbean.setLowStock(dbData.getInt("lowStock"));
-            pbean.setBrand(dbData.getString("brand"));
-            pbean.setProductClass(dbData.getString("productClass"));
-            pbean.setColor(dbData.getString("color"));
-         }
-         request.setAttribute("product", pbean);
-         */
          String editRestock = ""+request.getParameter("editRestock");
          if(editRestock.equals("yes")) {
-             //request.getRequestDispatcher("editRestockOrder.jsp").forward(request,response);
              request.setAttribute("editRestock",editRestock);
-             request.getRequestDispatcher("restockOrder.getStatus").forward(request,response);
+             if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("4") || (session.getAttribute("accountType")+"").equals("5")){
+                request.getRequestDispatcher("restockOrder.getStatus").forward(request,response);
+                return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+             
          }
          else{
-             request.getRequestDispatcher("restockOrderDetails.jsp").forward(request,response);
+             if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2")  || (session.getAttribute("accountType")+"").equals("4") || (session.getAttribute("accountType")+"").equals("5")){
+                request.getRequestDispatcher("restockOrderDetails.jsp").forward(request,response);
+                return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+             
          }
         }
         catch(Exception ex){

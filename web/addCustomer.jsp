@@ -44,19 +44,19 @@
                             </div>
                             <div class="mui-col-md-12">
                                 <div class="mui-textfield mui-textfield--float-label">
-                                    <input type="number" name="customerIDInput" id="customerIDInput">
+                                    <input type="number" name="customerIDInput" id="customerIDInput" required>
                                     <label for="customerIDInput">Customer Professional Regulation Comission ID</label>
                                 </div>
                             </div>
                             <div class="mui-col-md-6">
                                 <div class="mui-textfield mui-textfield--float-label">
-                                    <input type="text" name="customerFirstNameInput" id="customerFirstNameInput">
+                                    <input type="text" name="customerFirstNameInput" id="customerFirstNameInput" required>
                                     <label for="customerFirstNameInput">First Name</label>
                                 </div>
                             </div>
                             <div class="mui-col-md-6">
                                 <div class="mui-textfield mui-textfield--float-label">
-                                    <input type="text" name="customerLastNameInput" id="customerLastNameInput">
+                                    <input type="text" name="customerLastNameInput" id="customerLastNameInput" required>
                                     <label for="customerLastNameInput">Last Name</label>
                                 </div>
                             </div>
@@ -78,19 +78,19 @@
                             </div>
                             <div class="mui-col-md-12">
                                 <div class="mui-textfield mui-textfield--float-label">
-                                    <input type="text" name="clinicNameInput" id="clinicNameInput">
+                                    <input type="text" name="clinicNameInput" id="clinicNameInput" required>
                                     <label for="clinicNameInput">Clinic Name</label>
                                 </div>
                             </div>
                             <div class="mui-col-md-12">
                                 <div class="mui-textfield mui-textfield--float-label">
-                                    <textarea type="text" name="clinicAddressInput" id="clinicAddressInput"></textarea>
+                                    <textarea type="text" name="clinicAddressInput" id="clinicAddressInput" required></textarea>
                                     <label for="clinicAddressInput">Clinic Address</label>
                                 </div>
                             </div>
                             <div class="mui-col-md-12">
                                 <div class="mui-textfield mui-textfield--float-label">
-                                    <input type="text" name="clinicPhoneNumberInput" id="clinicPhoneNumberInput">
+                                    <input type="text" name="clinicPhoneNumberInput" id="clinicPhoneNumberInput" required>
                                     <label for="clinicPhoneNumberInput">Clinic Phone Number</label>
                                 </div>
                             </div>

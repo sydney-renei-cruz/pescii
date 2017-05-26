@@ -31,8 +31,13 @@
         <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
             <p>${errorMessage}</p><br><br>
         </c:if>
+            
+        <c:set var="accountType" value="${sessionScope.accountType}"/>
+        <c:set var="accountsList" value="${requestScope.accountsList}"/>
+        <c:set var="listSize" value="${accountsList.size()}"/>
+            
         
-                    <div class="mui-col-md-8 mui-col-md-offset-2">   
+        <div class="mui-col-md-8 mui-col-md-offset-2">   
         <form action="salesrep.add" method="post"class="mui-form" id="add-customer-form">
             <div class="mui-col-md-12">
                             <div class="mui-textfield mui-textfield--float-label">
@@ -60,6 +65,42 @@
                     <label for="salesrepAddressInput">Address</label>
                 </div>
             </div>
+            
+            
+             <c:if test="${listSize > 0}">
+                     <table class="mui-table mui--text-center" id="customer-table">
+                     <thead>
+                        <tr>
+                            <th></th>
+                            <th>User Name</th>
+                            <th>Account Type</th>
+                            <th>Account Status</th>
+                            <th>Date Created</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                    <c:forEach items="${accountsList}" var="acc" begin="0" step="1" varStatus="status">
+                        <tr>
+                                <td><input type="radio" name="selectedAccount" value="${acc.getAccountID()}"></td>
+                                <td>${acc.getUserName()}</td>
+                                <td>${acc.getAccountType()}</td>
+                                <td>${acc.getAccountStatus()}</td>
+                                <td>${acc.getDateCreated()}</td>
+                        </tr>
+
+                    </c:forEach>
+                     </tbody>
+                    </table>
+                </c:if>
+        <div class="text-center">
+            <div id="error-msg">${error_msg}</div>
+            <c:if test="${listSize eq 0}">
+            <p> 0 accounts found.</p>
+        </c:if>
+         </div>
+            
+            
+            
             
             
             <button type="submit" value="Save Sales Rep" class="mui-btn mui-btn--raised">Save</button>

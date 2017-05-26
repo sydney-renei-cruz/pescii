@@ -44,7 +44,7 @@
         <p>Last Edited By: ${supb.getLastEdittedBy()}</p>
         
         <br><br><br>
-        
+        <a href="supplier.getDetails?forEdit=yes&suppID=<c:out value="${supb.getSupplierID()}"/>">Edit</a>
         <br><br>
         <a href="Servlets.getProductServlet?forOther=restock&suppID=<c:out value="${supb.getSupplierID()}"/>">Select for RO</a>
         <br><br>

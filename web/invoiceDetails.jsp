@@ -23,7 +23,7 @@
             <div class="mui-container">
                 <div class="mui-row">
                     <div class="mui-col-md-6 mui-col-md-offset-3">
-                        <legend class="mui--text-center mui--text-display3">View Cart for Restock Order</legend>
+                        <legend class="mui--text-center mui--text-display3">Invoice Details</legend>
         <c:set var="errorMessage" value="${requestScope.message}"/>
         <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
             <p>${errorMessage}</p><br><br>
@@ -36,7 +36,6 @@
         
         <br>
         <!--Invoice-->
-        <h5>Invoice Details</h5>
         
         <p>Invoice ID: ${invoice.getInvoiceID()}</p>
         <p>Invoice Name: ${invoice.getInvoiceName()}</p>

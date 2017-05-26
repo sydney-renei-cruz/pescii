@@ -32,7 +32,7 @@
             <div class="mui-container">
                 <div class="mui-row">
                     <div class="mui-col-md-6 mui-col-md-offset-3">
-                        <legend class="mui--text-center mui--text-display3">EDIT CUSTOMER</legend>
+                        <legend class="mui--text-center mui--text-display3">Edit Invoice</legend>
                         <div class="mui-col-md-12 mui--text-center">
                             <c:if test="${success_msg != null}">
                                     <div id="success-msg">${success_msg}</div>
@@ -57,7 +57,7 @@
         
         <form action="invoice.edit" method="post">
             <input type="hidden" value="${invoice.getInvoiceID()}" name="invoiceIDInput">
-            <p>Invoice Name: <input type="text" value="${invoice.getInvoiceName()}" name="newInvoiceNameInput" maxlength="255"><br>
+            <p>Invoice Name: <input type="text" value="${invoice.getInvoiceName()}" name="newInvoiceNameInput" maxlength="255" required><br>
             <p>Customer Name: <input type="hidden" value="${invoice.getPRCID()}" name="PRCIDInput">${invoice.getCustomerName()}</p>
             <p>Clinic Name: <input type="hidden" value="${invoice.getClinicID()}" name="clinicIDInput">${invoice.getClinicName()}</p>
             <p><input type="hidden" value="${invoice.getInvoiceDate()}" name="invoiceDateInput">Invoice Date Created: ${invoice.getInvoiceDate()}</p>

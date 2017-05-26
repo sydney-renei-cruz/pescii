@@ -38,9 +38,7 @@
         
         <!--this is the error message-->
         <c:set var="errorMessage" value="${requestScope.message}"/>
-        <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
-            <p>${errorMessage}</p><br><br>
-        </c:if>
+        
          <div class="mui-textfield mui-textfield--float-label">
                    
                     </div>
@@ -49,7 +47,9 @@
             
             
          <legend class="mui--text-center mui--text-display3">Add Invoice</legend>
-        
+            <c:if test="${errorMessage ne '' && errorMessage ne null && errorMessage ne 'null'}">
+                <p>${errorMessage}</p><br><br>
+            </c:if>
             <table  class="mui-table mui--text-center" id="customer-table" >
                  <thead>
                     <tr>
@@ -61,10 +61,10 @@
                 </thead>
                 <tbody>
                     <tr>
-                            <td>${customer.getPRCID()}</td>
-                            <td>${customer.getCustomerLastName()}, ${customer.getCustomerFirstName()}</td>
-                            <td>${customer.getCustomerMobileNumber()}</td>
-                            <td>${customer.getCustomerTelephoneNumber()}</td>
+                        <td>${customer.getPRCID()}</td>
+                        <td>${customer.getCustomerLastName()}, ${customer.getCustomerFirstName()}</td>
+                        <td>${customer.getCustomerMobileNumber()}</td>
+                        <td>${customer.getCustomerTelephoneNumber()}</td>
                     </tr>
                 </tbody>
             </table>
@@ -87,7 +87,7 @@
                         <c:set var="cart" value="${sessionScope.cart}"/>
                         <c:set var="quantity" value="${sessionScope.quantity}"/>
                         <c:set var="totalPrices" value="${sessionScope.totalPrices}"/>
-                        <c:if test="${listSize > 0}">
+                        <c:if test="${cartSize > 0}">
                         <c:forEach items="${cart}" var="prods" begin="0" step="1" varStatus="loop">
                             <tr>
                                 <td><c:out value="${prods.getProductName()}"/></td>
@@ -131,18 +131,20 @@
                 <option value="Cheque">Cheque</option>
             </select><br>
             Payment Due Date:<br>  <input type="text" name="paymentDueDateInput" id="date2" required><br>
-            <c:if test="${accountType eq '3' || accountType eq '1'}">
-                Amount Paid: <br> <input type="text" name="amountPaidInput" value="0"><br>
-                Date Paid:<br>  <input type="text" name="datePaidInput" id="date3"><br>
-            </c:if>
-            <c:if test="${accountType eq '6'}">
-                <input type='hidden' value='2' name='statusInput'>
-                <input type="hidden" name="amountPaidInput" value="0"><br>
-                <input type="hidden" name="datePaidInput" value=""><br>
-            </c:if>
             
             Amount Due: <br> <input type="text" name="amountDueInput" value="0" required><br>
             Discount:<br>  <input type="text" name="discountInput" value="0"><br>
+            
+            <c:if test="${accountType eq '3' || accountType eq '1'}">
+                <input type='hidden' value='2' name='statusInput'>
+                Amount Paid: <br><input type="text" name="amountPaidInput" value="0"><br>
+                Date Paid: <br><input type="text" name="datePaidInput" id="date3"><br>
+            </c:if>
+            <c:if test="${accountType eq '6'}">
+                <input type='hidden' value='2' name='statusInput'>
+                <input type="hidden" name="amountPaidInput" value="0">
+                <input type="hidden" name="datePaidInput" value="">
+            </c:if>
             
             Sales Representative: <br> <input type="hidden" name="salesRepIDInput" value="${customer.getSalesRepID()}">${customer.getSalesRep()}<br>
            

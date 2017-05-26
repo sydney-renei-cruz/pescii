@@ -67,7 +67,7 @@ public class getUnfinishedServlet extends HttpServlet {
         
          //Allocate a Statement object within the Connection
          stmt = conn.createStatement();
-         
+         String message = "";
          //---------------
          //THIS IS WHERE YOU START CHANGING
          String table = request.getParameter("getTable");
@@ -75,12 +75,7 @@ public class getUnfinishedServlet extends HttpServlet {
          PreparedStatement ps;
          ResultSet dbData;
          if(table.equals("invoice")){
-            /* preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, Invoice.clinicID, Invoice.invoiceDate, "
-                 + "Invoice.deliveryDate, Invoice.additionalAccessories, Invoice.termsOfPayment, "
-                 + "Invoice.paymentDueDate, Invoice.datePaid, Invoice.dateClosed, Invoice.status, "
-                 + "Invoice.overdueFee from Invoice "
-                 + "inner join Customer on Customer.customerID = Invoice.customerID where Invoice.status = 'In Progress' order by paymentDueDate";
-             */
+            
              preparedSQL = "select Invoice.invoiceID, Invoice.invoiceName, Customer.PRCID, "
                  + "Customer.customerFirstName, Customer.customerLastName, "
                  + "Invoice.clinicID, Clinic.clinicName, Clinic.provinceID, "
@@ -131,7 +126,17 @@ public class getUnfinishedServlet extends HttpServlet {
              }
 
                  request.setAttribute("invoiceList", invoicesRetrieved);
-                 request.getRequestDispatcher("getInvoice.jsp").forward(request,response);
+                 if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2") || (session.getAttribute("accountType")+"").equals("3")){
+                    request.getRequestDispatcher("getInvoice.jsp").forward(request,response);
+                    return;
+                }
+                else{
+                    message = "You do not have permission to perform that function.";
+                    request.setAttribute("message", message);
+                    request.getRequestDispatcher("notif.get").forward(request,response);
+                    return;
+                }
+                 
          }
          else{
             
@@ -169,8 +174,18 @@ public class getUnfinishedServlet extends HttpServlet {
                     restocksRetrieved.add(rbean);
                }
             request.setAttribute("restocksList", restocksRetrieved);
-
-            request.getRequestDispatcher("getRestockOrder.jsp").forward(request,response);
+            
+            if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2") || (session.getAttribute("accountType")+"").equals("4") || (session.getAttribute("accountType")+"").equals("5")){
+                request.getRequestDispatcher("getRestockOrder.jsp").forward(request,response);
+                return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+            
 
          }
             

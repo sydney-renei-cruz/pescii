@@ -75,13 +75,6 @@ public class addToProdCartServlet extends HttpServlet {
             if (session.getAttribute("prodCart") == null){
                 context.log("now creating prodCart");
                 prodCart = new LinkedList<productBean>();    //this contains the productID
-                /*prodNames = new LinkedList<String>();
-                prodPrices = new LinkedList<Float>();
-                suppNames = new LinkedList<String>();
-                brands = new LinkedList<String>();
-                productClasses = new LinkedList<String>();
-                colors = new LinkedList<String>();
-                lowstocks = new LinkedList<Integer>();*/
                 context.log(">>prodCart created!");
                 context.log("----prodCart size is: " + prodCart.size());
             }
@@ -110,59 +103,9 @@ public class addToProdCartServlet extends HttpServlet {
                 product.setSupplierName(request.getParameter("suppName"));
                 prodCart.add(product);
                 session.setAttribute("prodCart", prodCart);
-                //prodCart.add(request.getParameter("prodID"));
-                /*prodNames.add(request.getParameter("prodName"));
-                prodPrices.add(0 + Float.parseFloat(request.getParameter("prodPrice")));
-                suppNames.add(request.getParameter("suppName"));
-                context.log("->>product added to prodCart! ID is: " + request.getParameter("prodID"));
-                session.setAttribute("prodCart", prodCart);
-                session.setAttribute("prodNames", prodNames);
-                session.setAttribute("prodPrices", prodPrices);
-                session.setAttribute("suppNames", suppNames);
-                session.setAttribute("brands", brands);
-                session.setAttribute("productClasses", productClasses);
-                session.setAttribute("colors", colors);
-                session.setAttribute("lowstocks", lowstocks);
-                request.setAttribute("forLowstock", "yes");*/
-                //request.getRequestDispatcher("viewProdCart.jsp").forward(request,response);
-                //return;
-            }
-            /*if(request.getParameter("gotQuantity")!=null){
-                LinkedList<Integer> lowstockLevels = new LinkedList<Integer>();
-                for(int i=0; i<prodNames.size();i++){
-                    try{
-                        context.log("product name from prodName is: "+request.getParameter(prodNames.get(i)));
-                        lowstockLevels.add(Integer.parseInt(request.getParameter(prodNames.get(i))));
-                        if(Integer.parseInt(request.getParameter(prodNames.get(i)))<0){
-                            message = "Low Stock Level was input incorrectly. Please use whole numbers.";
-                            request.setAttribute("message",message);
-                            context.log("returning to viewProdCart.jsp 1");
-                            request.getRequestDispatcher("viewProdCart.jsp").forward(request,response);
-                            return;
-                        }
-                    }
-                    catch(Exception e){
-                        message = "Low Stock Level was input incorrectly. Please use whole numbers.";
-                        request.setAttribute("message",message);
-                        context.log("returning to viewProdCart.jsp 2");
-                        request.getRequestDispatcher("viewProdCart.jsp").forward(request,response);
-                        return;
-                    }
-                    context.log("lowstockLevels.size() is: "+lowstockLevels.size()+" and i = "+i);
-                }
-                session.setAttribute("lowstockLevels", lowstockLevels);
-                context.log("cartType in addToProdCartServlet is: "+session.getAttribute("cartType"));
-                request.getRequestDispatcher("restockOrder.getStatus").forward(request,response);
-
-                return;
-            }*/
-
                 
-                /*
-                if(request.getParameter("getQuantity")!=null){
-                    request.getRequestDispatcher("viewProdCart.jsp").forward(request,response);
-                    return;
-                }*/
+            }
+            
                 request.getRequestDispatcher("Servlets.getProductServlet").forward(request,response);
         
         }

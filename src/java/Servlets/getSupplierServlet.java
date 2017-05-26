@@ -75,7 +75,7 @@ public class getSupplierServlet extends HttpServlet {
                  + "inner join ProductClass on ProductClass.productClassID=Supplier.productClassID "
                  + "order by supplierName asc";
          PreparedStatement ps = conn.prepareStatement(preparedSQL);
-         
+         String message = "";
          ResultSet dbData = ps.executeQuery();
          ArrayList<supplierBean> suppliersRetrieved = new ArrayList<supplierBean>();
          //retrieve the information.
@@ -102,15 +102,34 @@ public class getSupplierServlet extends HttpServlet {
          String forOther = ""+request.getAttribute("forOther");
          request.setAttribute("prodClassList", request.getAttribute("prodClassList"));
          if((""+request.getAttribute("forEdit")).equals("yes")){
-             //request.setAttribute("forEdit", "yes");
              request.setAttribute("message",request.getAttribute("message"));
              request.setAttribute("product", request.getAttribute("product"));
-             //request.setAttribute("productClassList", request.getAttribute("productClassList"));
-             request.getRequestDispatcher("editProduct.jsp").forward(request,response);
+             
+            if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("4")){
+                request.getRequestDispatcher("editProduct.jsp").forward(request,response);
+                return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+             
          }
          else if((""+request.getParameter("forRestock")).equals("yes")){
              session.setAttribute("cartType","restock");
-             request.getRequestDispatcher("getSupplier.jsp").forward(request,response);
+             if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("4")){
+                request.getRequestDispatcher("getSupplier.jsp").forward(request,response);
+                return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+             
          }
          else if((""+request.getAttribute("searchWhat")).equalsIgnoreCase("prod")){
              context.log("getting suppliers for search Product...");
@@ -118,19 +137,48 @@ public class getSupplierServlet extends HttpServlet {
              if(forOther.equals("invoice")){request.setAttribute("forOther", "invoice");}
              else if(forOther.equals("restock")){request.setAttribute("forOther", "restock");}
              
-             //request.setAttribute("prodClassList", request.getAttribute("prodClassList"));
              request.getRequestDispatcher("conditionsProduct.jsp").forward(request,response);
              
          }
          else if(searchWhat.equalsIgnoreCase("ro")){
-             request.getRequestDispatcher("conditionsRestockOrder.jsp").forward(request,response);}
+            if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2") || (session.getAttribute("accountType")+"").equals("4") || (session.getAttribute("accountType")+"").equals("5")){
+                request.getRequestDispatcher("conditionsRestockOrder.jsp").forward(request,response);
+                return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+        }
          else if((""+request.getParameter("viewSupp")).equals("yes")){
              context.log("got suppliers for view Supplier.");
-             request.getRequestDispatcher("getSupplier.jsp").forward(request,response);
+             if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("4") || (session.getAttribute("accountType")+"").equals("5")){
+                request.getRequestDispatcher("getSupplier.jsp").forward(request,response);
+                return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+             
          }
          else{
             context.log("now sending suppliers to addProduct.jsp...");
-            request.getRequestDispatcher("addProduct.jsp").forward(request,response);
+            if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("4")){
+                request.getRequestDispatcher("addProduct.jsp").forward(request,response);
+                return;
+            }
+            else{
+                message = "You do not have permission to perform that function.";
+                request.setAttribute("message", message);
+                request.getRequestDispatcher("notif.get").forward(request,response);
+                return;
+            }
+            
          }   
          
         }
