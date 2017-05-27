@@ -146,7 +146,7 @@
                 <input type="hidden" name="datePaidInput" value="">
             </c:if>
             
-            Sales Representative: <br> <input type="hidden" name="salesRepIDInput" value="${customer.getSalesRepID()}">${customer.getSalesRep()}<br>
+            <input type="hidden" name="salesRepIDInput" value="${customer.getSalesRepID()}">
            
             <button type="submit"  value="Add Invoice" class="mui-btn mui-btn--raised">Submit</button>
         </form>

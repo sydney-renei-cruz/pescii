@@ -104,16 +104,16 @@ public class getAccountTypeStatusServlet extends HttpServlet {
              context.log("Account found! Account ID is: "+((accountBean)request.getAttribute("account")).getAccountID());
              request.setAttribute("message",""+request.getAttribute("message"));
              request.setAttribute("account", request.getAttribute("account"));
-             if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2")){
+             //if((session.getAttribute("accountType")+"").equals("1") || (session.getAttribute("accountType")+"").equals("2")){
                     request.getRequestDispatcher("editAccount.jsp").forward(request,response);
                     return;
-            }
+            /*}
             else{
                 message = "You do not have permission to perform that function.";
                 request.setAttribute("message", message);
                 request.getRequestDispatcher("notif.get").forward(request,response);
                 return;
-            }
+            }*/
              
          }
          else if((""+request.getParameter("forSearch")).equals("yes")){

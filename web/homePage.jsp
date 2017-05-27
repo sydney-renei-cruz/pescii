@@ -61,7 +61,7 @@
                                     <div class="mui--appbar-height"></div>
                                     <div class="mui--text-display1 mui--text-center">Notice Board</div>
                                     <div class="mui-panel mui--text-center">
-                                        <c:if test="${accountType eq '3' || accountType eq '2' || accountType eq '1'}">
+                                        <c:if test="${accountType eq '3' || accountType eq '2' || accountType eq '1'|| accountType eq '6'}">
                                             <c:if test="${invoiceList.size() eq 0}">
                                                 <p>You have <b>${invoiceList.size()} Invoices</b> with deadlines within the next 7 days</p>
                                             </c:if>

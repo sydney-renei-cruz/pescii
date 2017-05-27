@@ -135,7 +135,6 @@ public class logInServlet extends HttpServlet {
          
          
          if (!dbData.isBeforeFirst()){  //if the account couldn't be found
-             //response.sendRedirect("index.jsp");
              message = "Username or password is incorrect.";
              request.setAttribute("message", message);
              request.getRequestDispatcher("notif.get").forward(request, response);
@@ -176,14 +175,37 @@ public class logInServlet extends HttpServlet {
                             request.getRequestDispatcher("notif.get").forward(request, response);
 
                         }
+                        
                         else{
-                            //message = "did it! Username is "+username+"!";
                             session.setAttribute("accountID", dbData.getInt("accountID"));
                             session.setAttribute("userName", username);
                             session.setAttribute("accountType", ""+dbData.getInt("accountType"));
+                            
+                            if(dbData.getInt("accountType")==6){
+                                context.log("logging in as salesrep...");
+                                preparedSQL = "select * from SalesRep where accountID=?";
+                                
+                                PreparedStatement ps2 = conn.prepareStatement(preparedSQL);
+
+                                ps2.setInt(1, dbData.getInt("accountID"));
+                                context.log(preparedSQL+"   accountID is: "+dbData.getInt("accountID"));
+                                ResultSet dbData2 = ps2.executeQuery();
+                                if(!dbData2.isBeforeFirst()){
+                                    message = "This account has not been assigned to a Sales Rep entity. Contact the Secretary for details.";
+                                    context.log(message);
+                                    session.setAttribute("accountID", null);
+                                    session.setAttribute("userName", null);
+                                    session.setAttribute("accountType", null);
+                                    request.getRequestDispatcher("notif.get?forWhat=invoice").forward(request,response);
+                                    return;
+                                }
+                            
+                            }
+                            //message = "did it! Username is "+username+"!";
+                            
                             session.setAttribute("state", "logged in");
 
-                            if(dbData.getInt("accountType")==3){
+                            if(dbData.getInt("accountType")==3 || dbData.getInt("accountType")==6){
                                 request.getRequestDispatcher("notif.get?forWhat=invoice").forward(request,response);
                             }
                             else if(dbData.getInt("accountType")==4 || dbData.getInt("accountType")==5){

@@ -547,31 +547,11 @@ public class editInvoiceServlet extends HttpServlet {
          ps.setInt(2,invoiceID);
          ps.executeUpdate();
          context.log("updated the invoice lastEdittedBy!");
-         /*
-         ps.setString(1,newInvoiceName);
-         ps.setString(2,newDeliveryDate);
-         ps.setString(3,newTop);
-         ps.setString(4,newPaymentDueDate);
-         //ps.setString(4,newDatePaid);
-         if(newDatePaid==null || newStatus==3){ps.setString(5,null);}
-         else{ps.setString(5,newDatePaid);}
-         if(newDateClosed==null){ps.setString(6,null);}
-         else{ps.setString(6,newDateClosed);}
-         ps.setInt(7,newStatus);
-         ps.setFloat(8,newAmountDue);
-         ps.setFloat(9,newDiscount);
-         ps.setFloat(10,newAmountPaid);
-         ps.setString(11,newDateDelivered);
-         ps.setString(12,lastEdittedBy);
-         ps.setFloat(13,newOverdueFee);
-         ps.setInt(14,invoiceID);
          
-         
-         ps.executeUpdate();*/
          context.log("--->Invoice successfully updated. InvoiceID is: "+invoiceID);
          
          
-         if(newStatus!=2){
+         if(newStatus==3){
             //now update the product
             //first get the invoice items
             preparedSQL = "select * from InvoiceItem where invoiceID = ?";
@@ -591,13 +571,11 @@ public class editInvoiceServlet extends HttpServlet {
                }
 
            //check if it was cancelled or completed
-           String operator;
-           if(newStatus==3){operator = "+";}
-           else{operator = "-";}
+           
                
             for(invoiceItemBean iibean : invItemsRetrieved){
                 preparedSQL = "UPDATE Product JOIN InvoiceItem ON Product.productID=InvoiceItem.productID" +
-   "               SET Product.stocksRemaining = Product.stocksRemaining "+operator+" InvoiceItem.quantityPurchased" +
+   "               SET Product.stocksRemaining = Product.stocksRemaining + InvoiceItem.quantityPurchased" +
    "               WHERE Product.productID=? and InvoiceItem.invoiceID=?;";
                 ps = conn.prepareStatement(preparedSQL);
                 ps.setInt(1,iibean.getProductID());
