@@ -51,7 +51,7 @@
                         <strong>Product</strong>
                         <ul>
                             <li><a href="Servlets.getProductServlet">View Products</a></li>
-                            <li><a href="product.getProductClass?search=yes&searchWhat=prod">Custom View Product</a></li>
+                            <li><a href="product.getProductClass?search=yes&searchWhat=prod">Search Product</a></li>
                         </ul>
                     </li>
                 </c:if>
@@ -119,6 +119,7 @@
                                 <li><a href="product.getProductClass">Add Product</a></li>
                                 <li> <a href="Servlets.getProductServlet">Edit Product</a></li>
                                 <li><a href="Servlets.getProductServlet">View All Products</a></li>
+                                <li><a href="product.getProductClass?search=yes&searchWhat=prod">Search Product</a></li>
                                 <li><a href="Servlets.getProductServlet?forOther=lowstockLevel">Set Low Stock Level</a></li>
                                 
                             </ul>

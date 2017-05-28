@@ -193,6 +193,7 @@ public class logInServlet extends HttpServlet {
                                 if(!dbData2.isBeforeFirst()){
                                     message = "This account has not been assigned to a Sales Rep entity. Contact the Secretary for details.";
                                     context.log(message);
+                                    request.setAttribute("message", message);
                                     session.setAttribute("accountID", null);
                                     session.setAttribute("userName", null);
                                     session.setAttribute("accountType", null);

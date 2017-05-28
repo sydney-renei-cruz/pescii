@@ -79,7 +79,7 @@ public class getNotifServlet extends HttpServlet {
          if(session.getAttribute("accountType") != null){
             accountType = Integer.parseInt(""+session.getAttribute("accountType"));
          }
-         if(accountType==3){
+         if(accountType==3 || accountType==6){
             forWhat = "invoice";
          }
          else if(accountType==4 || accountType==5){
@@ -221,7 +221,7 @@ public class getNotifServlet extends HttpServlet {
          
          
          }
-         
+         request.setAttribute("message", request.getAttribute("message"));
          request.getRequestDispatcher("homePage.jsp").forward(request,response);
             
          

@@ -6,6 +6,7 @@
 package Servlets;
 
 import Beans.invoiceItemBean;
+import Beans.restockOrderStatusBean;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -104,7 +105,13 @@ public class editRestockOrderServlet extends HttpServlet {
          
          //---------------
          String message = "Restock Order successfully editted!";
-         String preparedSQL = "update RestockOrder set ROName=?, purpose=?, RODateDue=?, RODateDelivered=?, "
+         
+         
+         
+         
+         
+         
+        String preparedSQL = "update RestockOrder set ROName=?, purpose=?, RODateDue=?, RODateDelivered=?, "
                  + "amountPaid=?, discount=?, datePaid =?, "
                  + "lastEdittedBy=? "
                  + "where restockOrderID=?";
@@ -435,6 +442,17 @@ public class editRestockOrderServlet extends HttpServlet {
                     }
                     
                     context.log("now updating the ROItems!");
+                    
+                    preparedSQL = "select quantityReceived from RestockOrderItem where RestockOrderID=? and ROIID=?";
+                    ps = conn.prepareStatement(preparedSQL);
+                    ps.setInt(1,inputRestockOrderID);
+                    ps.setInt(2,roiid);
+                    ResultSet dbData = ps.executeQuery();
+                    int oldStock=0;
+                    while(dbData.next()){
+                       oldStock= dbData.getInt("quantityReceived");
+                    }
+
                     preparedSQL = "update RestockOrderItem set quantityPurchased=?, quantityReceived=? where RestockOrderID=? and ROIID=?";
                     ps = conn.prepareStatement(preparedSQL);
                     ps.setInt(1,quantityPurchased);
@@ -456,10 +474,21 @@ public class editRestockOrderServlet extends HttpServlet {
                         ps.executeUpdate();
                     }
                     */
-                    preparedSQL = "update Product set stocksRemaining = stocksRemaining + "+quantityReceived+" where productID=?";
-                    ps = conn.prepareStatement(preparedSQL);
-                    ps.setInt(1,pid);
-                    ps.executeUpdate();
+                    int newStock=0;
+                    if(quantityReceived>oldStock){
+                        preparedSQL = "update Product set stocksRemaining = stocksRemaining + "+(quantityReceived-oldStock)+" where productID=?";
+                        ps = conn.prepareStatement(preparedSQL);
+                        ps.setInt(1,pid);
+                        ps.executeUpdate();
+                    }
+                    else if(quantityReceived<oldStock){
+                        preparedSQL= "update Product set stocksRemaining = stocksRemaining - "+(oldStock-quantityReceived)+" where productID=?";
+                        ps = conn.prepareStatement(preparedSQL);
+                        ps.setInt(1,pid);
+                        ps.executeUpdate();
+                    }
+                    
+                    
                     
                 }
                 catch(Exception e){

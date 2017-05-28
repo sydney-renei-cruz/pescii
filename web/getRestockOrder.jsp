@@ -24,7 +24,7 @@
                    
                     </div>
         <div id="content-wrapper">
-            
+            <div class="mui--appbar-height"></div>
             
             
          <legend class="mui--text-center mui--text-display3">Restock Orders</legend>
