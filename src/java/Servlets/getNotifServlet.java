@@ -221,7 +221,9 @@ public class getNotifServlet extends HttpServlet {
          
          
          }
-         request.setAttribute("message", request.getAttribute("message"));
+         request.setAttribute("error_login", request.getAttribute("message"));
+         request.setAttribute("error_login", request.getAttribute("message"));
+         
          request.getRequestDispatcher("homePage.jsp").forward(request,response);
             
          

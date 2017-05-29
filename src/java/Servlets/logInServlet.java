@@ -226,7 +226,8 @@ public class logInServlet extends HttpServlet {
             
             if(match==false){
                 message = "Password or username is incorrect.";
-                request.setAttribute("message",message);
+                request.setAttribute("error_login",message);
+                session.setAttribute("error_login",message);
                 request.getRequestDispatcher("notif.get").forward(request,response);
             }
             
